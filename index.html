@@ -1,0 +1,185 @@
+riera cartola (jun-2020) hasta hoy. Incluye cumplimiento de cada compromiso.</p>';
+    html = '<div class="table-wrapper"><table><thead><tr>';
+    html += '<th style="background:#0d47a1">Socio</th>';
+    CAT_ORDER.forEach(c => html += '<th style="background:' + CAT_COLORS[c].bg + ';">' + CAT_COLORS[c].label + '</th>');
+    html += '<th style="background:#0d47a1;">Total</th>';
+    html += '<th style="background:#0d47a1;">% del Total</th>';
+    html += '</tr></thead><tbody>';
+
+    SOCIOS_ALL.forEach(s => {
+        const t = classified[s].totals;
+        const pct = grandTotal > 0 ? (t.total / grandTotal * 100).toFixed(1) : '0.0';
+        html += '<tr><td>' + (FULL_NAMES[s] || s) + '</td>';
+        CAT_ORDER.forEach(c => {
+            const val = t[c];
+            if (val > 0) {
+                html += '<td style="text-align:right; color:' + CAT_COLORS[c].text + '; font-weight:600;">' + fmt(val) + '</td>';
+            } else {
+                html += '<td style="text-align:center; color:#ddd;">â</td>';
+            }
+        });
+        html += '<td style="text-align:right; font-weight:700;">' + fmt(t.total) + '</td>';
+        html += '<td style="text-align:right;"><span style="color:' + (t.total >= grandTotal/10 ? '#2e7d32' : '#e65100') + '; font-weight:600;">' + pct + '%</span></td>';
+        html += '</tr>';
+    });
+
+    // Grand total row
+    html += '<tr class="total-row"><td>TOTAL</td>';
+    CAT_ORDER.forEach(c => html += '<td style="text-align:right;">' + fmt(globalCats[c]) + '</td>');
+    html += '<td style="text-align:right;">' + fmt(grandTotal) + '</td>';
+    html += '<td style="text-align:right;">100%</td>';
+    html += '</tr></tbody></table></div>';
+
+    // Cumplimiento per socio
+    html += '</div><div class="table-section">';
+    html += '<h3>Cumplimiento de Compromisos por Socio</h3>';
+    html += '<div class="table-wrapper"><table><thead><tr>';
+    html += '<th style="background:#0d47a1;">Socio</th>';
+    html += '<th style="background:#1565c0;">Capital<br><small>Meta $10M</small></th>';
+    html += '<th style="background:#7b1fa2;">ConstrucciÃ³n<br><small>Meta $19.1M</small></th>';
+    html += '<th style="background:#e65100;">Mobiliario<br><small>Meta $4M</small></th>';
+    html += '<th style="background:#0d47a1;">Deuda Pendiente</th>';
+    html += '<th style="background:#0d47a1">Estado</th>';
+    html += '</tr></thead><tbody>';        [10946, 38699, 100049, 81643, 259249, 200012, 90540, 234891, 0, 0, 279990, 557120, 21998, 501980, 30528, 913690, 44999, 252280, 0, 62990, 073000, done:true},
+            {id:3, nombre:"SillÃ³n", cat:"living", presup:3500000, real:1999990, done:true},
+            {id:4, nombre:"Sitiales", cat:"living", presup:2200000, real:839980, done:true},
+            {id:5, nombre:"Biblioteca baja", cat:"living", presup:500000, real:0, done:false},
+            { id:6, nombre:"Mesas Laterales", cat:"living", presup:500000, real:0, done:false},
+            { id:7, nombre:"Alfombra", cat:"living", presup:800000, real:269990, done:true},
+            { id:8, nombre:"Campana extractora", cat:"cocina", presup:1500000, real:144980, done:true},
+            {id:9, nombre:"Colgadores Closet", cat:"dormitorio", presup:300000, real:0, done:false},
+            {id:10, nombre:"Bajadas de Cama", cat:"dormitorio", presup:300000, real:0, done:false},
+            {id:11, nombre:"Colchones, Camas, Cojines, SÃ¡banas, Toallas", cat:"dormitorio", presup:4100000, real:4309031, done:true},
+            {id:12, nombre:"Bosca (estufa a leÃ±a)", cat:"calefaccion", presup:1600000, real:557120, done:true},
+            {id:13, nombre:"Calefactores piezas elÃ©ctricos", cat:"calefaccion", presup:478000, real:219980, done:true},
+            {id:14, nombre:"Calefactores piso baÃ±os elÃ©ctricos", cat:"bano", presup:501980, real:501980, done:true},
+            {id:15, nombre:"Calienta Toallas", cat:"bano", presup:559980, real:305280, done:true},
+            {id:16, nombre:"Vajilla, Platos, Copas, Vasos, CuchillerÃ­a", cat:"cocina", presup:1320000, real:913690, done:true},
+            {id:17, nombre:"Cava de vinos", cat:"cocina", presup:1300000, real:449990, done:true},
+            {id:18, nombre:"Luminarias", cat:"general", presup:2500000, real:252280, done:true},
+            {id:19, nombre:"Porta Paraguas", cat:"general", presup:250000, real:0, done:false},
+            {id:20, nombre:"Tostadora", cat:"cocina", presup:200000, real:62990, done:true},
+            {id:21, nombre:"Thermomix", cat:"cocina", presup:1500000, real:0, done:false},
+            { id:22, nombre:"Parrilla a GAS", cat:"exterior", presup:900000, real:900000, done:true},
+            { id:23, nombre:"FogÃ±n", cat:"exterior", presup:900000, real:350000, done:true},
+            {id:24, nombre:"Lavavajilla", cat:"cocina", presup:800000, real:645990, done:true},
+            {id:25, nombre:"MÃ¡quina hacer Pan", cat:"cocina", presup:150000, real:69990, done:true},
+            {id:26, nombre:"Cocina con Horno", cat:"cocina", presup:2400000, real:602982, done:true},
+            {id:27, nombre:"Microondas", cat:"cocina", presup:750000, real:182691, done:true},
+            { id:28, nombre:"Cafetera", cat:"cocina", presup:500000, real:0, done:false},
+            { id:29, nombre:"Calentador de Agua", cat:"bano", presup:1500000, real:811981, done:true},
+            {id:30, nombre:"Congelador", cat:"cocina", presup:600000, real:279990, done:true},
+            { id:31, nombre:"Refrigerador", cat:"cocina", presup:1500000, real:737991, done:true},
+            { id:32, nombre:"Lavadora", cat:"general", presup:0, real:386991, done:true},
+            { id:33, nombre:"MultiOlla", cat:"cocina", presup:0, real:119990, done:true},
+            { id:34, nombre:"AirFryer", cat:"cocina", presup:0, real:129990, done:true},
+            {id:35, nombre:"TelevisiÃ³n", cat:"living", presup:0, real:879990, done:true},
+            { id:36, nombre:"Artefactos casa (varios)", cat:"general", presup:0, real:1134137, done:true},
+            {id:37, nombre:"MÃ¡quina de Hielo", cat:"cocina", presup:0, real:399990, done:true},
+            { id:38, nombre:"Sandwichera", cat:"cocina", presup:0, real:63990, done:true},
+            {id:39, nombre:"Prensa Francesa", cat:"cocina", presup:0, real:5998, done:true},
+            {id:40, nombre:"Hervidor de Huevos", cat:"cocina", presup:0, real:19990, done:true},
+            {id:41, nombre:"Hervidor de Agua (x2)", cat:"cocina", presup:0, real:119980, done:true},
+            {id:42, nombre:"Batidora", cat:"cocina", presup:0, real:41990, done:true},
+            {id:43, nombre:"Balanza", cat:"cocina", presup:0, real:13990, done:true},
+            { id:44, nombre:"Molinillo", cat:"cocina", presup:0, real:54990, done:true},
+            {id:45, nombre:"Mantequillero", cat:"cocina", presup:0, real:25980, done:true},
+            {id:46, nombre:"Ventanas", cat:"general", presup:0, real:0, done:false},
+            {id:47, nombre:"BaÃ±os (terminaciones)", cat:"bano", presup:0, real:2391015, done:true},
+];
+let casaItems = JSON.parse(JSON.stringify(CAAAS_ITEMS_INITIAL));
+let casaNextId = 100;
+let casaFilter = 'all';
+
+function renderCasa() {
+    const cats = ['all','cocina','living','dormitorio','bano','calefaccion','exterior','general'];
+    const catLabels = {all:'Todos',cocina:'Cocina',living:'Living',dormitorio:'
+\',bano:'BaÃ±os',calefaccion:'CalefacciÃ³n',exterior:'Exterior',general:'General'};
+    const filtered = casaFilter === 'all' ? casaItems : casaItems.filter(i => i.cat === casaFilter);
+    
+    const totalPresup = casaItems.reduce((a,i) => a + (i.presup||0), 0);
+    const totalReal = casaItems.reduce((a,i) => a + (i.real||0), 0);
+    const totalDone = casaItems.filter(i => i.done).length;
+    
+73000, done:true},
+            {id:3, nombre:"SillÃ³n", cat:"living", presup:3500000, real:1999990, done:true},
+            {id:4, nombre:"Sitiales", cat:"living", presup:2200000, real:839980, done:true},
+            {id:5, nombre:"Biblioteca baja", cat:"living", presup:500000, real:0, done:false},
+            { id:6, nombre:"Mesas Laterales", cat:"living", presup:500000, real:0, done:false},
+            { id:7, nombre:"Alfombra", cat:"living", presup:800000, real:269990, done:true},
+            { id:8, nombre:"Campana extractora", cat:"cocina", presup:1500000, real:144980, done:true},
+            {id:9, nombre:"Colgadores Closet", cat:"dormitorio", presup:300000, real:0, done:false},
+            {id:10, nombre:"Bajadas de Cama", cat:"dormitorio", presup:300000, real:0, done:false},
+            {id:11, nombre:"Colchones, Camas, Cojines, SÃ¡banas, Toallas", cat:"dormitorio", presup:4100000, real:4309031, done:true},
+            {id:12, nombre:"Bosca (estufa a leÃ±a)", cat:"calefaccion", presup:1600000, real:557120, done:true},
+            {id:13, nombre:"Calefactores piezas elÃ©ctricos", cat:"calefaccion", presup:478000, real:219980, done:true},
+            {id:14, nombre:"Calefactores piso baÃ±os elÃ©ctricos", cat:"bano", presup:501980, real:501980, done:true},
+            {id:15, nombre:"Calienta Toallas", cat:"bano", presup:559980, real:305280, done:true},
+            {id:16, nombre:"Vajilla, Platos, Copas, Vasos, CuchillerÃ­a", cat:"cocina", presup:1320000, real:913690, done:true},
+            {id:17, nombre:"Cava de vinos", cat:"cocina", presup:1300000, real:449990, done:true},
+            {id:18, nombre:"Luminarias", cat:"general", presup:2500000, real:252280, done:true},
+            {id:19, nombre:"Porta Paraguas", cat:"general", presup:250000, real:0, done:false},
+            {id:20, nombre:"Tostadora", cat:"cocina", presup:200000, real:62990, done:true},
+            {id:21, nombre:"Thermomix", cat:"cocina", presup:1500000, real:0, done:false},
+            { id:22, nombre:"Parrilla a GAS", cat:"exterior", presup:900000, real:900000, done:true},
+            { id:23, nombre:"FogÃ±n", cat:"exterior", presup:900000, real:350000, done:true},
+            {id:24, nombre:"Lavavajilla", cat:"cocina", presup:800000, real:645990, done:true},
+            {id:25, nombre:"MÃ¡quina hacer Pan", cat:"cocina", presup:150000, real:69990, done:true},
+            {id:26, nombre:"Cocina con Horno", cat:"cocina", presup:2400000, real:602982, done:true},
+            {id:27, nombre:"Microondas", cat:"cocina", presup:750000, real:182691, done:true},
+            { id:28, nombre:"Cafetera", cat:"cocina", presup:500000, real:0, done:false},
+            { id:29, nombre:"Calentador de Agua", cat:"bano", presup:1500000, real:811981, done:true},
+            {id:30, nombre:"Congelador", cat:"cocina", presup:600000, real:279990, done:true},
+            { id:31, nombre:"Refrigerador", cat:"cocina", presup:1500000, real:737991, done:true},
+            { id:32, nombre:"Lavadora", cat:"general", presup:0, real:386991, done:true},
+            { id:33, nombre:"MultiOlla", cat:"cocina", presup:0, real:119990, done:true},
+            { id:34, nombre:"AirFryer", cat:"cocina", presup:0, real:129990, done:true},
+            {id:35, nombre:"TelevisiÃ³n", cat:"living", presup:0, real:879990, done:true},
+            { id:36, nombre:"Artefactos casa (varios)", cat:"general", presup:0, real:1134137, done:true},
+            {id:37, nombre:"MÃ¡quina de Hielo", cat:"cocina", presup:0, real:399990, done:true},
+            { id:38, nombre:"Sandwichera", cat:"cocina", presup:0, real:63990, done:true},
+            {id:39, nombre:"Prensa Francesa", cat:"cocina", presup:0, real:5998, done:true},
+            {id:40, nombre:"Hervidor de Huevos", cat:"cocina", presup:0, real:19990, done:true},
+            {id:41, nombre:"Hervidor de Agua (x2)", cat:"cocina", presup:0, real:119980, done:true},
+            {id:42, nombre:"Batidora", cat:"cocina", presup:0, real:41990, done:true},
+            {id:43, nombre:"Balanza", cat:"cocina", presup:0, real:13990, done:true},
+            { id:44, nombre:"Molinillo", cat:"cocina", presup:0, real:54990, done:true},
+            {id:45, nombre:"Mantequillero", cat:"cocina", presup:0, real:25980, done:true},
+            {id:46, nombre:"Ventanas", cat:"general", presup:0, real:0, done:false},
+            {id:47, nombre:"BaÃ±os (terminaciones)", cat:"bano", presup:0, real:2391015, done:true},
+];
+let casaItems = JSON.parse(JSON.stringify(CAAAS_ITEMS_INITIAL));
+let casaNextId = 100;
+let casaFilter = 'all';
+ {};
+
+function addCasaItem() {
+    const name = document.getElementById('casaNewName').value.trim();
+    if (!name) return;
+    casaItems.push({
+        id: casaNextId++,
+        nombre: name,
+        cat: document.getElementById('casaNewCat').value,
+        presup: parseInt(document.getElementById('casaNewPresup').value) || 0,
+        real: parseInt(document.getElementById('casaNewReal').value) || 0,
+        done: false
+    });
+    renderCasa();
+}
+function toggleCasaItem(id) { const item = casaItems.find(i => i.id === id); if (item) { item.done = !item.done; renderCasa(); } }
+function deleteCasaItem(id) { casaItems = casaItems.filter(i => i.id !== id); renderCasa(); }
+function exportCasa() {
+    const blob = new Blob([JSON.stringify(casaItems, null, 2)], {type:'application/json'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'casa_insular.json'; a.click();
+}
+function importCasa(event) {
+    const reader = new FileReader();
+    reader.onload = ev => { try { const data = JSON.parse(ev.target.result); if (Array.isArray(data)) { casaItems = data; casaNextId = Math.max(...casaItems.map(i => i.id || 0)) + 1; renderCasa(); } } catch(err) { alert('Error: ' + err.message); } };
+    reader.readAsText(event.target.files[0]);
+}
+
+try { const elem = document.getElementById('uploadArea'); if (elem) { elem.click = () => document.getElementById('fileInput').click(); } } catch(e) {}
+try { const fileInput = document.getElementById('fileInput'); if (fileInput) { fileInput.addEventListener('change', e => handleFiles(e.target.files)); } } catch(e) {}
+try { const modal = document.getElementById('depositModal'); if (modal) { modal.addEventListener('click', function(e) { if (e.target === this) closeModal(); }); } } catch(e) {}
+try { renderCasa(); } catch(e) { console.error(e): }
+object.fullScreen
