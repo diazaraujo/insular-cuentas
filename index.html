@@ -1,6 +1,1858 @@
-riera cartola (jun-2020) hasta hoy. Incluye cumplimiento de cada compromiso.</p>';
-    html = '<div class="table-wrapper"><table><thead><tr>';
-    html += '<th style="background:#0d47a1">Socio</th>';
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insular SPA - Dashboard de Pagos</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1" integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ" crossorigin="anonymous"></script>
+    <style>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; color: #1a1a2e; }
+        .dashboard { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+        header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 24px 32px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        header h1 { font-size: 22px; font-weight: 700; }
+        header p { font-size: 13px; opacity: 0.7; margin-top: 4px; }
+        .header-right { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+
+        .upload-area { background: rgba(255,255,255,0.1); border: 2px dashed rgba(255,255,255,0.3); border-radius: 8px; padding: 16px 24px; cursor: pointer; transition: all 0.2s; text-align: center; min-width: 280px; }
+        .upload-area:hover, .upload-area.dragover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.6); }
+        .upload-area span { font-size: 13px; color: rgba(255,255,255,0.9); }
+        .upload-area small { display: block; font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+        #fileInput { display: none; }
+        .file-count { background: #0f3460; padding: 8px 16px; border-radius: 6px; font-size: 12px; }
+        .file-count strong { color: #e94560; }
+
+        /* Tabs */
+        .tab-bar { display: flex; gap: 4px; margin-bottom: 20px; background: white; border-radius: 10px; padding: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); flex-wrap: wrap; }
+        .tab-btn { padding: 10px 16px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; color: #666; transition: all 0.2s; white-space: nowrap; }
+        .tab-btn.active { background: #1a1a2e; color: white; }
+        .tab-btn:hover:not(.active) { background: #f0f2f5; }
+        .tab-btn.hito { border-bottom: 3px solid transparent; }
+        .tab-btn.hito-capital.active { background: #1565c0; }
+        .tab-btn.hito-construccion.active { background: #7b1fa2; }
+        .tab-btn.hito-mobiliario.active { background: #e65100; }
+        .tab-btn.hito-2025.active { background: #00838f; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .sub-tab-content { display: none; }
+        .sub-tab-content.active { display: block; }
+
+        /* KPIs */
+        .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px; }
+        .kpi { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .kpi .label { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .kpi .value { font-size: 28px; font-weight: 700; }
+        .kpi .sub { font-size: 12px; color: #888; margin-top: 4px; }
+        .kpi.green .value { color: #0a8754; }
+        .kpi.red .value { color: #d32f2f; }
+        .kpi.blue .value { color: #1565c0; }
+        .kpi.orange .value { color: #e65100; }
+        .kpi.purple .value { color: #7b1fa2; }
+        .kpi.teal .value { color: #00838f; }
+
+        /* Charts */
+        .charts { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .chart-card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .chart-card h3 { font-size: 14px; color: #444; margin-bottom: 16px; }
+        .chart-container { position: relative; height: 300px; }
+
+        /* Tables */
+        .table-section { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 20px; }
+        .table-section h3 { font-size: 14px; color: #444; margin-bottom: 16px; }
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { background: #1a1a2e; color: white; padding: 10px 12px; text-align: center; font-weight: 600; position: sticky; top: 0; white-space: nowrap; }
+        th:first-child { text-align: left; }
+        td { padding: 8px 12px; border-bottom: 1px solid #eee; text-align: right; white-space: nowrap; }
+        td:first-child { text-align: left; font-weight: 600; }
+        td:nth-child(2) { text-align: center; font-size: 11px; color: #666; }
+        tr:hover td { background: #f8f9ff; }
+
+        .paid { background: #e8f5e9 !important; color: #2e7d32; }
+        .partial { background: #fff8e1 !important; color: #f57f17; }
+        .unpaid { background: #ffebee !important; color: #c62828; }
+        .na { background: #f5f5f5 !important; color: #999; }
+        .covered { background: #e8f5e9 !important; color: #2e7d32; font-style: italic; }
+
+        .saldo-pos { color: #2e7d32; font-weight: 700; }
+        .saldo-neg { color: #c62828; font-weight: 700; }
+        .saldo-zero { color: #666; font-weight: 700; }
+        .total-row td { background: #e8eaf6 !important; font-weight: 700; border-top: 2px solid #1a1a2e; }
+
+        .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; font-size: 12px; }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-color { width: 16px; height: 16px; border-radius: 3px; border: 1px solid #ddd; }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: #888; }
+        .empty-state h2 { font-size: 20px; margin-bottom: 8px; color: #555; }
+
+        .notes { background: #fff3e0; border-radius: 10px; padding: 16px 20px; margin-bottom: 20px; font-size: 12px; color: #795548; }
+        .notes h4 { margin-bottom: 8px; }
+        .notes ul { margin-left: 20px; }
+        .notes li { margin-bottom: 4px; }
+
+        /* Legal section */
+        .legal-section { background: white; border-radius: 14px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 24px; border: 1px solid #e8eaf6; }
+        .legal-section h3 { font-size: 15px; color: #1a1a2e; margin-bottom: 18px; padding-bottom: 10px; border-bottom: none; display: flex; align-items: center; gap: 10px; }
+        .legal-section h3::before { content: ''; display: inline-block; width: 4px; height: 20px; background: linear-gradient(180deg, #1565c0, #7b1fa2); border-radius: 2px; }
+        .legal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .legal-card { background: linear-gradient(135deg, #f8f9ff 0%, #fff 100%); border-radius: 12px; padding: 20px; border: 1px solid #e3e8f0; border-left: 4px solid #1565c0; transition: transform 0.15s, box-shadow 0.15s; }
+        .legal-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+        .legal-card h4 { font-size: 13px; color: #1565c0; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
+        .legal-card p, .legal-card li { font-size: 12px; color: #555; line-height: 1.6; }
+        .legal-card ul { margin-left: 16px; }
+        .info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.04); font-size: 12px; align-items: center; }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { color: #78909c; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; }
+        .info-value { color: #1a1a2e; font-weight: 600; text-align: right; }
+
+        .doc-category { margin-bottom: 16px; }
+        .doc-category h4 { font-size: 13px; color: #1a1a2e; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .doc-category h4::before { content: ''; width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .doc-cat-sociedad h4::before { background: #1565c0; }
+        .doc-cat-propiedad h4::before { background: #2e7d32; }
+        .doc-cat-cbr h4::before { background: #e65100; }
+        .doc-cat-otros h4::before { background: #666; }
+        .doc-cat-cartolas h4::before { background: #7b1fa2; }
+        .doc-item { font-size: 12px; color: #555; padding: 4px 0 4px 16px; border-left: 2px solid #eee; margin-left: 3px; line-height: 1.5; }
+        .doc-item strong { color: #333; }
+        .doc-item a { color: #1565c0; text-decoration: none; border-bottom: 1px dashed #1565c0; transition: all 0.2s; }
+        .doc-item a:hover { color: #0d47a1; border-bottom-style: solid; }
+        .doc-item a strong { color: inherit; }
+
+        .socios-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 12px; margin-top: 8px; border-radius: 10px; overflow: hidden; }
+        .socios-table th { background: linear-gradient(135deg, #1a1a2e, #16213e); color: white; padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        .socios-table td { padding: 10px 12px; border-bottom: 1px solid #f0f2f5; }
+        .socios-table tr:hover td { background: linear-gradient(90deg, #f0f2ff, #fff); }
+        .socios-table .socio-avatar { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #1565c0, #7b1fa2); color: white; font-size: 11px; font-weight: 700; margin-right: 8px; flex-shrink: 0; vertical-align: middle; }
+        .socio-status { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #e8f5e9; color: #2e7d32; }
+        .socio-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #2e7d32; }
+
+        .reglamento-rule { padding: 14px 16px; background: linear-gradient(135deg, #fff8e1, #fff); border-radius: 10px; margin-bottom: 10px; font-size: 12px; display: flex; gap: 12px; align-items: flex-start; border: 1px solid #ffe082; transition: transform 0.15s; }
+        .reglamento-rule:hover { transform: translateX(4px); }
+        .reglamento-rule .rule-icon { font-size: 18px; flex-shrink: 0; }
+
+        .subdivision-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 12px; margin-top: 8px; border-radius: 8px; overflow: hidden; }
+        .subdivision-table th { background: linear-gradient(135deg, #2e7d32, #388e3c); color: white; padding: 8px 10px; text-align: left; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; }
+        .subdivision-table td { padding: 7px 10px; border-bottom: 1px solid #f0f0f0; }
+        .subdivision-table tr:hover td { background: #e8f5e9; }
+
+        /* Timeline */
+        .timeline-section { background: white; border-radius: 10px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 20px; }
+        .timeline-section h3 { font-size: 16px; color: #1a1a2e; margin-bottom: 20px; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; }
+        .timeline { position: relative; padding-left: 32px; }
+        .timeline::before { content: ''; position: absolute; left: 11px; top: 4px; bottom: 4px; width: 3px; background: linear-gradient(to bottom, #1a1a2e, #1565c0, #2e7d32, #e65100, #7b1fa2); border-radius: 2px; }
+        .tl-item { position: relative; margin-bottom: 20px; padding-bottom: 4px; cursor: pointer; }
+        .tl-item:last-child { margin-bottom: 0; }
+        .tl-item .tl-detail { display: none; }
+        .tl-item.open .tl-detail { display: block; }
+        .tl-item:hover .tl-title { text-decoration: underline; }
+        .tl-dot { position: absolute; left: -27px; top: 2px; width: 13px; height: 13px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 2px currentColor; }
+        .tl-date { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+        .tl-title { font-size: 13px; font-weight: 700; color: #1a1a2e; }
+        .tl-desc { font-size: 12px; color: #666; margin-top: 2px; line-height: 1.5; }
+        .tl-tag { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px; margin-top: 4px; }
+        .tl-docs { margin-top: 6px; padding: 6px 10px; background: #f8f9fa; border-radius: 6px; border-left: 3px solid #1565c0; }
+        .tl-docs a { display: inline-block; font-size: 11px; color: #1565c0; text-decoration: none; margin-right: 14px; line-height: 1.8; }
+        .tl-docs a:hover { text-decoration: underline; color: #0d47a1; }
+        .tl-docs a::before { content: '📄 '; }
+
+        .tl-constitucion .tl-dot { color: #1a1a2e; background: #1a1a2e; }
+        .tl-constitucion .tl-date { color: #1a1a2e; }
+        .tl-constitucion .tl-tag { background: #e8eaf6; color: #1a1a2e; }
+        .tl-capital .tl-dot { color: #1565c0; background: #1565c0; }
+        .tl-capital .tl-date { color: #1565c0; }
+        .tl-capital .tl-tag { background: #e3f2fd; color: #1565c0; }
+        .tl-terreno .tl-dot { color: #2e7d32; background: #2e7d32; }
+        .tl-terreno .tl-date { color: #2e7d32; }
+        .tl-terreno .tl-tag { background: #e8f5e9; color: #2e7d32; }
+        .tl-mobiliario .tl-dot { color: #e65100; background: #e65100; }
+        .tl-mobiliario .tl-date { color: #e65100; }
+        .tl-mobiliario .tl-tag { background: #fff3e0; color: #e65100; }
+        .tl-construccion .tl-dot { color: #7b1fa2; background: #7b1fa2; }
+        .tl-construccion .tl-date { color: #7b1fa2; }
+        .tl-construccion .tl-tag { background: #f3e5f5; color: #7b1fa2; }
+        .tl-cambio .tl-dot { color: #f57f17; background: #f57f17; }
+        .tl-cambio .tl-date { color: #f57f17; }
+        .tl-cambio .tl-tag { background: #fff8e1; color: #f57f17; }
+        .tl-proximo .tl-dot { color: #9e9e9e; background: white; border: 3px solid #9e9e9e !important; box-shadow: none !important; }
+        .tl-proximo .tl-date { color: #9e9e9e; }
+        .tl-proximo .tl-title { color: #9e9e9e; }
+        .tl-proximo .tl-desc { color: #bbb; }
+        .tl-proximo .tl-tag { background: #f5f5f5; color: #9e9e9e; }
+
+        /* Progress bars */
+        .progress-bar { width: 100%; height: 24px; background: #f0f0f0; border-radius: 12px; overflow: hidden; position: relative; }
+        .progress-fill { height: 100%; border-radius: 12px; transition: width 0.6s ease; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; min-width: 40px; }
+        .progress-fill.complete { background: linear-gradient(90deg, #43a047, #66bb6a); }
+        .progress-fill.partial { background: linear-gradient(90deg, #ff9800, #ffb74d); }
+        .progress-fill.low { background: linear-gradient(90deg, #e53935, #ef5350); }
+
+        /* Resumen cards */
+        .hito-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 24px; }
+        .hito-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-top: 4px solid; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+        .hito-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+        .hito-card.capital { border-top-color: #1565c0; }
+        .hito-card.construccion { border-top-color: #7b1fa2; }
+        .hito-card.mobiliario { border-top-color: #e65100; }
+        .hito-card.aportes2025 { border-top-color: #00838f; }
+        .hito-card h4 { font-size: 15px; margin-bottom: 4px; }
+        .hito-card .hito-amount { font-size: 24px; font-weight: 700; margin: 8px 0; }
+        .hito-card .hito-sub { font-size: 12px; color: #888; margin-bottom: 12px; }
+        .hito-card .hito-stats { display: flex; justify-content: space-between; font-size: 12px; margin-top: 8px; }
+        .hito-card .stat-label { color: #888; }
+        .hito-card .stat-value { font-weight: 700; }
+
+        /* Hito detail table */
+        .hito-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .hito-table th { padding: 10px 12px; text-align: left; font-weight: 600; font-size: 12px; }
+        .hito-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; }
+        .hito-table .col-right { text-align: right; }
+        .hito-table .col-center { text-align: center; }
+        .hito-table tr:hover td { background: #f8f9ff; }
+        .hito-table .total-row td { background: #f0f0f5; font-weight: 700; border-top: 2px solid #1a1a2e; }
+
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+        .badge-green { background: #e8f5e9; color: #2e7d32; }
+        .badge-red { background: #ffebee; color: #c62828; }
+        .badge-orange { background: #fff3e0; color: #e65100; }
+        .badge-gold { background: #fff8e1; color: #f57f17; }
+        .badge-teal { background: #e0f2f1; color: #00695c; }
+
+        .detail-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+        .detail-header h3 { font-size: 18px; margin: 0; border: 0; padding: 0; }
+        .detail-header .detail-badge { font-size: 13px; padding: 6px 14px; border-radius: 20px; font-weight: 600; }
+
+        .placeholder-box { background: #f8f9fa; border: 2px dashed #ddd; border-radius: 12px; padding: 48px; text-align: center; color: #888; }
+        .placeholder-box h3 { font-size: 18px; color: #666; margin-bottom: 8px; }
+
+        @media (max-width: 900px) {
+            .charts { grid-template-columns: 1fr; }
+            .kpis { grid-template-columns: repeat(2, 1fr); }
+            .hito-cards { grid-template-columns: 1fr; }
+            .legal-grid { grid-template-columns: 1fr; }
+        }
+        @media print {
+            body { background: white; }
+            .upload-area, .file-count, .tab-bar { display: none; }
+            .tab-content { display: block !important; }
+            .chart-card, .table-section, .kpi, .legal-section, .hito-card { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+        }
+
+        /* Casa */
+        .casa-section { background: white; border-radius: 10px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 20px; }
+        .casa-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+        .casa-filter-btn { padding: 6px 14px; border: 1px solid #ddd; border-radius: 20px; background: white; cursor: pointer; font-size: 11px; font-weight: 600; color: #666; transition: all 0.2s; }
+        .casa-filter-btn.active { background: #1a1a2e; color: white; border-color: #1a1a2e; }
+        .casa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+        .casa-card { background: #f8f9ff; border-radius: 8px; padding: 14px; border-left: 4px solid #1a1a2e; display: flex; justify-content: space-between; align-items: center; }
+        .casa-card.done { opacity: 0.6; border-left-color: #4caf50; }
+        .casa-card h4 { font-size: 13px; margin-bottom: 4px; }
+        .casa-card .casa-cat { font-size: 10px; color: #888; text-transform: uppercase; }
+        .casa-card .casa-prices { font-size: 12px; text-align: right; }
+        .casa-card .casa-presup { color: #666; }
+        .casa-card .casa-real { color: #1565c0; font-weight: 600; }
+        .casa-actions { display: flex; gap: 6px; margin-top: 6px; }
+        .casa-actions button { padding: 3px 8px; border: none; border-radius: 4px; cursor: pointer; font-size: 10px; }
+        .casa-btn-done { background: #e8f5e9; color: #2e7d32; }
+        .casa-btn-del { background: #ffebee; color: #c62828; }
+        .casa-add-form { background: #f0f2f5; border-radius: 8px; padding: 16px; margin-bottom: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; align-items: end; }
+        .casa-add-form input, .casa-add-form select { padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 12px; }
+        .casa-add-form button { padding: 8px 16px; background: #1a1a2e; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
+        .casa-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px; }
+
+        /* GGCC Grid cells */
+        .ggcc-paid { background: #e8f5e9; color: #2e7d32; font-weight: 600; }
+        .ggcc-partial { background: #fff8e1; color: #f57f17; }
+        .ggcc-none { color: #ccc; }
+        .ggcc-header-row th { background: #e65100; color: white; }
+        .mob-header-row th { background: #e65100; color: white; }
+
+
+        /* Modal */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: white; border-radius: 12px; padding: 24px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; }
+        .modal h3 { margin-bottom: 16px; }
+        .modal table { width: 100%; font-size: 12px; }
+        .modal th { background: #f0f0f0; color: #333; }
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <header>
+        <div>
+            <h1>Insular S.p.A.</h1>
+            <p>RUT 77.152.855-4 | Sociedad de 10 socios | Propiedad en Ancud, Chiloé</p>
+        </div>
+        <div class="header-right">
+            <div class="upload-area" id="uploadArea">
+                <span>Cargar Cartolas Bancarias (XML)</span>
+                <small>Drag & drop o click para seleccionar archivos</small>
+                <input type="file" id="fileInput" multiple accept=".xml">
+            </div>
+            <div class="file-count" id="fileCount">Sin cartolas</div>
+        </div>
+    </header>
+    <!-- Tab bar -->
+    <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('resumen', this)">Resumen</button>
+        <button class="tab-btn" onclick="switchTab('aportescapital', this)">Aportes de Capital</button>
+        <button class="tab-btn" onclick="switchTab('ggcc', this)">GGCC (Cartolas)</button>
+        <button class="tab-btn" onclick="switchTab('sociedad', this)">Sociedad</button>
+    </div>
+    <!-- TAB: RESUMEN -->
+    <div id="tab-resumen" class="tab-content active"></div>
+
+    <!-- TAB: Aportes de Capital (incluye Construcción) -->
+    <div id="tab-aportescapital" class="tab-content"></div>
+
+    <!-- TAB: GGCC (Cartolas) -->
+    <div id="tab-ggcc" class="tab-content">
+        <div id="ggccYearSelector" style="margin-bottom:16px;">
+            <label style="font-size:13px; font-weight:600; color:#444; margin-right:8px;">Año:</label>
+            <select id="ggccYearSelect" onchange="renderGGCC()" style="padding:8px 16px; border-radius:6px; border:1px solid #ddd; font-size:14px; font-weight:600; background:white; cursor:pointer;"></select>
+        </div>
+        <div id="ggccContent"></div>
+    </div>
+    <!-- TAB: Casa -->
+    <!-- ============================================================ -->
+    <!-- TAB: SOCIEDAD                                                 -->
+    <!-- ============================================================ -->
+    <div id="tab-sociedad" class="tab-content">
+        <!-- Sub-tab navigation -->
+        <div class="sub-tab-bar" style="display:flex; gap:4px; margin-bottom:20px; background:white; border-radius:10px; padding:4px; box-shadow:0 1px 3px rgba(0,0,0,0.08); flex-wrap:wrap;">
+            <button class="sub-tab-btn active" onclick="switchSubTab('sub-sociedad', this)" style="padding:8px 16px; border:none; background:#1a1a2e; color:white; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s;">Información</button>
+            <button class="sub-tab-btn" onclick="switchSubTab('sub-casa', this)" style="padding:8px 16px; border:none; background:transparent; color:#666; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s;">Casa</button>
+            <button class="sub-tab-btn" onclick="switchSubTab('sub-historia', this)" style="padding:8px 16px; border:none; background:transparent; color:#666; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s;">Historia</button>
+            <button class="sub-tab-btn" onclick="switchSubTab('sub-documentos', this)" style="padding:8px 16px; border:none; background:transparent; color:#666; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s;">Documentos</button>
+        </div>
+
+        <!-- Sub-tab: Información Sociedad -->
+        <div id="sub-sociedad" class="sub-tab-content" style="display:block;">
+
+        <!-- Hero card -->
+        <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); border-radius: 14px; padding: 28px 32px; margin-bottom: 24px; color: white; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <div>
+                <div style="font-size: 22px; font-weight: 700; letter-spacing: -0.5px;">Insular S.p.A.</div>
+                <div style="font-size: 13px; opacity: 0.7; margin-top: 4px;">RUT 77.152.855-4 — Constituida 23 de abril de 2020</div>
+            </div>
+            <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 12px 20px; text-align: center; min-width: 100px; backdrop-filter: blur(4px);">
+                    <div style="font-size: 24px; font-weight: 700;">10</div>
+                    <div style="font-size: 11px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px;">Socios</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 12px 20px; text-align: center; min-width: 100px; backdrop-filter: blur(4px);">
+                    <div style="font-size: 24px; font-weight: 700;">$100M</div>
+                    <div style="font-size: 11px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px;">Capital</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 12px 20px; text-align: center; min-width: 100px; backdrop-filter: blur(4px);">
+                    <div style="font-size: 24px; font-weight: 700;">9,71 ha</div>
+                    <div style="font-size: 11px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px;">Terreno</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="legal-section">
+            <h3>Datos de la Sociedad</h3>
+            <div class="legal-grid">
+                <div class="legal-card">
+                    <h4>Identificación</h4>
+                    <div class="info-row"><span class="info-label">Razón Social</span><span class="info-value">Insular S.p.A.</span></div>
+                    <div class="info-row"><span class="info-label">Nombre Fantasía</span><span class="info-value">Comunidad Insular S.p.A.</span></div>
+                    <div class="info-row"><span class="info-label">RUT</span><span class="info-value">77.152.855-4</span></div>
+                    <div class="info-row"><span class="info-label">Tipo</span><span class="info-value">Sociedad por Acciones</span></div>
+                    <div class="info-row"><span class="info-label">Constitución</span><span class="info-value">23 de abril de 2020</span></div>
+                    <div class="info-row"><span class="info-label">Repertorio</span><span class="info-value">4688-2020</span></div>
+                    <div class="info-row"><span class="info-label">Notaría</span><span class="info-value">27ª de Santiago (María Patricia Donoso Gomien)</span></div>
+                    <div class="info-row"><span class="info-label">Domicilio</span><span class="info-value">Santiago, Región Metropolitana</span></div>
+                    <div class="info-row"><span class="info-label">Duración</span><span class="info-value">Indefinida</span></div>
+                </div>
+                <div class="legal-card" style="border-left-color: #7b1fa2;">
+                    <h4 style="color: #7b1fa2;">Capital y Estructura</h4>
+                    <div class="info-row"><span class="info-label">Capital Total</span><span class="info-value">$100.000.000</span></div>
+                    <div class="info-row"><span class="info-label">Acciones</span><span class="info-value">10 socios × 10%</span></div>
+                    <div class="info-row"><span class="info-label">Capital enterado</span><span class="info-value">$10.000.000 c/u (100%)</span></div>
+                    <div class="info-row"><span class="info-label">Cuenta bancaria</span><span class="info-value">Scotiabank 000977009065</span></div>
+                    <div class="info-row"><span class="info-label">GGCC mensual</span><span class="info-value">$70.000 (desde oct-2022)</span></div>
+                    <div class="info-row"><span class="info-label">Cuota mob.</span><span class="info-value">$4M en 24 cuotas (~$166.333/mes)</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="legal-section">
+            <h3>Socios Actuales</h3>
+            <div class="table-wrapper">
+                <table class="socios-table">
+                    <thead>
+                        <tr><th>#</th><th>Nombre Completo</th><th>RUT</th><th>Profesión</th><th>Estado Actual</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td><span class="socio-avatar">IA</span>Inversiones Acuña Limitada<br><small style="color:#888; margin-left:36px; display:block;">Rep.: Antonio Paulo Díaz Araujo</small></td><td>76.069.305-7</td><td>Soc. de Inversiones</td><td><span class="socio-status">Vigente</span></td></tr>
+                        <tr><td>2</td><td><span class="socio-avatar">CS</span>Cristian Mauricio Segovia Peña</td><td>13.066.600-0</td><td>Diseñador</td><td><span class="socio-status">Vigente</span></td></tr>
+                        <tr><td>3</td><td><span class="socio-avatar">FS</span>Felipe Ignacio Simonsohn González<br><small style="color:#888; margin-left:36px; display:block;">Esposa: Nathalia Molteni</small></td><td>18.273.744-5</td><td>Abogado</td><td><span class="socio-status">Vigente</span></td></tr>
+                        <tr><td>4</td><td><span class="socio-avatar">LD</span>Laura Díaz Abramo<br><small style="color:#888; margin-left:36px; display:block;">Esposo: Thales Falek</small></td><td>16.656.248-1</td><td>—</td><td><span class="socio-status">Vigente</span> <small style="color:#888">(reemplazó a Álvaro, ene-2025)</small></td></tr>
+                        <tr><td>5</td><td><span class="socio-avatar">JS</span>Jordi Osvaldo Segura Farias<br><small style="color:#888; margin-left:36px; display:block;">Esposa: Alyne Esteban</small></td><td>13.272.830-5</td><td>Factor de Comercio</td><td><span class="socio-status">Vigente</span></td></tr>
+                        <tr><td>6</td><td><span class="socio-avatar">CP</span>Camilo Antonio Piga Díaz</td><td>16.095.526-0</td><td>Médico Traumatólogo</td><td><span class="socio-status">Vigente</span></td></tr>
+                        <tr><td>7</td><td><span class="socio-avatar">EM</span>Eduardo Enrique Moreno Araya<br><small style="color:#888; margin-left:36px; display:block;">Esposa: Anneli Gramusset (13.455.042-2)</small></td><td>13.270.339-6</td><td>Ing. Civil Matemático</td><td><span class="socio-status">Vigente</span></td></tr>
+                        <tr><td>8</td><td><span class="socio-avatar">SA</span>Sebastián Pablo Acuña Keller<br><small style="color:#888; margin-left:36px; display:block;">Esposa: Ximena Rojas</small></td><td>13.426.837-9</td><td>Empresario</td><td><span class="socio-status">Vigente</span></td></tr>
+                        <tr><td>9</td><td><span class="socio-avatar">CH</span>Cristobal Eduardo Huneeus Lagos<br><small style="color:#888; margin-left:36px; display:block;">Esposa: Constanza Valdés</small></td><td>7.746.703-3</td><td>Ing. Civil Industrial</td><td><span class="socio-status">Vigente</span></td></tr>
+                        <tr><td>10</td><td><span class="socio-avatar">FE</span>Fernando Javier Encinas Ciesla<br><small style="color:#888; margin-left:36px; display:block;">Esposa: Yahisa Francisca (20.083.182-9)</small></td><td>12.862.395-7</td><td>Ing. Comercial</td><td><span class="socio-status">Vigente</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="font-size:11px; color:#888; margin-top:8px;">Cónyuges que pueden depositar: Yahisa Francisca → Fernando | Anneli Gramusset → Eduardo | Alejandra Acuña → Antonio/Inv. Acuña | Ximena Rojas → Sebastián | Constanza Valdés → Cristóbal | Thales Falek → Laura | Nathalia Molteni → Felipe | Alyne Esteban → Jordi.</p>
+        </div>
+
+        <div class="legal-section">
+            <h3>Control de Cartolas — Inventario para el Ejecutivo</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
+                <p style="font-size:12px; color:#666; margin:0;">Cuenta Scotiabank 977009065 — 70 cartolas posibles (jun-2020 a mar-2026)</p>
+                <div style="display:flex; gap:12px; font-size:11px; color:#888;">
+                    <span style="display:flex; align-items:center; gap:4px;"><span style="width:12px; height:12px; border-radius:3px; background:#43a047; display:inline-block;"></span> Disponible</span>
+                    <span style="display:flex; align-items:center; gap:4px;"><span style="width:12px; height:12px; border-radius:3px; background:#e53935; display:inline-block;"></span> Falta pedir</span>
+                    <span style="display:flex; align-items:center; gap:4px;"><span style="width:12px; height:12px; border-radius:3px; background:#e0e0e0; display:inline-block;"></span> No aplica</span>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table style="width:100%; border-collapse:separate; border-spacing:3px; font-size:11px; table-layout:fixed;">
+                    <thead>
+                        <tr>
+                            <th style="background:#1a1a2e; color:white; padding:8px 6px; border-radius:6px; text-align:center; font-size:10px; font-weight:600; width:50px;">AÑO</th>
+                            <th style="background:#1a1a2e; color:white; padding:8px 2px; border-radius:6px; text-align:center; font-size:10px; font-weight:600;">E</th>
+                            <th style="background:#1a1a2e; color:white; padding:8px 2px; border-radius:6px; text-align:center; font-size:10px; font-weight:600;">F</th>
+                            <th style="background:#1a1a2e; color:white; padding:8px 2px; border-radius:6px; text-align:center; font-size:10px; font-weight:600;">M</th>
+                            <th style="background:#1a1a2e; color:white; padding:8px 2px; border-radius:6px; text-align:center; font-size:10px; font-weight:600;">A</th>
+                            <th style="background:#1a1a2e; color:white; padding:8px 2px; border-radius:6px; text-align:center; font-size:10px; font-weight:600;">M</th>
+                            <th style="background:#1a1a2e; color:white; padding:8px 2px; border-radius:6px; text-align:center; font-size:10px; font-weight:600;">J</th>
+                            <th style="background:#1a1a2e; color:white; padding:8px 2px; border-radius:6px; text-align:center; font-size:10px; font-weight:600;">J</th>
+                            <th style="background:#1a1a2e; color:white; padding:8px 2px; border-radius:6px; text-align:center; font-size:10px; font-weight:600;">A</th>
+                            <th style="background:#1a1a2e; color:white; padding:8px 2px; border-radius:6px; text-align:center; font-size:10px; font-weight:600;">S</th>
+                            <th style="background:#1a1a2e; color:white; padding:8px 2px; border-radius:6px; text-align:center; font-size:10px; font-weight:600;">O</th>
+                            <th style="background:#1a1a2e; color:white; padding:8px 2px; border-radius:6px; text-align:center; font-size:10px; font-weight:600;">N</th>
+                            <th style="background:#1a1a2e; color:white; padding:8px 2px; border-radius:6px; text-align:center; font-size:10px; font-weight:600;">D</th>
+                            <th style="background:#1a1a2e; color:white; padding:8px 6px; border-radius:6px; text-align:center; font-size:10px; font-weight:600; width:40px;">%</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="font-weight:700; color:#1a1a2e; text-align:center; padding:6px;">2020</td>
+                            <td style="background:#f5f5f5; border-radius:4px; text-align:center; color:#bbb;">—</td>
+                            <td style="background:#f5f5f5; border-radius:4px; text-align:center; color:#bbb;">—</td>
+                            <td style="background:#f5f5f5; border-radius:4px; text-align:center; color:#bbb;">—</td>
+                            <td style="background:#f5f5f5; border-radius:4px; text-align:center; color:#bbb;">—</td>
+                            <td style="background:#f5f5f5; border-radius:4px; text-align:center; color:#bbb;">—</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="text-align:center; font-weight:700; color:#43a047; font-size:11px;">7/7</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:700; color:#1a1a2e; text-align:center; padding:6px;">2021</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="text-align:center; font-weight:700; color:#43a047; font-size:11px;">12/12</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:700; color:#1a1a2e; text-align:center; padding:6px;">2022</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#ffebee; border-radius:4px; text-align:center; color:#e53935; font-weight:700;">✗</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="text-align:center; font-weight:700; color:#ff9800; font-size:11px;">11/12</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:700; color:#1a1a2e; text-align:center; padding:6px;">2023</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="text-align:center; font-weight:700; color:#43a047; font-size:11px;">12/12</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:700; color:#1a1a2e; text-align:center; padding:6px;">2024</td>
+                            <td style="background:#ffebee; border-radius:4px; text-align:center; color:#e53935; font-weight:700;">✗</td>
+                            <td style="background:#ffebee; border-radius:4px; text-align:center; color:#e53935; font-weight:700;">✗</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#ffebee; border-radius:4px; text-align:center; color:#e53935; font-weight:700;">✗</td>
+                            <td style="background:#ffebee; border-radius:4px; text-align:center; color:#e53935; font-weight:700;">✗</td>
+                            <td style="background:#ffebee; border-radius:4px; text-align:center; color:#e53935; font-weight:700;">✗</td>
+                            <td style="background:#ffebee; border-radius:4px; text-align:center; color:#e53935; font-weight:700;">✗</td>
+                            <td style="background:#ffebee; border-radius:4px; text-align:center; color:#e53935; font-weight:700;">✗</td>
+                            <td style="background:#ffebee; border-radius:4px; text-align:center; color:#e53935; font-weight:700;">✗</td>
+                            <td style="background:#ffebee; border-radius:4px; text-align:center; color:#e53935; font-weight:700;">✗</td>
+                            <td style="background:#ffebee; border-radius:4px; text-align:center; color:#e53935; font-weight:700;">✗</td>
+                            <td style="background:#ffebee; border-radius:4px; text-align:center; color:#e53935; font-weight:700;">✗</td>
+                            <td style="text-align:center; font-weight:700; color:#e53935; font-size:11px;">1/12</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:700; color:#1a1a2e; text-align:center; padding:6px;">2025</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="text-align:center; font-weight:700; color:#43a047; font-size:11px;">12/12</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:700; color:#1a1a2e; text-align:center; padding:6px;">2026</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;">✓</td>
+                            <td style="background:#f5f5f5; border-radius:4px; text-align:center; color:#bbb;">—</td>
+                            <td style="background:#f5f5f5; border-radius:4px; text-align:center; color:#bbb;">—</td>
+                            <td style="background:#f5f5f5; border-radius:4px; text-align:center; color:#bbb;">—</td>
+                            <td style="background:#f5f5f5; border-radius:4px; text-align:center; color:#bbb;">—</td>
+                            <td style="background:#f5f5f5; border-radius:4px; text-align:center; color:#bbb;">—</td>
+                            <td style="background:#f5f5f5; border-radius:4px; text-align:center; color:#bbb;">—</td>
+                            <td style="background:#f5f5f5; border-radius:4px; text-align:center; color:#bbb;">—</td>
+                            <td style="background:#f5f5f5; border-radius:4px; text-align:center; color:#bbb;">—</td>
+                            <td style="background:#f5f5f5; border-radius:4px; text-align:center; color:#bbb;">—</td>
+                            <td style="text-align:center; font-weight:700; color:#43a047; font-size:11px;">3/3</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="display:flex; gap:16px; margin-top:16px; flex-wrap:wrap;">
+                <div style="flex:1; min-width:200px; background:linear-gradient(135deg,#e8f5e9,#fff); padding:16px 20px; border-radius:12px; border:1px solid #c8e6c9; text-align:center;">
+                    <div style="font-size:28px; font-weight:700; color:#2e7d32;">58</div>
+                    <div style="font-size:11px; color:#666; text-transform:uppercase; letter-spacing:0.5px;">Cartolas disponibles</div>
+                </div>
+                <div style="flex:1; min-width:200px; background:linear-gradient(135deg,#ffebee,#fff); padding:16px 20px; border-radius:12px; border:1px solid #ffcdd2; text-align:center;">
+                    <div style="font-size:28px; font-weight:700; color:#c62828;">12</div>
+                    <div style="font-size:11px; color:#666; text-transform:uppercase; letter-spacing:0.5px;">Cartolas faltantes</div>
+                </div>
+                <div style="flex:2; min-width:280px; background:linear-gradient(135deg,#fff3e0,#fff); padding:16px 20px; border-radius:12px; border:1px solid #ffe0b2;">
+                    <div style="font-size:12px; font-weight:600; color:#e65100; margin-bottom:6px;">Pedir a Víctor Zamora (Victor.Zamora@scotiabank.cl)</div>
+                    <div style="font-size:11px; color:#666;">Jul 2022 (#26) + Ene-Feb, Abr-Dic 2024 (#44, #45, #47-#55)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="legal-section">
+            <h3>Reglas del Reglamento Interno</h3>
+            <div class="reglamento-rule"><span class="rule-icon">📅</span><div><strong>Plazo de pago:</strong> Los gastos comunes deben pagarse dentro de los primeros 10 días de cada mes.</div></div>
+            <div class="reglamento-rule"><span class="rule-icon">🚫</span><div><strong>Restricción de acceso:</strong> Si un socio acumula más de 18 meses de deuda, pierde el derecho de acceso a las instalaciones.</div></div>
+            <div class="reglamento-rule"><span class="rule-icon">🗳️</span><div><strong>Suspensión de voto:</strong> Los socios con cuotas impagas tienen suspendido su derecho a voto en las juntas de accionistas.</div></div>
+        </div>
+
+        <div class="legal-section">
+            <h3>Propiedad — Terrenos en Ancud, Chiloé</h3>
+            <div class="legal-grid">
+                <div class="legal-card" style="border-left-color: #2e7d32;">
+                    <h4 style="color: #2e7d32;">Ubicación</h4>
+                    <div class="info-row"><span class="info-label">Sector</span><span class="info-value">Rural de Nal / Chaicura</span></div>
+                    <div class="info-row"><span class="info-label">Comuna</span><span class="info-value">Ancud</span></div>
+                    <div class="info-row"><span class="info-label">Provincia</span><span class="info-value">Chiloé</span></div>
+                    <div class="info-row"><span class="info-label">Región</span><span class="info-value">Los Lagos</span></div>
+                    <div class="info-row"><span class="info-label">Compraventa</span><span class="info-value">01/02/2021 (Rep. 255-2021, Notaría de Ancud)</span></div>
+                </div>
+                <div class="legal-card" style="border-left-color: #2e7d32;">
+                    <h4 style="color: #2e7d32;">Subdivisión de Lotes</h4>
+                    <table class="subdivision-table">
+                        <thead><tr><th>Lote</th><th>Superficie (Hás)</th><th>Servidumbre (Hás)</th></tr></thead>
+                        <tbody>
+                            <tr><td>A-2</td><td>1,85</td><td>—</td></tr>
+                            <tr><td>A-3</td><td>0,83</td><td>—</td></tr>
+                            <tr><td>A-4</td><td>0,50</td><td>0,0512</td></tr>
+                            <tr><td>A-5</td><td>0,50</td><td>0,0318</td></tr>
+                            <tr><td>A-6</td><td>0,50</td><td>—</td></tr>
+                            <tr><td>A-7</td><td>0,96</td><td>—</td></tr>
+                            <tr><td>A-8</td><td>4,57</td><td>—</td></tr>
+                            <tr style="font-weight:700; border-top:2px solid #2e7d32;"><td>Total</td><td>9,71</td><td>0,083</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div style="margin-top:12px;">
+                <div class="legal-card" style="border-left-color: #2e7d32;">
+                    <h4 style="color: #2e7d32;">Inscripciones de Dominio (CBR Ancud)</h4>
+                    <div class="info-row"><span class="info-label">Lote A-4</span><span class="info-value">Fs. 1215 Nº 963 (2021) — Dominio vigente a nombre de INSULAR SPA</span></div>
+                    <div class="info-row"><span class="info-label">Lote A-5</span><span class="info-value">Fs. 1217 Nº 964 (2021) — Dominio vigente a nombre de INSULAR SPA</span></div>
+                    <div class="info-row"><span class="info-label">Hipotecas Lote A-4</span><span class="info-value">Sin inscripciones vigentes (Folio 9153, Carátula 64516)</span></div>
+                    <div class="info-row"><span class="info-label">Inscripción 2023</span><span class="info-value">Fs. 5941V Nº 4057 (Registro de Propiedad 2023, Carátula 64515)</span></div>
+                </div>
+            </div>
+        </div>
+        </div><!-- end sub-sociedad -->
+
+        <!-- Sub-tab: Casa -->
+        <div id="sub-casa" class="sub-tab-content" style="display:none;"></div>
+
+        <!-- Sub-tab: Historia -->
+        <div id="sub-historia" class="sub-tab-content" style="display:none;">
+        <div class="timeline-section">
+            <h3>Línea de Tiempo — Hitos de Insular S.p.A.</h3>
+            <div class="timeline">
+
+                <div class="tl-item tl-constitucion" onclick="this.classList.toggle('open')">
+                    <div class="tl-dot"></div>
+                    <div class="tl-date">23 de abril de 2020</div>
+                    <div class="tl-title">Constitución de Insular S.p.A.</div>
+                    <div class="tl-detail">
+                    <div class="tl-desc">Escritura pública ante Notaría 27ª de Santiago (María Patricia Donoso Gomien). Repertorio 4688-2020. 10 socios fundadores con capital de $100.000.000 (10% cada uno, $4M enterados + $6M pendientes).</div>
+                    <div class="tl-docs">
+                        <a href="docs_insular/Constitucion_Insular_SPA.pdf" target="_blank">Escritura de Constitución</a>
+                        <a href="docs_insular/Pacto_Insular_SPA.pdf" target="_blank">Pacto de Accionistas</a>
+                        <a href="docs_insular/Reglamento_Insular_SPA.pdf" target="_blank">Reglamento Interno</a>
+                        <a href="docs_insular/RUT_Insular_SPA.pdf" target="_blank">RUT Insular SPA</a>
+                        <a href="docs_insular/Asignacion_Roles_SII.pdf" target="_blank">Asignación Roles SII</a>
+                    </div>
+                    </div>
+                    <span class="tl-tag">Constitución</span>
+                </div>
+
+                <div class="tl-item tl-capital" onclick="this.classList.toggle('open')">
+                    <div class="tl-dot"></div>
+                    <div class="tl-date">Abril – Diciembre 2020</div>
+                    <div class="tl-title">Aportes de Capital Inicial</div>
+                    <div class="tl-detail">
+                    <div class="tl-desc">Los socios realizan sus aportes de capital ($4.000.000 enterados por socio). Apertura de cuenta Scotiabank 000977009065.</div>
+                    </div>
+                    <span class="tl-tag">Capital</span>
+                </div>
+
+                <div class="tl-item tl-terreno" onclick="this.classList.toggle('open')">
+                    <div class="tl-dot"></div>
+                    <div class="tl-date">1 de febrero de 2021</div>
+                    <div class="tl-title">Compra de Terreno en Ancud, Chiloé</div>
+                    <div class="tl-detail">
+                    <div class="tl-desc">Compraventa de Lotes A-4 y A-5 a la Sucesión Torres Maldonado, Nibaldo Efraín y otros. Repertorio 255-2021, Notaría de Ancud (Martita Worner Tapia). Sector rural de Nal/Chaicura, ~1 hectárea por lote.</div>
+                    <div class="tl-docs">
+                        <a href="docs_insular/Escritura_CV_Lotes_A4_A5.pdf" target="_blank">Escritura de Compraventa</a>
+                        <a href="docs_insular/GP_Lote_A4.pdf" target="_blank">Guía Propiedad A-4</a>
+                        <a href="docs_insular/GP_Lote_A5.pdf" target="_blank">Guía Propiedad A-5</a>
+                        <a href="docs_insular/Subdivision.pdf" target="_blank">Proyecto de Subdivisión</a>
+                        <a href="docs_insular/KMZ_Chaicura.kmz" target="_blank">Ubicación KMZ</a>
+                    </div>
+                    </div>
+                    <span class="tl-tag">Terreno</span>
+                </div>
+
+                <div class="tl-item tl-terreno" onclick="this.classList.toggle('open')">
+                    <div class="tl-dot"></div>
+                    <div class="tl-date">24 de marzo de 2021</div>
+                    <div class="tl-title">Inscripción de Dominio — Lotes A-4 y A-5</div>
+                    <div class="tl-detail">
+                    <div class="tl-desc">Inscripción en CBR Ancud: Lote A-4 (Fs. 1215 Nº 963) y Lote A-5 (Fs. 1217 Nº 964), ambos a nombre de INSULAR SPA. Propiedad libre de hipotecas y gravámenes.</div>
+                    <div class="tl-docs">
+                        <a href="docs_insular/Inscripcion_Lote_A4.pdf" target="_blank">Inscripción Lote A-4</a>
+                        <a href="docs_insular/Inscripcion_Lote_A5.pdf" target="_blank">Inscripción Lote A-5</a>
+                        <a href="docs_insular/CBR_Dominio_Vigente_132840.pdf" target="_blank">Dominio Vigente A-4</a>
+                        <a href="docs_insular/CBR_Dominio_Vigente_132843.pdf" target="_blank">Dominio Vigente A-5</a>
+                        <a href="docs_insular/CBR_Hipotecas_132839.pdf" target="_blank">Hipotecas A-4</a>
+                        <a href="docs_insular/CBR_Hipotecas_132844.pdf" target="_blank">Hipotecas A-5</a>
+                    </div>
+                    </div>
+                    <span class="tl-tag">Terreno</span>
+                </div>
+
+                <div class="tl-item tl-construccion" onclick="this.classList.toggle('open')">
+                    <div class="tl-dot"></div>
+                    <div class="tl-date">oct-2022</div>
+                    <div class="tl-title">BHE Nº58 — Arquitectura Etapas 1-2 ($7.907.596)</div>
+                    <div class="tl-detail">
+                    <div class="tl-desc">Boleta de honorarios de Maximiliano Aguayo por Etapa 1 (Conceptualización) y Etapa 2 (Anteproyecto) del Club House Chaicura. 362,7 m² originales.</div>
+                    </div>
+                    <span class="tl-tag">Construcción</span>
+                </div>
+
+                <div class="tl-item tl-capital" onclick="this.classList.toggle('open')">
+                    <div class="tl-dot"></div>
+                    <div class="tl-date">20 de octubre de 2022</div>
+                    <div class="tl-title">Junta de Socios — Sede Unholster</div>
+                    <div class="tl-detail">
+                    <div class="tl-desc">Junta presencial jueves 20-oct-2022 a las 19:30 hrs en la sede de Unholster. <strong>Acuerdo: se establecen gastos comunes (GGCC) de $70.000 mensuales por socio.</strong></div>
+                    </div>
+                    <span class="tl-tag">Acuerdo de Socios</span>
+                </div>
+
+                <div class="tl-item tl-capital" onclick="this.classList.toggle('open')">
+                    <div class="tl-dot"></div>
+                    <div class="tl-date">2023</div>
+                    <div class="tl-title">Nueva Inscripción de Propiedad</div>
+                    <div class="tl-detail">
+                    <div class="tl-desc">Inscripción Fs. 5941V Nº 4057 del Registro de Propiedad 2023 (Carátula 64515). Actualización de dominio en CBR Ancud.</div>
+                    <div class="tl-docs">
+                        <a href="docs_insular/CBR_Copia_Simple_132848.pdf" target="_blank">Copia Simple #132848</a>
+                        <a href="docs_insular/CBR_Copia_Vigente_132841.pdf" target="_blank">Copia Vigente #132841</a>
+                        <a href="docs_insular/CBR_Copia_Vigente_132845.pdf" target="_blank">Copia Vigente #132845</a>
+                    </div>
+                    </div>
+                    <span class="tl-tag">Capital</span>
+                </div>
+
+                <div class="tl-item tl-construccion" onclick="this.classList.toggle('open')">
+                    <div class="tl-dot"></div>
+                    <div class="tl-date">ene-2024 / abr-2024</div>
+                    <div class="tl-title">Proyectos Sanitarios TROMÜ — Agua Potable y Alcantarillado</div>
+                    <div class="tl-detail">
+                    <div class="tl-desc">Arturo Barrios (15.933.714-6, Ancud) entrega proyectos sanitarios: agua potable, alcantarillado, gas y eléctrico. Consolidado ene-2024, planos definitivos abr-2024. BHE Nº222 emitida 17-may-2024 ($258.456).</div>
+                    </div>
+                    <span class="tl-tag">Construcción</span>
+                </div>
+
+                <div class="tl-item tl-capital" onclick="this.classList.toggle('open')">
+                    <div class="tl-dot"></div>
+                    <div class="tl-date">21 de abril de 2024</div>
+                    <div class="tl-title">Junta de Socios — Onofre Jarpa</div>
+                    <div class="tl-detail">
+                    <div class="tl-desc">Junta presencial en Onofre Jarpa para tratar el tema de la construcción del Club House. Se revisan avances del proyecto de arquitectura.</div>
+                    </div>
+                    <span class="tl-tag">Acuerdo de Socios</span>
+                </div>
+
+                <div class="tl-item tl-capital" onclick="this.classList.toggle('open')">
+                    <div class="tl-dot"></div>
+                    <div class="tl-date">Septiembre 2024</div>
+                    <div class="tl-title">Acuerdo de Socios — Compromisos financieros consolidados</div>
+                    <div class="tl-detail">
+                    <div class="tl-desc"><strong>Se acuerdan 4 compromisos:</strong> (1) $10M capital inicial, (2) $8M para construcción casa, (3) GGCC $70.000/mes desde oct-2022, (4) $4M mobiliario. Se insta a ponerse al día.</div>
+                    </div>
+                    <span class="tl-tag">Acuerdo de Socios</span>
+                </div>
+
+                <div class="tl-item tl-construccion" onclick="this.classList.toggle('open')">
+                    <div class="tl-dot"></div>
+                    <div class="tl-date">09-oct-2024</div>
+                    <div class="tl-title">Contrato Arquitectura AQAA — Etapa 3 ($6.250.000)</div>
+                    <div class="tl-detail">
+                    <div class="tl-desc">Firma contrato de prestación de servicios entre Insular SPA y AQAA SPA (77.712.084-0). Proyecto de arquitectura Etapa 3 (Licitación) y cierre. Club House ~440 m². Factura Exenta Nº10.</div>
+                    </div>
+                    <span class="tl-tag">Construcción</span>
+                </div>
+
+                <div class="tl-item tl-capital" onclick="this.classList.toggle('open')">
+                    <div class="tl-dot"></div>
+                    <div class="tl-date">12 de noviembre de 2024</div>
+                    <div class="tl-title">Reporte de Estado — Tabla de pagos por socio</div>
+                    <div class="tl-detail">
+                    <div class="tl-desc">Anneli comparte reporte completo: Capital realizado $92.5M de $100M. GGCC adeudados: $4.83M. Compromisos futuros: $68M construcción + $36M mobiliario.</div>
+                    </div>
+                    <span class="tl-tag">Reporte</span>
+                </div>
+
+                <div class="tl-item tl-cambio" onclick="this.classList.toggle('open')">
+                    <div class="tl-dot"></div>
+                    <div class="tl-date">6 de enero de 2025</div>
+                    <div class="tl-title">Compraventa de Acciones — Álvaro García → Laura Díaz</div>
+                    <div class="tl-detail">
+                    <div class="tl-desc">Álvaro Manuel Eduardo García Monge (13.028.872-3) vende su acción a Laura Díaz Abramo (16.656.248-1) por $10.000.000 en 8 cuotas semestrales ($4M al contado + 6×$1M + 2×$500K). Firmado electrónicamente. CVE: 28382F18.</div>
+                    <div class="tl-docs">
+                        <a href="cartolas/CompraventaAcciones_Alvaro_Laura_2021.pdf" target="_blank">Compraventa de Acciones (firmado)</a>
+                    </div>
+                    </div>
+                    <span class="tl-tag">Cambio</span>
+                </div>
+
+                <div class="tl-item tl-cambio" onclick="this.classList.toggle('open')">
+                    <div class="tl-dot"></div>
+                    <div class="tl-date">Enero 2025</div>
+                    <div class="tl-title">Cuota Extraordinaria Mobiliario</div>
+                    <div class="tl-detail">
+                    <div class="tl-desc">Se aprueba cuota extraordinaria para mobiliario por $4.000.000 por socio, pagadera en 24 cuotas de ~$166.333/mes sumadas a los GGCC ($70k). Total cuota mensual: $236.333.</div>
+                    </div>
+                    <span class="tl-tag">Mobiliario</span>
+                </div>
+
+
+                <div class="tl-item tl-mobiliario" onclick="this.classList.toggle('open')">
+                    <div class="tl-dot"></div>
+                    <div class="tl-date">2025 – 2026</div>
+                    <div class="tl-title">Aporte de Mobiliario (en curso)</div>
+                    <div class="tl-detail">
+                    <div class="tl-desc">Cuota extraordinaria de $4.000.000 por socio para amueblar la casa. 24 cuotas mensuales de ~$166.333 sumadas a los GGCC.</div>
+                    </div>
+                    <span class="tl-tag">Mobiliario</span>
+                </div>
+
+                <div class="tl-item tl-proximo" onclick="this.classList.toggle('open')">
+                    <div class="tl-dot"></div>
+                    <div class="tl-date">Por definir</div>
+                    <div class="tl-title">Etapa 4 — Construcción física del Club House</div>
+                    <div class="tl-detail">
+                    <div class="tl-desc">Licitación a constructoras, obtención permiso municipal, inicio de obra. Costo estimado ~4.290 UF (33 UF/m²). Supervisión remota por Arq. Aguayo (2 UF/visita).</div>
+                    </div>
+                    <span class="tl-tag">Próximo</span>
+                </div>
+
+            </div>
+        </div>
+        </div><!-- end sub-historia -->
+
+        <!-- Sub-tab: Documentos -->
+        <div id="sub-documentos" class="sub-tab-content" style="display:none;">
+        <div class="legal-section">
+            <h3>Catálogo de Documentos Legales</h3>
+            <p style="font-size:12px; color:#888; margin-bottom:16px;">Documentos organizados por categoría. Haz clic en el nombre para abrir.</p>
+
+            <div class="doc-category doc-cat-sociedad">
+                <h4>Constitución y Sociedad</h4>
+                <div class="doc-item"><a href="docs_insular/Constitucion_Insular_SPA.pdf" target="_blank"><strong>Constitución Insular SPA</strong></a> — Escritura pública de constitución. Repertorio 4688-2020, 23/04/2020.</div>
+                <div class="doc-item"><a href="docs_insular/Pacto_Insular_SPA.pdf" target="_blank"><strong>Pacto de Accionistas Insular SPA</strong></a> — Reglas de gobernanza, derechos preferentes y restricciones de transferencia.</div>
+                <div class="doc-item"><a href="docs_insular/Reglamento_Insular_SPA.pdf" target="_blank"><strong>Reglamento Insular SPA</strong></a> — Reglamento interno. Plazos de pago GGCC, sanciones por morosidad.</div>
+                <div class="doc-item"><a href="docs_insular/RUT_Insular_SPA.pdf" target="_blank"><strong>RUT Insular SPA</strong></a> — Certificado SII. RUT 77.152.855-4.</div>
+                <div class="doc-item"><a href="cartolas/CompraventaAcciones_Alvaro_Laura_2021.pdf" target="_blank"><strong>Compraventa de Acciones — Álvaro → Laura</strong></a> — 06/01/2025. $10M en 8 cuotas semestrales. CVE: 28382F18.</div>
+            </div>
+
+            <div class="doc-category doc-cat-propiedad">
+                <h4>Propiedad - Compraventa y Subdivisión</h4>
+                <div class="doc-item"><a href="docs_insular/Escritura_CV_Lotes_A4_A5.pdf" target="_blank"><strong>Escritura Compraventa Lotes A-4 y A-5</strong></a> — Rep. 255-2021, 01/02/2021.</div>
+                <div class="doc-item"><a href="docs_insular/Escritura_CV_Lotes_A4_A5_copia.pdf" target="_blank"><strong>Escritura CV (copia)</strong></a></div>
+                <div class="doc-item"><a href="docs_insular/GP_Lote_A4.pdf" target="_blank"><strong>Guía de Propiedad Lote A-4</strong></a></div>
+                <div class="doc-item"><a href="docs_insular/Inscripcion_Lote_A4.pdf" target="_blank"><strong>Inscripción Lote A-4</strong></a></div>
+                <div class="doc-item"><a href="docs_insular/GP_Lote_A5.pdf" target="_blank"><strong>Guía de Propiedad Lote A-5</strong></a></div>
+                <div class="doc-item"><a href="docs_insular/Inscripcion_Lote_A5.pdf" target="_blank"><strong>Inscripción Lote A-5</strong></a></div>
+                <div class="doc-item"><a href="docs_insular/Subdivision.pdf" target="_blank"><strong>Proyecto de Subdivisión</strong></a> — Lotes A-2 a A-8, escala 1:1.000.</div>
+                <div class="doc-item"><a href="docs_insular/Asignacion_Roles_SII.pdf" target="_blank"><strong>Asignación de Roles SII</strong></a></div>
+            </div>
+
+            <div class="doc-category doc-cat-cbr">
+                <h4>Certificados CBR Ancud (15/12/2025)</h4>
+                <div class="doc-item"><a href="docs_insular/CBR_Dominio_Vigente_132840.pdf" target="_blank"><strong>Dominio Vigente #132840</strong></a> — Lote A-4.</div>
+                <div class="doc-item"><a href="docs_insular/CBR_Dominio_Vigente_132843.pdf" target="_blank"><strong>Dominio Vigente #132843</strong></a> — Lote A-5.</div>
+                <div class="doc-item"><a href="docs_insular/CBR_Hipotecas_132839.pdf" target="_blank"><strong>Hipotecas y Gravámenes #132839</strong></a> — Lote A-4. Sin hipotecas vigentes.</div>
+                <div class="doc-item"><a href="docs_insular/CBR_Hipotecas_132844.pdf" target="_blank"><strong>Hipotecas y Gravámenes #132844</strong></a></div>
+                <div class="doc-item"><a href="docs_insular/CBR_Copia_Simple_132848.pdf" target="_blank"><strong>Copia Simple #132848</strong></a></div>
+                <div class="doc-item"><a href="docs_insular/CBR_Copia_Vigente_132841.pdf" target="_blank"><strong>Copia Vigente #132841</strong></a></div>
+                <div class="doc-item"><a href="docs_insular/CBR_Copia_Vigente_132845.pdf" target="_blank"><strong>Copia Vigente #132845</strong></a></div>
+            </div>
+
+            <div class="doc-category doc-cat-otros">
+                <h4>Otros</h4>
+                <div class="doc-item"><a href="docs_insular/KMZ_Chaicura.kmz" target="_blank"><strong>KMZ Chaicura</strong></a> — Archivo Google Earth con ubicación del terreno.</div>
+            </div>
+
+            <div class="doc-category" style="border-left: 4px solid #e65100;">
+                <h4 style="color:#e65100;">Construcción — Club House Chaicura</h4>
+                <p style="font-size:11px; color:#888; margin-bottom:8px;">Arq. Maximiliano Aguayo M. (16.470.567-6), AQAA Ltda (77.712.084-0).</p>
+                <h5 style="margin:12px 0 6px; color:#555; font-size:13px;">Contratos y Honorarios</h5>
+                <div class="doc-item"><a href="docs_insular/construccion/Contrato_Arquitectura_AQAA_Oct2024.pdf" target="_blank"><strong>Contrato AQAA (09-oct-2024)</strong></a> — Etapa 3 y cierre. $6.250.000.</div>
+                <div class="doc-item"><a href="docs_insular/construccion/Carta_Honorarios_Arquitectura_Aguayo.pdf" target="_blank"><strong>Carta de Honorarios</strong></a> — 1,4 UF/m², 5 etapas, 440,2 m².</div>
+                <div class="doc-item"><a href="docs_insular/construccion/Honorarios_Arquitectura_ClubHouse.pdf" target="_blank"><strong>Desglose Honorarios Arquitectura</strong></a> — Superficies y costo estimado 4.290 UF.</div>
+                <div class="doc-item"><a href="docs_insular/construccion/Honorarios_Especialistas_ClubHouse.pdf" target="_blank"><strong>Desglose Honorarios Especialistas</strong></a> — Calculista, mecánica suelo, sanitario.</div>
+                <div class="doc-item"><a href="docs_insular/construccion/Estatutos_AQAA_Ltda.pdf" target="_blank"><strong>Estatutos AQAA Ltda</strong></a></div>
+                <h5 style="margin:12px 0 6px; color:#555; font-size:13px;">Facturas y Boletas</h5>
+                <div class="doc-item"><a href="docs_insular/construccion/Factura_AQAA_N10_Etapa3_Oct2024.pdf" target="_blank"><strong>Factura Nº10 — AQAA (14-oct-2024)</strong></a> — $6.250.000 exento.</div>
+                <div class="doc-item"><a href="docs_insular/construccion/BHE_222_Arturo_Barrios_Sanitario_May2024.pdf" target="_blank"><strong>BHE Nº222 — Arturo Barrios (17-may-2024)</strong></a> — $258.456.</div>
+                <h5 style="margin:12px 0 6px; color:#555; font-size:13px;">Proyectos Sanitarios — TROMÜ</h5>
+                <div class="doc-item"><a href="docs_insular/construccion/Proyecto_Sanitario_AguaPotable_Abr2024.pdf" target="_blank"><strong>Proyecto Agua Potable (abr-2024)</strong></a></div>
+                <div class="doc-item"><a href="docs_insular/construccion/Proyecto_Sanitario_Alcantarillado_Abr2024.pdf" target="_blank"><strong>Proyecto Alcantarillado (abr-2024)</strong></a></div>
+                <div class="doc-item"><a href="docs_insular/construccion/Proyecto_Sanitario_Consolidado_Ene2024.pdf" target="_blank"><strong>Consolidado Sanitario (ene-2024)</strong></a></div>
+                <div class="doc-item"><a href="docs_insular/construccion/EETT_Memoria_Catalogo_AguaPotable.pdf" target="_blank"><strong>EETT + Memoria Agua Potable</strong></a></div>
+                <h5 style="margin:12px 0 6px; color:#555; font-size:13px;">Planos DWG</h5>
+                <div class="doc-item"><a href="docs_insular/construccion/Plano_AguaPotable_CasaClub.dwg" target="_blank"><strong>Plano Agua Potable (21 MB)</strong></a></div>
+                <div class="doc-item"><a href="docs_insular/construccion/Plano_Alcantarillado_CasaClub.dwg" target="_blank"><strong>Plano Alcantarillado (2.2 MB)</strong></a></div>
+            </div>
+
+            <div class="doc-category doc-cat-cartolas">
+                <h4>Cartolas Scotiabank</h4>
+                <p style="font-size:11px; color:#888; margin-bottom:8px;">Los XML pueden importarse al dashboard en "GGCC (Cartolas)". Los PDF son referencia.</p>
+                <div id="cartolasList">
+                    <h5 style="margin:12px 0 6px; color:#555; font-size:13px;">2020</h5>
+                    <div class="doc-item"><a href="cartolas/Cartola_2020_06_Junio.pdf" target="_blank"><strong>Junio 2020</strong></a> — #1. 25 movimientos. $39.3M abonos.</div>
+                    <div class="doc-item"><a href="cartolas/Cartola_2020_07_Julio.pdf" target="_blank"><strong>Julio 2020</strong></a> — #2. Jordi $3.7M, Inv. Acuña $600k.</div>
+                    <div class="doc-item"><a href="cartolas/Cartola_2020_08_Agosto.pdf" target="_blank"><strong>Agosto 2020</strong></a> — #3. Felipe $1.2M.</div>
+                    <div class="doc-item"><a href="cartolas/Cartola_2020_09_Septiembre.pdf" target="_blank"><strong>Septiembre 2020</strong></a> — #4. Sin movimientos.</div>
+                    <div class="doc-item"><a href="cartolas/Cartola_2020_10_Octubre.pdf" target="_blank"><strong>Octubre 2020</strong></a> — #5. Felipe $1.2M.</div>
+                    <div class="doc-item"><a href="cartolas/Cartola_2020_11_Noviembre.pdf" target="_blank"><strong>Noviembre 2020</strong></a> — #6. Cheque $30M terreno.</div>
+                    <div class="doc-item"><a href="cartolas/Cartola_2020_12_Diciembre.pdf" target="_blank"><strong>Diciembre 2020</strong></a> — #7. Felipe $1.2M.</div>
+                </div>
+            </div>
+        </div>
+        </div><!-- end sub-documentos -->
+
+    </div><!-- end tab-sociedad -->
+
+</div>
+
+<!-- Deposit detail modal -->
+<div class="modal-overlay" id="depositModal">
+    <div class="modal">
+        <h3 id="modalTitle">Detalle de Depósitos</h3>
+        <div id="modalBody"></div>
+        <button onclick="closeModal()" style="margin-top:16px; padding:8px 20px; background:#1a1a2e; color:white; border:none; border-radius:6px; cursor:pointer;">Cerrar</button>
+    </div>
+</div>
+
+<!-- Hitos de Capital Solicitado modal -->
+<div class="modal-overlay" id="hitosModal">
+    <div class="modal" style="max-width:680px;">
+        <h3 style="color:#1a1a2e; margin-bottom:4px;">Hitos de Capital Solicitado</h3>
+        <p style="font-size:12px; color:#888; margin-bottom:16px;">Todos los compromisos acordados por los socios — $33.1M por socio</p>
+        <div id="hitosModalBody"></div>
+        <button onclick="closeHitosModal()" style="margin-top:16px; padding:8px 20px; background:#1a1a2e; color:white; border:none; border-radius:6px; cursor:pointer;">Cerrar</button>
+    </div>
+</div>
+
+<script>
+// ==================== DATA MODEL (loaded from insular_data.json) ====================
+let ALL_DEPOSITS = [];
+let SOCIOS_ALL = [];
+let SOCIOS_MOB = [];
+let MOB_PAGADO_FULL = [];
+let CUOTA_GGCC = 70000;
+let CUOTA_MOB = 166666;
+let MESES_CON_DATOS_2026 = 3;
+let ACUERDOS = {};
+let FULL_NAMES = {};
+let CASA_ITEMS_INITIAL = [];
+let RUT_MAP = {};
+let ANTONIO_KEYWORDS = [];
+let INSULAR_DATA = null; // Full JSON reference
+
+async function loadInsularData() {
+    try {
+        const resp = await fetch('insular_data.json');
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        INSULAR_DATA = await resp.json();
+        console.log('✅ insular_data.json cargado (' + INSULAR_DATA.depositos.length + ' depósitos)');
+    } catch(e) {
+        console.warn('⚠️ No se pudo cargar insular_data.json, usando datos embebidos:', e.message);
+        INSULAR_DATA = null;
+    }
+
+    if (INSULAR_DATA) {
+        // Populate from JSON
+        ALL_DEPOSITS = INSULAR_DATA.depositos.map(d => {
+            const parts = d.fecha.split('-');
+            return { s: d.socio, y: parseInt(parts[0]), m: parseInt(parts[1]), d: parseInt(parts[2]), amt: d.monto, desc: d.descripcion, rut: d.rut, file: d.cartola, per: d.periodo };
+        });
+
+        SOCIOS_ALL = INSULAR_DATA.socios.map(s => s.id);
+        SOCIOS_MOB = INSULAR_DATA.socios.filter(s => s.participaMobiliario).map(s => s.id);
+        MOB_PAGADO_FULL = INSULAR_DATA.socios.filter(s => s.mobPagadoFull).map(s => s.id);
+
+        CUOTA_GGCC = INSULAR_DATA.acuerdos.ggcc.cuotaMensual;
+        CUOTA_MOB = INSULAR_DATA.acuerdos.mobiliario.cuotaMensual;
+
+        ACUERDOS = {
+            capital: { perSocio: INSULAR_DATA.acuerdos.capital.perSocio, total: INSULAR_DATA.acuerdos.capital.total },
+            construccion: { perSocio: INSULAR_DATA.acuerdos.construccion.perSocio, total: INSULAR_DATA.acuerdos.construccion.total },
+            mobiliario: { perSocio: INSULAR_DATA.acuerdos.mobiliario.perSocio, total: INSULAR_DATA.acuerdos.mobiliario.total }
+        };
+
+        FULL_NAMES = {};
+        INSULAR_DATA.socios.forEach(s => {
+            let name = s.nombreCompleto;
+            if (s.alias) name += ' <small style="color:#888">(' + s.alias + ')</small>';
+            if (s.pareja) name += ' <small style="color:#888">(+ ' + s.pareja + ')</small>';
+            FULL_NAMES[s.id] = name;
+        });
+
+        RUT_MAP = {};
+        INSULAR_DATA.socios.forEach(s => {
+            s.ruts.forEach(r => { RUT_MAP[r] = s.id; });
+        });
+
+        ANTONIO_KEYWORDS = (INSULAR_DATA.socios.find(s => s.id === 'Antonio') || {}).keywords || [];
+
+        if (INSULAR_DATA.mobiliario) {
+            CASA_ITEMS_INITIAL = INSULAR_DATA.mobiliario.map(item => ({
+                id: item.id, nombre: item.nombre, cat: item.categoria,
+                presup: item.presupuesto, real: item.real, done: item.comprado
+            }));
+        }
+    } else {
+        // Fallback: use embedded data
+        ALL_DEPOSITS = ALL_DEPOSITS_EMBEDDED;
+        SOCIOS_ALL = ['Antonio','Camilo','Cristian','Cristóbal','Eduardo','Felipe','Fernando','Jordi','Laura','Sebastián'];
+        SOCIOS_MOB = ['Antonio','Camilo','Cristian','Felipe','Fernando','Jordi','Sebastián'];
+        MOB_PAGADO_FULL = ['Laura','Eduardo','Cristóbal'];
+        CUOTA_GGCC = 70000;
+        CUOTA_MOB = 166666;
+        ACUERDOS = { capital: { perSocio: 10000000, total: 100000000 }, construccion: { perSocio: 19100000, total: 191000000 }, mobiliario: { perSocio: 4000000, total: 40000000 } };
+        FULL_NAMES = FULL_NAMES_EMBEDDED;
+        RUT_MAP = RUT_MAP_EMBEDDED;
+        ANTONIO_KEYWORDS = ['GGCC Aporte Mobiliario', 'TRANSF. DE ANTONIO PAULO'];
+        CASA_ITEMS_INITIAL = CASA_ITEMS_EMBEDDED;
+    }
+
+    // Initialize mutable state
+    casaItems = JSON.parse(JSON.stringify(CASA_ITEMS_INITIAL));
+    casaNextId = Math.max(...CASA_ITEMS_INITIAL.map(i => i.id || 0), 0) + 1;
+}
+
+// ==================== EMBEDDED FALLBACK DATA ====================
+const ALL_DEPOSITS_EMBEDDED = [
+  {s:'Eduardo',y:2020,m:6,d:16,amt:350000,desc:'TEF 13270339-6 Eduardo Enrique',rut:'13270339-6',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Eduardo',y:2020,m:6,d:18,amt:3650000,desc:'TEF 13270339-6 Eduardo Enrique',rut:'13270339-6',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Felipe',y:2020,m:6,d:19,amt:250000,desc:'TEF 18273744-5 FELIPE IGNACIO',rut:'18273744-5',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Cristian',y:2020,m:6,d:19,amt:10000,desc:'TEF 13066600-0',rut:'13066600-0',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Camilo',y:2020,m:6,d:19,amt:250000,desc:'TEF 16095526-0 Camilo',rut:'16095526-0',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Camilo',y:2020,m:6,d:22,amt:250000,desc:'TEF 16095526-0 Camilo',rut:'16095526-0',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Camilo',y:2020,m:6,d:22,amt:250000,desc:'TEF 16095526-0 Camilo',rut:'16095526-0',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Camilo',y:2020,m:6,d:22,amt:250000,desc:'TEF 16095526-0 Camilo',rut:'16095526-0',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Fernando',y:2020,m:6,d:22,amt:250000,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Cristian',y:2020,m:6,d:22,amt:5990000,desc:'TEF 13066600-0',rut:'13066600-0',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Camilo',y:2020,m:6,d:22,amt:1000000,desc:'TEF 16095526-0 Camilo',rut:'16095526-0',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Felipe',y:2020,m:6,d:22,amt:3750000,desc:'TEF 18273744-5 FELIPE IGNACIO',rut:'18273744-5',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Laura',y:2020,m:6,d:22,amt:250000,desc:'TEF 13028872-3 ALVARO MANUEL E',rut:'13028872-3',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Fernando',y:2020,m:6,d:22,amt:3750000,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Jordi',y:2020,m:6,d:22,amt:300000,desc:'TRANSF. DE SEGURA FARIAS JORDI',rut:'',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Cristóbal',y:2020,m:6,d:22,amt:350000,desc:'TEF 15362944-7 Constanza',rut:'15362944-7',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Antonio',y:2020,m:6,d:23,amt:4000000,desc:'TEF 76069305-7 INVERSIONES ACU',rut:'76069305-7',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Sebastián',y:2020,m:6,d:23,amt:250000,desc:'TEF 13426837-9 SEBASTIAN PABLO',rut:'13426837-9',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Camilo',y:2020,m:6,d:23,amt:500000,desc:'TEF 16095526-0 Camilo',rut:'16095526-0',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Laura',y:2020,m:6,d:23,amt:3750000,desc:'TEF 13028872-3 ALVARO MANUEL E',rut:'13028872-3',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Cristóbal',y:2020,m:6,d:23,amt:3650000,desc:'TEF 15362944-7 Constanza Jimen',rut:'15362944-7',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Camilo',y:2020,m:6,d:24,amt:500000,desc:'TEF 16095526-0 Camilo',rut:'16095526-0',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Sebastián',y:2020,m:6,d:24,amt:4750000,desc:'TEF 13426837-9 SEBASTIAN PABLO',rut:'13426837-9',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Camilo',y:2020,m:6,d:26,amt:500000,desc:'TEF 16095526-0 Camilo',rut:'16095526-0',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Camilo',y:2020,m:6,d:30,amt:500000,desc:'TEF 16095526-0 Camilo',rut:'16095526-0',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
+  {s:'Jordi',y:2020,m:7,d:7,amt:3700000,desc:'TEF 13272830-5 JORDI OSVALDO S',rut:'13272830-5',file:'Insular cartola 2.pdf',per:'?→?'},
+  {s:'Antonio',y:2020,m:7,d:7,amt:600000,desc:'TEF 76069305-7 INVERSIONES ACU',rut:'76069305-7',file:'Insular cartola 2.pdf',per:'?→?'},
+  {s:'Felipe',y:2020,m:8,d:14,amt:1200000,desc:'TEF 18273744-5 FELIPE IGNACIO',rut:'18273744-5',file:'Insular cartola 3.pdf',per:'01/08/2020→31/08/2020'},
+  {s:'Felipe',y:2020,m:10,d:13,amt:1200000,desc:'TEF 18273744-5 FELIPE IGNACIO',rut:'18273744-5',file:'Insular cartola 5.pdf',per:'01/10/2020→30/10/2020'},
+  {s:'Felipe',y:2020,m:11,d:13,amt:1200000,desc:'TEF 18273744-5 FELIPE IGNACIO',rut:'18273744-5',file:'Insular cartola 6.pdf',per:'01/11/2020→30/11/2020'},
+  {s:'Cristóbal',y:2020,m:11,d:17,amt:3000000,desc:'TEF 15362944-7 Constanza',rut:'15362944-7',file:'Insular cartola 6.pdf',per:'01/11/2020→30/11/2020'},
+  {s:'Sebastián',y:2020,m:11,d:25,amt:2000000,desc:'TEF 13426837-9 SEBASTIAN PABLO',rut:'13426837-9',file:'Insular cartola 6.pdf',per:'01/11/2020→30/11/2020'},
+  {s:'Felipe',y:2020,m:12,d:15,amt:1200000,desc:'TEF 18273744-5 FELIPE IGNACIO',rut:'18273744-5',file:'Insular cartola 7.pdf',per:'01/12/2020→30/12/2020'},
+  {s:'Eduardo',y:2021,m:1,d:18,amt:4000000,desc:'TEF 13270339-6 Eduardo Enrique',rut:'13270339-6',file:'Insular cartola 8.pdf',per:'01/01/2021→29/01/2021'},
+  {s:'Antonio',y:2025,m:2,d:3,amt:236666,desc:'TRANSF. DE ANTONIO PAULO DIAZ',rut:'',file:'typeDesc (1).xml',per:'03-02-2025→28-02-2025'},
+  {s:'Laura',y:2025,m:2,d:3,amt:70000,desc:'TEF 16656248-1 Laura Diaz',rut:'16656248-1',file:'typeDesc (1).xml',per:'03-02-2025→28-02-2025'},
+  {s:'Cristóbal',y:2025,m:2,d:3,amt:70000,desc:'TEF  7746703-3 Cristobal Eduar',rut:'7746703-3',file:'typeDesc (1).xml',per:'03-02-2025→28-02-2025'},
+  {s:'Fernando',y:2025,m:2,d:4,amt:166666,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'typeDesc (1).xml',per:'03-02-2025→28-02-2025'},
+  {s:'Camilo',y:2025,m:2,d:5,amt:236667,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (1).xml',per:'03-02-2025→28-02-2025'},
+  {s:'Camilo',y:2025,m:2,d:6,amt:500000,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (1).xml',per:'03-02-2025→28-02-2025'},
+  {s:'Jordi',y:2025,m:2,d:10,amt:2166667,desc:'TEF 13272830-5',rut:'13272830-5',file:'typeDesc (1).xml',per:'03-02-2025→28-02-2025'},
+  {s:'Jordi',y:2025,m:2,d:10,amt:100000,desc:'TEF 13272830-5',rut:'13272830-5',file:'typeDesc (1).xml',per:'03-02-2025→28-02-2025'},
+  {s:'Felipe',y:2025,m:2,d:12,amt:236666,desc:'TEF 18273744-5 SIMONSOHN GONZA',rut:'18273744-5',file:'typeDesc (1).xml',per:'03-02-2025→28-02-2025'},
+  {s:'Camilo',y:2025,m:2,d:14,amt:500000,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (1).xml',per:'03-02-2025→28-02-2025'},
+  {s:'Camilo',y:2025,m:2,d:18,amt:500000,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (1).xml',per:'03-02-2025→28-02-2025'},
+  {s:'Jordi',y:2025,m:2,d:18,amt:2000000,desc:'TEF 13272830-5',rut:'13272830-5',file:'typeDesc (1).xml',per:'03-02-2025→28-02-2025'},
+  {s:'Cristian',y:2025,m:2,d:18,amt:1419996,desc:'TEF 13066600-0',rut:'13066600-0',file:'typeDesc (1).xml',per:'03-02-2025→28-02-2025'},
+  {s:'Jordi',y:2025,m:2,d:20,amt:2000000,desc:'TEF 13272830-5',rut:'13272830-5',file:'typeDesc (1).xml',per:'03-02-2025→28-02-2025'},
+  {s:'Camilo',y:2025,m:2,d:24,amt:500000,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (1).xml',per:'03-02-2025→28-02-2025'},
+  {s:'Cristian',y:2025,m:2,d:26,amt:2000000,desc:'TEF 13066600-0',rut:'13066600-0',file:'typeDesc (1).xml',per:'03-02-2025→28-02-2025'},
+  {s:'Laura',y:2025,m:2,d:28,amt:70000,desc:'TEF 16656248-1 Laura Diaz',rut:'16656248-1',file:'typeDesc (1).xml',per:'03-02-2025→28-02-2025'},
+  {s:'Camilo',y:2025,m:2,d:28,amt:236667,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (1).xml',per:'03-02-2025→28-02-2025'},
+  {s:'Laura',y:2025,m:11,d:3,amt:75000,desc:'TEF 16656248-1 Laura Diaz',rut:'16656248-1',file:'typeDesc (10).xml',per:'03-11-2025→28-11-2025'},
+  {s:'Cristóbal',y:2025,m:11,d:3,amt:70000,desc:'TEF  7746703-3 Cristobal Eduar',rut:'7746703-3',file:'typeDesc (10).xml',per:'03-11-2025→28-11-2025'},
+  {s:'Antonio',y:2025,m:11,d:3,amt:236666,desc:'GGCC Aporte Mobiliario',rut:'',file:'typeDesc (10).xml',per:'03-11-2025→28-11-2025'},
+  {s:'Eduardo',y:2025,m:11,d:4,amt:70000,desc:'TEF 13270339-6 Eduardo Enrique',rut:'13270339-6',file:'typeDesc (10).xml',per:'03-11-2025→28-11-2025'},
+  {s:'Antonio',y:2025,m:11,d:5,amt:236666,desc:'TEF 13890149-1 DIAZ ARAUJO ANT',rut:'13890149-1',file:'typeDesc (10).xml',per:'03-11-2025→28-11-2025'},
+  {s:'Fernando',y:2025,m:11,d:5,amt:236665,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'typeDesc (10).xml',per:'03-11-2025→28-11-2025'},
+  {s:'Felipe',y:2025,m:11,d:12,amt:236666,desc:'TEF 18273744-5 SIMONSOHN GONZA',rut:'18273744-5',file:'typeDesc (10).xml',per:'03-11-2025→28-11-2025'},
+  {s:'Camilo',y:2025,m:11,d:19,amt:236667,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (10).xml',per:'03-11-2025→28-11-2025'},
+  {s:'Camilo',y:2025,m:11,d:19,amt:500000,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (10).xml',per:'03-11-2025→28-11-2025'},
+  {s:'Sebastián',y:2025,m:11,d:21,amt:5000000,desc:'TEF 13426837-9',rut:'13426837-9',file:'typeDesc (10).xml',per:'03-11-2025→28-11-2025'},
+  {s:'Jordi',y:2025,m:11,d:24,amt:3500000,desc:'TEF 13272830-5',rut:'13272830-5',file:'typeDesc (10).xml',per:'03-11-2025→28-11-2025'},
+  {s:'Jordi',y:2025,m:11,d:25,amt:1183330,desc:'TEF 13272830-5',rut:'13272830-5',file:'typeDesc (10).xml',per:'03-11-2025→28-11-2025'},
+  {s:'Antonio',y:2025,m:12,d:1,amt:236666,desc:'GGCC Aporte Mobiliario',rut:'',file:'typeDesc (11).xml',per:'01-12-2025→30-12-2025'},
+  {s:'Laura',y:2025,m:12,d:1,amt:75000,desc:'TEF 16656248-1 Laura Diaz',rut:'16656248-1',file:'typeDesc (11).xml',per:'01-12-2025→30-12-2025'},
+  {s:'Fernando',y:2025,m:12,d:2,amt:236665,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'typeDesc (11).xml',per:'01-12-2025→30-12-2025'},
+  {s:'Cristóbal',y:2025,m:12,d:3,amt:70000,desc:'TEF  7746703-3 Cristobal Eduar',rut:'7746703-3',file:'typeDesc (11).xml',per:'01-12-2025→30-12-2025'},
+  {s:'Eduardo',y:2025,m:12,d:4,amt:70000,desc:'TEF 13270339-6 Eduardo Enrique',rut:'13270339-6',file:'typeDesc (11).xml',per:'01-12-2025→30-12-2025'},
+  {s:'Antonio',y:2025,m:12,d:5,amt:236666,desc:'TEF 13890149-1 DIAZ ARAUJO ANT',rut:'13890149-1',file:'typeDesc (11).xml',per:'01-12-2025→30-12-2025'},
+  {s:'Felipe',y:2025,m:12,d:12,amt:236666,desc:'TEF 18273744-5 SIMONSOHN GONZA',rut:'18273744-5',file:'typeDesc (11).xml',per:'01-12-2025→30-12-2025'},
+  {s:'Camilo',y:2025,m:12,d:19,amt:500000,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (11).xml',per:'01-12-2025→30-12-2025'},
+  {s:'Camilo',y:2025,m:12,d:29,amt:500000,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (11).xml',per:'01-12-2025→30-12-2025'},
+  {s:'Felipe',y:2025,m:12,d:29,amt:2000000,desc:'TEF 18273744-5 FELIPE IGNACIO',rut:'18273744-5',file:'typeDesc (11).xml',per:'01-12-2025→30-12-2025'},
+  {s:'Camilo',y:2025,m:12,d:30,amt:536667,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (11).xml',per:'01-12-2025→30-12-2025'},
+  {s:'Eduardo',y:2025,m:12,d:30,amt:4000000,desc:'TEF 13455042-2 Anneli De La Lu',rut:'13455042-2',file:'typeDesc (11).xml',per:'01-12-2025→30-12-2025'},
+  {s:'Sebastián',y:2025,m:12,d:30,amt:4000000,desc:'TEF 13426837-9 SEBASTIAN PABLO',rut:'13426837-9',file:'typeDesc (11).xml',per:'01-12-2025→30-12-2025'},
+  {s:'Camilo',y:2026,m:1,d:2,amt:2000000,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (13).xml',per:'02-01-2026→30-01-2026'},
+  {s:'Antonio',y:2026,m:1,d:2,amt:236666,desc:'GGCC Aporte Mobiliario',rut:'',file:'typeDesc (13).xml',per:'02-01-2026→30-01-2026'},
+  {s:'Laura',y:2026,m:1,d:2,amt:75000,desc:'TEF 16656248-1 Laura Diaz',rut:'16656248-1',file:'typeDesc (13).xml',per:'02-01-2026→30-01-2026'},
+  {s:'Fernando',y:2026,m:1,d:2,amt:236666,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'typeDesc (13).xml',per:'02-01-2026→30-01-2026'},
+  {s:'Cristóbal',y:2026,m:1,d:5,amt:70000,desc:'TEF  7746703-3 Cristobal Eduar',rut:'7746703-3',file:'typeDesc (13).xml',per:'02-01-2026→30-01-2026'},
+  {s:'Eduardo',y:2026,m:1,d:5,amt:70000,desc:'TEF 13270339-6 Eduardo Enrique',rut:'13270339-6',file:'typeDesc (13).xml',per:'02-01-2026→30-01-2026'},
+  {s:'Antonio',y:2026,m:1,d:5,amt:236666,desc:'TEF 13890149-1 DIAZ ARAUJO ANT',rut:'13890149-1',file:'typeDesc (13).xml',per:'02-01-2026→30-01-2026'},
+  {s:'Fernando',y:2026,m:1,d:5,amt:2500000,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'typeDesc (13).xml',per:'02-01-2026→30-01-2026'},
+  {s:'Felipe',y:2026,m:1,d:12,amt:236666,desc:'TEF 18273744-5 SIMONSOHN GONZA',rut:'18273744-5',file:'typeDesc (13).xml',per:'02-01-2026→30-01-2026'},
+  {s:'Camilo',y:2026,m:1,d:13,amt:1000000,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (13).xml',per:'02-01-2026→30-01-2026'},
+  {s:'Fernando',y:2026,m:1,d:13,amt:300000,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'typeDesc (13).xml',per:'02-01-2026→30-01-2026'},
+  {s:'Eduardo',y:2026,m:1,d:14,amt:300000,desc:'TEF 13455042-2 Anneli De La Lu',rut:'13455042-2',file:'typeDesc (13).xml',per:'02-01-2026→30-01-2026'},
+  {s:'Cristóbal',y:2026,m:1,d:14,amt:1000000,desc:'TEF  7746703-3 Cristobal Eduar',rut:'7746703-3',file:'typeDesc (13).xml',per:'02-01-2026→30-01-2026'},
+  {s:'Felipe',y:2026,m:1,d:14,amt:1000000,desc:'TEF 18273744-5 FELIPE IGNACIO',rut:'18273744-5',file:'typeDesc (13).xml',per:'02-01-2026→30-01-2026'},
+  {s:'Cristóbal',y:2026,m:1,d:15,amt:300000,desc:'TEF  7746703-3 Cristobal Eduar',rut:'7746703-3',file:'typeDesc (13).xml',per:'02-01-2026→30-01-2026'},
+  {s:'Camilo',y:2026,m:1,d:16,amt:1000000,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (13).xml',per:'02-01-2026→30-01-2026'},
+  {s:'Jordi',y:2026,m:1,d:26,amt:1000000,desc:'TEF 13272830-5',rut:'13272830-5',file:'typeDesc (13).xml',per:'02-01-2026→30-01-2026'},
+  {s:'Camilo',y:2026,m:1,d:30,amt:300000,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (13).xml',per:'02-01-2026→30-01-2026'},
+  {s:'Camilo',y:2026,m:1,d:30,amt:236667,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (13).xml',per:'02-01-2026→30-01-2026'},
+  {s:'Felipe',y:2026,m:1,d:30,amt:1000000,desc:'TEF 18273744-5 FELIPE IGNACIO',rut:'18273744-5',file:'typeDesc (13).xml',per:'02-01-2026→30-01-2026'},
+  {s:'Laura',y:2026,m:2,d:2,amt:75000,desc:'TEF 16656248-1 Laura Diaz',rut:'16656248-1',file:'typeDesc (14).xml',per:'02-02-2026→26-02-2026'},
+  {s:'Antonio',y:2026,m:2,d:2,amt:236666,desc:'GGCC Aporte Mobiliario',rut:'',file:'typeDesc (14).xml',per:'02-02-2026→26-02-2026'},
+  {s:'Eduardo',y:2026,m:2,d:4,amt:70000,desc:'TEF 13270339-6 Eduardo Enrique',rut:'13270339-6',file:'typeDesc (14).xml',per:'02-02-2026→26-02-2026'},
+  {s:'Fernando',y:2026,m:2,d:4,amt:236665,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'typeDesc (14).xml',per:'02-02-2026→26-02-2026'},
+  {s:'Fernando',y:2026,m:2,d:4,amt:300000,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'typeDesc (14).xml',per:'02-02-2026→26-02-2026'},
+  {s:'Antonio',y:2026,m:2,d:5,amt:236666,desc:'TEF 13890149-1 DIAZ ARAUJO ANT',rut:'13890149-1',file:'typeDesc (14).xml',per:'02-02-2026→26-02-2026'},
+  {s:'Eduardo',y:2026,m:2,d:9,amt:300000,desc:'TEF 13455042-2 Anneli De La Lu',rut:'13455042-2',file:'typeDesc (14).xml',per:'02-02-2026→26-02-2026'},
+  {s:'Felipe',y:2026,m:2,d:12,amt:236666,desc:'TEF 18273744-5 SIMONSOHN GONZA',rut:'18273744-5',file:'typeDesc (14).xml',per:'02-02-2026→26-02-2026'},
+  {s:'Cristóbal',y:2026,m:2,d:16,amt:300000,desc:'TEF  7746703-3 Cristobal Eduar',rut:'7746703-3',file:'typeDesc (14).xml',per:'02-02-2026→26-02-2026'},
+  {s:'Eduardo',y:2026,m:2,d:16,amt:3000000,desc:'TEF 13455042-2 Anneli De La Lu',rut:'13455042-2',file:'typeDesc (14).xml',per:'02-02-2026→26-02-2026'},
+  {s:'Jordi',y:2026,m:2,d:16,amt:2000000,desc:'TEF 13272830-5',rut:'13272830-5',file:'typeDesc (14).xml',per:'02-02-2026→26-02-2026'},
+  {s:'Camilo',y:2026,m:2,d:20,amt:236667,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (14).xml',per:'02-02-2026→26-02-2026'},
+  {s:'Cristóbal',y:2026,m:2,d:23,amt:1500000,desc:'TEF  7746703-3 Cristobal Eduar',rut:'7746703-3',file:'typeDesc (14).xml',per:'02-02-2026→26-02-2026'},
+  {s:'Camilo',y:2026,m:2,d:26,amt:300000,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (14).xml',per:'02-02-2026→26-02-2026'},
+  {s:'Laura',y:2026,m:3,d:2,amt:75000,desc:'TEF 16656248-1 Laura Diaz',rut:'16656248-1',file:'typeDesc (15).xml',per:'02-03-2026→27-03-2026'},
+  {s:'Antonio',y:2026,m:3,d:2,amt:236666,desc:'GGCC Aporte Mobiliario',rut:'',file:'typeDesc (15).xml',per:'02-03-2026→27-03-2026'},
+  {s:'Fernando',y:2026,m:3,d:3,amt:236665,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'typeDesc (15).xml',per:'02-03-2026→27-03-2026'},
+  {s:'Fernando',y:2026,m:3,d:3,amt:300000,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'typeDesc (15).xml',per:'02-03-2026→27-03-2026'},
+  {s:'Eduardo',y:2026,m:3,d:4,amt:70000,desc:'TEF 13270339-6 Eduardo Enrique',rut:'13270339-6',file:'typeDesc (15).xml',per:'02-03-2026→27-03-2026'},
+  {s:'Antonio',y:2026,m:3,d:5,amt:236666,desc:'TEF 13890149-1 DIAZ ARAUJO ANT',rut:'13890149-1',file:'typeDesc (15).xml',per:'02-03-2026→27-03-2026'},
+  {s:'Sebastián',y:2026,m:3,d:5,amt:1500000,desc:'TEF 13426837-9',rut:'13426837-9',file:'typeDesc (15).xml',per:'02-03-2026→27-03-2026'},
+  {s:'Jordi',y:2026,m:3,d:5,amt:1000000,desc:'TEF 13272830-5',rut:'13272830-5',file:'typeDesc (15).xml',per:'02-03-2026→27-03-2026'},
+  {s:'Jordi',y:2026,m:3,d:5,amt:300000,desc:'TEF 13272830-5',rut:'13272830-5',file:'typeDesc (15).xml',per:'02-03-2026→27-03-2026'},
+  {s:'Cristóbal',y:2026,m:3,d:16,amt:300000,desc:'TEF  7746703-3 Cristobal Eduar',rut:'7746703-3',file:'typeDesc (15).xml',per:'02-03-2026→27-03-2026'},
+  {s:'Camilo',y:2026,m:3,d:23,amt:236667,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (15).xml',per:'02-03-2026→27-03-2026'},
+  {s:'Camilo',y:2026,m:3,d:27,amt:300000,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (15).xml',per:'02-03-2026→27-03-2026'},
+  {s:'Antonio',y:2025,m:3,d:3,amt:236666,desc:'GGCC Aporte Mobiliario',rut:'',file:'typeDesc (2).xml',per:'03-03-2025→31-03-2025'},
+  {s:'Cristóbal',y:2025,m:3,d:3,amt:70000,desc:'TEF  7746703-3 Cristobal Eduar',rut:'7746703-3',file:'typeDesc (2).xml',per:'03-03-2025→31-03-2025'},
+  {s:'Eduardo',y:2025,m:3,d:3,amt:140000,desc:'TEF 13270339-6 Eduardo Enrique',rut:'13270339-6',file:'typeDesc (2).xml',per:'03-03-2025→31-03-2025'},
+  {s:'Fernando',y:2025,m:3,d:3,amt:236666,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'typeDesc (2).xml',per:'03-03-2025→31-03-2025'},
+  {s:'Eduardo',y:2025,m:3,d:4,amt:70000,desc:'TEF 13270339-6 Eduardo Enrique',rut:'13270339-6',file:'typeDesc (2).xml',per:'03-03-2025→31-03-2025'},
+  {s:'Antonio',y:2025,m:3,d:5,amt:236666,desc:'TEF 13890149-1 DIAZ ARAUJO ANT',rut:'13890149-1',file:'typeDesc (2).xml',per:'03-03-2025→31-03-2025'},
+  {s:'Eduardo',y:2025,m:3,d:6,amt:4000000,desc:'TEF 13455042-2 Anneli De La Lu',rut:'13455042-2',file:'typeDesc (2).xml',per:'03-03-2025→31-03-2025'},
+  {s:'Felipe',y:2025,m:3,d:12,amt:236666,desc:'TEF 18273744-5 SIMONSOHN GONZA',rut:'18273744-5',file:'typeDesc (2).xml',per:'03-03-2025→31-03-2025'},
+  {s:'Camilo',y:2025,m:3,d:28,amt:236667,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (2).xml',per:'03-03-2025→31-03-2025'},
+  {s:'Jordi',y:2025,m:3,d:31,amt:206666,desc:'TEF 13272830-5',rut:'13272830-5',file:'typeDesc (2).xml',per:'03-03-2025→31-03-2025'},
+  {s:'Antonio',y:2025,m:4,d:1,amt:236666,desc:'GGCC Aporte Mobiliario',rut:'',file:'typeDesc (3).xml',per:'01-04-2025→28-04-2025'},
+  {s:'Laura',y:2025,m:4,d:1,amt:70000,desc:'TEF 16656248-1 Laura Diaz',rut:'16656248-1',file:'typeDesc (3).xml',per:'01-04-2025→28-04-2025'},
+  {s:'Cristóbal',y:2025,m:4,d:3,amt:70000,desc:'TEF  7746703-3 Cristobal Eduar',rut:'7746703-3',file:'typeDesc (3).xml',per:'01-04-2025→28-04-2025'},
+  {s:'Eduardo',y:2025,m:4,d:4,amt:70000,desc:'TEF 13270339-6 Eduardo Enrique',rut:'13270339-6',file:'typeDesc (3).xml',per:'01-04-2025→28-04-2025'},
+  {s:'Fernando',y:2025,m:4,d:7,amt:236665,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'typeDesc (3).xml',per:'01-04-2025→28-04-2025'},
+  {s:'Antonio',y:2025,m:4,d:7,amt:236666,desc:'TEF 13890149-1 DIAZ ARAUJO ANT',rut:'13890149-1',file:'typeDesc (3).xml',per:'01-04-2025→28-04-2025'},
+  {s:'Felipe',y:2025,m:4,d:14,amt:236666,desc:'TEF 18273744-5 SIMONSOHN GONZA',rut:'18273744-5',file:'typeDesc (3).xml',per:'01-04-2025→28-04-2025'},
+  {s:'Camilo',y:2025,m:4,d:25,amt:236667,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (3).xml',per:'01-04-2025→28-04-2025'},
+  {s:'Laura',y:2025,m:5,d:2,amt:70000,desc:'TEF 16656248-1 Laura Diaz',rut:'16656248-1',file:'typeDesc (4).xml',per:'02-05-2025→30-05-2025'},
+  {s:'Antonio',y:2025,m:5,d:2,amt:236666,desc:'GGCC Aporte Mobiliario',rut:'',file:'typeDesc (4).xml',per:'02-05-2025→30-05-2025'},
+  {s:'Cristóbal',y:2025,m:5,d:5,amt:70000,desc:'TEF  7746703-3 Cristobal Eduar',rut:'7746703-3',file:'typeDesc (4).xml',per:'02-05-2025→30-05-2025'},
+  {s:'Eduardo',y:2025,m:5,d:5,amt:70000,desc:'TEF 13270339-6 Eduardo Enrique',rut:'13270339-6',file:'typeDesc (4).xml',per:'02-05-2025→30-05-2025'},
+  {s:'Antonio',y:2025,m:5,d:5,amt:236666,desc:'TEF 13890149-1 DIAZ ARAUJO ANT',rut:'13890149-1',file:'typeDesc (4).xml',per:'02-05-2025→30-05-2025'},
+  {s:'Jordi',y:2025,m:5,d:5,amt:679998,desc:'TEF 13272830-5',rut:'13272830-5',file:'typeDesc (4).xml',per:'02-05-2025→30-05-2025'},
+  {s:'Felipe',y:2025,m:5,d:12,amt:236666,desc:'TEF 18273744-5 SIMONSOHN GONZA',rut:'18273744-5',file:'typeDesc (4).xml',per:'02-05-2025→30-05-2025'},
+  {s:'Sebastián',y:2025,m:5,d:15,amt:300000,desc:'TEF 13426837-9',rut:'13426837-9',file:'typeDesc (4).xml',per:'02-05-2025→30-05-2025'},
+  {s:'Sebastián',y:2025,m:5,d:27,amt:946664,desc:'TEF 13426837-9',rut:'13426837-9',file:'typeDesc (4).xml',per:'02-05-2025→30-05-2025'},
+  {s:'Camilo',y:2025,m:5,d:30,amt:236667,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (4).xml',per:'02-05-2025→30-05-2025'},
+  {s:'Fernando',y:2025,m:6,d:2,amt:236665,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'typeDesc (5).xml',per:'02-06-2025→27-06-2025'},
+  {s:'Antonio',y:2025,m:6,d:2,amt:236666,desc:'GGCC Aporte Mobiliario',rut:'',file:'typeDesc (5).xml',per:'02-06-2025→27-06-2025'},
+  {s:'Laura',y:2025,m:6,d:2,amt:70000,desc:'TEF 16656248-1 Laura Diaz',rut:'16656248-1',file:'typeDesc (5).xml',per:'02-06-2025→27-06-2025'},
+  {s:'Cristóbal',y:2025,m:6,d:3,amt:70000,desc:'TEF  7746703-3 Cristobal Eduar',rut:'7746703-3',file:'typeDesc (5).xml',per:'02-06-2025→27-06-2025'},
+  {s:'Jordi',y:2025,m:6,d:3,amt:236666,desc:'TEF 13272830-5',rut:'13272830-5',file:'typeDesc (5).xml',per:'02-06-2025→27-06-2025'},
+  {s:'Eduardo',y:2025,m:6,d:4,amt:70000,desc:'TEF 13270339-6 Eduardo Enrique',rut:'13270339-6',file:'typeDesc (5).xml',per:'02-06-2025→27-06-2025'},
+  {s:'Antonio',y:2025,m:6,d:5,amt:236666,desc:'TEF 13890149-1 DIAZ ARAUJO ANT',rut:'13890149-1',file:'typeDesc (5).xml',per:'02-06-2025→27-06-2025'},
+  {s:'Felipe',y:2025,m:6,d:12,amt:236666,desc:'TEF 18273744-5 SIMONSOHN GONZA',rut:'18273744-5',file:'typeDesc (5).xml',per:'02-06-2025→27-06-2025'},
+  {s:'Camilo',y:2025,m:6,d:25,amt:236667,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (5).xml',per:'02-06-2025→27-06-2025'},
+  {s:'Fernando',y:2025,m:6,d:27,amt:236665,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'typeDesc (5).xml',per:'02-06-2025→27-06-2025'},
+  {s:'Antonio',y:2025,m:7,d:1,amt:236666,desc:'GGCC Aporte Mobiliario',rut:'',file:'typeDesc (6).xml',per:'01-07-2025→31-07-2025'},
+  {s:'Laura',y:2025,m:7,d:1,amt:75000,desc:'TEF 16656248-1 Laura Diaz',rut:'16656248-1',file:'typeDesc (6).xml',per:'01-07-2025→31-07-2025'},
+  {s:'Cristóbal',y:2025,m:7,d:3,amt:70000,desc:'TEF  7746703-3 Cristobal Eduar',rut:'7746703-3',file:'typeDesc (6).xml',per:'01-07-2025→31-07-2025'},
+  {s:'Eduardo',y:2025,m:7,d:4,amt:70000,desc:'TEF 13270339-6 Eduardo Enrique',rut:'13270339-6',file:'typeDesc (6).xml',per:'01-07-2025→31-07-2025'},
+  {s:'Antonio',y:2025,m:7,d:7,amt:236666,desc:'TEF 13890149-1 DIAZ ARAUJO ANT',rut:'13890149-1',file:'typeDesc (6).xml',per:'01-07-2025→31-07-2025'},
+  {s:'Felipe',y:2025,m:7,d:14,amt:236666,desc:'TEF 18273744-5 SIMONSOHN GONZA',rut:'18273744-5',file:'typeDesc (6).xml',per:'01-07-2025→31-07-2025'},
+  {s:'Antonio',y:2025,m:7,d:15,amt:250000,desc:'TEF 12106984-9 ALEJANDRA ACUNA',rut:'12106984-9',file:'typeDesc (6).xml',per:'01-07-2025→31-07-2025'},
+  {s:'Antonio',y:2025,m:7,d:21,amt:3250000,desc:'TEF 12106984-9 ALEJANDRA ACUNA',rut:'12106984-9',file:'typeDesc (6).xml',per:'01-07-2025→31-07-2025'},
+  {s:'Laura',y:2025,m:7,d:22,amt:3500000,desc:'TEF 16656248-1 Laura Diaz',rut:'16656248-1',file:'typeDesc (6).xml',per:'01-07-2025→31-07-2025'},
+  {s:'Camilo',y:2025,m:7,d:22,amt:236667,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (6).xml',per:'01-07-2025→31-07-2025'},
+  {s:'Camilo',y:2025,m:7,d:22,amt:500000,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (6).xml',per:'01-07-2025→31-07-2025'},
+  {s:'Cristian',y:2025,m:7,d:22,amt:3500000,desc:'TEF 13066600-0',rut:'13066600-0',file:'typeDesc (6).xml',per:'01-07-2025→31-07-2025'},
+  {s:'Cristóbal',y:2025,m:7,d:31,amt:3500000,desc:'TEF  7746703-3 Cristobal Eduar',rut:'7746703-3',file:'typeDesc (6).xml',per:'01-07-2025→31-07-2025'},
+  {s:'Felipe',y:2025,m:7,d:31,amt:3500000,desc:'TEF 18273744-5 FELIPE IGNACIO',rut:'18273744-5',file:'typeDesc (6).xml',per:'01-07-2025→31-07-2025'},
+  {s:'Antonio',y:2025,m:8,d:1,amt:236666,desc:'GGCC Aporte Mobiliario',rut:'',file:'typeDesc (7).xml',per:'01-08-2025→29-08-2025'},
+  {s:'Laura',y:2025,m:8,d:1,amt:75000,desc:'TEF 16656248-1 Laura Diaz',rut:'16656248-1',file:'typeDesc (7).xml',per:'01-08-2025→29-08-2025'},
+  {s:'Fernando',y:2025,m:8,d:4,amt:236665,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'typeDesc (7).xml',per:'01-08-2025→29-08-2025'},
+  {s:'Cristóbal',y:2025,m:8,d:4,amt:70000,desc:'TEF  7746703-3 Cristobal Eduar',rut:'7746703-3',file:'typeDesc (7).xml',per:'01-08-2025→29-08-2025'},
+  {s:'Eduardo',y:2025,m:8,d:4,amt:70000,desc:'TEF 13270339-6 Eduardo Enrique',rut:'13270339-6',file:'typeDesc (7).xml',per:'01-08-2025→29-08-2025'},
+  {s:'Antonio',y:2025,m:8,d:5,amt:236666,desc:'TEF 13890149-1 DIAZ ARAUJO ANT',rut:'13890149-1',file:'typeDesc (7).xml',per:'01-08-2025→29-08-2025'},
+  {s:'Eduardo',y:2025,m:8,d:5,amt:3500000,desc:'TEF 13455042-2 Anneli De La Lu',rut:'13455042-2',file:'typeDesc (7).xml',per:'01-08-2025→29-08-2025'},
+  {s:'Fernando',y:2025,m:8,d:5,amt:3500000,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'typeDesc (7).xml',per:'01-08-2025→29-08-2025'},
+  {s:'Felipe',y:2025,m:8,d:12,amt:236666,desc:'TEF 18273744-5 SIMONSOHN GONZA',rut:'18273744-5',file:'typeDesc (7).xml',per:'01-08-2025→29-08-2025'},
+  {s:'Camilo',y:2025,m:8,d:29,amt:236667,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (7).xml',per:'01-08-2025→29-08-2025'},
+  {s:'Camilo',y:2025,m:8,d:29,amt:500000,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (7).xml',per:'01-08-2025→29-08-2025'},
+  {s:'Antonio',y:2025,m:9,d:1,amt:236666,desc:'GGCC Aporte Mobiliario',rut:'',file:'typeDesc (8).xml',per:'01-09-2025→30-09-2025'},
+  {s:'Laura',y:2025,m:9,d:1,amt:75000,desc:'TEF 16656248-1 Laura Diaz',rut:'16656248-1',file:'typeDesc (8).xml',per:'01-09-2025→30-09-2025'},
+  {s:'Cristóbal',y:2025,m:9,d:3,amt:70000,desc:'TEF  7746703-3 Cristobal Eduar',rut:'7746703-3',file:'typeDesc (8).xml',per:'01-09-2025→30-09-2025'},
+  {s:'Fernando',y:2025,m:9,d:3,amt:236665,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'typeDesc (8).xml',per:'01-09-2025→30-09-2025'},
+  {s:'Eduardo',y:2025,m:9,d:4,amt:70000,desc:'TEF 13270339-6 Eduardo Enrique',rut:'13270339-6',file:'typeDesc (8).xml',per:'01-09-2025→30-09-2025'},
+  {s:'Antonio',y:2025,m:9,d:5,amt:236666,desc:'TEF 13890149-1 DIAZ ARAUJO ANT',rut:'13890149-1',file:'typeDesc (8).xml',per:'01-09-2025→30-09-2025'},
+  {s:'Felipe',y:2025,m:9,d:12,amt:236666,desc:'TEF 18273744-5 SIMONSOHN GONZA',rut:'18273744-5',file:'typeDesc (8).xml',per:'01-09-2025→30-09-2025'},
+  {s:'Fernando',y:2025,m:9,d:26,amt:236665,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'typeDesc (8).xml',per:'01-09-2025→30-09-2025'},
+  {s:'Camilo',y:2025,m:9,d:30,amt:236667,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (8).xml',per:'01-09-2025→30-09-2025'},
+  {s:'Camilo',y:2025,m:9,d:30,amt:500000,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (8).xml',per:'01-09-2025→30-09-2025'},
+  {s:'Antonio',y:2025,m:10,d:1,amt:236666,desc:'GGCC Aporte Mobiliario',rut:'',file:'typeDesc (9).xml',per:'01-10-2025→30-10-2025'},
+  {s:'Laura',y:2025,m:10,d:1,amt:75000,desc:'TEF 16656248-1 Laura Diaz',rut:'16656248-1',file:'typeDesc (9).xml',per:'01-10-2025→30-10-2025'},
+  {s:'Cristóbal',y:2025,m:10,d:3,amt:70000,desc:'TEF  7746703-3 Cristobal Eduar',rut:'7746703-3',file:'typeDesc (9).xml',per:'01-10-2025→30-10-2025'},
+  {s:'Eduardo',y:2025,m:10,d:6,amt:70000,desc:'TEF 13270339-6 Eduardo Enrique',rut:'13270339-6',file:'typeDesc (9).xml',per:'01-10-2025→30-10-2025'},
+  {s:'Antonio',y:2025,m:10,d:6,amt:236666,desc:'TEF 13890149-1 DIAZ ARAUJO ANT',rut:'13890149-1',file:'typeDesc (9).xml',per:'01-10-2025→30-10-2025'},
+  {s:'Felipe',y:2025,m:10,d:13,amt:236666,desc:'TEF 18273744-5 SIMONSOHN GONZA',rut:'18273744-5',file:'typeDesc (9).xml',per:'01-10-2025→30-10-2025'},
+  {s:'Camilo',y:2025,m:10,d:30,amt:236667,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (9).xml',per:'01-10-2025→30-10-2025'},
+  {s:'Camilo',y:2025,m:10,d:30,amt:500000,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc (9).xml',per:'01-10-2025→30-10-2025'},
+  {s:'Fernando',y:2025,m:1,d:29,amt:70000,desc:'TEF 20083182-9 YAHISA FRANCISC',rut:'20083182-9',file:'typeDesc.xml',per:'21-01-2025→30-01-2025'},
+  {s:'Camilo',y:2025,m:1,d:30,amt:1000000,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc.xml',per:'21-01-2025→30-01-2025'}
+];
+
+// Embedded fallback names
+const FULL_NAMES_EMBEDDED = {
+    'Antonio': 'Inv. Acuña Ltda. <small style="color:#888">(Antonio)</small>',
+    'Cristian': 'Cristian Segovia Peña <small style="color:#888">(Chueco)</small>',
+    'Felipe': 'Felipe Simonsohn González',
+    'Laura': 'Laura Díaz Abramo <small style="color:#888">(+ Thales)</small>',
+    'Jordi': 'Jordi Segura Farias <small style="color:#888">(+ Alyne)</small>',
+    'Camilo': 'Camilo Piga Díaz',
+    'Eduardo': 'Eduardo Moreno Araya <small style="color:#888">(+ Anneli)</small>',
+    'Sebastián': 'Sebastián Acuña Keller',
+    'Cristóbal': 'Cristóbal Huneeus Lagos <small style="color:#888">(+ Constanza)</small>',
+    'Fernando': 'Fernando Encinas Ciesla <small style="color:#888">(+ Yahisa)</small>'
+};
+
+// ==================== UI CONSTANTS (not from JSON) ====================
+const MONTHS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+let ggccHighlightSocio = null; // Socio a resaltar al abrir tab GGCC
+
+
+function fmt(n) { return '$' + Math.round(n).toLocaleString('es-CL'); }
+function fmtM(n) { return '$' + (n/1000000).toFixed(1).replace('.0','') + 'M'; }
+
+// ==================== TABS ====================
+function switchSubTab(subId, btn) {
+    const parent = btn.closest('.tab-content');
+    parent.querySelectorAll('.sub-tab-content').forEach(t => t.style.display = 'none');
+    parent.querySelectorAll('.sub-tab-btn').forEach(b => { b.style.background = 'transparent'; b.style.color = '#666'; });
+    const target = document.getElementById(subId);
+    if (target) target.style.display = 'block';
+    btn.style.background = '#1a1a2e';
+    btn.style.color = 'white';
+    if (subId === 'sub-casa') renderCasa();
+}
+
+function switchTab(tabName, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    const el = document.getElementById('tab-' + tabName);
+    if (el) el.classList.add('active');
+    if (btn) btn.classList.add('active');
+    // Lazy render
+    if (tabName === 'aportescapital') renderAportesCapital();
+    if (tabName === 'ggcc') renderGGCC();
+    
+}
+
+// ==================== CREDIT POOL ALLOCATION ====================
+function allocateDeposits() {
+    const result = {};
+    SOCIOS_ALL.forEach(s => {
+        result[s] = { totalDep: 0, ggcc: {}, mob: {}, otros: 0 };
+    });
+    // Group deposits by socio, year, month
+    const grouped = {};
+    ALL_DEPOSITS.forEach(d => {
+        const key = d.s + '|' + d.y + '|' + d.m;
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(d);
+    });
+    SOCIOS_ALL.forEach(s => {
+        const socioDeposits = ALL_DEPOSITS.filter(d => d.s === s);
+        result[s].totalDep = socioDeposits.reduce((a,d) => a + d.amt, 0);
+        // For each year-month with data
+        const periods = {};
+        socioDeposits.forEach(d => {
+            const k = d.y + '-' + d.m;
+            if (!periods[k]) periods[k] = { y: d.y, m: d.m, total: 0 };
+            periods[k].total += d.amt;
+        });
+        let creditPool = 0;
+        // Sort periods chronologically
+        const sortedPeriods = Object.values(periods).sort((a,b) => a.y*100+a.m - (b.y*100+b.m));
+        sortedPeriods.forEach(p => {
+            creditPool += p.total;
+            // Allocate GGCC first
+            const ggccDue = CUOTA_GGCC;
+            const ggccPaid = Math.min(creditPool, ggccDue);
+            creditPool -= ggccPaid;
+            result[s].ggcc[p.y + '-' + p.m] = ggccPaid;
+            // Allocate Mob if applicable (from Feb 2025 only)
+            if (SOCIOS_MOB.includes(s) && (p.y > 2025 || (p.y === 2025 && p.m >= 2))) {
+                const mobDue = CUOTA_MOB;
+                const mobPaid = Math.min(creditPool, mobDue);
+                creditPool -= mobPaid;
+                result[s].mob[p.y + '-' + p.m] = mobPaid;
+            }
+        });
+        result[s].otros = creditPool;
+    });
+    return result;
+}
+
+// ==================== CONSTRUCCIÓN (dinámico desde cartolas) ====================
+function buildConstruccionSection(cls) {
+    const constrMeta = ACUERDOS.construccion.total; // $76M
+
+    let totalPagado = 0, totalFalta = 0, sociosAlDia = 0;
+    const rows = [];
+
+    SOCIOS_ALL.forEach((s, i) => {
+        const c = cls[s];
+        const meta = c.constrQuota;
+        const pagado = c.constrPaid;
+        const falta = Math.max(0, meta - pagado);
+        const pct = Math.min(100, Math.round(pagado / meta * 100));
+        const completo = falta === 0;
+        if (completo) sociosAlDia++;
+        totalPagado += pagado;
+        totalFalta += falta;
+        rows.push({ s, meta, pagado, falta, pct, completo, i });
+    });
+
+    const totalMeta = SOCIOS_ALL.reduce((a, s) => a + cls[s].constrQuota, 0);
+    const totalPct = Math.min(100, Math.round(totalPagado / totalMeta * 100));
+
+    let html = '<div class="table-section">';
+    html += '<div class="detail-header">';
+    html += '<h3 style="color:#7b1fa2;">Aporte Construcción — Club House Chaicura</h3>';
+    html += '<span class="detail-badge" style="background:#f3e5f5; color:#7b1fa2;">' + totalPct + '% Completado</span></div>';
+    html += '<p style="font-size:12px; color:#666; margin-bottom:16px;">Total construcción: $8M (sep-2024) + $3.5M (jul-2025, 3 cuotas) + $4M (ene-2026, inmediato) + $3.6M (2026, 12 cuotas) = $19.1M/socio × 10 = $191M. Club House ~440 m², Arq. Aguayo/AQAA. Fuente: cartolas (' + ALL_DEPOSITS.length + ' depósitos).</p>';
+
+    // KPIs
+    html += '<div class="kpis" style="margin-bottom:20px;">';
+    html += '<div class="kpi purple"><div class="label">Total Comprometido</div><div class="value">' + fmtM(totalMeta) + '</div><div class="sub">$19.1M × 10 socios</div></div>';
+    html += '<div class="kpi green"><div class="label">Recaudado (Cartolas)</div><div class="value">' + fmtM(totalPagado) + '</div></div>';
+    html += '<div class="kpi red"><div class="label">Falta</div><div class="value">' + fmtM(totalFalta) + '</div></div>';
+    html += '<div class="kpi green"><div class="label">Socios al día</div><div class="value">' + sociosAlDia + '/10</div></div>';
+    html += '</div>';
+
+    // Table
+    html += '<div class="table-wrapper"><table class="hito-table"><thead style="background:#7b1fa2;"><tr>';
+    html += '<th style="background:#7b1fa2;">#</th><th style="background:#7b1fa2;">Socio</th>';
+    html += '<th style="background:#7b1fa2;" class="col-right">Comprometido</th>';
+    html += '<th style="background:#7b1fa2;" class="col-right">Pagado (Cartola)</th>';
+    html += '<th style="background:#7b1fa2;" class="col-right">Falta</th>';
+    html += '<th style="background:#7b1fa2;">Avance</th>';
+    html += '<th style="background:#7b1fa2;" class="col-center">Estado</th>';
+    html += '</tr></thead><tbody>';
+
+    rows.forEach(r => {
+        const fillClass = r.pct >= 90 ? 'complete' : r.pct >= 50 ? 'partial' : 'low';
+        html += '<tr' + (r.completo ? ' style="background:#e8f5e9;"' : '') + '>';
+        html += '<td>' + (r.i + 1) + '</td>';
+        html += '<td>' + (FULL_NAMES[r.s] || r.s) + '</td>';
+        html += '<td class="col-right">' + fmt(r.meta) + '</td>';
+        html += '<td class="col-right">' + fmt(r.pagado) + '</td>';
+        html += '<td class="col-right" style="color:' + (r.falta > 0 ? '#c62828' : '#2e7d32') + ';">' + fmt(r.falta) + '</td>';
+        html += '<td><div class="progress-bar" style="height:18px;"><div class="progress-fill ' + fillClass + '" style="width:' + r.pct + '%;font-size:10px;">' + r.pct + '%</div></div></td>';
+        if (r.completo) {
+            html += '<td class="col-center"><span class="badge badge-green">Completo</span></td>';
+        } else {
+            const bdg = r.falta >= 6000000 ? 'badge-red' : 'badge-orange';
+            html += '<td class="col-center"><span class="badge ' + bdg + '">Falta ' + fmtM(r.falta) + '</span></td>';
+        }
+        html += '</tr>';
+    });
+
+    // Total row
+    const totalFillClass = totalPct >= 90 ? 'complete' : totalPct >= 50 ? 'partial' : 'low';
+    html += '</tbody><tfoot><tr class="total-row"><td colspan="2">TOTAL</td>';
+    html += '<td class="col-right">' + fmt(totalMeta) + '</td>';
+    html += '<td class="col-right">' + fmt(totalPagado) + '</td>';
+    html += '<td class="col-right" style="color:#c62828;">' + fmt(totalFalta) + '</td>';
+    html += '<td><div class="progress-bar" style="height:18px;"><div class="progress-fill ' + totalFillClass + '" style="width:' + totalPct + '%;font-size:10px;">' + totalPct + '%</div></div></td>';
+    html += '<td></td></tr></tfoot></table></div>';
+
+    html += '<div style="background:#e3f2fd; border-radius:8px; padding:8px 14px; margin-top:12px; font-size:11px; color:#1565c0;">Datos calculados desde classifyAllDeposits() — cada depósito se clasifica cronológicamente: GGCC → Cuota Mob → Capital → Construcción → Mobiliario → Otros.</div>';
+
+    html += '<div style="background:#f3e5f5; padding:12px 16px; border-radius:8px; margin-top:16px; font-size:12px; color:#7b1fa2; border-left:4px solid #7b1fa2;">';
+    html += '<strong>Proyecto Club House Chaicura (440 m²):</strong> Arq. Maximiliano Aguayo / AQAA. Etapa 3 (Proyecto Licitación) contratada oct-2024 ($6.25M). Etapa 4 (Construcción física) pendiente. Especialistas: TROMÜ sanitario, René Avendaño cálculo, Gastón Arriagada mecánica de suelo.';
+    html += '</div></div>';
+
+    return html;
+}
+
+// ==================== RESUMEN ====================
+function renderResumen() {
+    // === TODO calculado desde classifyAllDeposits() (cartolas) ===
+    const cls = classifyAllDeposits();
+
+    // Totales pagados desde cartolas por categoría
+    let capitalPagado = 0, constrPagado = 0, mobPagado = 0, ggccPagado = 0, otrosPagado = 0;
+    SOCIOS_ALL.forEach(s => {
+        capitalPagado += cls[s].totals.inicial;
+        constrPagado  += cls[s].totals.construccion;
+        mobPagado     += cls[s].totals.mobiliario;
+        ggccPagado    += cls[s].totals.ggcc;
+        otrosPagado   += cls[s].totals.otros;
+    });
+
+    // Comprometidos (metas de acuerdo)
+    const capitalMeta = ACUERDOS.capital.total;            // $100M
+    const constrMeta  = ACUERDOS.construccion.total;       // $76M
+    const mobMeta     = ACUERDOS.mobiliario.total;         // $40M
+    const ggccMeses   = 3 + 12 + 12 + 12 + MESES_CON_DATOS_2026; // oct-2022 a último mes con cartola
+    const ggccMeta    = CUOTA_GGCC * 10 * ggccMeses;
+
+    const capitalFalta = Math.max(0, capitalMeta - capitalPagado);
+    const constrFalta  = Math.max(0, constrMeta - constrPagado);
+    const mobFalta     = Math.max(0, mobMeta - mobPagado);
+    const ggccFalta    = Math.max(0, ggccMeta - ggccPagado);
+
+    const totalComprometido = capitalMeta + constrMeta + mobMeta; // Sin GGCC
+    const totalRecaudado    = capitalPagado + constrPagado + mobPagado; // Sin GGCC
+    const totalFalta        = Math.max(0, totalComprometido - totalRecaudado);
+
+    // Socios al día (todo pagado según cartola)
+    let sociosAlDia = 0;
+    const sociosAlDiaNames = [];
+    const ggccExpectedPerSocio = CUOTA_GGCC * ggccMeses;
+    SOCIOS_ALL.forEach(s => {
+        const d = cls[s];
+        const constrComp = d.constrQuota;
+        const capOk   = d.capitalPaid >= 10000000;
+        const cOk     = d.constrPaid >= constrComp;
+        const mOk     = d.mobPaid >= 4000000;
+        const gOk     = d.totals.ggcc >= ggccExpectedPerSocio;
+        if (capOk && cOk && mOk && gOk) { sociosAlDia++; sociosAlDiaNames.push(s); }
+    });
+
+    // Pcts y conteos para hito cards
+    const capitalPct = Math.min(100, Math.round(capitalPagado / capitalMeta * 100));
+    const capitalAlDia = SOCIOS_ALL.filter(s => cls[s].capitalPaid >= 10000000).length;
+    const constrPct = Math.min(100, Math.round(constrPagado / constrMeta * 100));
+    const constrAlDia = SOCIOS_ALL.filter(s => cls[s].constrPaid >= cls[s].constrQuota).length;
+    const mobPct = Math.min(100, Math.round(mobPagado / mobMeta * 100));
+    const mobAlDia = SOCIOS_ALL.filter(s => cls[s].mobPaid >= 4000000).length;
+    const ggccPct = Math.min(100, Math.round(ggccPagado / ggccMeta * 100));
+
+    const ggccAlDia = SOCIOS_ALL.filter(s => cls[s].totals.ggcc >= ggccExpectedPerSocio).length;
+    const recaudadoPct = Math.round(totalRecaudado / totalComprometido * 100);
+
+    let html = '';
+
+    // ─── FUENTE ───
+    html += '<div style="background:#f5f5f5; border-radius:8px; padding:8px 14px; margin-bottom:20px; font-size:11px; color:#666; display:flex; align-items:center; gap:8px;">';
+    html += '<strong>Fuente:</strong> Todos los montos calculados exclusivamente desde cartolas Scotiabank verificadas (' + ALL_DEPOSITS.length + ' depósitos).</div>';
+
+    // ═══════════════════════════════════════════
+    // SECCIÓN 1: APORTES COMPROMETIDOS
+    // ═══════════════════════════════════════════
+    html += '<div style="margin-bottom:32px;">';
+    html += '<h2 style="font-size:18px; color:#1a1a2e; margin-bottom:4px; border-bottom:2px solid #1a1a2e; padding-bottom:8px;">Aportes Comprometidos</h2>';
+    html += '<p style="font-size:12px; color:#888; margin:4px 0 16px;">Capital Inicial + Construcción + Mobiliario — por socio: $10M + $19.1M + $4M = $33.1M</p>';
+
+    // 3 KPIs en fila
+    html += '<section class="kpis" style="margin-bottom:16px;">';
+    html += '<div class="kpi green" onclick="showHitosCapital()" style="cursor:pointer;" title="Click para ver todos los hitos"><div class="label">Comprometido Total</div><div class="value">' + fmtM(totalComprometido) + '</div><div class="sub">$33.1M × 10 socios · <span style="font-size:10px; text-decoration:underline;">ver hitos</span></div></div>';
+    html += '<div class="kpi blue"><div class="label">Recaudado</div><div class="value">' + fmtM(totalRecaudado) + '</div><div class="sub">' + recaudadoPct + '% del comprometido</div></div>';
+    html += '<div class="kpi red"><div class="label">Falta por Recaudar</div><div class="value">' + fmtM(totalFalta) + '</div><div class="sub">' + (capitalFalta > 0 ? fmtM(capitalFalta) + ' cap. ' : '') + (constrFalta > 0 ? fmtM(constrFalta) + ' constr. ' : '') + (mobFalta > 0 ? fmtM(mobFalta) + ' mob.' : '') + '</div></div>';
+    html += '</section>';
+
+    // 3 Hito cards (Capital, Construcción, Mobiliario)
+    html += '<div id="hitosCards" class="hito-cards" style="margin-bottom:0;">';
+
+    const kFill = capitalPct >= 90 ? 'complete' : capitalPct >= 50 ? 'partial' : 'low';
+    html += '<div class="hito-card capital" onclick="switchTab(\'aportescapital\', document.querySelectorAll(\'.tab-btn\')[1])">';
+    html += '<h4 style="color:#1565c0;">Capital Inicial</h4><div class="hito-sub">$10M/socio — Constitución abr-2020</div>';
+    html += '<div class="hito-amount" style="color:#1565c0;">' + fmtM(capitalPagado) + ' / ' + fmtM(capitalMeta) + '</div>';
+    html += '<div class="progress-bar"><div class="progress-fill ' + kFill + '" style="width:' + capitalPct + '%">' + capitalPct + '%</div></div>';
+    html += '<div class="hito-stats"><div><span class="stat-label">Al día:</span> <span class="stat-value" style="color:#2e7d32;">' + capitalAlDia + '/10</span></div><div><span class="stat-label">Falta:</span> <span class="stat-value" style="color:' + (capitalFalta > 0 ? '#c62828' : '#2e7d32') + ';">' + fmtM(capitalFalta) + '</span></div></div>';
+    html += '</div>';
+
+    const cFillClass = constrPct >= 90 ? 'complete' : constrPct >= 50 ? 'partial' : 'low';
+    html += '<div class="hito-card construccion" onclick="switchTab(\'aportescapital\', document.querySelectorAll(\'.tab-btn\')[1])">';
+    html += '<h4 style="color:#7b1fa2;">Construcción</h4><div class="hito-sub">$19.1M/socio — $8M + $3.5M + $4M + $3.6M</div>';
+    html += '<div class="hito-amount" style="color:#7b1fa2;">' + fmtM(constrPagado) + ' / ' + fmtM(constrMeta) + '</div>';
+    html += '<div class="progress-bar"><div class="progress-fill ' + cFillClass + '" style="width:' + constrPct + '%">' + constrPct + '%</div></div>';
+    html += '<div class="hito-stats"><div><span class="stat-label">Al día:</span> <span class="stat-value" style="color:#2e7d32;">' + constrAlDia + '/10</span></div><div><span class="stat-label">Falta:</span> <span class="stat-value" style="color:#c62828;">' + fmtM(constrFalta) + '</span></div></div>';
+    html += '</div>';
+
+    const mFillClass = mobPct >= 90 ? 'complete' : mobPct >= 50 ? 'partial' : 'low';
+    html += '<div class="hito-card mobiliario" onclick="switchTab(\'aportescapital\', document.querySelectorAll(\'.tab-btn\')[1])">';
+    html += '<h4 style="color:#e65100;">Mobiliario</h4><div class="hito-sub">$4M/socio — 24 cuotas desde feb-2025</div>';
+    html += '<div class="hito-amount" style="color:#e65100;">' + fmtM(mobPagado) + ' / ' + fmtM(mobMeta) + '</div>';
+    html += '<div class="progress-bar"><div class="progress-fill ' + mFillClass + '" style="width:' + mobPct + '%">' + mobPct + '%</div></div>';
+    html += '<div class="hito-stats"><div><span class="stat-label">Al día:</span> <span class="stat-value" style="color:#2e7d32;">' + mobAlDia + '/10</span></div><div><span class="stat-label">Falta:</span> <span class="stat-value" style="color:#c62828;">' + fmtM(mobFalta) + '</span></div></div>';
+    html += '</div>';
+    html += '</div>'; // hito-cards
+    html += '</div>'; // sección aportes
+
+    // ═══════════════════════════════════════════
+    // SECCIÓN 2: GASTOS COMUNES (GGCC)
+    // ═══════════════════════════════════════════
+    html += '<div id="ggccEstado" style="margin-bottom:32px;">';
+    html += '<h2 style="font-size:18px; color:#00838f; margin-bottom:4px; border-bottom:2px solid #00838f; padding-bottom:8px;">Gastos Comunes (GGCC)</h2>';
+    html += '<p style="font-size:12px; color:#888; margin:4px 0 16px;">$70.000/mes por socio desde octubre 2022 — ' + ggccMeses + ' meses acumulados</p>';
+
+    // KPI GGCC
+    html += '<section class="kpis" style="margin-bottom:16px;">';
+    html += '<div class="kpi" style="border-left:4px solid #00838f; background:#e0f2f1;"><div class="label">Total Esperado</div><div class="value" style="color:#00838f;">' + fmtM(ggccMeta) + '</div><div class="sub">' + ggccMeses + ' meses × $70K × 10 socios</div></div>';
+    html += '<div class="kpi" style="border-left:4px solid #00838f;"><div class="label">Recaudado GGCC</div><div class="value" style="color:#00838f;">' + fmtM(ggccPagado) + '</div><div class="sub">' + Math.round(ggccPagado/ggccMeta*100) + '% del esperado</div></div>';
+    html += '<div class="kpi" style="border-left:4px solid ' + (ggccFalta > 0 ? '#c62828' : '#2e7d32') + ';"><div class="label">Pendiente GGCC</div><div class="value" style="color:' + (ggccFalta > 0 ? '#c62828' : '#2e7d32') + ';">' + fmtM(ggccFalta) + '</div><div class="sub">Al día: ' + ggccAlDia + '/10 socios</div></div>';
+    html += '</section>';
+
+    // Tabla GGCC por socio
+    html += '<div class="table-section" style="border-left:4px solid #00838f;">';
+    html += '<div class="table-wrapper"><table style="width:100%; border-collapse:collapse; font-size:13px;">';
+    html += '<thead><tr><th style="text-align:left;">Socio</th><th style="text-align:center;">Meses pagados</th><th class="col-right">Pagado</th><th class="col-right">Esperado</th><th class="col-right">Diferencia</th><th style="text-align:center;">Estado</th></tr></thead><tbody>';
+    SOCIOS_ALL.forEach(s => {
+        const gPaid = cls[s].totals.ggcc;
+        const gDiff = gPaid - ggccExpectedPerSocio;
+        const mesesPagados = Math.round(gPaid / CUOTA_GGCC);
+        const ok = gDiff >= 0;
+        html += '<tr style="background:' + (ok ? '#e8f5e9' : '#fff') + '; cursor:pointer;" onclick="ggccHighlightSocio=\'' + s + '\'; switchTab(\'ggcc\', document.querySelectorAll(\'.tab-btn\')[2])" title="Ver detalle GGCC de ' + s + '">';
+        html += '<td style="text-decoration:underline; color:#00838f;">' + (FULL_NAMES[s] || s) + '</td>';
+        html += '<td style="text-align:center;">' + mesesPagados + ' / ' + ggccMeses + '</td>';
+        html += '<td class="col-right">' + fmt(gPaid) + '</td>';
+        html += '<td class="col-right">' + fmt(ggccExpectedPerSocio) + '</td>';
+        html += '<td class="col-right" style="color:' + (ok ? '#2e7d32' : '#c62828') + '; font-weight:600;">' + (gDiff >= 0 ? '+' : '') + fmt(gDiff) + '</td>';
+        if (ok) {
+            html += '<td style="text-align:center;"><span class="badge badge-green">Al día</span></td>';
+        } else {
+            html += '<td style="text-align:center;"><span class="badge badge-red">Debe ' + Math.abs(Math.round(gDiff/CUOTA_GGCC)) + ' meses</span></td>';
+        }
+        html += '</tr>';
+    });
+    html += '</tbody></table></div></div>';
+    html += '</div>'; // sección GGCC
+
+    // ═══════════════════════════════════════════
+    // SECCIÓN 3: ESTADO GENERAL POR SOCIO
+    // ═══════════════════════════════════════════
+    html += '<div style="margin-bottom:32px;">';
+    html += '<h2 style="font-size:18px; color:#1a1a2e; margin-bottom:4px; border-bottom:2px solid #1a1a2e; padding-bottom:8px;">Estado General por Socio</h2>';
+    html += '<p style="font-size:12px; color:#888; margin:4px 0 16px;">Deuda pendiente por categoría — incluye aportes + GGCC — Socios al día: ' + (sociosAlDia > 0 ? '<strong style="color:#2e7d32;">' + sociosAlDiaNames.join(', ') + '</strong>' : '<span style="color:#c62828;">Ninguno</span>') + '</p>';
+
+    html += '<div class="table-section">';
+    html += '<div class="table-wrapper"><table class="hito-table"><thead><tr>';
+    html += '<th>Socio</th><th class="col-right">Capital<br><small>($10M)</small></th><th class="col-right">Construcción<br><small>($19.1M)</small></th><th class="col-right">Mobiliario<br><small>($4M)</small></th><th class="col-right">GGCC<br><small>(' + ggccMeses + ' meses)</small></th><th class="col-right">Deuda Total</th><th class="col-center">Estado</th>';
+    html += '</tr></thead><tbody>';
+
+    SOCIOS_ALL.forEach(s => {
+        const d = cls[s];
+        const capDebt   = Math.max(0, 10000000 - d.capitalPaid);
+        const cComp     = d.constrQuota;
+        const constrDbt = Math.max(0, cComp - d.constrPaid);
+        const mobDbt    = Math.max(0, 4000000 - d.mobPaid);
+        const ggccDbt   = Math.max(0, ggccExpectedPerSocio - d.totals.ggcc);
+        const totalDebt = capDebt + constrDbt + mobDbt + ggccDbt;
+        const isAlDia   = totalDebt === 0;
+        const bgStyle   = isAlDia ? ' style="background:#e8f5e9;"' : '';
+
+        html += '<tr' + bgStyle + '>';
+        html += '<td>' + (FULL_NAMES[s] || s) + '</td>';
+        html += '<td class="col-right" style="color:' + (capDebt > 0 ? '#c62828' : '#2e7d32') + ';">' + (capDebt > 0 ? fmt(capDebt) : '✓') + '</td>';
+        html += '<td class="col-right" style="color:' + (constrDbt > 0 ? '#c62828' : '#2e7d32') + ';">' + (constrDbt > 0 ? fmt(constrDbt) : '✓') + '</td>';
+        html += '<td class="col-right" style="color:' + (mobDbt > 0 ? '#e65100' : '#2e7d32') + ';">' + (mobDbt > 0 ? fmt(mobDbt) : '✓') + '</td>';
+        html += '<td class="col-right" style="color:' + (ggccDbt > 0 ? '#00838f' : '#2e7d32') + ';">' + (ggccDbt > 0 ? fmt(ggccDbt) : '✓') + '</td>';
+        html += '<td class="col-right" style="color:' + (totalDebt > 0 ? '#c62828' : '#2e7d32') + '; font-weight:700;">' + (totalDebt > 0 ? fmt(totalDebt) : '$0') + '</td>';
+        if (isAlDia) {
+            html += '<td class="col-center"><span class="badge badge-green">Al día</span></td>';
+        } else {
+            const badgeClass = totalDebt >= 8000000 ? 'badge-red' : 'badge-orange';
+            html += '<td class="col-center"><span class="badge ' + badgeClass + '">Debe ' + fmtM(totalDebt) + '</span></td>';
+        }
+        html += '</tr>';
+    });
+
+    html += '</tbody></table></div></div>';
+
+    // Charts
+    html += '<div class="charts">';
+    html += '<div class="chart-card"><h3>Avance por Hito</h3><div class="chart-container"><canvas id="resumenBarChart"></canvas></div></div>';
+    html += '<div class="chart-card"><h3>Composición Deuda Pendiente</h3><div class="chart-container"><canvas id="resumenPieChart"></canvas></div></div>';
+    html += '</div>';
+    html += '</div>'; // sección estado general
+
+    document.getElementById('tab-resumen').innerHTML = html;
+
+    // Draw charts
+    setTimeout(() => {
+        const ctx1 = document.getElementById('resumenBarChart');
+        if (ctx1) new Chart(ctx1.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Capital Inicial', 'Construcción', 'Mobiliario', 'GGCC'],
+                datasets: [
+                    { label: 'Recaudado', data: [capitalPagado/1e6, constrPagado/1e6, mobPagado/1e6, ggccPagado/1e6], backgroundColor: '#4caf50aa', borderColor: '#4caf50', borderWidth: 1 },
+                    { label: 'Falta', data: [capitalFalta/1e6, constrFalta/1e6, mobFalta/1e6, ggccFalta/1e6], backgroundColor: '#ef5350aa', borderColor: '#ef5350', borderWidth: 1 }
+                ]
+            },
+            options: { responsive:true, maintainAspectRatio:false, plugins:{tooltip:{callbacks:{label:c=>c.dataset.label+': $'+c.raw.toFixed(1)+'M'}}}, scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>'$'+v+'M'}}} }
+        });
+        const ctx2 = document.getElementById('resumenPieChart');
+        const pendLabels = [], pendData = [], pendColors = [];
+        if (capitalFalta > 0) { pendLabels.push('Capital ('+fmtM(capitalFalta)+')'); pendData.push(capitalFalta/1e6); pendColors.push('#1565c0'); }
+        if (constrFalta > 0)  { pendLabels.push('Construcción ('+fmtM(constrFalta)+')'); pendData.push(constrFalta/1e6); pendColors.push('#7b1fa2'); }
+        if (mobFalta > 0)     { pendLabels.push('Mobiliario ('+fmtM(mobFalta)+')'); pendData.push(mobFalta/1e6); pendColors.push('#e65100'); }
+        if (ggccFalta > 0)    { pendLabels.push('GGCC ('+fmtM(ggccFalta)+')'); pendData.push(ggccFalta/1e6); pendColors.push('#00838f'); }
+        if (ctx2 && pendData.length) new Chart(ctx2.getContext('2d'), {
+            type: 'doughnut',
+            data: { labels: pendLabels, datasets: [{ data: pendData, backgroundColor: pendColors, borderWidth:2, borderColor:'#fff' }] },
+            options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}} }
+        });
+    }, 100);
+}
+
+// ==================== APORTES DE CAPITAL ====================
+// Category colors
+const CAT_COLORS = {
+    inicial:      { bg: '#1565c0', light: '#e3f2fd', text: '#1565c0', label: 'Aporte Inicial' },
+    construccion: { bg: '#7b1fa2', light: '#f3e5f5', text: '#7b1fa2', label: 'Construcción' },
+    mobiliario:   { bg: '#e65100', light: '#fff3e0', text: '#e65100', label: 'Mobiliario' },
+    ggcc:         { bg: '#00838f', light: '#e0f2f1', text: '#00838f', label: 'GGCC' },
+    otros:        { bg: '#616161', light: '#f5f5f5', text: '#616161', label: 'Otros' }
+};
+const CAT_ORDER = ['inicial', 'construccion', 'mobiliario', 'ggcc', 'otros'];
+
+// Comprehensive allocation: classify every deposit into categories
+function classifyAllDeposits() {
+    const result = {}; // result[socio] = { deposits: [{...dep, alloc:{inicial,construccion,mobiliario,ggcc,otros}}], totals:{...} }
+
+    SOCIOS_ALL.forEach(s => {
+        // Construcción: $8M + $3.5M + $4M + $3.6M = $19.1M para todos
+        const constrQuota = 19100000;
+        let capitalPaid = 0, constrPaid = 0, mobPaid = 0;
+        const ggccByMonth = {}, mobCuotaByMonth = {};
+
+        // Sort this socio's deposits chronologically
+        const deps = ALL_DEPOSITS.filter(d => d.s === s)
+            .map(d => ({...d}))
+            .sort((a,b) => (a.y*10000 + a.m*100 + a.d) - (b.y*10000 + b.m*100 + b.d));
+
+        const classified = [];
+
+        deps.forEach(dep => {
+            let remaining = dep.amt;
+            const alloc = { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, otros: 0 };
+            const mk = dep.y + '-' + dep.m;
+
+            // Step 1: GGCC ($70k/month from Oct 2022)
+            if (dep.y > 2022 || (dep.y === 2022 && dep.m >= 10)) {
+                const ggccAlready = ggccByMonth[mk] || 0;
+                const ggccTake = Math.min(remaining, Math.max(0, CUOTA_GGCC - ggccAlready));
+                if (ggccTake > 0) {
+                    alloc.ggcc += ggccTake;
+                    ggccByMonth[mk] = ggccAlready + ggccTake;
+                    remaining -= ggccTake;
+                }
+            }
+
+            // Step 2: Mob cuota ($166,666/month from Feb 2025, only SOCIOS_MOB)
+            if ((dep.y > 2025 || (dep.y === 2025 && dep.m >= 2)) && SOCIOS_MOB.includes(s) && mobPaid < 4000000) {
+                const mobCAlready = mobCuotaByMonth[mk] || 0;
+                let mobTake = Math.min(remaining, Math.max(0, CUOTA_MOB - mobCAlready));
+                mobTake = Math.min(mobTake, 4000000 - mobPaid);
+                if (mobTake > 0) {
+                    alloc.mobiliario += mobTake;
+                    mobCuotaByMonth[mk] = mobCAlready + mobTake;
+                    mobPaid += mobTake;
+                    remaining -= mobTake;
+                }
+            }
+
+            // Step 3: Aporte Inicial (until $10M)
+            if (capitalPaid < 10000000 && remaining > 0) {
+                const capTake = Math.min(remaining, 10000000 - capitalPaid);
+                alloc.inicial += capTake;
+                capitalPaid += capTake;
+                remaining -= capTake;
+            }
+
+            // Step 4: Construcción (until quota)
+            if (constrPaid < constrQuota && remaining > 0) {
+                const cTake = Math.min(remaining, constrQuota - constrPaid);
+                alloc.construccion += cTake;
+                constrPaid += cTake;
+                remaining -= cTake;
+            }
+
+            // Step 5: Mobiliario lump (until $4M)
+            if (mobPaid < 4000000 && remaining > 0) {
+                const mTake = Math.min(remaining, 4000000 - mobPaid);
+                alloc.mobiliario += mTake;
+                mobPaid += mTake;
+                remaining -= mTake;
+            }
+
+            // Step 6: Otros
+            if (remaining > 0) {
+                alloc.otros += remaining;
+            }
+
+            classified.push({ ...dep, alloc });
+        });
+
+        // Compute totals
+        const totals = { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, otros: 0, total: 0 };
+        classified.forEach(d => {
+            CAT_ORDER.forEach(c => totals[c] += d.alloc[c]);
+            totals.total += d.amt;
+        });
+
+        result[s] = { deposits: classified, totals, capitalPaid, constrPaid, mobPaid, constrQuota };
+    });
+    return result;
+}
+
+function renderAportesCapital() {
+    const classified = classifyAllDeposits();
+    const years = getYearsWithData();
+    const grandTotal = ALL_DEPOSITS.reduce((a,d) => a + d.amt, 0);
+
+    // Global category totals
+    const globalCats = { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, otros: 0 };
+    SOCIOS_ALL.forEach(s => CAT_ORDER.forEach(c => globalCats[c] += classified[s].totals[c]));
+
+    let html = '';
+
+    // ===== HEADER + KPIs =====
+    html += '<div class="table-section">';
+    html += '<div class="detail-header"><h3>Aportes de Capital — Clasificación por Categoría</h3>';
+    html += '<span class="detail-badge" style="background:#e3f2fd; color:#1565c0;">' + ALL_DEPOSITS.length + ' depósitos verificados</span></div>';
+    html += '<p style="font-size:12px; color:#666; margin-bottom:16px;">Cada depósito se clasifica automáticamente según el orden de compromisos: primero GGCC ($70k/mes desde oct-2022), luego cuota Mob ($166k/mes desde ene-2025), y el remanente llena Aporte Inicial → Construcción → Mobiliario → Otros. Haz clic en cualquier celda para ver detalle.</p>';
+
+    // Category KPI cards
+    html += '<section class="kpis">';
+    html += '<div class="kpi blue"><div class="label">Aporte Inicial</div><div class="value">' + fmt(globalCats.inicial) + '</div><div class="sub">de $100M comprometido</div></div>';
+    html += '<div class="kpi purple"><div class="label">Construcción</div><div class="value">' + fmt(globalCats.construccion) + '</div><div class="sub">de $76M comprometido</div></div>';
+    html += '<div class="kpi orange"><div class="label">Mobiliario</div><div class="value">' + fmt(globalCats.mobiliario) + '</div><div class="sub">de $40M comprometido</div></div>';
+    html += '<div class="kpi teal"><div class="label">GGCC</div><div class="value">' + fmt(globalCats.ggcc) + '</div><div class="sub">Gastos comunes mensuales</div></div>';
+    if (globalCats.otros > 0) {
+        html += '<div class="kpi"><div class="label">Otros</div><div class="value">' + fmt(globalCats.otros) + '</div><div class="sub">Excedentes</div></div>';
+    }
+    html += '</section>';
+
+    // Stacked bar visual
+    html += '<div style="margin-bottom:20px;">';
+    const barParts = CAT_ORDER.filter(c => globalCats[c] > 0);
+    html += '<div style="display:flex; height:32px; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">';
+    barParts.forEach(c => {
+        const pct = (globalCats[c] / grandTotal * 100);
+        if (pct > 0) html += '<div style="width:' + pct + '%; background:' + CAT_COLORS[c].bg + '; display:flex; align-items:center; justify-content:center; color:white; font-size:10px; font-weight:600; min-width:' + (pct > 5 ? '0' : '30') + 'px;">' + (pct >= 5 ? pct.toFixed(0) + '%' : '') + '</div>';
+    });
+    html += '</div>';
+    html += '<div class="legend" style="margin-top:8px;">';
+    barParts.forEach(c => {
+        html += '<div class="legend-item"><div class="legend-color" style="background:' + CAT_COLORS[c].bg + '"></div> ' + CAT_COLORS[c].label + ' (' + (globalCats[c]/grandTotal*100).toFixed(1) + '%)</div>';
+    });
+    html += '</div></div>';
+    html += '</div>';
+
+    // ===== PER-YEAR BREAKDOWN =====
+    years.forEach(year => {
+        const yearDeps = ALL_DEPOSITS.filter(d => d.y === year);
+        const yearTotal = yearDeps.reduce((a,d) => a + d.amt, 0);
+
+        // Aggregate year categories per socio
+        const yearData = {};
+        SOCIOS_ALL.forEach(s => {
+            yearData[s] = { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, otros: 0, total: 0 };
+            classified[s].deposits.filter(d => d.y === year).forEach(d => {
+                CAT_ORDER.forEach(c => yearData[s][c] += d.alloc[c]);
+                yearData[s].total += d.amt;
+            });
+        });
+
+        // Year category totals
+        const yearCats = { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, otros: 0 };
+        SOCIOS_ALL.forEach(s => CAT_ORDER.forEach(c => yearCats[c] += yearData[s][c]));
+
+        html += '<div class="table-section">';
+        html += '<div class="detail-header"><h3 style="color:#1565c0;">Aportes ' + year + '</h3>';
+        html += '<span class="detail-badge" style="background:#e3f2fd; color:#1565c0;">' + fmt(yearTotal) + '</span></div>';
+
+        // Mini category KPIs for the year
+        const activeCats = CAT_ORDER.filter(c => yearCats[c] > 0);
+        if (activeCats.length > 0) {
+            html += '<section class="kpis" style="margin-bottom:16px;">';
+            activeCats.forEach(c => {
+                html += '<div class="kpi" style="border-left:4px solid ' + CAT_COLORS[c].bg + ';"><div class="label">' + CAT_COLORS[c].label + '</div><div class="value" style="color:' + CAT_COLORS[c].text + ';">' + fmt(yearCats[c]) + '</div><div class="sub">' + (yearCats[c]/yearTotal*100).toFixed(1) + '% del año</div></div>';
+            });
+            html += '</section>';
+        }
+
+        // Socio × Category table
+        html += '<div class="table-wrapper"><table><thead><tr>';
+        html += '<th style="background:#1565c0;">Socio</th>';
+        CAT_ORDER.forEach(c => {
+            if (yearCats[c] > 0 || c === 'inicial' || c === 'construccion' || c === 'mobiliario') {
+                html += '<th style="background:' + CAT_COLORS[c].bg + ';">' + CAT_COLORS[c].label + '</th>';
+            }
+        });
+        html += '<th style="background:#0d47a1;">Total Año</th>';
+        html += '</tr></thead><tbody>';
+
+        SOCIOS_ALL.forEach(s => {
+            const sd = yearData[s];
+            html += '<tr><td>' + (FULL_NAMES[s] || s) + '</td>';
+            CAT_ORDER.forEach(c => {
+                if (yearCats[c] > 0 || c === 'inicial' || c === 'construccion' || c === 'mobiliario') {
+                    const val = sd[c];
+                    if (val > 0) {
+                        html += '<td style="text-align:right; background:' + CAT_COLORS[c].light + '; color:' + CAT_COLORS[c].text + '; font-weight:600;">' + fmt(val) + '</td>';
+                    } else {
+                        html += '<td style="text-align:center; color:#ddd;">—</td>';
+                    }
+                }
+            });
+            html += '<td style="text-align:right; font-weight:700; background:#e8eaf6;">' + fmt(sd.total) + '</td>';
+            html += '</tr>';
+        });
+
+        // Year total row
+        html += '<tr class="total-row"><td>TOTAL</td>';
+        CAT_ORDER.forEach(c => {
+            if (yearCats[c] > 0 || c === 'inicial' || c === 'construccion' || c === 'mobiliario') {
+                html += '<td style="text-align:right;">' + fmt(yearCats[c]) + '</td>';
+            }
+        });
+        html += '<td style="text-align:right;">' + fmt(yearTotal) + '</td>';
+        html += '</tr></tbody></table></div>';
+
+        // Stacked bar for year
+        html += '<div style="display:flex; height:20px; border-radius:6px; overflow:hidden; margin-top:8px; box-shadow:0 1px 2px rgba(0,0,0,0.08);">';
+        activeCats.forEach(c => {
+            const pct = yearTotal > 0 ? (yearCats[c] / yearTotal * 100) : 0;
+            if (pct > 0) html += '<div style="width:' + pct + '%; background:' + CAT_COLORS[c].bg + ';" title="' + CAT_COLORS[c].label + ': ' + fmt(yearCats[c]) + '"></div>';
+        });
+        html += '</div>';
+
+        html += '</div>';
+    });
+
+    // ===== GRAND SUMMARY: Socio × Category =====
+    html += '<div class="table-section">';
+    html += '<h3>Resumen Acumulado — Total por Socio y Categoría</h3>';
+    html += '<p style="font-size:12px; color:#666; margin-bottom:12px;">Desde la primera cartola (jun-2020) hasta hoy. Incluye cumplimiento de cada compromiso.</p>';
+    html += '<div class="table-wrapper"><table><thead><tr>';
+    html += '<th style="background:#0d47a1;">Socio</th>';
     CAT_ORDER.forEach(c => html += '<th style="background:' + CAT_COLORS[c].bg + ';">' + CAT_COLORS[c].label + '</th>');
     html += '<th style="background:#0d47a1;">Total</th>';
     html += '<th style="background:#0d47a1;">% del Total</th>';
@@ -15,7 +1867,7 @@ riera cartola (jun-2020) hasta hoy. Incluye cumplimiento de cada compromiso.</p>
             if (val > 0) {
                 html += '<td style="text-align:right; color:' + CAT_COLORS[c].text + '; font-weight:600;">' + fmt(val) + '</td>';
             } else {
-                html += '<td style="text-align:center; color:#ddd;">â</td>';
+                html += '<td style="text-align:center; color:#ddd;">—</td>';
             }
         });
         html += '<td style="text-align:right; font-weight:700;">' + fmt(t.total) + '</td>';
@@ -36,122 +1888,332 @@ riera cartola (jun-2020) hasta hoy. Incluye cumplimiento de cada compromiso.</p>
     html += '<div class="table-wrapper"><table><thead><tr>';
     html += '<th style="background:#0d47a1;">Socio</th>';
     html += '<th style="background:#1565c0;">Capital<br><small>Meta $10M</small></th>';
-    html += '<th style="background:#7b1fa2;">ConstrucciÃ³n<br><small>Meta $19.1M</small></th>';
+    html += '<th style="background:#7b1fa2;">Construcción<br><small>Meta $19.1M</small></th>';
     html += '<th style="background:#e65100;">Mobiliario<br><small>Meta $4M</small></th>';
     html += '<th style="background:#0d47a1;">Deuda Pendiente</th>';
-    html += '<th style="background:#0d47a1">Estado</th>';
-    html += '</tr></thead><tbody>';        [10946, 38699, 100049, 81643, 259249, 200012, 90540, 234891, 0, 0, 279990, 557120, 21998, 501980, 30528, 913690, 44999, 252280, 0, 62990, 073000, done:true},
-            {id:3, nombre:"SillÃ³n", cat:"living", presup:3500000, real:1999990, done:true},
+    html += '<th style="background:#0d47a1;">Estado</th>';
+    html += '</tr></thead><tbody>';
+
+    let totalDeuda = 0;
+    SOCIOS_ALL.forEach(s => {
+        const c = classified[s];
+        const capMeta = 10000000;
+        const conMeta = c.constrQuota;
+        const mobMeta = 4000000;
+        const capDeuda = Math.max(0, capMeta - c.capitalPaid);
+        const conDeuda = Math.max(0, conMeta - c.constrPaid);
+        const mobDeuda = Math.max(0, mobMeta - c.mobPaid);
+        const deuda = capDeuda + conDeuda + mobDeuda;
+        totalDeuda += deuda;
+        const isAlDia = deuda === 0;
+
+        html += '<tr' + (isAlDia ? ' style="background:#e8f5e9;"' : '') + '>';
+        html += '<td>' + (FULL_NAMES[s] || s) + '</td>';
+
+        // Capital
+        const capPct = Math.min(100, c.capitalPaid / capMeta * 100);
+        html += '<td style="text-align:center;">';
+        if (capPct >= 100) html += '<span style="color:#2e7d32; font-weight:700;">✓ $10M</span>';
+        else html += '<div class="progress-bar" style="height:18px;"><div class="progress-fill ' + (capPct >= 50 ? 'partial' : 'low') + '" style="width:' + capPct + '%;font-size:10px;">' + capPct.toFixed(0) + '%</div></div>';
+        html += '</td>';
+
+        // Construcción
+        const conPct = Math.min(100, c.constrPaid / conMeta * 100);
+        html += '<td style="text-align:center;">';
+        if (conPct >= 100) html += '<span style="color:#2e7d32; font-weight:700;">✓ ' + fmt(conMeta) + '</span>';
+        else if (c.constrPaid > 0) html += '<div class="progress-bar" style="height:18px;"><div class="progress-fill ' + (conPct >= 50 ? 'partial' : 'low') + '" style="width:' + conPct + '%;font-size:10px;">' + conPct.toFixed(0) + '%</div></div><small style="color:#888;">' + fmt(c.constrPaid) + ' / ' + fmt(conMeta) + '</small>';
+        else html += '<span class="badge badge-red">Pendiente</span>';
+        html += '</td>';
+
+        // Mobiliario
+        const mobPct = Math.min(100, c.mobPaid / mobMeta * 100);
+        html += '<td style="text-align:center;">';
+        if (mobPct >= 100) html += '<span style="color:#2e7d32; font-weight:700;">✓ $4M</span>';
+        else if (c.mobPaid > 0) html += '<div class="progress-bar" style="height:18px;"><div class="progress-fill ' + (mobPct >= 50 ? 'partial' : 'low') + '" style="width:' + mobPct + '%;font-size:10px;">' + mobPct.toFixed(0) + '%</div></div><small style="color:#888;">' + fmt(c.mobPaid) + ' / $4M</small>';
+        else html += '<span class="badge badge-red">Pendiente</span>';
+        html += '</td>';
+
+        // Deuda
+        html += '<td style="text-align:right; font-weight:700; color:' + (deuda > 0 ? '#c62828' : '#2e7d32') + ';">' + (deuda > 0 ? fmt(deuda) : '$0') + '</td>';
+
+        // Estado
+        if (isAlDia) html += '<td class="col-center"><span class="badge badge-green">100% Al día</span></td>';
+        else {
+            const bdg = deuda >= 8000000 ? 'badge-red' : 'badge-orange';
+            html += '<td class="col-center"><span class="badge ' + bdg + '">Debe ' + fmtM(deuda) + '</span></td>';
+        }
+        html += '</tr>';
+    });
+
+    html += '<tr class="total-row"><td>TOTAL</td><td></td><td></td><td></td>';
+    html += '<td style="text-align:right; color:#c62828;">' + fmt(totalDeuda) + '</td><td></td></tr>';
+    html += '</tbody></table></div>';
+
+    html += '<div style="background:#e3f2fd; padding:12px 16px; border-radius:8px; margin-top:16px; font-size:12px; color:#1565c0; border-left:4px solid #1565c0;">';
+    html += '<strong>Lógica de clasificación:</strong> De cada depósito se descuenta primero GGCC ($70k/mes, desde oct-2022), luego cuota Mob ($166k/mes desde feb-2025 para 7 socios). El remanente llena: Aporte Inicial (hasta $10M) → Construcción (hasta $19.1M) → Mobiliario (hasta $4M) → Otros. Fuente: cartolas Scotiabank verificadas.';
+    html += '</div></div>';
+
+    // === SECCIÓN CONSTRUCCIÓN (dentro de Aportes de Capital) ===
+    html += buildConstruccionSection(classified);
+
+    document.getElementById('tab-aportescapital').innerHTML = html;
+}
+
+// ==================== GGCC (Cartolas) ====================
+function getYearsWithData() {
+    const years = new Set();
+    ALL_DEPOSITS.forEach(d => years.add(d.y));
+    return Array.from(years).sort();
+}
+
+function renderGGCC() {
+    const sel = document.getElementById('ggccYearSelect');
+    const years = getYearsWithData();
+    if (!sel.options.length) {
+        years.forEach(y => { const o = document.createElement('option'); o.value = y; o.text = y; sel.appendChild(o); });
+        sel.value = years[years.length - 1] || 2025;
+    }
+    const year = parseInt(sel.value);
+    const alloc = allocateDeposits();
+    const maxMonth = (year === 2026) ? MESES_CON_DATOS_2026 : 12;
+    
+    let ggccTotal = 0, sociosAlDia = 0;
+    
+    // Calculate GGCC per socio
+    const data = {};
+    SOCIOS_ALL.forEach(s => {
+        data[s] = { months: [], paid: 0 };
+        for (let m = 1; m <= 12; m++) {
+            const key = year + '-' + m;
+            const val = alloc[s].ggcc[key] || 0;
+            data[s].months.push(val);
+            data[s].paid += val;
+        }
+        ggccTotal += data[s].paid;
+        if (data[s].paid >= CUOTA_GGCC * maxMonth) sociosAlDia++;
+    });
+    const esperado = CUOTA_GGCC * 10 * maxMonth;
+    const saldo = ggccTotal - esperado;
+    
+    let html = '';
+    html += '<div class="table-section">';
+    html += '<div class="detail-header"><h3>Resumen Anual GGCC ' + year + ' — Estado por Socio</h3>';
+    html += '<span class="detail-badge" style="background:#e0f2f1; color:#00838f;">Cartolas ' + year + ' verificadas</span></div>';
+    html += '<p style="font-size:12px; color:#666; margin-bottom:16px;">GGCC = $70.000/mes × 10 socios × ' + maxMonth + ' meses = ' + fmt(CUOTA_GGCC * 10 * maxMonth) + ' esperado. De cada depósito solo se contabiliza la porción GGCC ($70k). La porción de mobiliario ($166.666) se muestra en Aportes de Capital. Fuente: cartolas Scotiabank.</p>';
+    
+    // KPIs
+    html += '<section class="kpis">';
+    html += '<div class="kpi green"><div class="label">GGCC Pagado ' + year + '</div><div class="value">' + fmt(ggccTotal) + '</div><div class="sub">de ' + fmt(esperado) + ' esperado</div></div>';
+    html += '<div class="kpi ' + (sociosAlDia >= 5 ? 'green' : 'orange') + '"><div class="label">Socios al día</div><div class="value">' + sociosAlDia + '/10</div></div>';
+    html += '<div class="kpi ' + (saldo >= 0 ? 'green' : 'red') + '"><div class="label">Saldo GGCC</div><div class="value">' + fmt(saldo) + '</div></div>';
+    html += '</section>';
+    
+    // Monthly grid
+    html += '<div class="table-wrapper"><table><thead><tr><th>Socio</th>';
+    for (let m = 0; m < 12; m++) html += '<th>' + MONTHS[m] + '</th>';
+    html += '<th style="background:#e65100;">Pagado</th><th>Esperado</th><th>Saldo</th></tr></thead><tbody>';
+    
+    const monthTotals = new Array(12).fill(0);
+    SOCIOS_ALL.forEach(s => {
+        const d = data[s];
+        const esperadoS = CUOTA_GGCC * maxMonth;
+        const saldoS = d.paid - esperadoS;
+        const isHL = (ggccHighlightSocio === s);
+        html += '<tr id="ggcc-row-' + s + '" style="' + (isHL ? 'background:#b2ebf2; outline:2px solid #00838f; font-weight:700;' : '') + '"><td>' + (FULL_NAMES[s] || s) + '</td>';
+        for (let m = 0; m < 12; m++) {
+            const val = d.months[m];
+            monthTotals[m] += val;
+            if (m + 1 > maxMonth) {
+                html += '<td style="background:#f5f5f5; color:#bbb; text-align:center;">—</td>'; // No data yet
+            } else if (val >= CUOTA_GGCC) {
+                html += '<td class="ggcc-paid">' + fmt(val) + '</td>';
+            } else if (val > 0) {
+                html += '<td class="ggcc-partial">' + fmt(val) + '</td>';
+            } else {
+                html += '<td class="ggcc-none">—</td>';
+            }
+        }
+        html += '<td style="font-weight:700;">' + fmt(d.paid) + '</td>';
+        html += '<td>' + fmt(esperadoS) + '</td>';
+        html += '<td class="' + (saldoS >= 0 ? 'saldo-pos' : 'saldo-neg') + '">' + fmt(saldoS) + '</td>';
+        html += '</tr>';
+    });
+    
+    // Total row
+    html += '<tr class="total-row"><td>TOTAL</td>';
+    for (let m = 0; m < 12; m++) html += '<td>' + fmt(monthTotals[m]) + '</td>';
+    html += '<td>' + fmt(ggccTotal) + '</td><td>' + fmt(esperado) + '</td><td class="' + (saldo >= 0 ? 'saldo-pos' : 'saldo-neg') + '">' + fmt(saldo) + '</td></tr>';
+    html += '</tbody></table></div>';
+    
+    html += '<div class="legend"><div class="legend-item"><div class="legend-color" style="background:#e8f5e9"></div> $70.000 GGCC cubierto</div><div class="legend-item"><div class="legend-color" style="background:#fff8e1"></div> GGCC parcial</div></div>';
+    html += '<div style="background:#fff3e0; border-radius:8px; padding:12px 16px; margin-top:16px; font-size:12px; color:#795548;">';
+    html += '<strong>Nota:</strong> Cada celda muestra solo la porción GGCC ($70.000). Si un socio deposita $236.666, aquí aparecen $70.000 (verde) y los $166.666 restantes se contabilizan como cuota de mobiliario en el tab correspondiente.</div>';
+    html += '</div>';
+    
+    // Desglose section
+    html += '<div class="table-section">';
+    html += '<div class="detail-header"><h3>Desglose ' + year + ' — GGCC + Mobiliario + Otros Aportes</h3>';
+    html += '<span class="detail-badge" style="background:#e0f2f1; color:#00838f;">Cartola verificada</span></div>';
+    html += '<p style="font-size:12px; color:#666; margin-bottom:16px;">Cada depósito se descompone en: GGCC ($70.000/mes), Cuota Mobiliario ($166.666/mes, 7 socios), y el excedente va a Otros Aportes (construcción, extras). Laura, Eduardo y Cristóbal solo aportan GGCC.</p>';
+    
+    // Year totals
+    const yearDeps = ALL_DEPOSITS.filter(d => d.y === year);
+    const yearTotal = yearDeps.reduce((a,d) => a + d.amt, 0);
+    const yearGGCC = ggccTotal;
+    let yearMob = 0;
+    SOCIOS_ALL.forEach(s => {
+        for (let m = 1; m <= 12; m++) {
+            yearMob += (alloc[s].mob[year + '-' + m] || 0);
+        }
+    });
+    const yearOtros = yearTotal - yearGGCC - yearMob;
+    
+    html += '<section class="kpis">';
+    html += '<div class="kpi blue"><div class="label">Total Depositado</div><div class="value">' + fmt(yearTotal) + '</div></div>';
+    html += '<div class="kpi green"><div class="label">GGCC</div><div class="value">' + fmt(yearGGCC) + '</div><div class="sub">' + (yearTotal > 0 ? (yearGGCC/yearTotal*100).toFixed(1) : 0) + '%</div></div>';
+    html += '<div class="kpi orange"><div class="label">MOB Cuotas</div><div class="value">' + fmt(yearMob) + '</div><div class="sub">' + (yearTotal > 0 ? (yearMob/yearTotal*100).toFixed(1) : 0) + '%</div></div>';
+    html += '<div class="kpi purple"><div class="label">Otros Aportes</div><div class="value">' + fmt(yearOtros) + '</div><div class="sub">' + (yearTotal > 0 ? (yearOtros/yearTotal*100).toFixed(1) : 0) + '%</div></div>';
+    html += '</section>';
+    
+    // Per-socio breakdown table
+    html += '<div class="table-wrapper"><table><thead><tr>';
+    html += '<th>Socio</th><th>Total Depositado</th><th style="background:#2e7d32;">GGCC<br>$70k/mes</th><th style="background:#e65100;">Mob Cuota<br>$166k/mes</th><th style="background:#1565c0;">Otros Aportes</th>';
+    html += '</tr></thead><tbody>';
+    SOCIOS_ALL.forEach(s => {
+        const sDeps = yearDeps.filter(d => d.s === s);
+        const sTot = sDeps.reduce((a,d) => a + d.amt, 0);
+        const sGGCC = data[s].paid;
+        let sMob = 0;
+        for (let m = 1; m <= 12; m++) sMob += (alloc[s].mob[year + '-' + m] || 0);
+        const sOtros = sTot - sGGCC - sMob;
+        html += '<tr><td>' + (FULL_NAMES[s] || s) + '</td><td style="font-weight:700;">' + fmt(sTot) + '</td>';
+        html += '<td style="color:#2e7d32;">' + fmt(sGGCC) + '</td>';
+        html += '<td style="color:#e65100;">' + fmt(sMob) + '</td>';
+        html += '<td style="color:#1565c0;">' + fmt(sOtros) + '</td></tr>';
+    });
+    html += '</tbody></table></div></div>';
+    
+    document.getElementById('ggccContent').innerHTML = html;
+
+    // Scroll al socio destacado si viene del Resumen
+    if (ggccHighlightSocio) {
+        const row = document.getElementById('ggcc-row-' + ggccHighlightSocio);
+        if (row) setTimeout(() => row.scrollIntoView({behavior:'smooth', block:'center'}), 150);
+        ggccHighlightSocio = null; // Reset después de usar
+    }
+}
+
+// ==================== CASA ====================
+const CASA_ITEMS_EMBEDDED = [
+{id:1, nombre:"Mesa Comedor", cat:"cocina", presup:500000, real:0, done:false},
+            {id:2, nombre:"Sillas Comedor", cat:"cocina", presup:2080000, real:1272000, done:true},
+            {id:3, nombre:"Sillón", cat:"living", presup:3500000, real:1999990, done:true},
             {id:4, nombre:"Sitiales", cat:"living", presup:2200000, real:839980, done:true},
             {id:5, nombre:"Biblioteca baja", cat:"living", presup:500000, real:0, done:false},
-            { id:6, nombre:"Mesas Laterales", cat:"living", presup:500000, real:0, done:false},
-            { id:7, nombre:"Alfombra", cat:"living", presup:800000, real:269990, done:true},
-            { id:8, nombre:"Campana extractora", cat:"cocina", presup:1500000, real:144980, done:true},
+            {id:6, nombre:"Mesas Laterales", cat:"living", presup:500000, real:0, done:false},
+            {id:7, nombre:"Alfombra", cat:"living", presup:800000, real:269990, done:true},
+            {id:8, nombre:"Campana extractora", cat:"cocina", presup:1500000, real:144980, done:true},
             {id:9, nombre:"Colgadores Closet", cat:"dormitorio", presup:300000, real:0, done:false},
             {id:10, nombre:"Bajadas de Cama", cat:"dormitorio", presup:300000, real:0, done:false},
-            {id:11, nombre:"Colchones, Camas, Cojines, SÃ¡banas, Toallas", cat:"dormitorio", presup:4100000, real:4309031, done:true},
-            {id:12, nombre:"Bosca (estufa a leÃ±a)", cat:"calefaccion", presup:1600000, real:557120, done:true},
-            {id:13, nombre:"Calefactores piezas elÃ©ctricos", cat:"calefaccion", presup:478000, real:219980, done:true},
-            {id:14, nombre:"Calefactores piso baÃ±os elÃ©ctricos", cat:"bano", presup:501980, real:501980, done:true},
+            {id:11, nombre:"Colchones, Camas, Cojines, Sábanas, Toallas", cat:"dormitorio", presup:4100000, real:4309031, done:true},
+            {id:12, nombre:"Bosca (estufa a leña)", cat:"calefaccion", presup:1600000, real:557120, done:true},
+            {id:13, nombre:"Calefactores piezas eléctricos", cat:"calefaccion", presup:478000, real:219980, done:true},
+            {id:14, nombre:"Calefactores piso baños eléctricos", cat:"bano", presup:501980, real:501980, done:true},
             {id:15, nombre:"Calienta Toallas", cat:"bano", presup:559980, real:305280, done:true},
-            {id:16, nombre:"Vajilla, Platos, Copas, Vasos, CuchillerÃ­a", cat:"cocina", presup:1320000, real:913690, done:true},
+            {id:16, nombre:"Vajilla, Platos, Copas, Vasos, Cuchillería", cat:"cocina", presup:1320000, real:913690, done:true},
             {id:17, nombre:"Cava de vinos", cat:"cocina", presup:1300000, real:449990, done:true},
             {id:18, nombre:"Luminarias", cat:"general", presup:2500000, real:252280, done:true},
             {id:19, nombre:"Porta Paraguas", cat:"general", presup:250000, real:0, done:false},
             {id:20, nombre:"Tostadora", cat:"cocina", presup:200000, real:62990, done:true},
             {id:21, nombre:"Thermomix", cat:"cocina", presup:1500000, real:0, done:false},
-            { id:22, nombre:"Parrilla a GAS", cat:"exterior", presup:900000, real:900000, done:true},
-            { id:23, nombre:"FogÃ±n", cat:"exterior", presup:900000, real:350000, done:true},
+            {id:22, nombre:"Parrilla a Gas", cat:"exterior", presup:900000, real:900000, done:true},
+            {id:23, nombre:"Fogón", cat:"exterior", presup:900000, real:350000, done:true},
             {id:24, nombre:"Lavavajilla", cat:"cocina", presup:800000, real:645990, done:true},
-            {id:25, nombre:"MÃ¡quina hacer Pan", cat:"cocina", presup:150000, real:69990, done:true},
+            {id:25, nombre:"Máquina hacer Pan", cat:"cocina", presup:150000, real:69990, done:true},
             {id:26, nombre:"Cocina con Horno", cat:"cocina", presup:2400000, real:602982, done:true},
             {id:27, nombre:"Microondas", cat:"cocina", presup:750000, real:182691, done:true},
-            { id:28, nombre:"Cafetera", cat:"cocina", presup:500000, real:0, done:false},
-            { id:29, nombre:"Calentador de Agua", cat:"bano", presup:1500000, real:811981, done:true},
+            {id:28, nombre:"Cafetera", cat:"cocina", presup:500000, real:0, done:false},
+            {id:29, nombre:"Calentador de Agua", cat:"bano", presup:1500000, real:811981, done:true},
             {id:30, nombre:"Congelador", cat:"cocina", presup:600000, real:279990, done:true},
-            { id:31, nombre:"Refrigerador", cat:"cocina", presup:1500000, real:737991, done:true},
-            { id:32, nombre:"Lavadora", cat:"general", presup:0, real:386991, done:true},
-            { id:33, nombre:"MultiOlla", cat:"cocina", presup:0, real:119990, done:true},
-            { id:34, nombre:"AirFryer", cat:"cocina", presup:0, real:129990, done:true},
-            {id:35, nombre:"TelevisiÃ³n", cat:"living", presup:0, real:879990, done:true},
-            { id:36, nombre:"Artefactos casa (varios)", cat:"general", presup:0, real:1134137, done:true},
-            {id:37, nombre:"MÃ¡quina de Hielo", cat:"cocina", presup:0, real:399990, done:true},
-            { id:38, nombre:"Sandwichera", cat:"cocina", presup:0, real:63990, done:true},
-            {id:39, nombre:"Prensa Francesa", cat:"cocina", presup:0, real:5998, done:true},
+            {id:31, nombre:"Refrigerador", cat:"cocina", presup:1500000, real:737991, done:true},
+            {id:32, nombre:"Lavadora", cat:"general", presup:0, real:386991, done:true},
+            {id:33, nombre:"MultiOlla", cat:"cocina", presup:0, real:119990, done:true},
+            {id:34, nombre:"AirFryer", cat:"cocina", presup:0, real:129990, done:true},
+            {id:35, nombre:"Televisión", cat:"living", presup:0, real:879990, done:true},
+            {id:36, nombre:"Artefactos casa (varios)", cat:"general", presup:0, real:1134137, done:true},
+            {id:37, nombre:"Máquina de Hielo", cat:"cocina", presup:0, real:399990, done:true},
+            {id:38, nombre:"Sandwichera", cat:"cocina", presup:0, real:63990, done:true},
+            {id:39, nombre:"Prensa Francesa", cat:"cocina", presup:0, real:59980, done:true},
             {id:40, nombre:"Hervidor de Huevos", cat:"cocina", presup:0, real:19990, done:true},
             {id:41, nombre:"Hervidor de Agua (x2)", cat:"cocina", presup:0, real:119980, done:true},
             {id:42, nombre:"Batidora", cat:"cocina", presup:0, real:41990, done:true},
             {id:43, nombre:"Balanza", cat:"cocina", presup:0, real:13990, done:true},
-            { id:44, nombre:"Molinillo", cat:"cocina", presup:0, real:54990, done:true},
+            {id:44, nombre:"Molinillo", cat:"cocina", presup:0, real:54990, done:true},
             {id:45, nombre:"Mantequillero", cat:"cocina", presup:0, real:25980, done:true},
             {id:46, nombre:"Ventanas", cat:"general", presup:0, real:0, done:false},
-            {id:47, nombre:"BaÃ±os (terminaciones)", cat:"bano", presup:0, real:2391015, done:true},
+            {id:47, nombre:"Baños (terminaciones)", cat:"bano", presup:0, real:2391015, done:true},
 ];
-let casaItems = JSON.parse(JSON.stringify(CAAAS_ITEMS_INITIAL));
+let casaItems = [];
 let casaNextId = 100;
 let casaFilter = 'all';
 
 function renderCasa() {
     const cats = ['all','cocina','living','dormitorio','bano','calefaccion','exterior','general'];
-    const catLabels = {all:'Todos',cocina:'Cocina',living:'Living',dormitorio:'
-\',bano:'BaÃ±os',calefaccion:'CalefacciÃ³n',exterior:'Exterior',general:'General'};
+    const catLabels = {all:'Todos',cocina:'Cocina',living:'Living',dormitorio:'Dormitorios',bano:'Baños',calefaccion:'Calefacción',exterior:'Exterior',general:'General'};
     const filtered = casaFilter === 'all' ? casaItems : casaItems.filter(i => i.cat === casaFilter);
     
     const totalPresup = casaItems.reduce((a,i) => a + (i.presup||0), 0);
     const totalReal = casaItems.reduce((a,i) => a + (i.real||0), 0);
     const totalDone = casaItems.filter(i => i.done).length;
     
-73000, done:true},
-            {id:3, nombre:"SillÃ³n", cat:"living", presup:3500000, real:1999990, done:true},
-            {id:4, nombre:"Sitiales", cat:"living", presup:2200000, real:839980, done:true},
-            {id:5, nombre:"Biblioteca baja", cat:"living", presup:500000, real:0, done:false},
-            { id:6, nombre:"Mesas Laterales", cat:"living", presup:500000, real:0, done:false},
-            { id:7, nombre:"Alfombra", cat:"living", presup:800000, real:269990, done:true},
-            { id:8, nombre:"Campana extractora", cat:"cocina", presup:1500000, real:144980, done:true},
-            {id:9, nombre:"Colgadores Closet", cat:"dormitorio", presup:300000, real:0, done:false},
-            {id:10, nombre:"Bajadas de Cama", cat:"dormitorio", presup:300000, real:0, done:false},
-            {id:11, nombre:"Colchones, Camas, Cojines, SÃ¡banas, Toallas", cat:"dormitorio", presup:4100000, real:4309031, done:true},
-            {id:12, nombre:"Bosca (estufa a leÃ±a)", cat:"calefaccion", presup:1600000, real:557120, done:true},
-            {id:13, nombre:"Calefactores piezas elÃ©ctricos", cat:"calefaccion", presup:478000, real:219980, done:true},
-            {id:14, nombre:"Calefactores piso baÃ±os elÃ©ctricos", cat:"bano", presup:501980, real:501980, done:true},
-            {id:15, nombre:"Calienta Toallas", cat:"bano", presup:559980, real:305280, done:true},
-            {id:16, nombre:"Vajilla, Platos, Copas, Vasos, CuchillerÃ­a", cat:"cocina", presup:1320000, real:913690, done:true},
-            {id:17, nombre:"Cava de vinos", cat:"cocina", presup:1300000, real:449990, done:true},
-            {id:18, nombre:"Luminarias", cat:"general", presup:2500000, real:252280, done:true},
-            {id:19, nombre:"Porta Paraguas", cat:"general", presup:250000, real:0, done:false},
-            {id:20, nombre:"Tostadora", cat:"cocina", presup:200000, real:62990, done:true},
-            {id:21, nombre:"Thermomix", cat:"cocina", presup:1500000, real:0, done:false},
-            { id:22, nombre:"Parrilla a GAS", cat:"exterior", presup:900000, real:900000, done:true},
-            { id:23, nombre:"FogÃ±n", cat:"exterior", presup:900000, real:350000, done:true},
-            {id:24, nombre:"Lavavajilla", cat:"cocina", presup:800000, real:645990, done:true},
-            {id:25, nombre:"MÃ¡quina hacer Pan", cat:"cocina", presup:150000, real:69990, done:true},
-            {id:26, nombre:"Cocina con Horno", cat:"cocina", presup:2400000, real:602982, done:true},
-            {id:27, nombre:"Microondas", cat:"cocina", presup:750000, real:182691, done:true},
-            { id:28, nombre:"Cafetera", cat:"cocina", presup:500000, real:0, done:false},
-            { id:29, nombre:"Calentador de Agua", cat:"bano", presup:1500000, real:811981, done:true},
-            {id:30, nombre:"Congelador", cat:"cocina", presup:600000, real:279990, done:true},
-            { id:31, nombre:"Refrigerador", cat:"cocina", presup:1500000, real:737991, done:true},
-            { id:32, nombre:"Lavadora", cat:"general", presup:0, real:386991, done:true},
-            { id:33, nombre:"MultiOlla", cat:"cocina", presup:0, real:119990, done:true},
-            { id:34, nombre:"AirFryer", cat:"cocina", presup:0, real:129990, done:true},
-            {id:35, nombre:"TelevisiÃ³n", cat:"living", presup:0, real:879990, done:true},
-            { id:36, nombre:"Artefactos casa (varios)", cat:"general", presup:0, real:1134137, done:true},
-            {id:37, nombre:"MÃ¡quina de Hielo", cat:"cocina", presup:0, real:399990, done:true},
-            { id:38, nombre:"Sandwichera", cat:"cocina", presup:0, real:63990, done:true},
-            {id:39, nombre:"Prensa Francesa", cat:"cocina", presup:0, real:5998, done:true},
-            {id:40, nombre:"Hervidor de Huevos", cat:"cocina", presup:0, real:19990, done:true},
-            {id:41, nombre:"Hervidor de Agua (x2)", cat:"cocina", presup:0, real:119980, done:true},
-            {id:42, nombre:"Batidora", cat:"cocina", presup:0, real:41990, done:true},
-            {id:43, nombre:"Balanza", cat:"cocina", presup:0, real:13990, done:true},
-            { id:44, nombre:"Molinillo", cat:"cocina", presup:0, real:54990, done:true},
-            {id:45, nombre:"Mantequillero", cat:"cocina", presup:0, real:25980, done:true},
-            {id:46, nombre:"Ventanas", cat:"general", presup:0, real:0, done:false},
-            {id:47, nombre:"BaÃ±os (terminaciones)", cat:"bano", presup:0, real:2391015, done:true},
-];
-let casaItems = JSON.parse(JSON.stringify(CAAAS_ITEMS_INITIAL));
-let casaNextId = 100;
-let casaFilter = 'all';
- {};
+    let html = '<div class="casa-section"><h3 style="font-size:16px; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">Club House Chaicura — Equipamiento (47 items)</h3>';
+    
+    // Summary KPIs
+    html += '<div class="casa-summary">';
+    html += '<div class="kpi blue"><div class="label">Presupuesto Total</div><div class="value">' + fmt(totalPresup) + '</div></div>';
+    html += '<div class="kpi green"><div class="label">Gasto Real</div><div class="value">' + fmt(totalReal) + '</div></div>';
+    html += '<div class="kpi ' + (totalReal <= totalPresup ? 'green' : 'red') + '"><div class="label">Diferencia</div><div class="value">' + fmt(totalPresup - totalReal) + '</div></div>';
+    html += '<div class="kpi teal"><div class="label">Completados</div><div class="value">' + totalDone + '/' + casaItems.length + '</div></div>';
+    html += '</div>';
+    
+    // Filters
+    html += '<div class="casa-filters">';
+    cats.forEach(c => {
+        html += '<button class="casa-filter-btn ' + (casaFilter === c ? 'active' : '') + '" onclick="casaFilter=\'' + c + '\'; renderCasa();">' + catLabels[c] + '</button>';
+    });
+    html += '</div>';
+    
+    // Add form
+    html += '<div class="casa-add-form">';
+    html += '<input id="casaNewName" placeholder="Nombre item">';
+    html += '<select id="casaNewCat"><option value="cocina">Cocina</option><option value="living">Living</option><option value="dormitorio">Dormitorio</option><option value="bano">Baño</option><option value="calefaccion">Calefacción</option><option value="exterior">Exterior</option><option value="general">General</option></select>';
+    html += '<input id="casaNewPresup" type="number" placeholder="Presupuesto">';
+    html += '<input id="casaNewReal" type="number" placeholder="Real">';
+    html += '<button onclick="addCasaItem()">+ Agregar</button>';
+    html += '</div>';
+    
+    // Grid
+    html += '<div class="casa-grid">';
+    filtered.forEach(i => {
+        html += '<div class="casa-card ' + (i.done ? 'done' : '') + '">';
+        html += '<div><h4>' + i.nombre + '</h4><div class="casa-cat">' + (catLabels[i.cat]||i.cat) + '</div>';
+        html += '<div class="casa-actions"><button class="casa-btn-done" onclick="toggleCasaItem(' + i.id + ')">' + (i.done ? '↩ Deshacer' : '✓ Hecho') + '</button>';
+        html += '<button class="casa-btn-del" onclick="deleteCasaItem(' + i.id + ')">✕</button></div></div>';
+        html += '<div class="casa-prices"><div class="casa-presup">Presup: ' + fmt(i.presup||0) + '</div><div class="casa-real">Real: ' + fmt(i.real||0) + '</div></div>';
+        html += '</div>';
+    });
+    html += '</div>';
+    
+    // Export/Import
+    html += '<div style="margin-top:20px; display:flex; gap:10px;">';
+    html += '<button onclick="exportCasa()" style="padding:8px 16px; background:#1a1a2e; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px;">Exportar JSON</button>';
+    html += '<button onclick="document.getElementById(\'casaImport\').click()" style="padding:8px 16px; background:#e0e0e0; color:#333; border:none; border-radius:6px; cursor:pointer; font-size:12px;">Importar JSON</button>';
+    html += '<input type="file" id="casaImport" accept=".json" style="display:none" onchange="importCasa(event)">';
+    html += '</div>';
+    
+    html += '</div>';
+    document.getElementById('sub-casa').innerHTML = html;
+}
 
 function addCasaItem() {
     const name = document.getElementById('casaNewName').value.trim();
@@ -178,8 +2240,187 @@ function importCasa(event) {
     reader.readAsText(event.target.files[0]);
 }
 
-try { const elem = document.getElementById('uploadArea'); if (elem) { elem.click = () => document.getElementById('fileInput').click(); } } catch(e) {}
-try { const fileInput = document.getElementById('fileInput'); if (fileInput) { fileInput.addEventListener('change', e => handleFiles(e.target.files)); } } catch(e) {}
-try { const modal = document.getElementById('depositModal'); if (modal) { modal.addEventListener('click', function(e) { if (e.target === this) closeModal(); }); } } catch(e) {}
-try { renderCasa(); } catch(e) { console.error(e): }
-object.fullScreen
+// ==================== MODAL ====================
+function showDeposits(socio, year, month) {
+    const deps = ALL_DEPOSITS.filter(d => d.s === socio && d.y === year && d.m === month);
+    let html = '<table><thead><tr><th>Fecha</th><th>Monto</th><th>Descripción</th></tr></thead><tbody>';
+    deps.forEach(d => {
+        html += '<tr><td>' + d.d + '/' + d.m + '/' + d.y + '</td><td>' + fmt(d.amt) + '</td><td style="font-size:11px;">' + (d.desc||'') + '</td></tr>';
+    });
+    html += '</tbody></table>';
+    document.getElementById('modalTitle').textContent = (FULL_NAMES[socio] || socio).replace(/<[^>]*>/g,'') + ' — ' + MONTHS[month-1] + ' ' + year;
+    document.getElementById('modalBody').innerHTML = html;
+    document.getElementById('depositModal').classList.add('active');
+}
+function closeModal() { document.getElementById('depositModal').classList.remove('active'); }
+document.getElementById('depositModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+
+// ==================== HITOS MODAL ====================
+function showHitosCapital() {
+    const cls = classifyAllDeposits();
+    const HITOS = [
+        { cat: 'Capital', color: '#1565c0', bg: '#e3f2fd', icon: '🏛️', fecha: 'Abril 2020', desc: 'Aporte de capital inicial — constitución de la sociedad', monto: 10000000, key: 'capital' },
+        { cat: 'Construcción', color: '#7b1fa2', bg: '#f3e5f5', icon: '🏗️', fecha: 'Septiembre 2024', desc: 'Primera estimación construcción Club House', monto: 8000000, key: 'construccion' },
+        { cat: 'Construcción', color: '#7b1fa2', bg: '#f3e5f5', icon: '🏗️', fecha: 'Julio 2025', desc: 'Cuota adicional construcción (hasta 3 cuotas)', monto: 3500000, key: 'construccion' },
+        { cat: 'Construcción', color: '#7b1fa2', bg: '#f3e5f5', icon: '🏗️', fecha: 'Enero 2026', desc: 'Cuota extraordinaria construcción — pago inmediato', monto: 4000000, key: 'construccion' },
+        { cat: 'Construcción', color: '#7b1fa2', bg: '#f3e5f5', icon: '🏗️', fecha: '2026 (12 cuotas)', desc: 'Cuota extraordinaria construcción — 12 cuotas mensuales', monto: 3600000, key: 'construccion' },
+        { cat: 'Mobiliario', color: '#e65100', bg: '#fff3e0', icon: '🪑', fecha: 'Febrero 2025', desc: 'Amueblado Club House — 24 cuotas de ~$166.333/mes', monto: 4000000, key: 'mobiliario' }
+    ];
+
+    // Calculate paid per category
+    var capitalPaid = 0, constrPaid = 0, mobPaid = 0;
+    SOCIOS_ALL.forEach(function(s) {
+        capitalPaid += cls[s].capitalPaid;
+        constrPaid += cls[s].constrPaid;
+        mobPaid += cls[s].mobPaid;
+    });
+    var paidByKey = { capital: capitalPaid, construccion: constrPaid, mobiliario: mobPaid };
+    var metaByKey = { capital: 100000000, construccion: 191000000, mobiliario: 40000000 };
+
+    var runningTotal = 0;
+    var html = '<div style="margin-bottom:16px;">';
+
+    // Summary KPIs
+    var totalComp = 331000000;
+    var totalPaid = capitalPaid + constrPaid + mobPaid;
+    html += '<div style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;">';
+    html += '<div style="flex:1; min-width:120px; background:#e8f5e9; border-radius:8px; padding:12px; text-align:center;"><div style="font-size:11px; color:#2e7d32;">Comprometido</div><div style="font-size:20px; font-weight:700; color:#2e7d32;">' + fmtM(totalComp) + '</div><div style="font-size:10px; color:#666;">$33.1M × 10</div></div>';
+    html += '<div style="flex:1; min-width:120px; background:#e3f2fd; border-radius:8px; padding:12px; text-align:center;"><div style="font-size:11px; color:#1565c0;">Recaudado</div><div style="font-size:20px; font-weight:700; color:#1565c0;">' + fmtM(totalPaid) + '</div><div style="font-size:10px; color:#666;">' + Math.round(totalPaid/totalComp*100) + '%</div></div>';
+    html += '<div style="flex:1; min-width:120px; background:#ffebee; border-radius:8px; padding:12px; text-align:center;"><div style="font-size:11px; color:#c62828;">Pendiente</div><div style="font-size:20px; font-weight:700; color:#c62828;">' + fmtM(totalComp - totalPaid) + '</div></div>';
+    html += '</div>';
+
+    // Timeline of hitos
+    html += '<div style="position:relative; padding-left:28px;">';
+    html += '<div style="position:absolute; left:12px; top:0; bottom:0; width:2px; background:#e0e0e0;"></div>';
+
+    HITOS.forEach(function(h, idx) {
+        runningTotal += h.monto * 10;
+        var catPaid = paidByKey[h.key];
+        var catMeta = metaByKey[h.key];
+        var catPct = Math.min(100, Math.round(catPaid / catMeta * 100));
+
+        html += '<div style="position:relative; margin-bottom:16px; background:' + h.bg + '; border-radius:10px; padding:14px 16px; border-left:3px solid ' + h.color + ';">';
+        html += '<div style="position:absolute; left:-22px; top:16px; width:12px; height:12px; border-radius:50%; background:' + h.color + '; border:2px solid white; box-shadow:0 0 0 2px ' + h.color + ';"></div>';
+        html += '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:4px;">';
+        html += '<div>';
+        html += '<div style="font-size:11px; color:' + h.color + '; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">' + h.icon + ' ' + h.cat + '</div>';
+        html += '<div style="font-size:14px; font-weight:700; color:#1a1a2e; margin:2px 0;">' + h.desc + '</div>';
+        html += '<div style="font-size:11px; color:#888;">' + h.fecha + '</div>';
+        html += '</div>';
+        html += '<div style="text-align:right;">';
+        html += '<div style="font-size:18px; font-weight:700; color:' + h.color + ';">' + fmtM(h.monto) + '<span style="font-size:11px; font-weight:400; color:#888;">/socio</span></div>';
+        html += '<div style="font-size:11px; color:#666;">' + fmtM(h.monto * 10) + ' total</div>';
+        html += '</div>';
+        html += '</div>';
+
+        // Show category progress only on last item of each category
+        var isLastOfCat = (idx === HITOS.length - 1) || HITOS[idx + 1].key !== h.key;
+        if (isLastOfCat) {
+            html += '<div style="margin-top:8px; display:flex; align-items:center; gap:8px;">';
+            html += '<div style="flex:1; height:6px; background:rgba(0,0,0,0.1); border-radius:3px; overflow:hidden;"><div style="height:100%; width:' + catPct + '%; background:' + h.color + '; border-radius:3px;"></div></div>';
+            html += '<span style="font-size:11px; font-weight:600; color:' + h.color + ';">' + catPct + '% pagado</span>';
+            html += '</div>';
+        }
+
+        html += '</div>';
+    });
+
+    html += '</div>'; // timeline
+
+    // Running total footer
+    html += '<div style="background:#f5f5f5; border-radius:8px; padding:12px 16px; margin-top:8px; display:flex; justify-content:space-between; align-items:center;">';
+    html += '<span style="font-size:12px; color:#666;">Compromiso acumulado total (10 socios)</span>';
+    html += '<span style="font-size:16px; font-weight:700; color:#1a1a2e;">' + fmtM(runningTotal) + '</span>';
+    html += '</div>';
+
+    html += '</div>';
+
+    document.getElementById('hitosModalBody').innerHTML = html;
+    document.getElementById('hitosModal').classList.add('active');
+}
+function closeHitosModal() { document.getElementById('hitosModal').classList.remove('active'); }
+document.getElementById('hitosModal').addEventListener('click', function(e) { if (e.target === this) closeHitosModal(); });
+
+// ==================== XML UPLOAD ====================
+const RUT_MAP_EMBEDDED = {
+    '13890149-1':'Antonio', '12106984-9':'Antonio', '76069305-7':'Antonio',
+    '12862395-7':'Fernando', '20083182-9':'Fernando',
+    '16095526-0':'Camilo', '18273744-5':'Felipe',
+    '16656248-1':'Laura', '13028872-3':'Laura',
+    '7746703-3':'Cristóbal', '15362944-7':'Cristóbal',
+    '13270339-6':'Eduardo', '13455042-2':'Eduardo',
+    '13272830-5':'Jordi', '13066600-0':'Cristian', '13426837-9':'Sebastián'
+};
+
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('fileInput');
+uploadArea.addEventListener('click', () => fileInput.click());
+uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+uploadArea.addEventListener('drop', e => { e.preventDefault(); uploadArea.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
+fileInput.addEventListener('change', e => handleFiles(e.target.files));
+
+let uploadedCount = 0;
+function handleFiles(files) {
+    Array.from(files).filter(f => f.name.endsWith('.xml')).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+            try {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(e.target.result, 'text/xml');
+                const movs = doc.querySelectorAll('movement, Movement');
+                let added = 0;
+                movs.forEach(mov => {
+                    const type = (mov.querySelector('type, Type')?.textContent || '').trim();
+                    if (type !== 'A') return; // Only abonos
+                    const amt = parseFloat(mov.querySelector('amount, Amount')?.textContent || '0');
+                    if (amt <= 0) return;
+                    const dateStr = mov.querySelector('date, Date')?.textContent || '';
+                    const desc = (mov.querySelector('description, Description')?.textContent || '').trim();
+                    const rut = (mov.querySelector('rut, Rut, rutBeneficiario')?.textContent || '').replace(/\./g, '').trim();
+                    
+                    // Parse date
+                    let y, m, d;
+                    if (dateStr.includes('/')) { const parts = dateStr.split('/'); d = parseInt(parts[0]); m = parseInt(parts[1]); y = parseInt(parts[2]); }
+                    else if (dateStr.includes('-')) { const parts = dateStr.split('-'); y = parseInt(parts[0]); m = parseInt(parts[1]); d = parseInt(parts[2]); }
+                    if (!y || !m || !d) return;
+                    
+                    // Identify socio
+                    let socio = RUT_MAP[rut] || null;
+                    if (!socio) {
+                        if (ANTONIO_KEYWORDS.some(kw => desc.includes(kw))) socio = 'Antonio';
+                        if (desc.includes('SEGURA FARIAS JORDI')) socio = 'Jordi';
+                    }
+                    if (!socio) return;
+                    
+                    // Check duplicate
+                    const isDup = ALL_DEPOSITS.some(dep => dep.s === socio && dep.y === y && dep.m === m && dep.d === d && dep.amt === amt);
+                    if (!isDup) {
+                        ALL_DEPOSITS.push({s:socio, y:y, m:m, d:d, amt:amt, desc:desc, rut:rut, file:file.name, per:m+'/'+y});
+                        added++;
+                    }
+                });
+                uploadedCount++;
+                document.getElementById('fileCount').innerHTML = 'Cartolas cargadas: <strong>' + uploadedCount + '</strong>';
+                if (added > 0) {
+                    renderResumen();
+                    renderGGCC();
+                    // Re-render Aportes de Capital if it's visible
+                    if (document.getElementById('tab-aportescapital').classList.contains('active')) renderAportesCapital();
+                }
+            } catch(err) { console.error('Error parsing', file.name, err); }
+        };
+        reader.readAsText(file);
+    });
+}
+
+// ==================== INIT ====================
+(async function() {
+    await loadInsularData();
+    renderResumen();
+    console.log('📊 Dashboard inicializado — ' + ALL_DEPOSITS.length + ' depósitos, ' + SOCIOS_ALL.length + ' socios');
+})();
+
+</script>
+</body>
+</html>
