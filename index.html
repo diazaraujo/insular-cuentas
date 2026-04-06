@@ -730,16 +730,7 @@
             <div class="doc-category doc-cat-cartolas">
                 <h4>Cartolas Scotiabank</h4>
                 <p style="font-size:11px; color:#888; margin-bottom:8px;">Los XML pueden importarse al dashboard en "GGCC (Cartolas)". Los PDF son referencia.</p>
-                <div id="cartolasList">
-                    <h5 style="margin:12px 0 6px; color:#555; font-size:13px;">2020</h5>
-                    <div class="doc-item"><a href="cartolas/Cartola_2020_06_Junio.pdf" target="_blank"><strong>Junio 2020</strong></a> — #1. 25 movimientos. $39.3M abonos.</div>
-                    <div class="doc-item"><a href="cartolas/Cartola_2020_07_Julio.pdf" target="_blank"><strong>Julio 2020</strong></a> — #2. Jordi $3.7M, Inv. Acuña $600k.</div>
-                    <div class="doc-item"><a href="cartolas/Cartola_2020_08_Agosto.pdf" target="_blank"><strong>Agosto 2020</strong></a> — #3. Felipe $1.2M.</div>
-                    <div class="doc-item"><a href="cartolas/Cartola_2020_09_Septiembre.pdf" target="_blank"><strong>Septiembre 2020</strong></a> — #4. Sin movimientos.</div>
-                    <div class="doc-item"><a href="cartolas/Cartola_2020_10_Octubre.pdf" target="_blank"><strong>Octubre 2020</strong></a> — #5. Felipe $1.2M.</div>
-                    <div class="doc-item"><a href="cartolas/Cartola_2020_11_Noviembre.pdf" target="_blank"><strong>Noviembre 2020</strong></a> — #6. Cheque $30M terreno.</div>
-                    <div class="doc-item"><a href="cartolas/Cartola_2020_12_Diciembre.pdf" target="_blank"><strong>Diciembre 2020</strong></a> — #7. Felipe $1.2M.</div>
-                </div>
+                <div id="cartolasList"><!-- populated dynamically by renderCartolasDocList() --></div>
             </div>
         </div>
         </div><!-- end sub-documentos -->
@@ -1078,6 +1069,7 @@ const SOCIOS_MOB = ['Antonio','Camilo','Cristian','Felipe','Fernando','Jordi','S
 const MOB_PAGADO_FULL = ['Laura','Eduardo','Cristóbal'];
 const CUOTA_GGCC = 70000;
 const CUOTA_MOB = 166666;
+const MOB_CUOTAS = 24;
 // Dinámico: calcula meses del año actual hasta el mes en curso
 const _now = new Date();
 const _currentYear = _now.getFullYear();
@@ -1139,52 +1131,6 @@ function switchTab(tabName, btn) {
     if (tabName === 'socio') renderVistaSocio();
 }
 
-// ==================== CREDIT POOL ALLOCATION ====================
-function allocateDeposits() {
-    const result = {};
-    SOCIOS_ALL.forEach(s => {
-        result[s] = { totalDep: 0, ggcc: {}, mob: {}, otros: 0 };
-    });
-    // Group deposits by socio, year, month
-    const grouped = {};
-    ALL_DEPOSITS.forEach(d => {
-        const key = d.s + '|' + d.y + '|' + d.m;
-        if (!grouped[key]) grouped[key] = [];
-        grouped[key].push(d);
-    });
-    SOCIOS_ALL.forEach(s => {
-        const socioDeposits = ALL_DEPOSITS.filter(d => d.s === s);
-        result[s].totalDep = socioDeposits.reduce((a,d) => a + d.amt, 0);
-        // For each year-month with data
-        const periods = {};
-        socioDeposits.forEach(d => {
-            const k = d.y + '-' + d.m;
-            if (!periods[k]) periods[k] = { y: d.y, m: d.m, total: 0 };
-            periods[k].total += d.amt;
-        });
-        let creditPool = 0;
-        // Sort periods chronologically
-        const sortedPeriods = Object.values(periods).sort((a,b) => a.y*100+a.m - (b.y*100+b.m));
-        sortedPeriods.forEach(p => {
-            creditPool += p.total;
-            // Allocate GGCC first
-            const ggccDue = CUOTA_GGCC;
-            const ggccPaid = Math.min(creditPool, ggccDue);
-            creditPool -= ggccPaid;
-            result[s].ggcc[p.y + '-' + p.m] = ggccPaid;
-            // Allocate Mob if applicable (from Feb 2025 only)
-            if (SOCIOS_MOB.includes(s) && (p.y > 2025 || (p.y === 2025 && p.m >= 2))) {
-                const mobDue = CUOTA_MOB;
-                const mobPaid = Math.min(creditPool, mobDue);
-                creditPool -= mobPaid;
-                result[s].mob[p.y + '-' + p.m] = mobPaid;
-            }
-        });
-        result[s].otros = creditPool;
-    });
-    return result;
-}
-
 // ==================== CONSTRUCCIÓN (dinámico desde cartolas) ====================
 function buildConstruccionSection(cls) {
     const constrMeta = ACUERDOS.construccion.total; // $76M
@@ -1212,14 +1158,14 @@ function buildConstruccionSection(cls) {
     html += '<div class="detail-header">';
     html += '<h3 style="color:#7b1fa2;">Aporte Construcción — Club House Chaicura</h3>';
     html += '<span class="detail-badge" style="background:#f3e5f5; color:#7b1fa2;">' + totalPct + '% Completado</span></div>';
-    html += '<p style="font-size:12px; color:#666; margin-bottom:16px;">Total construcción: $8M (sep-2024) + $3.5M (jul-2025, 3 cuotas) + $4M (ene-2026, inmediato) + $3.6M (2026, 12 cuotas) = $19.1M/socio × 10 = $191M. Club House ~440 m², Arq. Aguayo/AQAA. Fuente: cartolas (' + ALL_DEPOSITS.length + ' depósitos).</p>';
+    html += '<p style="font-size:12px; color:#666; margin-bottom:16px;">Total construcción: ' + fmtM(ACUERDOS.construccion.perSocio) + '/socio × ' + SOCIOS_ALL.length + ' = ' + fmtM(ACUERDOS.construccion.total) + '. Club House ~440 m², Arq. Aguayo/AQAA. Fuente: cartolas (' + ALL_DEPOSITS.length + ' depósitos).</p>';
 
     // KPIs
     html += '<div class="kpis" style="margin-bottom:20px;">';
-    html += '<div class="kpi purple"><div class="label">Total Comprometido</div><div class="value">' + fmtM(totalMeta) + '</div><div class="sub">$19.1M × 10 socios</div></div>';
+    html += '<div class="kpi purple"><div class="label">Total Comprometido</div><div class="value">' + fmtM(totalMeta) + '</div><div class="sub">' + fmtM(ACUERDOS.construccion.perSocio) + ' × ' + SOCIOS_ALL.length + ' socios</div></div>';
     html += '<div class="kpi green"><div class="label">Recaudado (Cartolas)</div><div class="value">' + fmtM(totalPagado) + '</div></div>';
     html += '<div class="kpi red"><div class="label">Falta</div><div class="value">' + fmtM(totalFalta) + '</div></div>';
-    html += '<div class="kpi green"><div class="label">Socios al día</div><div class="value">' + sociosAlDia + '/10</div></div>';
+    html += '<div class="kpi green"><div class="label">Socios al día</div><div class="value">' + sociosAlDia + '/' + SOCIOS_ALL.length + '</div></div>';
     html += '</div>';
 
     // Table
@@ -1339,11 +1285,11 @@ function renderResumen() {
     // ═══════════════════════════════════════════
     html += '<div style="margin-bottom:32px;">';
     html += '<h2 style="font-size:18px; color:#1a1a2e; margin-bottom:4px; border-bottom:2px solid #1a1a2e; padding-bottom:8px;">Aportes Comprometidos</h2>';
-    html += '<p style="font-size:12px; color:#888; margin:4px 0 16px;">Capital Inicial + Construcción + Mobiliario — por socio: $10M + $19.1M + $4M = $33.1M</p>';
+    html += '<p style="font-size:12px; color:#888; margin:4px 0 16px;">Capital Inicial + Construcción + Mobiliario — por socio: ' + fmtM(ACUERDOS.capital.perSocio) + ' + ' + fmtM(ACUERDOS.construccion.perSocio) + ' + ' + fmtM(ACUERDOS.mobiliario.perSocio) + ' = ' + fmtM(ACUERDOS.capital.perSocio + ACUERDOS.construccion.perSocio + ACUERDOS.mobiliario.perSocio) + '</p>';
 
     // 3 KPIs en fila
     html += '<section class="kpis" style="margin-bottom:16px;">';
-    html += '<div class="kpi green"><div class="label">Comprometido Total</div><div class="value">' + fmtM(totalComprometido) + '</div><div class="sub">$33.1M × 10 socios</div></div>';
+    html += '<div class="kpi green"><div class="label">Comprometido Total</div><div class="value">' + fmtM(totalComprometido) + '</div><div class="sub">' + fmtM(totalComprometido / SOCIOS_ALL.length) + ' × ' + SOCIOS_ALL.length + ' socios</div></div>';
     html += '<div class="kpi blue"><div class="label">Recaudado</div><div class="value">' + fmtM(totalRecaudado) + '</div><div class="sub">' + recaudadoPct + '% del comprometido</div></div>';
     html += '<div class="kpi red"><div class="label">Falta por Recaudar</div><div class="value">' + fmtM(totalFalta) + '</div><div class="sub">' + (capitalFalta > 0 ? fmtM(capitalFalta) + ' cap. ' : '') + (constrFalta > 0 ? fmtM(constrFalta) + ' constr. ' : '') + (mobFalta > 0 ? fmtM(mobFalta) + ' mob.' : '') + '</div></div>';
     html += '</section>';
@@ -1353,26 +1299,26 @@ function renderResumen() {
 
     const kFill = capitalPct >= 90 ? 'complete' : capitalPct >= 50 ? 'partial' : 'low';
     html += '<div class="hito-card capital" onclick="switchTab(\'aportescapital\', document.querySelectorAll(\'.tab-btn\')[1])">';
-    html += '<h4 style="color:#1565c0;">Capital Inicial</h4><div class="hito-sub">$10M/socio — Constitución abr-2020</div>';
+    html += '<h4 style="color:#1565c0;">Capital Inicial</h4><div class="hito-sub">' + fmtM(ACUERDOS.capital.perSocio) + '/socio — Constitución abr-2020</div>';
     html += '<div class="hito-amount" style="color:#1565c0;">' + fmtM(capitalPagado) + ' / ' + fmtM(capitalMeta) + '</div>';
     html += '<div class="progress-bar"><div class="progress-fill ' + kFill + '" style="width:' + capitalPct + '%">' + capitalPct + '%</div></div>';
-    html += '<div class="hito-stats"><div><span class="stat-label">Al día:</span> <span class="stat-value" style="color:#2e7d32;">' + capitalAlDia + '/10</span></div><div><span class="stat-label">Falta:</span> <span class="stat-value" style="color:' + (capitalFalta > 0 ? '#c62828' : '#2e7d32') + ';">' + fmtM(capitalFalta) + '</span></div></div>';
+    html += '<div class="hito-stats"><div><span class="stat-label">Al día:</span> <span class="stat-value" style="color:#2e7d32;">' + capitalAlDia + '/' + SOCIOS_ALL.length + '</span></div><div><span class="stat-label">Falta:</span> <span class="stat-value" style="color:' + (capitalFalta > 0 ? '#c62828' : '#2e7d32') + ';">' + fmtM(capitalFalta) + '</span></div></div>';
     html += '</div>';
 
     const cFillClass = constrPct >= 90 ? 'complete' : constrPct >= 50 ? 'partial' : 'low';
     html += '<div class="hito-card construccion" onclick="switchTab(\'aportescapital\', document.querySelectorAll(\'.tab-btn\')[1])">';
-    html += '<h4 style="color:#7b1fa2;">Construcción</h4><div class="hito-sub">$19.1M/socio — $8M + $3.5M + $4M + $3.6M</div>';
+    html += '<h4 style="color:#7b1fa2;">Construcción</h4><div class="hito-sub">' + fmtM(ACUERDOS.construccion.perSocio) + '/socio — $8M + $3.5M + $4M + $3.6M</div>';
     html += '<div class="hito-amount" style="color:#7b1fa2;">' + fmtM(constrPagado) + ' / ' + fmtM(constrMeta) + '</div>';
     html += '<div class="progress-bar"><div class="progress-fill ' + cFillClass + '" style="width:' + constrPct + '%">' + constrPct + '%</div></div>';
-    html += '<div class="hito-stats"><div><span class="stat-label">Al día:</span> <span class="stat-value" style="color:#2e7d32;">' + constrAlDia + '/10</span></div><div><span class="stat-label">Falta:</span> <span class="stat-value" style="color:#c62828;">' + fmtM(constrFalta) + '</span></div></div>';
+    html += '<div class="hito-stats"><div><span class="stat-label">Al día:</span> <span class="stat-value" style="color:#2e7d32;">' + constrAlDia + '/' + SOCIOS_ALL.length + '</span></div><div><span class="stat-label">Falta:</span> <span class="stat-value" style="color:#c62828;">' + fmtM(constrFalta) + '</span></div></div>';
     html += '</div>';
 
     const mFillClass = mobPct >= 90 ? 'complete' : mobPct >= 50 ? 'partial' : 'low';
     html += '<div class="hito-card mobiliario" onclick="switchTab(\'aportescapital\', document.querySelectorAll(\'.tab-btn\')[1])">';
-    html += '<h4 style="color:#e65100;">Mobiliario</h4><div class="hito-sub">$4M/socio — 24 cuotas desde feb-2025</div>';
+    html += '<h4 style="color:#e65100;">Mobiliario</h4><div class="hito-sub">' + fmtM(ACUERDOS.mobiliario.perSocio) + '/socio — ' + MOB_CUOTAS + ' cuotas desde feb-2025</div>';
     html += '<div class="hito-amount" style="color:#e65100;">' + fmtM(mobPagado) + ' / ' + fmtM(mobMeta) + '</div>';
     html += '<div class="progress-bar"><div class="progress-fill ' + mFillClass + '" style="width:' + mobPct + '%">' + mobPct + '%</div></div>';
-    html += '<div class="hito-stats"><div><span class="stat-label">Al día:</span> <span class="stat-value" style="color:#2e7d32;">' + mobAlDia + '/10</span></div><div><span class="stat-label">Falta:</span> <span class="stat-value" style="color:#c62828;">' + fmtM(mobFalta) + '</span></div></div>';
+    html += '<div class="hito-stats"><div><span class="stat-label">Al día:</span> <span class="stat-value" style="color:#2e7d32;">' + mobAlDia + '/' + SOCIOS_ALL.length + '</span></div><div><span class="stat-label">Falta:</span> <span class="stat-value" style="color:#c62828;">' + fmtM(mobFalta) + '</span></div></div>';
     html += '</div>';
     html += '</div>'; // hito-cards
     html += '</div>'; // sección aportes
@@ -1386,9 +1332,9 @@ function renderResumen() {
 
     // KPI GGCC
     html += '<section class="kpis" style="margin-bottom:16px;">';
-    html += '<div class="kpi" style="border-left:4px solid #00838f; background:#e0f2f1;"><div class="label">Total Esperado</div><div class="value" style="color:#00838f;">' + fmtM(ggccMeta) + '</div><div class="sub">' + ggccMeses + ' meses × $70K × 10 socios</div></div>';
+    html += '<div class="kpi" style="border-left:4px solid #00838f; background:#e0f2f1;"><div class="label">Total Esperado</div><div class="value" style="color:#00838f;">' + fmtM(ggccMeta) + '</div><div class="sub">' + ggccMeses + ' meses × ' + fmt(CUOTA_GGCC) + ' × ' + SOCIOS_ALL.length + ' socios</div></div>';
     html += '<div class="kpi" style="border-left:4px solid #00838f;"><div class="label">Recaudado GGCC</div><div class="value" style="color:#00838f;">' + fmtM(ggccPagado) + '</div><div class="sub">' + Math.round(ggccPagado/ggccMeta*100) + '% del esperado</div></div>';
-    html += '<div class="kpi" style="border-left:4px solid ' + (ggccFalta > 0 ? '#c62828' : '#2e7d32') + ';"><div class="label">Pendiente GGCC</div><div class="value" style="color:' + (ggccFalta > 0 ? '#c62828' : '#2e7d32') + ';">' + fmtM(ggccFalta) + '</div><div class="sub">Al día: ' + ggccAlDia + '/10 socios</div></div>';
+    html += '<div class="kpi" style="border-left:4px solid ' + (ggccFalta > 0 ? '#c62828' : '#2e7d32') + ';"><div class="label">Pendiente GGCC</div><div class="value" style="color:' + (ggccFalta > 0 ? '#c62828' : '#2e7d32') + ';">' + fmtM(ggccFalta) + '</div><div class="sub">Al día: ' + ggccAlDia + '/' + SOCIOS_ALL.length + ' socios</div></div>';
     html += '</section>';
 
     // Tabla GGCC por socio
@@ -1425,7 +1371,7 @@ function renderResumen() {
 
     html += '<div class="table-section">';
     html += '<div class="table-wrapper"><table class="hito-table"><thead><tr>';
-    html += '<th>Socio</th><th class="col-right">Total Aportado</th><th class="col-right">Capital<br><small>($10M)</small></th><th class="col-right">Construcción<br><small>($19.1M)</small></th><th class="col-right">Mobiliario<br><small>($4M)</small></th><th class="col-right">GGCC<br><small>(' + ggccMeses + ' meses)</small></th><th class="col-right">Deuda Total</th><th class="col-center">Estado</th>';
+    html += '<th>Socio</th><th class="col-right">Total Aportado</th><th class="col-right">Capital<br><small>(' + fmtM(ACUERDOS.capital.perSocio) + ')</small></th><th class="col-right">Construcción<br><small>(' + fmtM(ACUERDOS.construccion.perSocio) + ')</small></th><th class="col-right">Mobiliario<br><small>(' + fmtM(ACUERDOS.mobiliario.perSocio) + ')</small></th><th class="col-right">GGCC<br><small>(' + ggccMeses + ' meses)</small></th><th class="col-right">Deuda Total</th><th class="col-center">Estado</th>';
     html += '</tr></thead><tbody>';
 
     SOCIOS_ALL.forEach(s => {
@@ -1805,7 +1751,7 @@ function renderAportesCapital() {
             }
         });
         html += '<td style="text-align:right; font-weight:700;">' + fmt(t.total) + '</td>';
-        html += '<td style="text-align:right;"><span style="color:' + (t.total >= grandTotal/10 ? '#2e7d32' : '#e65100') + '; font-weight:600;">' + pct + '%</span></td>';
+        html += '<td style="text-align:right;"><span style="color:' + (t.total >= grandTotal/SOCIOS_ALL.length ? '#2e7d32' : '#e65100') + '; font-weight:600;">' + pct + '%</span></td>';
         html += '</tr>';
     });
 
@@ -1821,9 +1767,9 @@ function renderAportesCapital() {
     html += '<h3>Cumplimiento de Compromisos por Socio</h3>';
     html += '<div class="table-wrapper"><table><thead><tr>';
     html += '<th style="background:#0d47a1;">Socio</th>';
-    html += '<th style="background:#1565c0;">Capital<br><small>Meta $10M</small></th>';
-    html += '<th style="background:#7b1fa2;">Construcción<br><small>Meta $19.1M</small></th>';
-    html += '<th style="background:#e65100;">Mobiliario<br><small>Meta $4M</small></th>';
+    html += '<th style="background:#1565c0;">Capital<br><small>Meta ' + fmtM(ACUERDOS.capital.perSocio) + '</small></th>';
+    html += '<th style="background:#7b1fa2;">Construcción<br><small>Meta ' + fmtM(ACUERDOS.construccion.perSocio) + '</small></th>';
+    html += '<th style="background:#e65100;">Mobiliario<br><small>Meta ' + fmtM(ACUERDOS.mobiliario.perSocio) + '</small></th>';
     html += '<th style="background:#0d47a1;">Deuda Pendiente</th>';
     html += '<th style="background:#0d47a1;">Estado</th>';
     html += '</tr></thead><tbody>';
@@ -1831,9 +1777,9 @@ function renderAportesCapital() {
     let totalDeuda = 0;
     SOCIOS_ALL.forEach(s => {
         const c = classified[s];
-        const capMeta = 10000000;
+        const capMeta = ACUERDOS.capital.perSocio;
         const conMeta = c.constrQuota;
-        const mobMeta = 4000000;
+        const mobMeta = ACUERDOS.mobiliario.perSocio;
         const isMobAdelantado = MOB_PAGADO_FULL.includes(s);
         const capDeuda = Math.max(0, capMeta - c.capitalPaid);
         const conDeuda = Math.max(0, conMeta - c.constrPaid);
@@ -1848,7 +1794,7 @@ function renderAportesCapital() {
         // Capital
         const capPct = Math.min(100, c.capitalPaid / capMeta * 100);
         html += '<td style="text-align:center;">';
-        if (capPct >= 100) html += '<span style="color:#2e7d32; font-weight:700;">✓ $10M</span>';
+        if (capPct >= 100) html += '<span style="color:#2e7d32; font-weight:700;">✓ ' + fmtM(capMeta) + '</span>';
         else html += '<div class="progress-bar" style="height:18px;"><div class="progress-fill ' + (capPct >= 50 ? 'partial' : 'low') + '" style="width:' + capPct + '%;font-size:10px;">' + capPct.toFixed(0) + '%</div></div>';
         html += '</td>';
 
@@ -1864,8 +1810,8 @@ function renderAportesCapital() {
         const mobPct = Math.min(100, c.mobPaid / mobMeta * 100);
         html += '<td style="text-align:center;">';
         if (isMobAdelantado) html += '<span style="color:#2e7d32; font-weight:700;">✓ Pagado adelantado</span>';
-        else if (mobPct >= 100) html += '<span style="color:#2e7d32; font-weight:700;">✓ $4M</span>';
-        else if (c.mobPaid > 0) html += '<div class="progress-bar" style="height:18px;"><div class="progress-fill ' + (mobPct >= 50 ? 'partial' : 'low') + '" style="width:' + mobPct + '%;font-size:10px;">' + mobPct.toFixed(0) + '%</div></div><small style="color:#888;">' + fmt(c.mobPaid) + ' / $4M</small>';
+        else if (mobPct >= 100) html += '<span style="color:#2e7d32; font-weight:700;">✓ ' + fmtM(mobMeta) + '</span>';
+        else if (c.mobPaid > 0) html += '<div class="progress-bar" style="height:18px;"><div class="progress-fill ' + (mobPct >= 50 ? 'partial' : 'low') + '" style="width:' + mobPct + '%;font-size:10px;">' + mobPct.toFixed(0) + '%</div></div><small style="color:#888;">' + fmt(c.mobPaid) + ' / ' + fmtM(mobMeta) + '</small>';
         else html += '<span class="badge badge-red">Pendiente</span>';
         html += '</td>';
 
@@ -1886,7 +1832,7 @@ function renderAportesCapital() {
     html += '</tbody></table></div>';
 
     html += '<div style="background:#e3f2fd; padding:12px 16px; border-radius:8px; margin-top:16px; font-size:12px; color:#1565c0; border-left:4px solid #1565c0;">';
-    html += '<strong>Lógica de clasificación:</strong> De cada depósito se descuenta primero GGCC ($70k/mes, desde oct-2022), luego cuota Mob ($166k/mes desde feb-2025 para 7 socios). El remanente llena: Aporte Inicial (hasta $10M) → Construcción (hasta $19.1M) → Mobiliario (hasta $4M) → Otros. Fuente: cartolas Scotiabank verificadas.';
+    html += '<strong>Lógica de clasificación:</strong> De cada depósito se descuenta primero GGCC (' + fmt(CUOTA_GGCC) + '/mes, desde oct-2022), luego cuota Mob (' + fmt(CUOTA_MOB) + '/mes desde feb-2025 para ' + SOCIOS_MOB.length + ' socios). El remanente llena: Capital (hasta ' + fmtM(ACUERDOS.capital.perSocio) + ') → Construcción (hasta ' + fmtM(ACUERDOS.construccion.perSocio) + ') → MOB → Construcción. Fuente: cartolas Scotiabank verificadas.';
     html += '</div></div>';
 
     // === SECCIÓN CONSTRUCCIÓN (dentro de Aportes de Capital) ===
@@ -1910,18 +1856,19 @@ function renderGGCC() {
         sel.value = years[years.length - 1] || 2025;
     }
     const year = parseInt(sel.value);
-    const alloc = allocateDeposits();
+    const cls = classifyAllDeposits();
     const maxMonth = (year === _currentYear) ? _currentMonth : 12;
-    
+
     let ggccTotal = 0, sociosAlDia = 0;
-    
-    // Calculate GGCC per socio
+
+    // Calculate GGCC per socio from classifyAllDeposits().ggccByMonth
     const data = {};
     SOCIOS_ALL.forEach(s => {
         data[s] = { months: [], paid: 0 };
+        const ggccMap = cls[s].ggccByMonth;
         for (let m = 1; m <= 12; m++) {
             const key = year + '-' + m;
-            const val = alloc[s].ggcc[key] || 0;
+            const val = ggccMap[key] || 0;
             data[s].months.push(val);
             data[s].paid += val;
         }
@@ -1935,12 +1882,12 @@ function renderGGCC() {
     html += '<div class="table-section">';
     html += '<div class="detail-header"><h3>Resumen Anual GGCC ' + year + ' — Estado por Socio</h3>';
     html += '<span class="detail-badge" style="background:#e0f2f1; color:#00838f;">Cartolas ' + year + ' verificadas</span></div>';
-    html += '<p style="font-size:12px; color:#666; margin-bottom:16px;">GGCC = $70.000/mes × 10 socios × ' + maxMonth + ' meses = ' + fmt(CUOTA_GGCC * 10 * maxMonth) + ' esperado. De cada depósito solo se contabiliza la porción GGCC ($70k). La porción de mobiliario ($166.666) se muestra en Aportes de Capital. Fuente: cartolas Scotiabank.</p>';
+    html += '<p style="font-size:12px; color:#666; margin-bottom:16px;">GGCC = ' + fmt(CUOTA_GGCC) + '/mes × ' + SOCIOS_ALL.length + ' socios × ' + maxMonth + ' meses = ' + fmt(CUOTA_GGCC * SOCIOS_ALL.length * maxMonth) + ' esperado. De cada depósito solo se contabiliza la porción GGCC (' + fmt(CUOTA_GGCC) + '). La porción de mobiliario (' + fmt(CUOTA_MOB) + ') se muestra en Aportes de Capital. Fuente: cartolas Scotiabank.</p>';
     
     // KPIs
     html += '<section class="kpis">';
     html += '<div class="kpi green"><div class="label">GGCC Pagado ' + year + '</div><div class="value">' + fmt(ggccTotal) + '</div><div class="sub">de ' + fmt(esperado) + ' esperado</div></div>';
-    html += '<div class="kpi ' + (sociosAlDia >= 5 ? 'green' : 'orange') + '"><div class="label">Socios al día</div><div class="value">' + sociosAlDia + '/10</div></div>';
+    html += '<div class="kpi ' + (sociosAlDia >= Math.ceil(SOCIOS_ALL.length/2) ? 'green' : 'orange') + '"><div class="label">Socios al día</div><div class="value">' + sociosAlDia + '/' + SOCIOS_ALL.length + '</div></div>';
     html += '<div class="kpi ' + (saldo >= 0 ? 'green' : 'red') + '"><div class="label">Saldo GGCC</div><div class="value">' + fmt(saldo) + '</div></div>';
     html += '</section>';
     
@@ -1990,42 +1937,47 @@ function renderGGCC() {
     html += '<div class="table-section">';
     html += '<div class="detail-header"><h3>Desglose ' + year + ' — GGCC + Mobiliario + Otros Aportes</h3>';
     html += '<span class="detail-badge" style="background:#e0f2f1; color:#00838f;">Cartola verificada</span></div>';
-    html += '<p style="font-size:12px; color:#666; margin-bottom:16px;">Cada depósito se descompone en: GGCC ($70.000/mes), Cuota Mobiliario ($166.666/mes, 7 socios), y el excedente va a Otros Aportes (construcción, extras). Laura, Eduardo y Cristóbal solo aportan GGCC.</p>';
+    html += '<p style="font-size:12px; color:#666; margin-bottom:16px;">Cada depósito se clasifica con la misma lógica de dos pasadas del Resumen: GGCC (' + fmt(CUOTA_GGCC) + '/mes), MOB (' + fmt(CUOTA_MOB) + '/mes, ' + SOCIOS_MOB.length + ' socios), y el resto va a Capital → Construcción. Datos consistentes con todas las tablas.</p>';
     
-    // Year totals
+    // Year totals from classifyAllDeposits
     const yearDeps = ALL_DEPOSITS.filter(d => d.y === year);
     const yearTotal = yearDeps.reduce((a,d) => a + d.amt, 0);
     const yearGGCC = ggccTotal;
-    let yearMob = 0;
+    let yearMob = 0, yearCap = 0, yearConstr = 0;
     SOCIOS_ALL.forEach(s => {
-        for (let m = 1; m <= 12; m++) {
-            yearMob += (alloc[s].mob[year + '-' + m] || 0);
-        }
+        cls[s].deposits.filter(d => d.y === year).forEach(d => {
+            yearMob += d.alloc.mobiliario;
+            yearCap += d.alloc.inicial;
+            yearConstr += d.alloc.construccion;
+        });
     });
-    const yearOtros = yearTotal - yearGGCC - yearMob;
+    const yearOtros = yearCap + yearConstr; // Capital + Construcción
     
     html += '<section class="kpis">';
     html += '<div class="kpi blue"><div class="label">Total Depositado</div><div class="value">' + fmt(yearTotal) + '</div></div>';
     html += '<div class="kpi green"><div class="label">GGCC</div><div class="value">' + fmt(yearGGCC) + '</div><div class="sub">' + (yearTotal > 0 ? (yearGGCC/yearTotal*100).toFixed(1) : 0) + '%</div></div>';
     html += '<div class="kpi orange"><div class="label">MOB Cuotas</div><div class="value">' + fmt(yearMob) + '</div><div class="sub">' + (yearTotal > 0 ? (yearMob/yearTotal*100).toFixed(1) : 0) + '%</div></div>';
-    html += '<div class="kpi purple"><div class="label">Otros Aportes</div><div class="value">' + fmt(yearOtros) + '</div><div class="sub">' + (yearTotal > 0 ? (yearOtros/yearTotal*100).toFixed(1) : 0) + '%</div></div>';
+    html += '<div class="kpi blue"><div class="label">Capital</div><div class="value">' + fmt(yearCap) + '</div><div class="sub">' + (yearTotal > 0 ? (yearCap/yearTotal*100).toFixed(1) : 0) + '%</div></div>';
+    html += '<div class="kpi purple"><div class="label">Construcción</div><div class="value">' + fmt(yearConstr) + '</div><div class="sub">' + (yearTotal > 0 ? (yearConstr/yearTotal*100).toFixed(1) : 0) + '%</div></div>';
     html += '</section>';
     
     // Per-socio breakdown table
     html += '<div class="table-wrapper"><table><thead><tr>';
-    html += '<th>Socio</th><th>Total Depositado</th><th style="background:#2e7d32;">GGCC<br>$70k/mes</th><th style="background:#e65100;">Mob Cuota<br>$166k/mes</th><th style="background:#1565c0;">Otros Aportes</th>';
+    html += '<th>Socio</th><th>Total Depositado</th><th style="background:#2e7d32;">GGCC<br>$70k/mes</th><th style="background:#e65100;">MOB</th><th style="background:#1565c0;">Capital</th><th style="background:#7b1fa2;">Construcción</th>';
     html += '</tr></thead><tbody>';
     SOCIOS_ALL.forEach(s => {
         const sDeps = yearDeps.filter(d => d.s === s);
         const sTot = sDeps.reduce((a,d) => a + d.amt, 0);
         const sGGCC = data[s].paid;
         let sMob = 0;
-        for (let m = 1; m <= 12; m++) sMob += (alloc[s].mob[year + '-' + m] || 0);
-        const sOtros = sTot - sGGCC - sMob;
+        cls[s].deposits.filter(d => d.y === year).forEach(d => { sMob += d.alloc.mobiliario; });
+        let sCap = 0, sConstr = 0;
+        cls[s].deposits.filter(d => d.y === year).forEach(d => { sCap += d.alloc.inicial; sConstr += d.alloc.construccion; });
         html += '<tr><td>' + (FULL_NAMES[s] || s) + '</td><td style="font-weight:700;">' + fmt(sTot) + '</td>';
         html += '<td style="color:#2e7d32;">' + fmt(sGGCC) + '</td>';
         html += '<td style="color:#e65100;">' + fmt(sMob) + '</td>';
-        html += '<td style="color:#1565c0;">' + fmt(sOtros) + '</td></tr>';
+        html += '<td style="color:#1565c0;">' + fmt(sCap) + '</td>';
+        html += '<td style="color:#7b1fa2;">' + fmt(sConstr) + '</td></tr>';
     });
     html += '</tbody></table></div></div>';
     
@@ -2304,7 +2256,7 @@ function renderVistaSocio(socioOverride) {
                 return acc;
             }, {}));
             // Simple: count months from mobPaid / cuota
-            const mobPaidMonths = Math.min(24, Math.round(data.mobPaid / CUOTA_MOB));
+            const mobPaidMonths = Math.min(MOB_CUOTAS, Math.round(data.mobPaid / CUOTA_MOB));
             html += '<div style="display:flex; flex-wrap:wrap; gap:3px;">';
             let my = 2025, mm = 2;
             for (let i = 0; i < 24; i++) {
@@ -2320,7 +2272,7 @@ function renderVistaSocio(socioOverride) {
                 mm++; if (mm > 12) { mm = 1; my++; }
             }
             html += '</div>';
-            html += '<div style="font-size:11px; color:#888; margin-top:6px;">' + mobPaidMonths + '/24 cuotas cubiertas — ' + fmt(data.mobPaid) + ' de $4M</div>';
+            html += '<div style="font-size:11px; color:#888; margin-top:6px;">' + mobPaidMonths + '/' + MOB_CUOTAS + ' cuotas cubiertas — ' + fmt(data.mobPaid) + ' de ' + fmtM(ACUERDOS.mobiliario.perSocio) + '</div>';
         }
         html += '</div>';
     }
@@ -2455,9 +2407,9 @@ function showSocioBitacora(socio) {
     let html = '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(120px,1fr)); gap:8px; margin-bottom:16px;">';
     const cats = [
         {k:'ggcc', label:'GGCC', color:'#00838f', val: data.ggccMonthsPaid + '/' + totalGGCCMonths + ' meses'},
-        {k:'inicial', label:'Capital', color:'#1565c0', val: fmt(t.inicial) + ' / $10M'},
-        {k:'mobiliario', label:'MOB', color:'#e65100', val: fmt(t.mobiliario) + ' / $4M'},
-        {k:'construccion', label:'Construcción', color:'#7b1fa2', val: fmt(t.construccion) + ' / $19.1M'}
+        {k:'inicial', label:'Capital', color:'#1565c0', val: fmt(t.inicial) + ' / ' + fmtM(ACUERDOS.capital.perSocio)},
+        {k:'mobiliario', label:'MOB', color:'#e65100', val: fmt(t.mobiliario) + ' / ' + fmtM(ACUERDOS.mobiliario.perSocio)},
+        {k:'construccion', label:'Construcción', color:'#7b1fa2', val: fmt(t.construccion) + ' / ' + fmtM(ACUERDOS.construccion.perSocio)}
     ];
     cats.forEach(c => {
         html += '<div style="background:#f8f9fa; border-left:3px solid ' + c.color + '; padding:8px 10px; border-radius:4px;">';
@@ -2735,9 +2687,37 @@ function renderCartolaControl() {
     document.getElementById('cartolaControlGrid').innerHTML = html;
 }
 
+// ==================== CARTOLAS DOC LIST (dynamic) ====================
+function renderCartolasDocList() {
+    const START_Y = 2020, START_M = 6;
+    const MONTH_NAMES_FULL = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    const MONTH_NAMES_SHORT = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+    function ecToYM(ec) {
+        let total = (START_Y * 12 + START_M - 1) + (ec - 1);
+        return { y: Math.floor(total / 12), m: (total % 12) + 1 };
+    }
+
+    let html = '';
+    let lastYear = null;
+    KNOWN_CARTOLA_ECS.forEach(ec => {
+        const ym = ecToYM(ec);
+        if (ym.y !== lastYear) {
+            html += '<h5 style="margin:12px 0 6px; color:#555; font-size:13px;">' + ym.y + '</h5>';
+            lastYear = ym.y;
+        }
+        const monthName = MONTH_NAMES_FULL[ym.m - 1];
+        const mm = String(ym.m).padStart(2, '0');
+        const pdfName = 'cartolas/Cartola_' + ym.y + '_' + mm + '_' + monthName + '.pdf';
+        html += '<div class="doc-item"><a href="' + pdfName + '" target="_blank"><strong>' + monthName + ' ' + ym.y + '</strong></a> — EC #' + ec + '</div>';
+    });
+    document.getElementById('cartolasList').innerHTML = html;
+}
+
 // ==================== INIT ====================
 renderResumen();
 renderCartolaControl();
+renderCartolasDocList();
 
 </script>
 </body>
