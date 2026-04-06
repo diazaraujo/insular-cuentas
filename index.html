@@ -913,107 +913,8 @@
         <button onclick="closeModal()" style="margin-top:16px; padding:8px 20px; background:#1a1a2e; color:white; border:none; border-radius:6px; cursor:pointer;">Cerrar</button>
     </div>
 </div>
-
-<!-- Hitos de Capital Solicitado modal -->
-<div class="modal-overlay" id="hitosModal">
-    <div class="modal" style="max-width:680px;">
-        <h3 style="color:#1a1a2e; margin-bottom:4px;">Hitos de Capital Solicitado</h3>
-        <p style="font-size:12px; color:#888; margin-bottom:16px;">Todos los compromisos acordados por los socios — $33.1M por socio</p>
-        <div id="hitosModalBody"></div>
-        <button onclick="closeHitosModal()" style="margin-top:16px; padding:8px 20px; background:#1a1a2e; color:white; border:none; border-radius:6px; cursor:pointer;">Cerrar</button>
-    </div>
-</div>
-
 <script>
-// ==================== DATA MODEL (loaded from insular_data.json) ====================
-let ALL_DEPOSITS = [];
-let SOCIOS_ALL = [];
-let SOCIOS_MOB = [];
-let MOB_PAGADO_FULL = [];
-let CUOTA_GGCC = 70000;
-let CUOTA_MOB = 166666;
-let MESES_CON_DATOS_2026 = 3;
-let ACUERDOS = {};
-let FULL_NAMES = {};
-let CASA_ITEMS_INITIAL = [];
-let RUT_MAP = {};
-let ANTONIO_KEYWORDS = [];
-let INSULAR_DATA = null; // Full JSON reference
-
-async function loadInsularData() {
-    try {
-        const resp = await fetch('insular_data.json');
-        if (!resp.ok) throw new Error('HTTP ' + resp.status);
-        INSULAR_DATA = await resp.json();
-        console.log('✅ insular_data.json cargado (' + INSULAR_DATA.depositos.length + ' depósitos)');
-    } catch(e) {
-        console.warn('⚠️ No se pudo cargar insular_data.json, usando datos embebidos:', e.message);
-        INSULAR_DATA = null;
-    }
-
-    if (INSULAR_DATA) {
-        // Populate from JSON
-        ALL_DEPOSITS = INSULAR_DATA.depositos.map(d => {
-            const parts = d.fecha.split('-');
-            return { s: d.socio, y: parseInt(parts[0]), m: parseInt(parts[1]), d: parseInt(parts[2]), amt: d.monto, desc: d.descripcion, rut: d.rut, file: d.cartola, per: d.periodo };
-        });
-
-        SOCIOS_ALL = INSULAR_DATA.socios.map(s => s.id);
-        SOCIOS_MOB = INSULAR_DATA.socios.filter(s => s.participaMobiliario).map(s => s.id);
-        MOB_PAGADO_FULL = INSULAR_DATA.socios.filter(s => s.mobPagadoFull).map(s => s.id);
-
-        CUOTA_GGCC = INSULAR_DATA.acuerdos.ggcc.cuotaMensual;
-        CUOTA_MOB = INSULAR_DATA.acuerdos.mobiliario.cuotaMensual;
-
-        ACUERDOS = {
-            capital: { perSocio: INSULAR_DATA.acuerdos.capital.perSocio, total: INSULAR_DATA.acuerdos.capital.total },
-            construccion: { perSocio: INSULAR_DATA.acuerdos.construccion.perSocio, total: INSULAR_DATA.acuerdos.construccion.total },
-            mobiliario: { perSocio: INSULAR_DATA.acuerdos.mobiliario.perSocio, total: INSULAR_DATA.acuerdos.mobiliario.total }
-        };
-
-        FULL_NAMES = {};
-        INSULAR_DATA.socios.forEach(s => {
-            let name = s.nombreCompleto;
-            if (s.alias) name += ' <small style="color:#888">(' + s.alias + ')</small>';
-            if (s.pareja) name += ' <small style="color:#888">(+ ' + s.pareja + ')</small>';
-            FULL_NAMES[s.id] = name;
-        });
-
-        RUT_MAP = {};
-        INSULAR_DATA.socios.forEach(s => {
-            s.ruts.forEach(r => { RUT_MAP[r] = s.id; });
-        });
-
-        ANTONIO_KEYWORDS = (INSULAR_DATA.socios.find(s => s.id === 'Antonio') || {}).keywords || [];
-
-        if (INSULAR_DATA.mobiliario) {
-            CASA_ITEMS_INITIAL = INSULAR_DATA.mobiliario.map(item => ({
-                id: item.id, nombre: item.nombre, cat: item.categoria,
-                presup: item.presupuesto, real: item.real, done: item.comprado
-            }));
-        }
-    } else {
-        // Fallback: use embedded data
-        ALL_DEPOSITS = ALL_DEPOSITS_EMBEDDED;
-        SOCIOS_ALL = ['Antonio','Camilo','Cristian','Cristóbal','Eduardo','Felipe','Fernando','Jordi','Laura','Sebastián'];
-        SOCIOS_MOB = ['Antonio','Camilo','Cristian','Felipe','Fernando','Jordi','Sebastián'];
-        MOB_PAGADO_FULL = ['Laura','Eduardo','Cristóbal'];
-        CUOTA_GGCC = 70000;
-        CUOTA_MOB = 166666;
-        ACUERDOS = { capital: { perSocio: 10000000, total: 100000000 }, construccion: { perSocio: 19100000, total: 191000000 }, mobiliario: { perSocio: 4000000, total: 40000000 } };
-        FULL_NAMES = FULL_NAMES_EMBEDDED;
-        RUT_MAP = RUT_MAP_EMBEDDED;
-        ANTONIO_KEYWORDS = ['GGCC Aporte Mobiliario', 'TRANSF. DE ANTONIO PAULO'];
-        CASA_ITEMS_INITIAL = CASA_ITEMS_EMBEDDED;
-    }
-
-    // Initialize mutable state
-    casaItems = JSON.parse(JSON.stringify(CASA_ITEMS_INITIAL));
-    casaNextId = Math.max(...CASA_ITEMS_INITIAL.map(i => i.id || 0), 0) + 1;
-}
-
-// ==================== EMBEDDED FALLBACK DATA ====================
-const ALL_DEPOSITS_EMBEDDED = [
+const ALL_DEPOSITS = [
   {s:'Eduardo',y:2020,m:6,d:16,amt:350000,desc:'TEF 13270339-6 Eduardo Enrique',rut:'13270339-6',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
   {s:'Eduardo',y:2020,m:6,d:18,amt:3650000,desc:'TEF 13270339-6 Eduardo Enrique',rut:'13270339-6',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
   {s:'Felipe',y:2020,m:6,d:19,amt:250000,desc:'TEF 18273744-5 FELIPE IGNACIO',rut:'18273744-5',file:'Insular cartola 1.pdf',per:'01/06/2020→30/06/2020'},
@@ -1222,8 +1123,29 @@ const ALL_DEPOSITS_EMBEDDED = [
   {s:'Camilo',y:2025,m:1,d:30,amt:1000000,desc:'TEF 16095526-0 Camilo Antonio',rut:'16095526-0',file:'typeDesc.xml',per:'21-01-2025→30-01-2025'}
 ];
 
-// Embedded fallback names
-const FULL_NAMES_EMBEDDED = {
+// ==================== CONSTANTS ====================
+const SOCIOS_ALL = ['Antonio','Camilo','Cristian','Cristóbal','Eduardo','Felipe','Fernando','Jordi','Laura','Sebastián'];
+const SOCIOS_MOB = ['Antonio','Camilo','Cristian','Felipe','Fernando','Jordi','Sebastián']; // 7 socios
+const MOB_PAGADO_FULL = ['Laura','Eduardo','Cristóbal'];
+const CUOTA_GGCC = 70000;
+const CUOTA_MOB = 166666;
+const MESES_CON_DATOS_2026 = 3; // Jan-Mar only
+const MONTHS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+let ggccHighlightSocio = null; // Socio a resaltar al abrir tab GGCC
+
+// Acuerdos (hardcoded reference data from agreements)
+const ACUERDOS = {
+    capital: { perSocio: 10000000, total: 100000000 }, // pagado se calcula desde cartolas
+    construccion: {
+        // $8M (sep-2024) + $3.5M (jul-2025) + $4M (ene-2026) + $3.6M (2026, 12 cuotas) = $19.1M/socio
+        perSocio: 19100000,
+        total: 191000000 // 10 × $19.1M — pagado se calcula desde cartolas via classifyAllDeposits()
+    },
+    mobiliario: { perSocio: 4000000, total: 40000000 }
+};
+
+// Full names for display
+const FULL_NAMES = {
     'Antonio': 'Inv. Acuña Ltda. <small style="color:#888">(Antonio)</small>',
     'Cristian': 'Cristian Segovia Peña <small style="color:#888">(Chueco)</small>',
     'Felipe': 'Felipe Simonsohn González',
@@ -1235,10 +1157,6 @@ const FULL_NAMES_EMBEDDED = {
     'Cristóbal': 'Cristóbal Huneeus Lagos <small style="color:#888">(+ Constanza)</small>',
     'Fernando': 'Fernando Encinas Ciesla <small style="color:#888">(+ Yahisa)</small>'
 };
-
-// ==================== UI CONSTANTS (not from JSON) ====================
-const MONTHS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-let ggccHighlightSocio = null; // Socio a resaltar al abrir tab GGCC
 
 
 function fmt(n) { return '$' + Math.round(n).toLocaleString('es-CL'); }
@@ -1469,7 +1387,7 @@ function renderResumen() {
 
     // 3 KPIs en fila
     html += '<section class="kpis" style="margin-bottom:16px;">';
-    html += '<div class="kpi green" onclick="showHitosCapital()" style="cursor:pointer;" title="Click para ver todos los hitos"><div class="label">Comprometido Total</div><div class="value">' + fmtM(totalComprometido) + '</div><div class="sub">$33.1M × 10 socios · <span style="font-size:10px; text-decoration:underline;">ver hitos</span></div></div>';
+    html += '<div class="kpi green"><div class="label">Comprometido Total</div><div class="value">' + fmtM(totalComprometido) + '</div><div class="sub">$33.1M × 10 socios</div></div>';
     html += '<div class="kpi blue"><div class="label">Recaudado</div><div class="value">' + fmtM(totalRecaudado) + '</div><div class="sub">' + recaudadoPct + '% del comprometido</div></div>';
     html += '<div class="kpi red"><div class="label">Falta por Recaudar</div><div class="value">' + fmtM(totalFalta) + '</div><div class="sub">' + (capitalFalta > 0 ? fmtM(capitalFalta) + ' cap. ' : '') + (constrFalta > 0 ? fmtM(constrFalta) + ' constr. ' : '') + (mobFalta > 0 ? fmtM(mobFalta) + ' mob.' : '') + '</div></div>';
     html += '</section>';
@@ -1654,26 +1572,50 @@ function classifyAllDeposits() {
             const mk = dep.y + '-' + dep.m;
 
             // Step 1: GGCC ($70k/month from Oct 2022)
+            // Fill current month first, then catch up unpaid past months chronologically
             if (dep.y > 2022 || (dep.y === 2022 && dep.m >= 10)) {
-                const ggccAlready = ggccByMonth[mk] || 0;
-                const ggccTake = Math.min(remaining, Math.max(0, CUOTA_GGCC - ggccAlready));
-                if (ggccTake > 0) {
-                    alloc.ggcc += ggccTake;
-                    ggccByMonth[mk] = ggccAlready + ggccTake;
-                    remaining -= ggccTake;
+                // Build list of all GGCC months from Oct 2022 up to deposit month
+                const ggccMonths = [];
+                let gy = 2022, gm = 10;
+                while (gy < dep.y || (gy === dep.y && gm <= dep.m)) {
+                    ggccMonths.push(gy + '-' + gm);
+                    gm++;
+                    if (gm > 12) { gm = 1; gy++; }
+                }
+                // Fill unpaid months in chronological order
+                for (const monthKey of ggccMonths) {
+                    if (remaining <= 0) break;
+                    const ggccAlready = ggccByMonth[monthKey] || 0;
+                    const ggccTake = Math.min(remaining, Math.max(0, CUOTA_GGCC - ggccAlready));
+                    if (ggccTake > 0) {
+                        alloc.ggcc += ggccTake;
+                        ggccByMonth[monthKey] = ggccAlready + ggccTake;
+                        remaining -= ggccTake;
+                    }
                 }
             }
 
             // Step 2: Mob cuota ($166,666/month from Feb 2025, only SOCIOS_MOB)
+            // Fill current month first, then catch up unpaid past months chronologically
             if ((dep.y > 2025 || (dep.y === 2025 && dep.m >= 2)) && SOCIOS_MOB.includes(s) && mobPaid < 4000000) {
-                const mobCAlready = mobCuotaByMonth[mk] || 0;
-                let mobTake = Math.min(remaining, Math.max(0, CUOTA_MOB - mobCAlready));
-                mobTake = Math.min(mobTake, 4000000 - mobPaid);
-                if (mobTake > 0) {
-                    alloc.mobiliario += mobTake;
-                    mobCuotaByMonth[mk] = mobCAlready + mobTake;
-                    mobPaid += mobTake;
-                    remaining -= mobTake;
+                const mobMonths = [];
+                let my = 2025, mm = 2;
+                while (my < dep.y || (my === dep.y && mm <= dep.m)) {
+                    mobMonths.push(my + '-' + mm);
+                    mm++;
+                    if (mm > 12) { mm = 1; my++; }
+                }
+                for (const monthKey of mobMonths) {
+                    if (remaining <= 0 || mobPaid >= 4000000) break;
+                    const mobCAlready = mobCuotaByMonth[monthKey] || 0;
+                    let mobTake = Math.min(remaining, Math.max(0, CUOTA_MOB - mobCAlready));
+                    mobTake = Math.min(mobTake, 4000000 - mobPaid);
+                    if (mobTake > 0) {
+                        alloc.mobiliario += mobTake;
+                        mobCuotaByMonth[monthKey] = mobCAlready + mobTake;
+                        mobPaid += mobTake;
+                        remaining -= mobTake;
+                    }
                 }
             }
 
@@ -1716,7 +1658,10 @@ function classifyAllDeposits() {
             totals.total += d.amt;
         });
 
-        result[s] = { deposits: classified, totals, capitalPaid, constrPaid, mobPaid, constrQuota };
+        // Count GGCC months fully paid
+        const ggccMonthsPaid = Object.values(ggccByMonth).filter(v => v >= CUOTA_GGCC).length;
+        const ggccMonthsPartial = Object.keys(ggccByMonth).length - ggccMonthsPaid;
+        result[s] = { deposits: classified, totals, capitalPaid, constrPaid, mobPaid, constrQuota, ggccByMonth, ggccMonthsPaid, ggccMonthsPartial };
     });
     return result;
 }
@@ -2104,7 +2049,7 @@ function renderGGCC() {
 }
 
 // ==================== CASA ====================
-const CASA_ITEMS_EMBEDDED = [
+const CASA_ITEMS_INITIAL = [
 {id:1, nombre:"Mesa Comedor", cat:"cocina", presup:500000, real:0, done:false},
             {id:2, nombre:"Sillas Comedor", cat:"cocina", presup:2080000, real:1272000, done:true},
             {id:3, nombre:"Sillón", cat:"living", presup:3500000, real:1999990, done:true},
@@ -2153,7 +2098,7 @@ const CASA_ITEMS_EMBEDDED = [
             {id:46, nombre:"Ventanas", cat:"general", presup:0, real:0, done:false},
             {id:47, nombre:"Baños (terminaciones)", cat:"bano", presup:0, real:2391015, done:true},
 ];
-let casaItems = [];
+let casaItems = JSON.parse(JSON.stringify(CASA_ITEMS_INITIAL));
 let casaNextId = 100;
 let casaFilter = 'all';
 
@@ -2255,94 +2200,8 @@ function showDeposits(socio, year, month) {
 function closeModal() { document.getElementById('depositModal').classList.remove('active'); }
 document.getElementById('depositModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
 
-// ==================== HITOS MODAL ====================
-function showHitosCapital() {
-    const cls = classifyAllDeposits();
-    const HITOS = [
-        { cat: 'Capital', color: '#1565c0', bg: '#e3f2fd', icon: '🏛️', fecha: 'Abril 2020', desc: 'Aporte de capital inicial — constitución de la sociedad', monto: 10000000, key: 'capital' },
-        { cat: 'Construcción', color: '#7b1fa2', bg: '#f3e5f5', icon: '🏗️', fecha: 'Septiembre 2024', desc: 'Primera estimación construcción Club House', monto: 8000000, key: 'construccion' },
-        { cat: 'Construcción', color: '#7b1fa2', bg: '#f3e5f5', icon: '🏗️', fecha: 'Julio 2025', desc: 'Cuota adicional construcción (hasta 3 cuotas)', monto: 3500000, key: 'construccion' },
-        { cat: 'Construcción', color: '#7b1fa2', bg: '#f3e5f5', icon: '🏗️', fecha: 'Enero 2026', desc: 'Cuota extraordinaria construcción — pago inmediato', monto: 4000000, key: 'construccion' },
-        { cat: 'Construcción', color: '#7b1fa2', bg: '#f3e5f5', icon: '🏗️', fecha: '2026 (12 cuotas)', desc: 'Cuota extraordinaria construcción — 12 cuotas mensuales', monto: 3600000, key: 'construccion' },
-        { cat: 'Mobiliario', color: '#e65100', bg: '#fff3e0', icon: '🪑', fecha: 'Febrero 2025', desc: 'Amueblado Club House — 24 cuotas de ~$166.333/mes', monto: 4000000, key: 'mobiliario' }
-    ];
-
-    // Calculate paid per category
-    var capitalPaid = 0, constrPaid = 0, mobPaid = 0;
-    SOCIOS_ALL.forEach(function(s) {
-        capitalPaid += cls[s].capitalPaid;
-        constrPaid += cls[s].constrPaid;
-        mobPaid += cls[s].mobPaid;
-    });
-    var paidByKey = { capital: capitalPaid, construccion: constrPaid, mobiliario: mobPaid };
-    var metaByKey = { capital: 100000000, construccion: 191000000, mobiliario: 40000000 };
-
-    var runningTotal = 0;
-    var html = '<div style="margin-bottom:16px;">';
-
-    // Summary KPIs
-    var totalComp = 331000000;
-    var totalPaid = capitalPaid + constrPaid + mobPaid;
-    html += '<div style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;">';
-    html += '<div style="flex:1; min-width:120px; background:#e8f5e9; border-radius:8px; padding:12px; text-align:center;"><div style="font-size:11px; color:#2e7d32;">Comprometido</div><div style="font-size:20px; font-weight:700; color:#2e7d32;">' + fmtM(totalComp) + '</div><div style="font-size:10px; color:#666;">$33.1M × 10</div></div>';
-    html += '<div style="flex:1; min-width:120px; background:#e3f2fd; border-radius:8px; padding:12px; text-align:center;"><div style="font-size:11px; color:#1565c0;">Recaudado</div><div style="font-size:20px; font-weight:700; color:#1565c0;">' + fmtM(totalPaid) + '</div><div style="font-size:10px; color:#666;">' + Math.round(totalPaid/totalComp*100) + '%</div></div>';
-    html += '<div style="flex:1; min-width:120px; background:#ffebee; border-radius:8px; padding:12px; text-align:center;"><div style="font-size:11px; color:#c62828;">Pendiente</div><div style="font-size:20px; font-weight:700; color:#c62828;">' + fmtM(totalComp - totalPaid) + '</div></div>';
-    html += '</div>';
-
-    // Timeline of hitos
-    html += '<div style="position:relative; padding-left:28px;">';
-    html += '<div style="position:absolute; left:12px; top:0; bottom:0; width:2px; background:#e0e0e0;"></div>';
-
-    HITOS.forEach(function(h, idx) {
-        runningTotal += h.monto * 10;
-        var catPaid = paidByKey[h.key];
-        var catMeta = metaByKey[h.key];
-        var catPct = Math.min(100, Math.round(catPaid / catMeta * 100));
-
-        html += '<div style="position:relative; margin-bottom:16px; background:' + h.bg + '; border-radius:10px; padding:14px 16px; border-left:3px solid ' + h.color + ';">';
-        html += '<div style="position:absolute; left:-22px; top:16px; width:12px; height:12px; border-radius:50%; background:' + h.color + '; border:2px solid white; box-shadow:0 0 0 2px ' + h.color + ';"></div>';
-        html += '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:4px;">';
-        html += '<div>';
-        html += '<div style="font-size:11px; color:' + h.color + '; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">' + h.icon + ' ' + h.cat + '</div>';
-        html += '<div style="font-size:14px; font-weight:700; color:#1a1a2e; margin:2px 0;">' + h.desc + '</div>';
-        html += '<div style="font-size:11px; color:#888;">' + h.fecha + '</div>';
-        html += '</div>';
-        html += '<div style="text-align:right;">';
-        html += '<div style="font-size:18px; font-weight:700; color:' + h.color + ';">' + fmtM(h.monto) + '<span style="font-size:11px; font-weight:400; color:#888;">/socio</span></div>';
-        html += '<div style="font-size:11px; color:#666;">' + fmtM(h.monto * 10) + ' total</div>';
-        html += '</div>';
-        html += '</div>';
-
-        // Show category progress only on last item of each category
-        var isLastOfCat = (idx === HITOS.length - 1) || HITOS[idx + 1].key !== h.key;
-        if (isLastOfCat) {
-            html += '<div style="margin-top:8px; display:flex; align-items:center; gap:8px;">';
-            html += '<div style="flex:1; height:6px; background:rgba(0,0,0,0.1); border-radius:3px; overflow:hidden;"><div style="height:100%; width:' + catPct + '%; background:' + h.color + '; border-radius:3px;"></div></div>';
-            html += '<span style="font-size:11px; font-weight:600; color:' + h.color + ';">' + catPct + '% pagado</span>';
-            html += '</div>';
-        }
-
-        html += '</div>';
-    });
-
-    html += '</div>'; // timeline
-
-    // Running total footer
-    html += '<div style="background:#f5f5f5; border-radius:8px; padding:12px 16px; margin-top:8px; display:flex; justify-content:space-between; align-items:center;">';
-    html += '<span style="font-size:12px; color:#666;">Compromiso acumulado total (10 socios)</span>';
-    html += '<span style="font-size:16px; font-weight:700; color:#1a1a2e;">' + fmtM(runningTotal) + '</span>';
-    html += '</div>';
-
-    html += '</div>';
-
-    document.getElementById('hitosModalBody').innerHTML = html;
-    document.getElementById('hitosModal').classList.add('active');
-}
-function closeHitosModal() { document.getElementById('hitosModal').classList.remove('active'); }
-document.getElementById('hitosModal').addEventListener('click', function(e) { if (e.target === this) closeHitosModal(); });
-
 // ==================== XML UPLOAD ====================
-const RUT_MAP_EMBEDDED = {
+const RUT_MAP = {
     '13890149-1':'Antonio', '12106984-9':'Antonio', '76069305-7':'Antonio',
     '12862395-7':'Fernando', '20083182-9':'Fernando',
     '16095526-0':'Camilo', '18273744-5':'Felipe',
@@ -2351,6 +2210,7 @@ const RUT_MAP_EMBEDDED = {
     '13270339-6':'Eduardo', '13455042-2':'Eduardo',
     '13272830-5':'Jordi', '13066600-0':'Cristian', '13426837-9':'Sebastián'
 };
+const ANTONIO_KEYWORDS = ['GGCC Aporte Mobiliario', 'TRANSF. DE ANTONIO PAULO'];
 
 const uploadArea = document.getElementById('uploadArea');
 const fileInput = document.getElementById('fileInput');
@@ -2415,11 +2275,7 @@ function handleFiles(files) {
 }
 
 // ==================== INIT ====================
-(async function() {
-    await loadInsularData();
-    renderResumen();
-    console.log('📊 Dashboard inicializado — ' + ALL_DEPOSITS.length + ' depósitos, ' + SOCIOS_ALL.length + ' socios');
-})();
+renderResumen();
 
 </script>
 </body>
