@@ -1763,7 +1763,8 @@ function classifyAllDeposits() {
             } else {
                 // ── TIPO C: Cualquier otro monto ──
                 // 1) Extraer GGCC pendientes (sin tope por depósito)
-                // 2) Cascada: Capital $10M → MOB $4M → Construcción $19.1M → Otros
+                // 2) Cascada: Capital $10M → Construcción $19.1M → Otros
+                //    (MOB solo viene de depósitos explícitos $236,666 — TIPO B)
                 if (depAfterGGCC && remaining > 0) {
                     for (const monthKey of ggccAllMonths) {
                         if (remaining <= 0) break;
@@ -1779,20 +1780,6 @@ function classifyAllDeposits() {
                 if (capitalPaid < 10000000 && remaining > 0) {
                     const t = Math.min(remaining, 10000000 - capitalPaid);
                     alloc.inicial += t; capitalPaid += t; remaining -= t;
-                }
-                if (remaining > 0 && SOCIOS_MOB.includes(s) && mobPaid < 4000000) {
-                    for (const monthKey of mobAllMonths) {
-                        if (remaining <= 0 || mobPaid >= 4000000) break;
-                        const already = mobCuotaByMonth[monthKey] || 0;
-                        let take = Math.min(remaining, Math.max(0, CUOTA_MOB - already));
-                        take = Math.min(take, 4000000 - mobPaid);
-                        if (take > 0) {
-                            alloc.mobiliario += take;
-                            mobCuotaByMonth[monthKey] = already + take;
-                            mobPaid += take;
-                            remaining -= take;
-                        }
-                    }
                 }
                 if (constrPaid < constrQuota && remaining > 0) {
                     const t = Math.min(remaining, constrQuota - constrPaid);
