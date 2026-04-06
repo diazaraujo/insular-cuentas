@@ -1244,9 +1244,9 @@ function renderResumen() {
     const mobFalta     = Math.max(0, mobMeta - mobPagado);
     const ggccFalta    = Math.max(0, ggccMeta - ggccPagado);
 
-    const totalComprometido = capitalMeta + constrMeta + mobMeta; // Sin GGCC
-    const totalRecaudado    = capitalPagado + constrPagado + mobPagado; // Sin GGCC
-    const totalFalta        = Math.max(0, totalComprometido - totalRecaudado);
+    const totalComprometido = capitalMeta + constrMeta + mobMeta + ggccMeta;
+    const totalRecaudado    = capitalPagado + constrPagado + mobPagado + ggccPagado;
+    const totalFalta        = capitalFalta + constrFalta + mobFalta + ggccFalta;
 
     // Socios al día (todo pagado según cartola)
     let sociosAlDia = 0;
@@ -1285,13 +1285,13 @@ function renderResumen() {
     // ═══════════════════════════════════════════
     html += '<div style="margin-bottom:32px;">';
     html += '<h2 style="font-size:18px; color:#1a1a2e; margin-bottom:4px; border-bottom:2px solid #1a1a2e; padding-bottom:8px;">Aportes Comprometidos</h2>';
-    html += '<p style="font-size:12px; color:#888; margin:4px 0 16px;">Capital Inicial + Construcción + Mobiliario — por socio: ' + fmtM(ACUERDOS.capital.perSocio) + ' + ' + fmtM(ACUERDOS.construccion.perSocio) + ' + ' + fmtM(ACUERDOS.mobiliario.perSocio) + ' = ' + fmtM(ACUERDOS.capital.perSocio + ACUERDOS.construccion.perSocio + ACUERDOS.mobiliario.perSocio) + '</p>';
+    html += '<p style="font-size:12px; color:#888; margin:4px 0 16px;">Capital Inicial + Construcción + Mobiliario + GGCC (' + ggccMeses + ' meses)</p>';
 
     // 3 KPIs en fila
     html += '<section class="kpis" style="margin-bottom:16px;">';
     html += '<div class="kpi green"><div class="label">Comprometido Total</div><div class="value">' + fmtM(totalComprometido) + '</div><div class="sub">' + fmtM(totalComprometido / SOCIOS_ALL.length) + ' × ' + SOCIOS_ALL.length + ' socios</div></div>';
     html += '<div class="kpi blue"><div class="label">Recaudado</div><div class="value">' + fmtM(totalRecaudado) + '</div><div class="sub">' + recaudadoPct + '% del comprometido</div></div>';
-    html += '<div class="kpi red"><div class="label">Falta por Recaudar</div><div class="value">' + fmtM(totalFalta) + '</div><div class="sub">' + (capitalFalta > 0 ? fmtM(capitalFalta) + ' cap. ' : '') + (constrFalta > 0 ? fmtM(constrFalta) + ' constr. ' : '') + (mobFalta > 0 ? fmtM(mobFalta) + ' mob.' : '') + '</div></div>';
+    html += '<div class="kpi red"><div class="label">Falta por Recaudar</div><div class="value">' + fmtM(totalFalta) + '</div><div class="sub">' + (capitalFalta > 0 ? fmtM(capitalFalta) + ' cap. ' : '') + (constrFalta > 0 ? fmtM(constrFalta) + ' constr. ' : '') + (mobFalta > 0 ? fmtM(mobFalta) + ' mob. ' : '') + (ggccFalta > 0 ? fmtM(ggccFalta) + ' GGCC' : '') + '</div></div>';
     html += '</section>';
 
     // 3 Hito cards (Capital, Construcción, Mobiliario)
