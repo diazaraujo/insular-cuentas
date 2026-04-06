@@ -1693,103 +1693,96 @@ function classifyAllDeposits() {
             .map(d => ({...d}))
             .sort((a,b) => (a.y*10000 + a.m*100 + a.d) - (b.y*10000 + b.m*100 + b.d));
 
-        const classified = [];
+        // Preparar allocations por depósito
+        const items = deps.map(dep => ({
+            ...dep,
+            alloc: { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, otros: 0 },
+            remaining: dep.amt
+        }));
 
-        deps.forEach(dep => {
-            let remaining = dep.amt;
-            const alloc = { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, otros: 0 };
-            const depAfterGGCC = dep.y > 2022 || (dep.y === 2022 && dep.m >= 10);
+        // ══════════════════════════════════════════════════════════
+        // PASADA 1: GGCC y MOB de depósitos explícitos (TIPO A + B)
+        //   → Los $70k y $236,666 tienen prioridad para llenar GGCC
+        // ══════════════════════════════════════════════════════════
+        items.forEach(item => {
+            const depAfterGGCC = item.y > 2022 || (item.y === 2022 && item.m >= 10);
 
-            // ══════════════════════════════════════════════════════
-            // IDENTIFICAR PROPÓSITO DEL DEPÓSITO POR SU MONTO
-            // ══════════════════════════════════════════════════════
-
-            if (depAfterGGCC && isGGCCOnly(dep.amt)) {
+            if (depAfterGGCC && isGGCCOnly(item.amt)) {
                 // ── TIPO A: Múltiplo de $70k (≤$840k) → TODO a GGCC ──
-                for (const monthKey of ggccAllMonths) {
-                    if (remaining <= 0) break;
-                    const already = ggccByMonth[monthKey] || 0;
-                    const take = Math.min(remaining, Math.max(0, CUOTA_GGCC - already));
-                    if (take > 0) {
-                        alloc.ggcc += take;
-                        ggccByMonth[monthKey] = already + take;
-                        remaining -= take;
-                    }
+                for (const mk of ggccAllMonths) {
+                    if (item.remaining <= 0) break;
+                    const already = ggccByMonth[mk] || 0;
+                    const take = Math.min(item.remaining, Math.max(0, CUOTA_GGCC - already));
+                    if (take > 0) { item.alloc.ggcc += take; ggccByMonth[mk] = already + take; item.remaining -= take; }
                 }
-                // Si sobra (más meses pagados que existentes), va a otros
-                if (remaining > 0) { alloc.otros += remaining; remaining = 0; }
-
-            } else if (depAfterGGCC && isGGCCplusMOB(dep.amt)) {
-                // ── TIPO B: $236,666 (±1) → $70k GGCC + resto MOB ──
-                // Parte GGCC
-                for (const monthKey of ggccAllMonths) {
-                    if (alloc.ggcc >= 70000 || remaining <= 0) break;
-                    const already = ggccByMonth[monthKey] || 0;
-                    const take = Math.min(remaining, Math.max(0, CUOTA_GGCC - already));
-                    if (take > 0) {
-                        alloc.ggcc += take;
-                        ggccByMonth[monthKey] = already + take;
-                        remaining -= take;
-                    }
+            } else if (depAfterGGCC && isGGCCplusMOB(item.amt)) {
+                // ── TIPO B: $236,666 → $70k GGCC + resto MOB ──
+                for (const mk of ggccAllMonths) {
+                    if (item.alloc.ggcc >= 70000 || item.remaining <= 0) break;
+                    const already = ggccByMonth[mk] || 0;
+                    const take = Math.min(item.remaining, Math.max(0, CUOTA_GGCC - already));
+                    if (take > 0) { item.alloc.ggcc += take; ggccByMonth[mk] = already + take; item.remaining -= take; }
                 }
-                // Parte MOB (el resto ~$166,666)
-                if (remaining > 0 && SOCIOS_MOB.includes(s) && mobPaid < 4000000) {
-                    for (const monthKey of mobAllMonths) {
-                        if (remaining <= 0 || mobPaid >= 4000000) break;
-                        const already = mobCuotaByMonth[monthKey] || 0;
-                        let take = Math.min(remaining, Math.max(0, CUOTA_MOB - already));
+                if (item.remaining > 0 && SOCIOS_MOB.includes(s) && mobPaid < 4000000) {
+                    for (const mk of mobAllMonths) {
+                        if (item.remaining <= 0 || mobPaid >= 4000000) break;
+                        const already = mobCuotaByMonth[mk] || 0;
+                        let take = Math.min(item.remaining, Math.max(0, CUOTA_MOB - already));
                         take = Math.min(take, 4000000 - mobPaid);
-                        if (take > 0) {
-                            alloc.mobiliario += take;
-                            mobCuotaByMonth[monthKey] = already + take;
-                            mobPaid += take;
-                            remaining -= take;
-                        }
+                        if (take > 0) { item.alloc.mobiliario += take; mobCuotaByMonth[mk] = already + take; mobPaid += take; item.remaining -= take; }
                     }
                 }
-                // Si sobra algo (redondeo, MOB lleno), va a cascada
-                if (remaining > 0) {
-                    if (capitalPaid < 10000000) {
-                        const t = Math.min(remaining, 10000000 - capitalPaid);
-                        alloc.inicial += t; capitalPaid += t; remaining -= t;
-                    }
-                    if (constrPaid < constrQuota && remaining > 0) {
-                        const t = Math.min(remaining, constrQuota - constrPaid);
-                        alloc.construccion += t; constrPaid += t; remaining -= t;
-                    }
-                    if (remaining > 0) { alloc.otros += remaining; remaining = 0; }
-                }
+            }
+            // TIPO C: se procesa en pasada 2
+        });
 
-            } else {
-                // ── TIPO C: Cualquier otro monto ──
-                // 1) Extraer GGCC pendientes (sin tope por depósito)
-                // 2) Cascada: Capital $10M → Construcción $19.1M → Otros
-                //    (MOB solo viene de depósitos explícitos $236,666 — TIPO B)
-                if (depAfterGGCC && remaining > 0) {
-                    for (const monthKey of ggccAllMonths) {
-                        if (remaining <= 0) break;
-                        const already = ggccByMonth[monthKey] || 0;
-                        const take = Math.min(remaining, Math.max(0, CUOTA_GGCC - already));
-                        if (take > 0) {
-                            alloc.ggcc += take;
-                            ggccByMonth[monthKey] = already + take;
-                            remaining -= take;
-                        }
-                    }
+        // ══════════════════════════════════════════════════════════
+        // PASADA 2: GGCC restante (TIPO C) + cascada para TODOS
+        //   → TIPO C llena meses GGCC que no cubrieron A/B
+        //   → Cascada: Capital $10M → Constr $19.1M → MOB $4M → Constr
+        // ══════════════════════════════════════════════════════════
+        items.forEach(item => {
+            const depAfterGGCC = item.y > 2022 || (item.y === 2022 && item.m >= 10);
+            const isTipoC = !isGGCCOnly(item.amt) && !(isGGCCplusMOB(item.amt) && depAfterGGCC);
+
+            // TIPO C: llenar GGCC pendientes (sin tope por depósito)
+            if (isTipoC && depAfterGGCC && item.remaining > 0) {
+                for (const mk of ggccAllMonths) {
+                    if (item.remaining <= 0) break;
+                    const already = ggccByMonth[mk] || 0;
+                    const take = Math.min(item.remaining, Math.max(0, CUOTA_GGCC - already));
+                    if (take > 0) { item.alloc.ggcc += take; ggccByMonth[mk] = already + take; item.remaining -= take; }
                 }
-                if (capitalPaid < 10000000 && remaining > 0) {
-                    const t = Math.min(remaining, 10000000 - capitalPaid);
-                    alloc.inicial += t; capitalPaid += t; remaining -= t;
-                }
-                if (constrPaid < constrQuota && remaining > 0) {
-                    const t = Math.min(remaining, constrQuota - constrPaid);
-                    alloc.construccion += t; constrPaid += t; remaining -= t;
-                }
-                if (remaining > 0) { alloc.otros += remaining; }
             }
 
-            classified.push({ ...dep, alloc });
+            // Cascada: Capital → Construcción $19.1M → MOB → Construcción (excedente)
+            if (capitalPaid < 10000000 && item.remaining > 0) {
+                const t = Math.min(item.remaining, 10000000 - capitalPaid);
+                item.alloc.inicial += t; capitalPaid += t; item.remaining -= t;
+            }
+            if (constrPaid < constrQuota && item.remaining > 0) {
+                const t = Math.min(item.remaining, constrQuota - constrPaid);
+                item.alloc.construccion += t; constrPaid += t; item.remaining -= t;
+            }
+            // Después de Constr $19.1M, excedente va a MOB si no pagó explícitamente
+            if (item.remaining > 0 && SOCIOS_MOB.includes(s) && mobPaid < 4000000) {
+                for (const mk of mobAllMonths) {
+                    if (item.remaining <= 0 || mobPaid >= 4000000) break;
+                    const already = mobCuotaByMonth[mk] || 0;
+                    let take = Math.min(item.remaining, Math.max(0, CUOTA_MOB - already));
+                    take = Math.min(take, 4000000 - mobPaid);
+                    if (take > 0) { item.alloc.mobiliario += take; mobCuotaByMonth[mk] = already + take; mobPaid += take; item.remaining -= take; }
+                }
+            }
+            // Lo que sobra sigue a construcción
+            if (item.remaining > 0) {
+                item.alloc.construccion += item.remaining;
+                constrPaid += item.remaining;
+                item.remaining = 0;
+            }
         });
+
+        const classified = items.map(item => ({ ...item, alloc: item.alloc }));
 
         // Compute totals
         const totals = { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, otros: 0, total: 0 };
