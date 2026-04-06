@@ -1267,14 +1267,11 @@ function validateDataIntegrity() {
 
     SOCIOS_ALL.forEach(s => {
         const d = cls[s];
-        // C1) Pagado excede cuota de construcción significativamente
-        if (d.constrPaid > d.constrQuota * 1.2) {
-            warnings.push('[Construcción] ' + s + ': pagado ' + fmt(d.constrPaid) + ' excede cuota ' + fmtM(d.constrQuota) + ' por >' + Math.round((d.constrPaid/d.constrQuota - 1)*100) + '%. Verificar si excedente debió ir a otra categoría.');
-        }
-        // C2) Construcción sin capital completo (la cascada debió llenar capital primero)
+        // C1) Construcción sin capital completo (la cascada debió llenar capital primero — error de clasificación)
         if (d.constrPaid > 0 && d.capitalPaid < ACUERDOS.capital.perSocio) {
             warnings.push('[Construcción] ' + s + ': tiene ' + fmt(d.constrPaid) + ' en construcción pero capital incompleto (' + fmt(d.capitalPaid) + '/' + fmtM(ACUERDOS.capital.perSocio) + '). La cascada debió llenar capital primero.');
         }
+        // Nota: excedentes sobre la cuota de construcción son normales — la cascada usa construcción como bucket final
     });
 
     // ═══ MOBILIARIO ═══
