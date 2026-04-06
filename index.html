@@ -1095,15 +1095,156 @@ const _currentMonth = _now.getMonth() + 1; // 1-12
 const MONTHS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 let ggccHighlightSocio = null; // Socio a resaltar al abrir tab GGCC
 
-// Acuerdos (hardcoded reference data from agreements)
+// ══════════════════════════════════════════════════════════════════
+// MODELO DE DATOS: Reglas de clasificación y asignación de fondos
+// ══════════════════════════════════════════════════════════════════
+// Toda la lógica de cómo se reparte la plata está aquí como DATOS,
+// no enterrada en código. El motor classifyAllDeposits() consume
+// estas estructuras y etiqueta cada depósito con la regla aplicada.
+// ══════════════════════════════════════════════════════════════════
+
+// ── ACUERDOS: compromisos financieros de la sociedad ──
 const ACUERDOS = {
-    capital: { perSocio: 10000000, total: 100000000 }, // pagado se calcula desde cartolas
-    construccion: {
-        // $8M (sep-2024) + $3.5M (jul-2025) + $4M (ene-2026) + $3.6M (2026, 12 cuotas) = $19.1M/socio
-        perSocio: 19100000,
-        total: 191000000 // 10 × $19.1M — pagado se calcula desde cartolas via classifyAllDeposits()
+    capital: {
+        perSocio: 10000000,
+        total: 100000000,
+        descripcion: 'Aporte inicial de constitución — abril 2020',
+        fuente: 'Escritura constitución Insular S.p.A.'
     },
-    mobiliario: { perSocio: 4000000, total: 40000000 }
+    construccion: {
+        perSocio: 19100000,
+        total: 191000000,
+        descripcion: 'Club House Chaicura 440m² — 4 llamados de capital',
+        desglose: [
+            { monto: 8000000, fecha: '2024-09', descripcion: 'Primer llamado de capital' },
+            { monto: 3500000, fecha: '2025-07', descripcion: 'Segundo llamado' },
+            { monto: 4000000, fecha: '2026-01', descripcion: 'Tercer llamado' },
+            { monto: 3600000, fecha: '2026', descripcion: 'Cuarto llamado (12 cuotas $300k)' }
+        ],
+        fuente: 'Actas de asamblea 2024-2026'
+    },
+    mobiliario: {
+        perSocio: 4000000,
+        total: 40000000,
+        descripcion: 'Equipamiento Club House — 24 cuotas mensuales',
+        fuente: 'Acuerdo asamblea 2025'
+    }
+};
+
+// ── REGLAS_TIPO: detección del tipo de depósito (Pasada 1) ──
+// Cada regla define: id, nombre, cómo detectarlo, qué se extrae, y la prioridad.
+// El motor las evalúa en orden (primera que calza gana).
+const REGLAS_TIPO = [
+    {
+        id: 'A',
+        nombre: 'GGCC Explícito',
+        descripcion: 'Múltiplo exacto de $70k (hasta $840k) — todo a GGCC',
+        pasada: 1,
+        detectar: 'amt % CUOTA_GGCC === 0 && amt <= CUOTA_GGCC * 12 && amt > 0',
+        asignacion: 'Todo el monto llena slots GGCC secuenciales',
+        ejemplos: ['$70.000 → 1 mes GGCC', '$140.000 → 2 meses', '$350.000 → 5 meses', '$840.000 → 12 meses'],
+        color: '#00838f', bg: '#e0f2f1'
+    },
+    {
+        id: 'A2',
+        nombre: 'GGCC + Extra',
+        descripcion: 'Entre $70k y $140k, no múltiplo exacto — $70k a GGCC + resto a cascada',
+        pasada: 1,
+        detectar: 'amt >= CUOTA_GGCC && amt < CUOTA_GGCC * 2 && amt % CUOTA_GGCC !== 0',
+        asignacion: '$70k llenan 1 slot GGCC, remanente entra a cascada',
+        ejemplos: ['$75.000 → $70k GGCC + $5k cascada', '$100.000 → $70k GGCC + $30k cascada'],
+        color: '#0097a7', bg: '#e0f7fa'
+    },
+    {
+        id: 'B',
+        nombre: 'Cuota Combinada',
+        descripcion: 'Exactamente $236.666 — cuota mensual GGCC + Mobiliario',
+        pasada: 1,
+        detectar: 'amt >= 236665 && amt <= 236667',
+        asignacion: '$70k → 1 slot GGCC + $166.666 → 1 slot MOB',
+        ejemplos: ['$236.666 → $70k GGCC + $166.666 MOB'],
+        color: '#e65100', bg: '#fff3e0'
+    },
+    {
+        id: 'C',
+        nombre: 'Cascada General',
+        descripcion: 'Cualquier otro monto — primero cubre GGCC pendientes, luego cascada',
+        pasada: 2,
+        detectar: 'No calza con A, A2 ni B',
+        asignacion: 'Cubre GGCC pendientes → Capital → Construcción → MOB → Construcción (sin tope)',
+        ejemplos: ['$5.000.000 → GGCC pendiente + Capital + Construcción', '$2.000.000 → todo a Construcción si resto lleno'],
+        color: '#7b1fa2', bg: '#ede7f6'
+    }
+];
+
+// ── CASCADA: orden estricto de asignación del remanente ──
+// Después de extraer GGCC (y MOB para Tipo B), lo que queda se asigna
+// en ESTE ORDEN. Cada paso tiene un tope por socio.
+const CASCADA = [
+    {
+        orden: 1,
+        categoria: 'inicial',
+        nombre: 'Capital Inicial',
+        topePerSocio: 10000000,
+        sinTope: false,
+        descripcion: 'Primer compromiso — constitución sociedad abril 2020',
+        color: '#1565c0'
+    },
+    {
+        orden: 2,
+        categoria: 'construccion',
+        nombre: 'Construcción',
+        topePerSocio: 19100000,
+        sinTope: false,
+        descripcion: 'Club House Chaicura — hasta $19.1M por socio',
+        color: '#7b1fa2'
+    },
+    {
+        orden: 3,
+        categoria: 'mobiliario',
+        nombre: 'Mobiliario',
+        topePerSocio: 4000000,
+        sinTope: false,
+        descripcion: 'Solo socios MOB — hasta $4M por socio',
+        condicion: 'Solo aplica a SOCIOS_MOB que no sean MOB_PAGADO_FULL',
+        color: '#e65100'
+    },
+    {
+        orden: 4,
+        categoria: 'construccion',
+        nombre: 'Construcción (excedente)',
+        topePerSocio: null,
+        sinTope: true,
+        descripcion: 'Bucket final — todo lo que sobra, sin tope. Excedentes son normales.',
+        color: '#7b1fa2'
+    }
+];
+
+// ── GGCC_CONFIG: parámetros de gastos comunes ──
+const GGCC_CONFIG = {
+    cuotaMensual: CUOTA_GGCC,
+    inicioYear: 2022,
+    inicioMonth: 10,
+    mesVencido: true,
+    mesVencidoExplicacion: 'El GGCC de un mes se paga en el mes siguiente. Depósitos de marzo cubren hasta GGCC de marzo. El GGCC de abril se paga en mayo.',
+    maxMesesPorDeposito: 12, // $840k / $70k = 12 meses máximo por depósito Tipo A
+    slotsFillRule: 'Secuencial desde oct-2022. Cada $70k llena el siguiente slot vacío.',
+    topeSlots: 'Hasta el mes de la última cartola disponible (mes vencido)',
+    fuente: 'Acuerdo asamblea oct-2022'
+};
+
+// ── MOB_CONFIG: parámetros de mobiliario ──
+const MOB_CONFIG = {
+    cuotaMensual: CUOTA_MOB,
+    totalCuotas: MOB_CUOTAS,
+    inicioYear: 2025,
+    inicioMonth: 2,
+    finYear: 2027,
+    finMonth: 1,
+    sociosMOB: SOCIOS_MOB,
+    sociosPagadoFull: MOB_PAGADO_FULL,
+    pagadoFullExplicacion: 'Estos socios pagaron $4M de mobiliario por adelantado, fuera de la cuenta Scotiabank. No se les asigna MOB desde cartola.',
+    fuente: 'Acuerdo asamblea ene-2025'
 };
 
 // Full names for display
@@ -1610,14 +1751,16 @@ function renderMetodologia() {
     h += '<line x1="450" y1="357" x2="450" y2="380" stroke="#90a4ae" stroke-width="2" marker-end="url(#arrowhead)"/>';
     h += '<text x="460" y="374" fill="#90a4ae" font-size="9">remanente</text>';
 
-    // Cascade boxes - 4 in a row
+    // Cascade boxes - generado desde CASCADA[] (data model)
     const cascW = 190, cascGap = 15, cascStartX = 30;
-    const cascItems = [
-        { label: '① Capital Inicial', sub: 'Hasta $' + (ACUERDOS.capital.perSocio/1e6) + 'M/socio', color: '#1565c0', bg: '#e3f2fd' },
-        { label: '② Construcción', sub: 'Hasta $' + (ACUERDOS.construccion.perSocio/1e6) + 'M/socio', color: '#7b1fa2', bg: '#f3e5f5' },
-        { label: '③ Mobiliario', sub: 'Hasta $' + (ACUERDOS.mobiliario.perSocio/1e6) + 'M (' + SOCIOS_MOB.length + ' socios)', color: '#e65100', bg: '#fff3e0' },
-        { label: '④ Construcción ∞', sub: 'Sin tope (bucket final)', color: '#7b1fa2', bg: '#f3e5f5' }
-    ];
+    const circled = ['①','②','③','④','⑤','⑥'];
+    const cascBgs = { '#1565c0':'#e3f2fd', '#7b1fa2':'#f3e5f5', '#e65100':'#fff3e0' };
+    const cascItems = CASCADA.map((step, i) => ({
+        label: circled[i] + ' ' + step.nombre,
+        sub: step.sinTope ? 'Sin tope (bucket final)' : (step.categoria === 'mobiliario' ? 'Hasta $' + (step.topePerSocio/1e6) + 'M (' + SOCIOS_MOB.length + ' socios)' : 'Hasta $' + (step.topePerSocio/1e6) + 'M/socio'),
+        color: step.color,
+        bg: cascBgs[step.color] || '#f5f5f5'
+    }));
     cascItems.forEach((c, i) => {
         const x = cascStartX + i * (cascW + cascGap);
         h += '<rect x="' + x + '" y="385" width="' + cascW + '" height="55" rx="8" fill="' + c.bg + '" stroke="' + c.color + '" stroke-width="2" filter="url(#shadow)"/>';
@@ -1695,9 +1838,10 @@ function renderMetodologia() {
     h += '<div style="background:#f8f9fa; border-radius:8px; padding:16px; border-left:4px solid #1565c0;">';
     h += '<div style="font-weight:700; color:#1565c0; margin-bottom:8px;">Compromisos por Socio</div>';
     h += '<div style="font-size:12px; color:#455a64; line-height:1.8;">';
-    h += 'Capital Inicial: <strong>$' + (ACUERDOS.capital.perSocio/1e6) + 'M</strong> (constitución abr-2020)<br>';
-    h += 'Construcción: <strong>$' + (ACUERDOS.construccion.perSocio/1e6) + 'M</strong> (4 llamados de capital)<br>';
-    h += 'Mobiliario: <strong>$' + (ACUERDOS.mobiliario.perSocio/1e6) + 'M</strong> (' + MOB_CUOTAS + ' cuotas de $' + fmt(CUOTA_MOB) + ')<br>';
+    ['capital','construccion','mobiliario'].forEach(key => {
+        const a = ACUERDOS[key];
+        h += key.charAt(0).toUpperCase() + key.slice(1).replace('inicial','') + ': <strong>$' + (a.perSocio/1e6) + 'M</strong> — ' + a.descripcion + '<br>';
+    });
     h += 'Total por socio: <strong>$' + fmt(ACUERDOS.capital.perSocio + ACUERDOS.construccion.perSocio + ACUERDOS.mobiliario.perSocio) + '</strong>';
     h += '</div></div>';
 
@@ -1705,20 +1849,23 @@ function renderMetodologia() {
     h += '<div style="background:#f8f9fa; border-radius:8px; padding:16px; border-left:4px solid #00838f;">';
     h += '<div style="font-weight:700; color:#00838f; margin-bottom:8px;">Gastos Comunes (GGCC)</div>';
     h += '<div style="font-size:12px; color:#455a64; line-height:1.8;">';
-    h += 'Cuota mensual: <strong>$' + fmt(CUOTA_GGCC) + '/socio</strong><br>';
-    h += 'Vigente desde: <strong>Octubre 2022</strong><br>';
-    h += 'Meses acumulados: <strong>' + ggccMeses + '</strong> (mes vencido)<br>';
-    h += 'Total esperado: <strong>$' + fmt(CUOTA_GGCC * SOCIOS_ALL.length * ggccMeses) + '</strong>';
+    h += 'Cuota mensual: <strong>$' + fmt(GGCC_CONFIG.cuotaMensual) + '/socio</strong><br>';
+    h += 'Vigente desde: <strong>' + MONTHS_SHORT[GGCC_CONFIG.inicioMonth-1] + ' ' + GGCC_CONFIG.inicioYear + '</strong><br>';
+    h += 'Mes vencido: <strong>Sí</strong> — ' + GGCC_CONFIG.mesVencidoExplicacion.substring(0, 60) + '…<br>';
+    h += 'Max meses/depósito: <strong>' + GGCC_CONFIG.maxMesesPorDeposito + '</strong> ($' + fmt(GGCC_CONFIG.cuotaMensual * GGCC_CONFIG.maxMesesPorDeposito) + ')<br>';
+    h += 'Meses acumulados: <strong>' + ggccMeses + '</strong><br>';
+    h += 'Total esperado: <strong>$' + fmt(GGCC_CONFIG.cuotaMensual * SOCIOS_ALL.length * ggccMeses) + '</strong>';
     h += '</div></div>';
 
     // Card: Socios
     h += '<div style="background:#f8f9fa; border-radius:8px; padding:16px; border-left:4px solid #e65100;">';
-    h += '<div style="font-weight:700; color:#e65100; margin-bottom:8px;">Grupos de Socios</div>';
+    h += '<div style="font-weight:700; color:#e65100; margin-bottom:8px;">Grupos de Socios & Mobiliario</div>';
     h += '<div style="font-size:12px; color:#455a64; line-height:1.8;">';
     h += 'Total socios: <strong>' + SOCIOS_ALL.length + '</strong><br>';
-    h += 'Socios MOB (cuota mensual): <strong>' + SOCIOS_MOB.length + '</strong> — ' + SOCIOS_MOB.join(', ') + '<br>';
-    h += 'MOB pagado full: <strong>' + MOB_PAGADO_FULL.length + '</strong> — ' + MOB_PAGADO_FULL.join(', ') + '<br>';
-    h += '<span style="font-size:11px; color:#888;">(MOB full = pagaron $4M adelantado fuera de cartola)</span>';
+    h += 'Socios MOB (cuota mensual): <strong>' + MOB_CONFIG.sociosMOB.length + '</strong> — ' + MOB_CONFIG.sociosMOB.join(', ') + '<br>';
+    h += 'MOB pagado full: <strong>' + MOB_CONFIG.sociosPagadoFull.length + '</strong> — ' + MOB_CONFIG.sociosPagadoFull.join(', ') + '<br>';
+    h += 'Cuota MOB: <strong>$' + fmt(MOB_CONFIG.cuotaMensual) + '/mes</strong> × ' + MOB_CONFIG.totalCuotas + ' cuotas (' + MONTHS_SHORT[MOB_CONFIG.inicioMonth-1] + '-' + MOB_CONFIG.inicioYear + ' → ' + MONTHS_SHORT[MOB_CONFIG.finMonth-1] + '-' + MOB_CONFIG.finYear + ')<br>';
+    h += '<span style="font-size:11px; color:#888;">' + MOB_CONFIG.pagadoFullExplicacion + '</span>';
     h += '</div></div>';
 
     // Card: Cartolas
@@ -1746,23 +1893,19 @@ function renderMetodologia() {
     h += '<th style="padding:10px 12px; text-align:left;">Pasada</th>';
     h += '</tr></thead><tbody>';
 
-    const tipos = [
-        { tipo:'A', det:'amt % $70k == 0 y amt ≤ $840k', ej:'$70.000', asig:'$70k → GGCC (1 mes)', pasada:'1', color:'#00838f', bg:'#e0f2f1' },
-        { tipo:'A', det:'amt % $70k == 0 y amt ≤ $840k', ej:'$350.000', asig:'$350k → GGCC (5 meses)', pasada:'1', color:'#00838f', bg:'#e0f2f1' },
-        { tipo:'A2', det:'$70k ≤ amt < $140k, no múltiplo', ej:'$75.000', asig:'$70k → GGCC + $5k → cascada', pasada:'1', color:'#0097a7', bg:'#e0f7fa' },
-        { tipo:'A2', det:'$70k ≤ amt < $140k, no múltiplo', ej:'$100.000', asig:'$70k → GGCC + $30k → cascada', pasada:'1', color:'#0097a7', bg:'#e0f7fa' },
-        { tipo:'B', det:'$236.665 ≤ amt ≤ $236.667', ej:'$236.666', asig:'$70k → GGCC + $166.666 → MOB', pasada:'1', color:'#e65100', bg:'#fff3e0' },
-        { tipo:'C', det:'Cualquier otro monto', ej:'$5.000.000', asig:'GGCC pendiente → Capital → Constr → MOB → Constr', pasada:'2', color:'#7b1fa2', bg:'#ede7f6' },
-        { tipo:'C', det:'Cualquier otro monto', ej:'$2.000.000', asig:'Si capital y GGCC llenos → todo a Construcción', pasada:'2', color:'#7b1fa2', bg:'#ede7f6' },
-    ];
-    tipos.forEach((t, i) => {
-        h += '<tr style="background:' + (i%2===0 ? '#fff' : '#fafafa') + ';">';
-        h += '<td style="padding:8px 12px;"><span style="display:inline-block; padding:2px 10px; border-radius:4px; background:' + t.bg + '; color:' + t.color + '; font-weight:700; font-size:11px;">TIPO ' + t.tipo + '</span></td>';
-        h += '<td style="padding:8px 12px; color:#666;">' + t.det + '</td>';
-        h += '<td style="padding:8px 12px; font-weight:600;">' + t.ej + '</td>';
-        h += '<td style="padding:8px 12px; color:#455a64;">' + t.asig + '</td>';
-        h += '<td style="padding:8px 12px; text-align:center; font-weight:600; color:' + t.color + ';">' + t.pasada + '</td>';
-        h += '</tr>';
+    // Generado desde REGLAS_TIPO (data model)
+    let rowIdx = 0;
+    REGLAS_TIPO.forEach(regla => {
+        regla.ejemplos.forEach(ej => {
+            h += '<tr style="background:' + (rowIdx%2===0 ? '#fff' : '#fafafa') + ';">';
+            h += '<td style="padding:8px 12px;"><span style="display:inline-block; padding:2px 10px; border-radius:4px; background:' + regla.bg + '; color:' + regla.color + '; font-weight:700; font-size:11px;">TIPO ' + regla.id + '</span></td>';
+            h += '<td style="padding:8px 12px; color:#666;">' + regla.detectar + '</td>';
+            h += '<td style="padding:8px 12px; font-weight:600; color:#455a64;">' + ej + '</td>';
+            h += '<td style="padding:8px 12px; color:#455a64;">' + regla.asignacion + '</td>';
+            h += '<td style="padding:8px 12px; text-align:center; font-weight:600; color:' + regla.color + ';">' + regla.pasada + '</td>';
+            h += '</tr>';
+            rowIdx++;
+        });
     });
     h += '</tbody></table></div></div>';
 
@@ -1789,9 +1932,62 @@ function renderMetodologia() {
     });
     h += '</div></div>';
 
+    // ═══ SECCIÓN 6: MODELO DE DATOS (raw) ═══
+    h += '<div style="background:white; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:24px;">';
+    h += '<h3 style="font-size:16px; color:#1a1a2e; margin-bottom:4px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">6. Modelo de Datos — Fuente de Verdad</h3>';
+    h += '<p style="font-size:12px; color:#666; margin-bottom:16px;">Las siguientes estructuras definen todas las reglas de clasificación. El motor de asignación las lee en tiempo real; este documento se genera desde ellas.</p>';
+
+    // REGLAS_TIPO table
+    h += '<div style="margin-bottom:20px;">';
+    h += '<div style="font-weight:700; font-size:13px; color:#455a64; margin-bottom:8px;">REGLAS_TIPO (' + REGLAS_TIPO.length + ' reglas)</div>';
+    h += '<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:11px;">';
+    h += '<thead><tr style="background:#f5f5f5;"><th style="padding:6px 10px; text-align:left;">ID</th><th style="padding:6px 10px; text-align:left;">Nombre</th><th style="padding:6px 10px; text-align:left;">Pasada</th><th style="padding:6px 10px; text-align:left;">Detección</th><th style="padding:6px 10px; text-align:left;">Asignación</th></tr></thead><tbody>';
+    REGLAS_TIPO.forEach((r, i) => {
+        h += '<tr style="background:' + (i%2===0?'#fff':'#fafafa') + ';">';
+        h += '<td style="padding:6px 10px;"><span style="padding:1px 8px; border-radius:4px; background:' + r.bg + '; color:' + r.color + '; font-weight:700;">' + r.id + '</span></td>';
+        h += '<td style="padding:6px 10px;">' + r.nombre + '</td>';
+        h += '<td style="padding:6px 10px; text-align:center;">' + r.pasada + '</td>';
+        h += '<td style="padding:6px 10px; color:#666; font-family:monospace; font-size:10px;">' + r.detectar + '</td>';
+        h += '<td style="padding:6px 10px; color:#455a64;">' + r.asignacion + '</td>';
+        h += '</tr>';
+    });
+    h += '</tbody></table></div></div>';
+
+    // CASCADA table
+    h += '<div style="margin-bottom:20px;">';
+    h += '<div style="font-weight:700; font-size:13px; color:#455a64; margin-bottom:8px;">CASCADA (' + CASCADA.length + ' pasos)</div>';
+    h += '<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:11px;">';
+    h += '<thead><tr style="background:#f5f5f5;"><th style="padding:6px 10px;">#</th><th style="padding:6px 10px; text-align:left;">Nombre</th><th style="padding:6px 10px; text-align:left;">Categoría</th><th style="padding:6px 10px; text-align:right;">Tope/socio</th><th style="padding:6px 10px; text-align:left;">Descripción</th></tr></thead><tbody>';
+    CASCADA.forEach((c, i) => {
+        h += '<tr style="background:' + (i%2===0?'#fff':'#fafafa') + ';">';
+        h += '<td style="padding:6px 10px; text-align:center; font-weight:700; color:' + c.color + ';">' + c.orden + '</td>';
+        h += '<td style="padding:6px 10px; font-weight:600;">' + c.nombre + '</td>';
+        h += '<td style="padding:6px 10px;">' + c.categoria + '</td>';
+        h += '<td style="padding:6px 10px; text-align:right;">' + (c.sinTope ? '∞ (sin tope)' : '$' + fmt(c.topePerSocio)) + '</td>';
+        h += '<td style="padding:6px 10px; color:#666;">' + c.descripcion + '</td>';
+        h += '</tr>';
+    });
+    h += '</tbody></table></div></div>';
+
+    // GGCC_CONFIG + MOB_CONFIG as cards
+    h += '<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">';
+    h += '<div style="background:#f8f9fa; border-radius:8px; padding:14px; border-left:4px solid #00838f;">';
+    h += '<div style="font-weight:700; color:#00838f; font-size:12px; margin-bottom:6px;">GGCC_CONFIG</div>';
+    h += '<div style="font-size:11px; color:#455a64; line-height:1.7; font-family:monospace;">';
+    Object.entries(GGCC_CONFIG).forEach(([k,v]) => { h += k + ': <strong>' + (typeof v === 'string' ? '"' + v.substring(0,50) + (v.length>50?'…':'') + '"' : v) + '</strong><br>'; });
+    h += '</div></div>';
+    h += '<div style="background:#f8f9fa; border-radius:8px; padding:14px; border-left:4px solid #e65100;">';
+    h += '<div style="font-weight:700; color:#e65100; font-size:12px; margin-bottom:6px;">MOB_CONFIG</div>';
+    h += '<div style="font-size:11px; color:#455a64; line-height:1.7; font-family:monospace;">';
+    Object.entries(MOB_CONFIG).forEach(([k,v]) => { h += k + ': <strong>' + (Array.isArray(v) ? '[' + v.join(', ') + ']' : (typeof v === 'string' ? '"' + v.substring(0,50) + (v.length>50?'…':'') + '"' : v)) + '</strong><br>'; });
+    h += '</div></div>';
+    h += '</div>';
+
+    h += '</div>'; // section 6
+
     // Footer
     h += '<div style="text-align:center; padding:16px; color:#aaa; font-size:11px;">';
-    h += 'Documentación generada automáticamente desde classifyAllDeposits() — Insular S.p.A. Dashboard v3';
+    h += 'Documentación generada desde REGLAS_TIPO, CASCADA, GGCC_CONFIG, MOB_CONFIG — Insular S.p.A. Dashboard v3';
     h += '</div>';
 
     el.innerHTML = h;
@@ -2091,141 +2287,146 @@ const CAT_ORDER = ['inicial', 'construccion', 'mobiliario', 'ggcc', 'otros'];
 function classifyAllDeposits() {
     const result = {};
 
-    // Tope GGCC: slots hasta el mes esperado por mes vencido.
-    // Esperado = _currentMonth - 1 (abr → mar). Permite que socios adelantados muestren su estado real.
-    // La cascada (Type C) cubre GGCC desde cualquier depósito, así que el conteo refleja cobertura total.
+    // ── Tope GGCC desde GGCC_CONFIG + última cartola ──
     const _lc = getLastCartolaMonth();
     let GGCC_END_M = _lc.m, GGCC_END_Y = _lc.y;
-    // Tope de aceleración MOB: 24 cuotas = hasta ene-2027
-    const MOB_END_Y = 2027, MOB_END_M = 1;
 
-    // Identificar tipo de depósito por monto
-    const isGGCCOnly = (amt) => amt % 70000 === 0 && amt <= 840000 && amt > 0;
+    // ── Detectores de tipo (derivados de REGLAS_TIPO) ──
+    const isGGCCOnly = (amt) => amt % CUOTA_GGCC === 0 && amt <= CUOTA_GGCC * GGCC_CONFIG.maxMesesPorDeposito && amt > 0;
     const isGGCCplusMOB = (amt) => amt >= 236665 && amt <= 236667;
-    // TIPO A2: depósito ≥ $70k y < $140k que NO es múltiplo exacto de $70k
-    // Ejemplo: $75,000 = $70k GGCC + $5k extra. Cubre 1 cuota GGCC.
     const isGGCCplusExtra = (amt) => amt >= CUOTA_GGCC && amt < CUOTA_GGCC * 2 && !isGGCCOnly(amt) && !isGGCCplusMOB(amt);
 
-    // Generar lista de meses GGCC (oct-2022 hasta mes actual)
+    function detectTipo(amt, afterGGCC) {
+        if (!afterGGCC) return { id: 'PRE', regla: null };
+        if (isGGCCOnly(amt))      return { id: 'A',  regla: REGLAS_TIPO[0] };
+        if (isGGCCplusExtra(amt)) return { id: 'A2', regla: REGLAS_TIPO[1] };
+        if (isGGCCplusMOB(amt))   return { id: 'B',  regla: REGLAS_TIPO[2] };
+        return { id: 'C', regla: REGLAS_TIPO[3] };
+    }
+
+    // ── Generar slots GGCC desde GGCC_CONFIG ──
     const ggccAllMonths = [];
-    { let gy = 2022, gm = 10;
+    { let gy = GGCC_CONFIG.inicioYear, gm = GGCC_CONFIG.inicioMonth;
       while (gy < GGCC_END_Y || (gy === GGCC_END_Y && gm <= GGCC_END_M)) {
           ggccAllMonths.push(gy + '-' + gm);
           gm++; if (gm > 12) { gm = 1; gy++; }
       }
     }
-    // Generar lista de meses MOB (feb-2025 hasta ene-2027)
+    // ── Generar slots MOB desde MOB_CONFIG ──
     const mobAllMonths = [];
-    { let my = 2025, mm = 2;
-      while (my < MOB_END_Y || (my === MOB_END_Y && mm <= MOB_END_M)) {
+    { let my = MOB_CONFIG.inicioYear, mm = MOB_CONFIG.inicioMonth;
+      while (my < MOB_CONFIG.finYear || (my === MOB_CONFIG.finYear && mm <= MOB_CONFIG.finMonth)) {
           mobAllMonths.push(my + '-' + mm);
           mm++; if (mm > 12) { mm = 1; my++; }
       }
     }
 
+    // ── Helper: llenar slots GGCC ──
+    function fillGGCC(item, ggccByMonth, maxGGCC) {
+        const ggccBefore = item.alloc.ggcc;
+        for (const mk of ggccAllMonths) {
+            if (item.remaining <= 0 || (maxGGCC && item.alloc.ggcc >= maxGGCC)) break;
+            const already = ggccByMonth[mk] || 0;
+            const take = Math.min(item.remaining, Math.max(0, CUOTA_GGCC - already));
+            if (take > 0) { item.alloc.ggcc += take; ggccByMonth[mk] = already + take; item.remaining -= take; }
+        }
+        return item.alloc.ggcc - ggccBefore;
+    }
+    // ── Helper: llenar slots MOB ──
+    function fillMOB(item, mobCuotaByMonth, mobPaidRef) {
+        let filled = 0;
+        for (const mk of mobAllMonths) {
+            if (item.remaining <= 0 || mobPaidRef.v >= MOB_CONFIG.cuotaMensual * MOB_CONFIG.totalCuotas) break;
+            const already = mobCuotaByMonth[mk] || 0;
+            let take = Math.min(item.remaining, Math.max(0, MOB_CONFIG.cuotaMensual - already));
+            take = Math.min(take, MOB_CONFIG.cuotaMensual * MOB_CONFIG.totalCuotas - mobPaidRef.v);
+            if (take > 0) { item.alloc.mobiliario += take; mobCuotaByMonth[mk] = already + take; mobPaidRef.v += take; item.remaining -= take; filled += take; }
+        }
+        return filled;
+    }
+
     SOCIOS_ALL.forEach(s => {
-        const constrQuota = 19100000;
-        let capitalPaid = 0, constrPaid = 0, mobPaid = 0;
+        const constrQuota = ACUERDOS.construccion.perSocio;
+        let capitalPaid = 0, constrPaid = 0;
+        const mobPaidRef = { v: 0 }; // ref para pasar a helpers
         const ggccByMonth = {}, mobCuotaByMonth = {};
+        const isMobSocio = MOB_CONFIG.sociosMOB.includes(s) && !MOB_CONFIG.sociosPagadoFull.includes(s);
 
         const deps = ALL_DEPOSITS.filter(d => d.s === s)
             .map(d => ({...d}))
             .sort((a,b) => (a.y*10000 + a.m*100 + a.d) - (b.y*10000 + b.m*100 + b.d));
 
-        // Preparar allocations por depósito
         const items = deps.map(dep => ({
             ...dep,
             alloc: { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, otros: 0 },
-            remaining: dep.amt
+            remaining: dep.amt,
+            regla: null,    // ← TRAZABILIDAD: regla aplicada
+            detalle: []     // ← TRAZABILIDAD: paso a paso de asignación
         }));
 
         // ══════════════════════════════════════════════════════════
-        // PASADA 1: GGCC y MOB de depósitos explícitos (TIPO A + B)
-        //   → Los $70k y $236,666 tienen prioridad para llenar GGCC
+        // PASADA 1: Depósitos explícitos (TIPO A, A2, B)
+        //   Prioridad para llenar GGCC antes que la cascada
+        //   Fuente: REGLAS_TIPO[0..2]
         // ══════════════════════════════════════════════════════════
         items.forEach(item => {
-            const depAfterGGCC = item.y > 2022 || (item.y === 2022 && item.m >= 10);
+            const afterGGCC = item.y > GGCC_CONFIG.inicioYear || (item.y === GGCC_CONFIG.inicioYear && item.m >= GGCC_CONFIG.inicioMonth);
+            const tipo = detectTipo(item.amt, afterGGCC);
+            item.regla = tipo.id;
 
-            if (depAfterGGCC && isGGCCOnly(item.amt)) {
-                // ── TIPO A: Múltiplo de $70k (≤$840k) → TODO a GGCC ──
-                for (const mk of ggccAllMonths) {
-                    if (item.remaining <= 0) break;
-                    const already = ggccByMonth[mk] || 0;
-                    const take = Math.min(item.remaining, Math.max(0, CUOTA_GGCC - already));
-                    if (take > 0) { item.alloc.ggcc += take; ggccByMonth[mk] = already + take; item.remaining -= take; }
-                }
-            } else if (depAfterGGCC && isGGCCplusMOB(item.amt)) {
-                // ── TIPO B: $236,666 → $70k GGCC + resto MOB ──
-                for (const mk of ggccAllMonths) {
-                    if (item.alloc.ggcc >= 70000 || item.remaining <= 0) break;
-                    const already = ggccByMonth[mk] || 0;
-                    const take = Math.min(item.remaining, Math.max(0, CUOTA_GGCC - already));
-                    if (take > 0) { item.alloc.ggcc += take; ggccByMonth[mk] = already + take; item.remaining -= take; }
-                }
-                if (item.remaining > 0 && SOCIOS_MOB.includes(s) && mobPaid < 4000000) {
-                    for (const mk of mobAllMonths) {
-                        if (item.remaining <= 0 || mobPaid >= 4000000) break;
-                        const already = mobCuotaByMonth[mk] || 0;
-                        let take = Math.min(item.remaining, Math.max(0, CUOTA_MOB - already));
-                        take = Math.min(take, 4000000 - mobPaid);
-                        if (take > 0) { item.alloc.mobiliario += take; mobCuotaByMonth[mk] = already + take; mobPaid += take; item.remaining -= take; }
-                    }
-                }
-            } else if (depAfterGGCC && isGGCCplusExtra(item.amt)) {
-                // ── TIPO A2: $70k + extra (ej. $75k) → $70k a GGCC, resto queda ──
-                for (const mk of ggccAllMonths) {
-                    if (item.alloc.ggcc >= CUOTA_GGCC || item.remaining <= 0) break;
-                    const already = ggccByMonth[mk] || 0;
-                    const take = Math.min(item.remaining, Math.max(0, CUOTA_GGCC - already));
-                    if (take > 0) { item.alloc.ggcc += take; ggccByMonth[mk] = already + take; item.remaining -= take; }
+            if (tipo.id === 'A') {
+                const filled = fillGGCC(item, ggccByMonth, null);
+                item.detalle.push({ paso: 'P1-GGCC', regla: 'A', monto: filled, nota: '$' + item.amt.toLocaleString() + ' → ' + (filled/CUOTA_GGCC) + ' meses GGCC' });
+            } else if (tipo.id === 'A2') {
+                const filled = fillGGCC(item, ggccByMonth, CUOTA_GGCC);
+                item.detalle.push({ paso: 'P1-GGCC', regla: 'A2', monto: filled, nota: '$' + CUOTA_GGCC.toLocaleString() + ' GGCC + $' + item.remaining.toLocaleString() + ' a cascada' });
+            } else if (tipo.id === 'B') {
+                const filled = fillGGCC(item, ggccByMonth, CUOTA_GGCC);
+                item.detalle.push({ paso: 'P1-GGCC', regla: 'B', monto: filled, nota: '$' + CUOTA_GGCC.toLocaleString() + ' GGCC' });
+                if (item.remaining > 0 && isMobSocio) {
+                    const mobFilled = fillMOB(item, mobCuotaByMonth, mobPaidRef);
+                    if (mobFilled > 0) item.detalle.push({ paso: 'P1-MOB', regla: 'B', monto: mobFilled, nota: '$' + mobFilled.toLocaleString() + ' MOB' });
                 }
             }
-            // TIPO C: se procesa en pasada 2
         });
 
         // ══════════════════════════════════════════════════════════
-        // PASADA 2: GGCC restante (TIPO C) + cascada para TODOS
-        //   → TIPO C llena meses GGCC que no cubrieron A/B
-        //   → Cascada: Capital $10M → Constr $19.1M → MOB $4M → Constr
+        // PASADA 2: GGCC restante (TIPO C) + CASCADA para TODOS
+        //   Fuente: REGLAS_TIPO[3] + CASCADA[]
         // ══════════════════════════════════════════════════════════
         items.forEach(item => {
-            const depAfterGGCC = item.y > 2022 || (item.y === 2022 && item.m >= 10);
-            const isTipoC = !isGGCCOnly(item.amt) && !(isGGCCplusMOB(item.amt) && depAfterGGCC);
+            const afterGGCC = item.y > GGCC_CONFIG.inicioYear || (item.y === GGCC_CONFIG.inicioYear && item.m >= GGCC_CONFIG.inicioMonth);
+            const isTipoC = item.regla === 'C' || item.regla === 'PRE';
 
-            // TIPO C: llenar GGCC pendientes (sin tope por depósito)
-            if (isTipoC && depAfterGGCC && item.remaining > 0) {
-                for (const mk of ggccAllMonths) {
-                    if (item.remaining <= 0) break;
-                    const already = ggccByMonth[mk] || 0;
-                    const take = Math.min(item.remaining, Math.max(0, CUOTA_GGCC - already));
-                    if (take > 0) { item.alloc.ggcc += take; ggccByMonth[mk] = already + take; item.remaining -= take; }
-                }
+            // TIPO C: llenar GGCC pendientes
+            if (isTipoC && afterGGCC && item.remaining > 0) {
+                const filled = fillGGCC(item, ggccByMonth, null);
+                if (filled > 0) item.detalle.push({ paso: 'P2-GGCC', regla: 'C', monto: filled, nota: 'Cubrió GGCC pendientes: $' + filled.toLocaleString() });
             }
 
-            // Cascada: Capital → Construcción $19.1M → MOB → Construcción (excedente)
-            if (capitalPaid < 10000000 && item.remaining > 0) {
-                const t = Math.min(item.remaining, 10000000 - capitalPaid);
+            // CASCADA (orden desde CASCADA[])
+            // Paso 1: Capital
+            if (capitalPaid < CASCADA[0].topePerSocio && item.remaining > 0) {
+                const t = Math.min(item.remaining, CASCADA[0].topePerSocio - capitalPaid);
                 item.alloc.inicial += t; capitalPaid += t; item.remaining -= t;
+                if (t > 0) item.detalle.push({ paso: 'P2-CASCADA', regla: 'CASCADA-1', monto: t, nota: CASCADA[0].nombre + ': $' + t.toLocaleString() });
             }
-            if (constrPaid < constrQuota && item.remaining > 0) {
-                const t = Math.min(item.remaining, constrQuota - constrPaid);
+            // Paso 2: Construcción (con tope)
+            if (constrPaid < CASCADA[1].topePerSocio && item.remaining > 0) {
+                const t = Math.min(item.remaining, CASCADA[1].topePerSocio - constrPaid);
                 item.alloc.construccion += t; constrPaid += t; item.remaining -= t;
+                if (t > 0) item.detalle.push({ paso: 'P2-CASCADA', regla: 'CASCADA-2', monto: t, nota: CASCADA[1].nombre + ': $' + t.toLocaleString() });
             }
-            // Después de Constr $19.1M, excedente va a MOB si no pagó explícitamente
-            if (item.remaining > 0 && SOCIOS_MOB.includes(s) && mobPaid < 4000000) {
-                for (const mk of mobAllMonths) {
-                    if (item.remaining <= 0 || mobPaid >= 4000000) break;
-                    const already = mobCuotaByMonth[mk] || 0;
-                    let take = Math.min(item.remaining, Math.max(0, CUOTA_MOB - already));
-                    take = Math.min(take, 4000000 - mobPaid);
-                    if (take > 0) { item.alloc.mobiliario += take; mobCuotaByMonth[mk] = already + take; mobPaid += take; item.remaining -= take; }
-                }
+            // Paso 3: MOB (si aplica)
+            if (item.remaining > 0 && isMobSocio && mobPaidRef.v < CASCADA[2].topePerSocio) {
+                const mobFilled = fillMOB(item, mobCuotaByMonth, mobPaidRef);
+                if (mobFilled > 0) item.detalle.push({ paso: 'P2-CASCADA', regla: 'CASCADA-3', monto: mobFilled, nota: CASCADA[2].nombre + ': $' + mobFilled.toLocaleString() });
             }
-            // Lo que sobra sigue a construcción
+            // Paso 4: Construcción (excedente, sin tope)
             if (item.remaining > 0) {
-                item.alloc.construccion += item.remaining;
-                constrPaid += item.remaining;
-                item.remaining = 0;
+                const t = item.remaining;
+                item.alloc.construccion += t; constrPaid += t; item.remaining = 0;
+                if (t > 0) item.detalle.push({ paso: 'P2-CASCADA', regla: 'CASCADA-4', monto: t, nota: CASCADA[3].nombre + ': $' + t.toLocaleString() });
             }
         });
 
@@ -2238,10 +2439,10 @@ function classifyAllDeposits() {
             totals.total += d.amt;
         });
 
-        // Count GGCC months fully paid (incluye meses adelantados)
+        // Count GGCC months fully paid
         const ggccMonthsPaid = Object.values(ggccByMonth).filter(v => v >= CUOTA_GGCC).length;
         const ggccMonthsPartial = Object.keys(ggccByMonth).length - ggccMonthsPaid;
-        result[s] = { deposits: classified, totals, capitalPaid, constrPaid, mobPaid, constrQuota, ggccByMonth, ggccMonthsPaid, ggccMonthsPartial };
+        result[s] = { deposits: classified, totals, capitalPaid, constrPaid, mobPaid: mobPaidRef.v, constrQuota, ggccByMonth, ggccMonthsPaid, ggccMonthsPartial };
     });
     return result;
 }
@@ -3061,34 +3262,50 @@ function renderVistaSocio(socioOverride) {
     html += '<th style="padding:6px 8px; text-align:left;">Cartola</th>';
     html += '</tr></thead><tbody>';
 
+    const _tipoColors = {A:'#00838f', A2:'#0097a7', B:'#e65100', C:'#7b1fa2', PRE:'#795548'};
+    const _tipoLabels = {A:'GGCC', A2:'GGCC+', B:'Combo', C:'Cascada', PRE:'Pre-GGCC'};
     let runGGCC=0, runCap=0, runConstr=0, runMob=0;
     deps.forEach((d, i) => {
         const a = d.alloc;
         runGGCC += a.ggcc; runCap += a.inicial; runConstr += a.construccion; runMob += a.mobiliario;
-        let tipo = 'C';
-        const isGA = d.amt % 70000 === 0 && d.amt <= 840000 && d.amt > 0;
-        const isGB = d.amt >= 236665 && d.amt <= 236667;
-        const afterGGCC = d.y > 2022 || (d.y === 2022 && d.m >= 10);
-        const isGA2 = d.amt >= CUOTA_GGCC && d.amt < CUOTA_GGCC * 2 && !isGA && !isGB;
-        if (afterGGCC && isGA) tipo = 'A';
-        else if (afterGGCC && isGA2) tipo = 'A2';
-        else if (afterGGCC && isGB) tipo = 'B';
-        const tipoColors = {A:'#00838f', A2:'#0097a7', B:'#e65100', C:'#666'};
-        const tipoLabels = {A:'GGCC', A2:'GGCC+', B:'Combo', C:'Cascada'};
-        const rowBg = i % 2 === 0 ? '#fff' : '#f8f9fa';
 
-        html += '<tr style="background:' + rowBg + '; border-bottom:1px solid #eee;">';
-        html += '<td style="padding:5px 8px; color:#aaa;">' + (i+1) + '</td>';
+        // Tipo desde trazabilidad (d.regla)
+        const tipo = d.regla || 'C';
+        const tColor = _tipoColors[tipo] || '#666';
+        const tLabel = _tipoLabels[tipo] || tipo;
+        const rowBg = i % 2 === 0 ? '#fff' : '#f8f9fa';
+        const hasDetalle = d.detalle && d.detalle.length > 0;
+        const dRowId = 'svrow_' + i;
+
+        html += '<tr style="background:' + rowBg + '; border-bottom:1px solid #eee;' + (hasDetalle ? ' cursor:pointer;' : '') + '"' + (hasDetalle ? ' onclick="var el=document.getElementById(\'' + dRowId + '\'); el.style.display=el.style.display===\'none\'?\'table-row\':\'none\';"' : '') + '>';
+        html += '<td style="padding:5px 8px; color:#aaa;">' + (i+1) + (hasDetalle ? ' ▸' : '') + '</td>';
         html += '<td style="padding:5px 8px; white-space:nowrap;">' + String(d.d).padStart(2,'0') + '/' + String(d.m).padStart(2,'0') + '/' + d.y + '</td>';
         html += '<td style="padding:5px 8px; text-align:right; font-weight:600;">$' + d.amt.toLocaleString() + '</td>';
         html += '<td style="padding:5px 8px; text-align:right; color:#00838f; font-weight:' + (a.ggcc > 0 ? '600' : '400') + ';">' + (a.ggcc > 0 ? '$'+a.ggcc.toLocaleString() : '—') + '</td>';
         html += '<td style="padding:5px 8px; text-align:right; color:#1565c0; font-weight:' + (a.inicial > 0 ? '600' : '400') + ';">' + (a.inicial > 0 ? '$'+a.inicial.toLocaleString() : '—') + '</td>';
         html += '<td style="padding:5px 8px; text-align:right; color:#7b1fa2; font-weight:' + (a.construccion > 0 ? '600' : '400') + ';">' + (a.construccion > 0 ? '$'+a.construccion.toLocaleString() : '—') + '</td>';
         html += '<td style="padding:5px 8px; text-align:right; color:#e65100; font-weight:' + (a.mobiliario > 0 ? '600' : '400') + ';">' + (a.mobiliario > 0 ? '$'+a.mobiliario.toLocaleString() : '—') + '</td>';
-        html += '<td style="padding:5px 8px;"><span style="background:' + tipoColors[tipo] + '20; color:' + tipoColors[tipo] + '; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:600;">' + tipoLabels[tipo] + '</span></td>';
+        html += '<td style="padding:5px 8px;"><span style="background:' + tColor + '20; color:' + tColor + '; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:600;">' + tLabel + '</span></td>';
         html += '<td style="padding:5px 8px; font-size:10px; color:#666; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + (d.desc||'').replace(/"/g,'&quot;') + '">' + (d.desc||'') + '</td>';
         html += '<td style="padding:5px 8px; font-size:9px; color:#aaa; white-space:nowrap;">' + (d.file||'') + '</td>';
         html += '</tr>';
+
+        // Fila expandible de trazabilidad
+        if (hasDetalle) {
+            html += '<tr id="' + dRowId + '" style="display:none; background:#f0f4f8;">';
+            html += '<td colspan="10" style="padding:6px 16px 10px 32px;">';
+            html += '<div style="font-size:10px; color:#455a64; font-weight:700; margin-bottom:4px;">Trazabilidad (Tipo ' + tipo + ') — ' + d.detalle.length + ' pasos:</div>';
+            html += '<div style="display:flex; flex-wrap:wrap; gap:6px;">';
+            d.detalle.forEach(function(step) {
+                var sColor = step.regla.startsWith('CASCADA') ? '#1565c0' : (_tipoColors[step.regla] || '#666');
+                html += '<div style="background:white; border:1px solid ' + sColor + '30; border-radius:6px; padding:4px 10px; font-size:10px;">';
+                html += '<span style="font-weight:700; color:' + sColor + ';">' + step.paso + '</span> ';
+                html += '<span style="color:#666;">$' + step.monto.toLocaleString() + '</span>';
+                html += '<div style="color:#999; font-size:9px; margin-top:1px;">' + step.nota + '</div>';
+                html += '</div>';
+            });
+            html += '</div></td></tr>';
+        }
     });
 
     html += '<tr style="background:#1a1a2e; color:white; font-weight:700;">';
@@ -3161,34 +3378,50 @@ function showSocioBitacora(socio) {
     html += '<th style="padding:6px 8px; text-align:left;">Descripción</th>';
     html += '</tr></thead><tbody>';
 
+    const tipoColors = {A:'#00838f', A2:'#0097a7', B:'#e65100', C:'#7b1fa2', PRE:'#795548'};
+    const tipoLabels = {A:'GGCC', A2:'GGCC+', B:'Combo', C:'Cascada', PRE:'Pre-GGCC'};
+
     let runGGCC=0, runCap=0, runConstr=0, runMob=0;
     deps.forEach((d, i) => {
         const a = d.alloc;
         runGGCC += a.ggcc; runCap += a.inicial; runConstr += a.construccion; runMob += a.mobiliario;
 
-        // Determine tipo
-        let tipo = 'C';
-        const isGA = d.amt % 70000 === 0 && d.amt <= 840000 && d.amt > 0;
-        const isGB = d.amt >= 236665 && d.amt <= 236667;
-        const afterGGCC = d.y > 2022 || (d.y === 2022 && d.m >= 10);
-        if (afterGGCC && isGA) tipo = 'A';
-        else if (afterGGCC && isGB) tipo = 'B';
-
-        const tipoColors = {A:'#00838f', B:'#e65100', C:'#666'};
-        const tipoLabels = {A:'GGCC', B:'Combo', C:'Cascada'};
+        // Tipo desde trazabilidad (regla asignada en classifyAllDeposits)
+        const tipo = d.regla || 'C';
+        const tColor = tipoColors[tipo] || '#666';
+        const tLabel = tipoLabels[tipo] || tipo;
         const rowBg = i % 2 === 0 ? '#fff' : '#f8f9fa';
+        const hasDetalle = d.detalle && d.detalle.length > 0;
+        const rowId = 'brow_' + i;
 
-        html += '<tr style="background:' + rowBg + '; border-bottom:1px solid #eee;">';
-        html += '<td style="padding:5px 8px; color:#aaa;">' + (i+1) + '</td>';
+        html += '<tr style="background:' + rowBg + '; border-bottom:1px solid #eee;' + (hasDetalle ? ' cursor:pointer;' : '') + '"' + (hasDetalle ? ' onclick="var el=document.getElementById(\'' + rowId + '\'); el.style.display=el.style.display===\'none\'?\'table-row\':\'none\';"' : '') + '>';
+        html += '<td style="padding:5px 8px; color:#aaa;">' + (i+1) + (hasDetalle ? ' ▸' : '') + '</td>';
         html += '<td style="padding:5px 8px; white-space:nowrap;">' + String(d.d).padStart(2,'0') + '/' + String(d.m).padStart(2,'0') + '/' + d.y + '</td>';
         html += '<td style="padding:5px 8px; text-align:right; font-weight:600;">$' + d.amt.toLocaleString() + '</td>';
         html += '<td style="padding:5px 8px; text-align:right; color:#00838f; font-weight:' + (a.ggcc > 0 ? '600' : '400') + ';">' + (a.ggcc > 0 ? '$'+a.ggcc.toLocaleString() : '—') + '</td>';
         html += '<td style="padding:5px 8px; text-align:right; color:#1565c0; font-weight:' + (a.inicial > 0 ? '600' : '400') + ';">' + (a.inicial > 0 ? '$'+a.inicial.toLocaleString() : '—') + '</td>';
         html += '<td style="padding:5px 8px; text-align:right; color:#7b1fa2; font-weight:' + (a.construccion > 0 ? '600' : '400') + ';">' + (a.construccion > 0 ? '$'+a.construccion.toLocaleString() : '—') + '</td>';
         html += '<td style="padding:5px 8px; text-align:right; color:#e65100; font-weight:' + (a.mobiliario > 0 ? '600' : '400') + ';">' + (a.mobiliario > 0 ? '$'+a.mobiliario.toLocaleString() : '—') + '</td>';
-        html += '<td style="padding:5px 8px;"><span style="background:' + tipoColors[tipo] + '20; color:' + tipoColors[tipo] + '; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:600;">' + tipoLabels[tipo] + '</span></td>';
+        html += '<td style="padding:5px 8px;"><span style="background:' + tColor + '20; color:' + tColor + '; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:600;">' + tLabel + '</span></td>';
         html += '<td style="padding:5px 8px; font-size:10px; color:#666; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + (d.desc||'').replace(/"/g,'&quot;') + '">' + (d.desc||'') + '</td>';
         html += '</tr>';
+
+        // Fila expandible de trazabilidad (detalle[])
+        if (hasDetalle) {
+            html += '<tr id="' + rowId + '" style="display:none; background:#f0f4f8;">';
+            html += '<td colspan="9" style="padding:6px 16px 10px 32px;">';
+            html += '<div style="font-size:10px; color:#455a64; font-weight:700; margin-bottom:4px;">Trazabilidad — ' + d.detalle.length + ' pasos de asignación:</div>';
+            html += '<div style="display:flex; flex-wrap:wrap; gap:6px;">';
+            d.detalle.forEach(step => {
+                const sColor = step.regla.startsWith('CASCADA') ? '#1565c0' : (tipoColors[step.regla] || '#666');
+                html += '<div style="background:white; border:1px solid ' + sColor + '30; border-radius:6px; padding:4px 10px; font-size:10px;">';
+                html += '<span style="font-weight:700; color:' + sColor + ';">' + step.paso + '</span> ';
+                html += '<span style="color:#666;">$' + step.monto.toLocaleString() + '</span>';
+                html += '<div style="color:#999; font-size:9px; margin-top:1px;">' + step.nota + '</div>';
+                html += '</div>';
+            });
+            html += '</div></td></tr>';
+        }
     });
 
     // Total row
