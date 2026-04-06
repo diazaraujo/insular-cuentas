@@ -274,7 +274,7 @@
         /* Modal */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
         .modal-overlay.active { display: flex; }
-        .modal { background: white; border-radius: 12px; padding: 24px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; }
+        .modal { background: white; border-radius: 12px; padding: 24px; max-width: 900px; width: 95%; max-height: 85vh; overflow-y: auto; }
         .modal h3 { margin-bottom: 16px; }
         .modal table { width: 100%; font-size: 12px; }
         .modal th { background: #f0f0f0; color: #333; }
@@ -1889,7 +1889,7 @@ function renderAportesCapital() {
 
         SOCIOS_ALL.forEach(s => {
             const sd = yearData[s];
-            html += '<tr><td>' + (FULL_NAMES[s] || s) + '</td>';
+            html += '<tr style="cursor:pointer;" onclick="showSocioBitacora(\'' + s + '\')" title="Click para ver bitácora"><td style="color:#1565c0; text-decoration:underline;">' + (FULL_NAMES[s] || s) + '</td>';
             CAT_ORDER.forEach(c => {
                 if (yearCats[c] > 0 || c === 'inicial' || c === 'construccion' || c === 'mobiliario') {
                     const val = sd[c];
@@ -1939,7 +1939,7 @@ function renderAportesCapital() {
     SOCIOS_ALL.forEach(s => {
         const t = classified[s].totals;
         const pct = grandTotal > 0 ? (t.total / grandTotal * 100).toFixed(1) : '0.0';
-        html += '<tr><td>' + (FULL_NAMES[s] || s) + '</td>';
+        html += '<tr style="cursor:pointer;" onclick="showSocioBitacora(\'' + s + '\')" title="Click para ver bitácora de depósitos"><td style="color:#1565c0; text-decoration:underline;">' + (FULL_NAMES[s] || s) + '</td>';
         CAT_ORDER.forEach(c => {
             const val = t[c];
             if (val > 0) {
@@ -1985,8 +1985,8 @@ function renderAportesCapital() {
         totalDeuda += deuda;
         const isAlDia = deuda === 0;
 
-        html += '<tr' + (isAlDia ? ' style="background:#e8f5e9;"' : '') + '>';
-        html += '<td>' + (FULL_NAMES[s] || s) + '</td>';
+        html += '<tr style="cursor:pointer;' + (isAlDia ? ' background:#e8f5e9;' : '') + '" onclick="showSocioBitacora(\'' + s + '\')" title="Click para ver bitácora">';
+        html += '<td style="color:#1565c0; text-decoration:underline;">' + (FULL_NAMES[s] || s) + '</td>';
 
         // Capital
         const capPct = Math.min(100, c.capitalPaid / capMeta * 100);
@@ -2330,6 +2330,90 @@ function showDeposits(socio, year, month) {
     document.getElementById('modalBody').innerHTML = html;
     document.getElementById('depositModal').classList.add('active');
 }
+function showSocioBitacora(socio) {
+    const classified = classifyAllDeposits();
+    const data = classified[socio];
+    if (!data) return;
+    const deps = data.deposits;
+    const t = data.totals;
+    const totalGGCCMonths = (_currentYear - 2022) * 12 + _currentMonth - 10 + 1;
+
+    // Header con resumen
+    let html = '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(120px,1fr)); gap:8px; margin-bottom:16px;">';
+    const cats = [
+        {k:'ggcc', label:'GGCC', color:'#00838f', val: data.ggccMonthsPaid + '/' + totalGGCCMonths + ' meses'},
+        {k:'inicial', label:'Capital', color:'#1565c0', val: fmt(t.inicial) + ' / $10M'},
+        {k:'mobiliario', label:'MOB', color:'#e65100', val: fmt(t.mobiliario) + ' / $4M'},
+        {k:'construccion', label:'Construcción', color:'#7b1fa2', val: fmt(t.construccion) + ' / $19.1M'}
+    ];
+    cats.forEach(c => {
+        html += '<div style="background:#f8f9fa; border-left:3px solid ' + c.color + '; padding:8px 10px; border-radius:4px;">';
+        html += '<div style="font-size:10px; color:#888; text-transform:uppercase;">' + c.label + '</div>';
+        html += '<div style="font-size:13px; font-weight:700; color:' + c.color + ';">' + c.val + '</div>';
+        html += '</div>';
+    });
+    html += '</div>';
+
+    // Tabla de depósitos
+    html += '<div style="overflow-x:auto;"><table style="width:100%; font-size:11px; border-collapse:collapse;">';
+    html += '<thead><tr style="background:#1a1a2e; color:white;">';
+    html += '<th style="padding:6px 8px; text-align:left;">#</th>';
+    html += '<th style="padding:6px 8px; text-align:left;">Fecha</th>';
+    html += '<th style="padding:6px 8px; text-align:right;">Monto</th>';
+    html += '<th style="padding:6px 8px; text-align:right; color:#00bcd4;">GGCC</th>';
+    html += '<th style="padding:6px 8px; text-align:right; color:#90caf9;">Capital</th>';
+    html += '<th style="padding:6px 8px; text-align:right; color:#e040fb;">Constr.</th>';
+    html += '<th style="padding:6px 8px; text-align:right; color:#ff9800;">MOB</th>';
+    html += '<th style="padding:6px 8px; text-align:left;">Tipo</th>';
+    html += '<th style="padding:6px 8px; text-align:left;">Descripción</th>';
+    html += '</tr></thead><tbody>';
+
+    let runGGCC=0, runCap=0, runConstr=0, runMob=0;
+    deps.forEach((d, i) => {
+        const a = d.alloc;
+        runGGCC += a.ggcc; runCap += a.inicial; runConstr += a.construccion; runMob += a.mobiliario;
+
+        // Determine tipo
+        let tipo = 'C';
+        const isGA = d.amt % 70000 === 0 && d.amt <= 840000 && d.amt > 0;
+        const isGB = d.amt >= 236665 && d.amt <= 236667;
+        const afterGGCC = d.y > 2022 || (d.y === 2022 && d.m >= 10);
+        if (afterGGCC && isGA) tipo = 'A';
+        else if (afterGGCC && isGB) tipo = 'B';
+
+        const tipoColors = {A:'#00838f', B:'#e65100', C:'#666'};
+        const tipoLabels = {A:'GGCC', B:'Combo', C:'Cascada'};
+        const rowBg = i % 2 === 0 ? '#fff' : '#f8f9fa';
+
+        html += '<tr style="background:' + rowBg + '; border-bottom:1px solid #eee;">';
+        html += '<td style="padding:5px 8px; color:#aaa;">' + (i+1) + '</td>';
+        html += '<td style="padding:5px 8px; white-space:nowrap;">' + String(d.d).padStart(2,'0') + '/' + String(d.m).padStart(2,'0') + '/' + d.y + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; font-weight:600;">$' + d.amt.toLocaleString() + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#00838f; font-weight:' + (a.ggcc > 0 ? '600' : '400') + ';">' + (a.ggcc > 0 ? '$'+a.ggcc.toLocaleString() : '—') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#1565c0; font-weight:' + (a.inicial > 0 ? '600' : '400') + ';">' + (a.inicial > 0 ? '$'+a.inicial.toLocaleString() : '—') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#7b1fa2; font-weight:' + (a.construccion > 0 ? '600' : '400') + ';">' + (a.construccion > 0 ? '$'+a.construccion.toLocaleString() : '—') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#e65100; font-weight:' + (a.mobiliario > 0 ? '600' : '400') + ';">' + (a.mobiliario > 0 ? '$'+a.mobiliario.toLocaleString() : '—') + '</td>';
+        html += '<td style="padding:5px 8px;"><span style="background:' + tipoColors[tipo] + '20; color:' + tipoColors[tipo] + '; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:600;">' + tipoLabels[tipo] + '</span></td>';
+        html += '<td style="padding:5px 8px; font-size:10px; color:#666; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + (d.desc||'').replace(/"/g,'&quot;') + '">' + (d.desc||'') + '</td>';
+        html += '</tr>';
+    });
+
+    // Total row
+    html += '<tr style="background:#1a1a2e; color:white; font-weight:700;">';
+    html += '<td colspan="2" style="padding:6px 8px;">TOTAL (' + deps.length + ' depósitos)</td>';
+    html += '<td style="padding:6px 8px; text-align:right;">$' + t.total.toLocaleString() + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#00bcd4;">$' + runGGCC.toLocaleString() + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#90caf9;">$' + runCap.toLocaleString() + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#e040fb;">$' + runConstr.toLocaleString() + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#ff9800;">$' + runMob.toLocaleString() + '</td>';
+    html += '<td colspan="2"></td>';
+    html += '</tr></tbody></table></div>';
+
+    document.getElementById('modalTitle').textContent = (FULL_NAMES[socio] || socio) + ' — Bitácora de Depósitos';
+    document.getElementById('modalBody').innerHTML = html;
+    document.getElementById('depositModal').classList.add('active');
+}
+
 function closeModal() { document.getElementById('depositModal').classList.remove('active'); }
 document.getElementById('depositModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
 
