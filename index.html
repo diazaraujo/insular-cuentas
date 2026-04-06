@@ -6,7 +6,6 @@
     <title>Insular SPA - Dashboard de Pagos</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1" integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ" crossorigin="anonymous"></script>
     <style>
-    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; color: #1a1a2e; }
         .dashboard { max-width: 1400px; margin: 0 auto; padding: 20px; }
@@ -302,6 +301,7 @@
         <button class="tab-btn" onclick="switchTab('aportescapital', this)">Aportes de Capital</button>
         <button class="tab-btn" onclick="switchTab('ggcc', this)">GGCC (Cartolas)</button>
         <button class="tab-btn" onclick="switchTab('sociedad', this)">Sociedad</button>
+        <button class="tab-btn" onclick="switchTab('socio', this)" id="tabBtnSocio">Vista por Socio</button>
     </div>
     <!-- TAB: RESUMEN -->
     <div id="tab-resumen" class="tab-content active"></div>
@@ -905,6 +905,15 @@
 
 </div>
 
+    <!-- TAB: Vista por Socio -->
+    <div id="tab-socio" class="tab-content">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
+            <label style="font-size:14px; font-weight:600; color:#1a1a2e;">Seleccionar socio:</label>
+            <select id="socioSelector" onchange="renderVistaSocio()" style="padding:10px 20px; border-radius:8px; border:2px solid #1a1a2e; font-size:14px; font-weight:600; background:white; cursor:pointer; min-width:280px;"></select>
+        </div>
+        <div id="socioViewContent"></div>
+    </div>
+
 <!-- Deposit detail modal -->
 <div class="modal-overlay" id="depositModal">
     <div class="modal">
@@ -1284,7 +1293,7 @@ function switchTab(tabName, btn) {
     // Lazy render
     if (tabName === 'aportescapital') renderAportesCapital();
     if (tabName === 'ggcc') renderGGCC();
-    
+    if (tabName === 'socio') renderVistaSocio();
 }
 
 // ==================== CREDIT POOL ALLOCATION ====================
@@ -1588,8 +1597,8 @@ function renderResumen() {
         const bgStyle   = isAlDia ? ' style="background:#e8f5e9;"' : '';
 
         const totalAportado = d.totals.total;
-        html += '<tr' + bgStyle + '>';
-        html += '<td>' + (FULL_NAMES[s] || s) + '</td>';
+        html += '<tr' + bgStyle + ' style="cursor:pointer;' + (isAlDia ? ' background:#e8f5e9;' : '') + '" onclick="goToSocioView(\'' + s + '\')" title="Ver vista individual de ' + s + '">';
+        html += '<td style="color:#1565c0; text-decoration:underline;">' + (FULL_NAMES[s] || s) + '</td>';
         html += '<td class="col-right" style="font-weight:700;">' + fmt(totalAportado) + '</td>';
         html += '<td class="col-right" style="color:' + (capDebt > 0 ? '#c62828' : '#2e7d32') + ';">' + (capDebt > 0 ? fmt(capDebt) : '✓') + '</td>';
         html += '<td class="col-right" style="color:' + (constrDbt > 0 ? '#c62828' : '#2e7d32') + ';">' + (constrDbt > 0 ? fmt(constrDbt) : '✓') + '</td>';
@@ -1893,7 +1902,7 @@ function renderAportesCapital() {
 
         SOCIOS_ALL.forEach(s => {
             const sd = yearData[s];
-            html += '<tr style="cursor:pointer;" onclick="showSocioBitacora(\'' + s + '\')" title="Click para ver bitácora"><td style="color:#1565c0; text-decoration:underline;">' + (FULL_NAMES[s] || s) + '</td>';
+            html += '<tr style="cursor:pointer;" onclick="goToSocioView(\'' + s + '\')" title="Ver vista individual de ' + s + '"><td style="color:#1565c0; text-decoration:underline;">' + (FULL_NAMES[s] || s) + '</td>';
             CAT_ORDER.forEach(c => {
                 if (yearCats[c] > 0 || c === 'inicial' || c === 'construccion' || c === 'mobiliario') {
                     const val = sd[c];
@@ -1943,7 +1952,7 @@ function renderAportesCapital() {
     SOCIOS_ALL.forEach(s => {
         const t = classified[s].totals;
         const pct = grandTotal > 0 ? (t.total / grandTotal * 100).toFixed(1) : '0.0';
-        html += '<tr style="cursor:pointer;" onclick="showSocioBitacora(\'' + s + '\')" title="Click para ver bitácora de depósitos"><td style="color:#1565c0; text-decoration:underline;">' + (FULL_NAMES[s] || s) + '</td>';
+        html += '<tr style="cursor:pointer;" onclick="goToSocioView(\'' + s + '\')" title="Ver vista individual de ' + s + '"><td style="color:#1565c0; text-decoration:underline;">' + (FULL_NAMES[s] || s) + '</td>';
         CAT_ORDER.forEach(c => {
             const val = t[c];
             if (val > 0) {
@@ -1990,7 +1999,7 @@ function renderAportesCapital() {
         totalDeuda += deuda;
         const isAlDia = deuda === 0;
 
-        html += '<tr style="cursor:pointer;' + (isAlDia ? ' background:#e8f5e9;' : '') + '" onclick="showSocioBitacora(\'' + s + '\')" title="Click para ver bitácora">';
+        html += '<tr style="cursor:pointer;' + (isAlDia ? ' background:#e8f5e9;' : '') + '" onclick="goToSocioView(\'' + s + '\')" title="Ver vista individual de ' + s + '">';
         html += '<td style="color:#1565c0; text-decoration:underline;">' + (FULL_NAMES[s] || s) + '</td>';
 
         // Capital
@@ -2322,6 +2331,261 @@ function importCasa(event) {
     const reader = new FileReader();
     reader.onload = ev => { try { const data = JSON.parse(ev.target.result); if (Array.isArray(data)) { casaItems = data; casaNextId = Math.max(...casaItems.map(i => i.id || 0)) + 1; renderCasa(); } } catch(err) { alert('Error: ' + err.message); } };
     reader.readAsText(event.target.files[0]);
+}
+
+// ==================== VISTA POR SOCIO ====================
+let _socioSelectorInitialized = false;
+function renderVistaSocio(socioOverride) {
+    const sel = document.getElementById('socioSelector');
+    if (!_socioSelectorInitialized) {
+        sel.innerHTML = SOCIOS_ALL.map(s => '<option value="' + s + '">' + (FULL_NAMES[s] || s).replace(/<[^>]*>/g,'') + '</option>').join('');
+        _socioSelectorInitialized = true;
+    }
+    if (socioOverride) sel.value = socioOverride;
+    const socio = sel.value;
+    if (!socio) return;
+
+    const classified = classifyAllDeposits();
+    const data = classified[socio];
+    if (!data) { document.getElementById('socioViewContent').innerHTML = '<p>Sin datos para este socio.</p>'; return; }
+
+    const t = data.totals;
+    const deps = data.deposits;
+    const totalGGCCMonths = (_currentYear - 2022) * 12 + _currentMonth - 10 + 1;
+    const ggccExpected = CUOTA_GGCC * totalGGCCMonths;
+    const isMobFull = MOB_PAGADO_FULL.includes(socio);
+    const isMobSocio = SOCIOS_MOB.includes(socio);
+
+    // Deudas
+    const capDebt = Math.max(0, 10000000 - data.capitalPaid);
+    const constrDebt = Math.max(0, data.constrQuota - data.constrPaid);
+    const mobDebt = isMobFull ? 0 : Math.max(0, 4000000 - data.mobPaid);
+    const ggccDebt = Math.max(0, ggccExpected - t.ggcc);
+    const totalDebt = capDebt + constrDebt + mobDebt + ggccDebt;
+    const isAlDia = totalDebt === 0;
+
+    let html = '';
+
+    // ── HERO CARD ──
+    html += '<div style="background:linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); border-radius:14px; padding:24px 28px; margin-bottom:20px; color:white;">';
+    html += '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">';
+    html += '<div>';
+    html += '<div style="font-size:22px; font-weight:700;">' + (FULL_NAMES[socio] || socio) + '</div>';
+    html += '<div style="font-size:13px; opacity:0.7; margin-top:4px;">' + deps.length + ' depósitos verificados — Total aportado: ' + fmt(t.total) + '</div>';
+    html += '</div>';
+    html += '<div style="background:' + (isAlDia ? 'rgba(76,175,80,0.3)' : 'rgba(244,67,54,0.3)') + '; padding:10px 20px; border-radius:10px; text-align:center;">';
+    html += '<div style="font-size:11px; text-transform:uppercase; opacity:0.8;">' + (isAlDia ? 'Estado' : 'Deuda Total') + '</div>';
+    html += '<div style="font-size:20px; font-weight:700;">' + (isAlDia ? '✓ Al día' : fmt(totalDebt)) + '</div>';
+    html += '</div></div></div>';
+
+    // ── 4 KPI CARDS ──
+    html += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:12px; margin-bottom:20px;">';
+    const kpis = [
+        { label:'Capital Inicial', paid:data.capitalPaid, target:10000000, color:'#1565c0', debt:capDebt },
+        { label:'Construcción', paid:data.constrPaid, target:data.constrQuota, color:'#7b1fa2', debt:constrDebt },
+        { label:'Mobiliario', paid: isMobFull ? 4000000 : data.mobPaid, target:4000000, color:'#e65100', debt:mobDebt, note: isMobFull ? 'Pagado adelantado' : (isMobSocio ? '' : 'No aplica') },
+        { label:'GGCC', paid:t.ggcc, target:ggccExpected, color:'#00838f', debt:ggccDebt, sub: data.ggccMonthsPaid + '/' + totalGGCCMonths + ' meses' }
+    ];
+    kpis.forEach(k => {
+        const pct = Math.min(100, Math.round(k.paid / k.target * 100));
+        const fillClass = pct >= 100 ? 'complete' : pct >= 60 ? 'partial' : 'low';
+        html += '<div style="background:white; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08); border-left:4px solid ' + k.color + ';">';
+        html += '<div style="font-size:11px; color:#888; text-transform:uppercase; margin-bottom:6px;">' + k.label + '</div>';
+        html += '<div style="font-size:20px; font-weight:700; color:' + k.color + ';">' + fmt(k.paid) + '</div>';
+        html += '<div style="font-size:11px; color:#888; margin:4px 0;">de ' + fmt(k.target) + (k.sub ? ' — ' + k.sub : '') + '</div>';
+        html += '<div class="progress-bar" style="margin:6px 0;"><div class="progress-fill ' + fillClass + '" style="width:' + pct + '%">' + pct + '%</div></div>';
+        if (k.debt > 0) html += '<div style="font-size:11px; color:#c62828; font-weight:600;">Pendiente: ' + fmt(k.debt) + '</div>';
+        else if (k.note) html += '<div style="font-size:11px; color:#2e7d32; font-weight:600;">' + k.note + '</div>';
+        else html += '<div style="font-size:11px; color:#2e7d32; font-weight:600;">✓ Completo</div>';
+        html += '</div>';
+    });
+    html += '</div>';
+
+    // ── COMPOSICIÓN GRÁFICA (stacked bar) ──
+    html += '<div style="background:white; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08); margin-bottom:20px;">';
+    html += '<h3 style="font-size:14px; color:#1a1a2e; margin-bottom:10px;">Composición de Aportes</h3>';
+    const cats = [
+        {key:'ggcc', label:'GGCC', color:'#00838f', val:t.ggcc},
+        {key:'inicial', label:'Capital', color:'#1565c0', val:t.inicial},
+        {key:'construccion', label:'Construcción', color:'#7b1fa2', val:t.construccion},
+        {key:'mobiliario', label:'MOB', color:'#e65100', val:t.mobiliario}
+    ];
+    if (t.otros > 0) cats.push({key:'otros', label:'Otros', color:'#616161', val:t.otros});
+    html += '<div style="display:flex; height:28px; border-radius:6px; overflow:hidden; box-shadow:0 1px 2px rgba(0,0,0,0.1); margin-bottom:8px;">';
+    cats.forEach(c => {
+        const pct = t.total > 0 ? (c.val / t.total * 100) : 0;
+        if (pct > 0) html += '<div style="width:' + pct + '%; background:' + c.color + '; display:flex; align-items:center; justify-content:center; color:white; font-size:9px; font-weight:600;">' + (pct >= 6 ? pct.toFixed(0) + '%' : '') + '</div>';
+    });
+    html += '</div>';
+    html += '<div style="display:flex; gap:12px; flex-wrap:wrap;">';
+    cats.forEach(c => {
+        html += '<div style="display:flex; align-items:center; gap:4px; font-size:11px;"><div style="width:10px; height:10px; border-radius:2px; background:' + c.color + ';"></div>' + c.label + ': ' + fmt(c.val) + ' (' + (t.total > 0 ? (c.val/t.total*100).toFixed(1) : 0) + '%)</div>';
+    });
+    html += '</div></div>';
+
+    // ── GGCC TIMELINE (meses) ──
+    html += '<div style="background:white; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08); margin-bottom:20px;">';
+    html += '<h3 style="font-size:14px; color:#00838f; margin-bottom:10px;">GGCC — Meses Pagados (' + data.ggccMonthsPaid + '/' + totalGGCCMonths + ')</h3>';
+    html += '<div style="display:flex; flex-wrap:wrap; gap:3px;">';
+    const ggccMonths = data.ggccByMonth;
+    let gy = 2022, gm = 10;
+    for (let i = 0; i < totalGGCCMonths; i++) {
+        const mk = gy + '-' + gm;
+        const paid = ggccMonths[mk] || 0;
+        const full = paid >= CUOTA_GGCC;
+        const partial = paid > 0 && !full;
+        const bg = full ? '#00838f' : (partial ? '#b2dfdb' : '#f0f0f0');
+        const txt = full ? 'white' : '#666';
+        const mLabel = ['E','F','M','A','M','J','J','A','S','O','N','D'][gm-1];
+        const yearLabel = gm === 1 || i === 0 ? '<div style="font-size:8px; color:#aaa; text-align:center;">' + gy + '</div>' : '';
+        html += '<div style="text-align:center;" title="' + mLabel + ' ' + gy + ': ' + fmt(paid) + '">';
+        if (yearLabel) html += yearLabel;
+        html += '<div style="width:22px; height:22px; border-radius:3px; background:' + bg + '; color:' + txt + '; font-size:8px; font-weight:600; display:flex; align-items:center; justify-content:center;">' + mLabel + '</div>';
+        html += '</div>';
+        gm++; if (gm > 12) { gm = 1; gy++; }
+    }
+    html += '</div>';
+    html += '<div style="display:flex; gap:12px; margin-top:8px; font-size:10px; color:#888;">';
+    html += '<div style="display:flex; align-items:center; gap:3px;"><div style="width:10px; height:10px; border-radius:2px; background:#00838f;"></div>Pagado</div>';
+    html += '<div style="display:flex; align-items:center; gap:3px;"><div style="width:10px; height:10px; border-radius:2px; background:#b2dfdb;"></div>Parcial</div>';
+    html += '<div style="display:flex; align-items:center; gap:3px;"><div style="width:10px; height:10px; border-radius:2px; background:#f0f0f0;"></div>Pendiente</div>';
+    html += '</div></div>';
+
+    // ── MOB TIMELINE (si aplica) ──
+    if (isMobSocio || isMobFull) {
+        html += '<div style="background:white; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08); margin-bottom:20px;">';
+        html += '<h3 style="font-size:14px; color:#e65100; margin-bottom:10px;">Mobiliario' + (isMobFull ? ' — ✓ Pagado adelantado' : '') + '</h3>';
+        if (!isMobFull) {
+            const mobMonthsPaid = Object.values(data.deposits.reduce((acc, d) => {
+                // Count mob cuotas from alloc
+                return acc;
+            }, {}));
+            // Simple: count months from mobPaid / cuota
+            const mobPaidMonths = Math.min(24, Math.round(data.mobPaid / CUOTA_MOB));
+            html += '<div style="display:flex; flex-wrap:wrap; gap:3px;">';
+            let my = 2025, mm = 2;
+            for (let i = 0; i < 24; i++) {
+                const full = i < mobPaidMonths;
+                const bg = full ? '#e65100' : '#f0f0f0';
+                const txt = full ? 'white' : '#666';
+                const mLabel = ['E','F','M','A','M','J','J','A','S','O','N','D'][mm-1];
+                const yearLabel = mm === 1 || i === 0 ? '<div style="font-size:8px; color:#aaa; text-align:center;">' + my + '</div>' : '';
+                html += '<div style="text-align:center;" title="' + mLabel + ' ' + my + '">';
+                if (yearLabel) html += yearLabel;
+                html += '<div style="width:22px; height:22px; border-radius:3px; background:' + bg + '; color:' + txt + '; font-size:8px; font-weight:600; display:flex; align-items:center; justify-content:center;">' + mLabel + '</div>';
+                html += '</div>';
+                mm++; if (mm > 12) { mm = 1; my++; }
+            }
+            html += '</div>';
+            html += '<div style="font-size:11px; color:#888; margin-top:6px;">' + mobPaidMonths + '/24 cuotas cubiertas — ' + fmt(data.mobPaid) + ' de $4M</div>';
+        }
+        html += '</div>';
+    }
+
+    // ── RESUMEN POR AÑO ──
+    const years = [...new Set(deps.map(d => d.y))].sort();
+    html += '<div style="background:white; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08); margin-bottom:20px;">';
+    html += '<h3 style="font-size:14px; color:#1a1a2e; margin-bottom:10px;">Resumen por Año</h3>';
+    html += '<div style="overflow-x:auto;"><table style="width:100%; font-size:12px; border-collapse:collapse;">';
+    html += '<thead><tr style="background:#1a1a2e; color:white;">';
+    html += '<th style="padding:8px; text-align:left;">Año</th><th style="padding:8px; text-align:center;">Depósitos</th>';
+    html += '<th style="padding:8px; text-align:right; color:#00bcd4;">GGCC</th>';
+    html += '<th style="padding:8px; text-align:right; color:#90caf9;">Capital</th>';
+    html += '<th style="padding:8px; text-align:right; color:#e040fb;">Constr.</th>';
+    html += '<th style="padding:8px; text-align:right; color:#ff9800;">MOB</th>';
+    html += '<th style="padding:8px; text-align:right;">Total</th>';
+    html += '</tr></thead><tbody>';
+    let totalGgcc=0, totalCap=0, totalConstr=0, totalMob=0, totalAll=0, totalCount=0;
+    years.forEach(yr => {
+        const yrDeps = deps.filter(d => d.y === yr);
+        const yrGgcc = yrDeps.reduce((a,d) => a + d.alloc.ggcc, 0);
+        const yrCap = yrDeps.reduce((a,d) => a + d.alloc.inicial, 0);
+        const yrConstr = yrDeps.reduce((a,d) => a + d.alloc.construccion, 0);
+        const yrMob = yrDeps.reduce((a,d) => a + d.alloc.mobiliario, 0);
+        const yrTotal = yrDeps.reduce((a,d) => a + d.amt, 0);
+        totalGgcc += yrGgcc; totalCap += yrCap; totalConstr += yrConstr; totalMob += yrMob; totalAll += yrTotal; totalCount += yrDeps.length;
+        html += '<tr style="border-bottom:1px solid #eee;">';
+        html += '<td style="padding:7px 8px; font-weight:600;">' + yr + '</td>';
+        html += '<td style="padding:7px 8px; text-align:center;">' + yrDeps.length + '</td>';
+        html += '<td style="padding:7px 8px; text-align:right; color:#00838f;">' + (yrGgcc > 0 ? fmt(yrGgcc) : '—') + '</td>';
+        html += '<td style="padding:7px 8px; text-align:right; color:#1565c0;">' + (yrCap > 0 ? fmt(yrCap) : '—') + '</td>';
+        html += '<td style="padding:7px 8px; text-align:right; color:#7b1fa2;">' + (yrConstr > 0 ? fmt(yrConstr) : '—') + '</td>';
+        html += '<td style="padding:7px 8px; text-align:right; color:#e65100;">' + (yrMob > 0 ? fmt(yrMob) : '—') + '</td>';
+        html += '<td style="padding:7px 8px; text-align:right; font-weight:600;">' + fmt(yrTotal) + '</td>';
+        html += '</tr>';
+    });
+    html += '<tr style="background:#1a1a2e; color:white; font-weight:700;">';
+    html += '<td style="padding:8px;">TOTAL</td><td style="padding:8px; text-align:center;">' + totalCount + '</td>';
+    html += '<td style="padding:8px; text-align:right; color:#00bcd4;">' + fmt(totalGgcc) + '</td>';
+    html += '<td style="padding:8px; text-align:right; color:#90caf9;">' + fmt(totalCap) + '</td>';
+    html += '<td style="padding:8px; text-align:right; color:#e040fb;">' + fmt(totalConstr) + '</td>';
+    html += '<td style="padding:8px; text-align:right; color:#ff9800;">' + fmt(totalMob) + '</td>';
+    html += '<td style="padding:8px; text-align:right;">' + fmt(totalAll) + '</td>';
+    html += '</tr></tbody></table></div></div>';
+
+    // ── BITÁCORA COMPLETA ──
+    html += '<div style="background:white; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08); margin-bottom:20px;">';
+    html += '<h3 style="font-size:14px; color:#1a1a2e; margin-bottom:10px;">Bitácora de Depósitos (' + deps.length + ')</h3>';
+    html += '<div style="overflow-x:auto;"><table style="width:100%; font-size:11px; border-collapse:collapse;">';
+    html += '<thead><tr style="background:#1a1a2e; color:white;">';
+    html += '<th style="padding:6px 8px; text-align:left;">#</th>';
+    html += '<th style="padding:6px 8px; text-align:left;">Fecha</th>';
+    html += '<th style="padding:6px 8px; text-align:right;">Monto</th>';
+    html += '<th style="padding:6px 8px; text-align:right; color:#00bcd4;">GGCC</th>';
+    html += '<th style="padding:6px 8px; text-align:right; color:#90caf9;">Capital</th>';
+    html += '<th style="padding:6px 8px; text-align:right; color:#e040fb;">Constr.</th>';
+    html += '<th style="padding:6px 8px; text-align:right; color:#ff9800;">MOB</th>';
+    html += '<th style="padding:6px 8px; text-align:left;">Tipo</th>';
+    html += '<th style="padding:6px 8px; text-align:left;">Descripción</th>';
+    html += '<th style="padding:6px 8px; text-align:left;">Cartola</th>';
+    html += '</tr></thead><tbody>';
+
+    let runGGCC=0, runCap=0, runConstr=0, runMob=0;
+    deps.forEach((d, i) => {
+        const a = d.alloc;
+        runGGCC += a.ggcc; runCap += a.inicial; runConstr += a.construccion; runMob += a.mobiliario;
+        let tipo = 'C';
+        const isGA = d.amt % 70000 === 0 && d.amt <= 840000 && d.amt > 0;
+        const isGB = d.amt >= 236665 && d.amt <= 236667;
+        const afterGGCC = d.y > 2022 || (d.y === 2022 && d.m >= 10);
+        if (afterGGCC && isGA) tipo = 'A';
+        else if (afterGGCC && isGB) tipo = 'B';
+        const tipoColors = {A:'#00838f', B:'#e65100', C:'#666'};
+        const tipoLabels = {A:'GGCC', B:'Combo', C:'Cascada'};
+        const rowBg = i % 2 === 0 ? '#fff' : '#f8f9fa';
+
+        html += '<tr style="background:' + rowBg + '; border-bottom:1px solid #eee;">';
+        html += '<td style="padding:5px 8px; color:#aaa;">' + (i+1) + '</td>';
+        html += '<td style="padding:5px 8px; white-space:nowrap;">' + String(d.d).padStart(2,'0') + '/' + String(d.m).padStart(2,'0') + '/' + d.y + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; font-weight:600;">$' + d.amt.toLocaleString() + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#00838f; font-weight:' + (a.ggcc > 0 ? '600' : '400') + ';">' + (a.ggcc > 0 ? '$'+a.ggcc.toLocaleString() : '—') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#1565c0; font-weight:' + (a.inicial > 0 ? '600' : '400') + ';">' + (a.inicial > 0 ? '$'+a.inicial.toLocaleString() : '—') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#7b1fa2; font-weight:' + (a.construccion > 0 ? '600' : '400') + ';">' + (a.construccion > 0 ? '$'+a.construccion.toLocaleString() : '—') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#e65100; font-weight:' + (a.mobiliario > 0 ? '600' : '400') + ';">' + (a.mobiliario > 0 ? '$'+a.mobiliario.toLocaleString() : '—') + '</td>';
+        html += '<td style="padding:5px 8px;"><span style="background:' + tipoColors[tipo] + '20; color:' + tipoColors[tipo] + '; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:600;">' + tipoLabels[tipo] + '</span></td>';
+        html += '<td style="padding:5px 8px; font-size:10px; color:#666; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + (d.desc||'').replace(/"/g,'&quot;') + '">' + (d.desc||'') + '</td>';
+        html += '<td style="padding:5px 8px; font-size:9px; color:#aaa; white-space:nowrap;">' + (d.file||'') + '</td>';
+        html += '</tr>';
+    });
+
+    html += '<tr style="background:#1a1a2e; color:white; font-weight:700;">';
+    html += '<td colspan="2" style="padding:6px 8px;">TOTAL (' + deps.length + ')</td>';
+    html += '<td style="padding:6px 8px; text-align:right;">$' + t.total.toLocaleString() + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#00bcd4;">$' + runGGCC.toLocaleString() + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#90caf9;">$' + runCap.toLocaleString() + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#e040fb;">$' + runConstr.toLocaleString() + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#ff9800;">$' + runMob.toLocaleString() + '</td>';
+    html += '<td colspan="3"></td>';
+    html += '</tr></tbody></table></div></div>';
+
+    document.getElementById('socioViewContent').innerHTML = html;
+}
+
+// Helper to navigate to Vista por Socio from other tabs
+function goToSocioView(socio) {
+    const btn = document.getElementById('tabBtnSocio');
+    switchTab('socio', btn);
+    renderVistaSocio(socio);
 }
 
 // ==================== MODAL ====================
