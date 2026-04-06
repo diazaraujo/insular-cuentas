@@ -1176,11 +1176,11 @@ function getGGCCMesesFromCartolas() {
 }
 
 // Meses GGCC ESPERADOS por calendario (obligación).
-// GGCC se paga por mes vencido: en abril se paga marzo.
-// Por lo tanto el mes actual está incluido como obligación vigente.
-// oct-2022 hasta mes actual inclusive.
+// GGCC se paga por mes vencido: el de ene se paga en feb, el de feb en mar, etc.
+// En abril, todos los GGCC hasta marzo ya están en la cartola del 31/03.
+// Esperado = oct-2022 hasta mes anterior al actual (último mes cerrado).
 function getGGCCMesesEsperados() {
-    return (_currentYear - 2022) * 12 + _currentMonth - 10 + 1;
+    return (_currentYear - 2022) * 12 + (_currentMonth - 1) - 10 + 1;
 }
 
 // Último mes cubierto en formato legible
@@ -1739,14 +1739,20 @@ const CAT_ORDER = ['inicial', 'construccion', 'mobiliario', 'ggcc', 'otros'];
 function classifyAllDeposits() {
     const result = {};
 
-    // Tope de aceleración GGCC: dinámico hasta mes actual
-    const GGCC_END_Y = _currentYear, GGCC_END_M = _currentMonth;
+    // Tope GGCC: slots hasta el mes esperado por mes vencido.
+    // Esperado = _currentMonth - 1 (abr → mar). Permite que socios adelantados muestren su estado real.
+    // La cascada (Type C) cubre GGCC desde cualquier depósito, así que el conteo refleja cobertura total.
+    const _lc = getLastCartolaMonth();
+    let GGCC_END_M = _lc.m, GGCC_END_Y = _lc.y;
     // Tope de aceleración MOB: 24 cuotas = hasta ene-2027
     const MOB_END_Y = 2027, MOB_END_M = 1;
 
     // Identificar tipo de depósito por monto
     const isGGCCOnly = (amt) => amt % 70000 === 0 && amt <= 840000 && amt > 0;
     const isGGCCplusMOB = (amt) => amt >= 236665 && amt <= 236667;
+    // TIPO A2: depósito ≥ $70k y < $140k que NO es múltiplo exacto de $70k
+    // Ejemplo: $75,000 = $70k GGCC + $5k extra. Cubre 1 cuota GGCC.
+    const isGGCCplusExtra = (amt) => amt >= CUOTA_GGCC && amt < CUOTA_GGCC * 2 && !isGGCCOnly(amt) && !isGGCCplusMOB(amt);
 
     // Generar lista de meses GGCC (oct-2022 hasta mes actual)
     const ggccAllMonths = [];
@@ -1812,6 +1818,14 @@ function classifyAllDeposits() {
                         take = Math.min(take, 4000000 - mobPaid);
                         if (take > 0) { item.alloc.mobiliario += take; mobCuotaByMonth[mk] = already + take; mobPaid += take; item.remaining -= take; }
                     }
+                }
+            } else if (depAfterGGCC && isGGCCplusExtra(item.amt)) {
+                // ── TIPO A2: $70k + extra (ej. $75k) → $70k a GGCC, resto queda ──
+                for (const mk of ggccAllMonths) {
+                    if (item.alloc.ggcc >= CUOTA_GGCC || item.remaining <= 0) break;
+                    const already = ggccByMonth[mk] || 0;
+                    const take = Math.min(item.remaining, Math.max(0, CUOTA_GGCC - already));
+                    if (take > 0) { item.alloc.ggcc += take; ggccByMonth[mk] = already + take; item.remaining -= take; }
                 }
             }
             // TIPO C: se procesa en pasada 2
@@ -2160,7 +2174,7 @@ function renderGGCC() {
     // 2022: oct-dic=3, año actual: hasta mes actual, otros: 12
     let ggccMonthsThisYear = 0;
     if (year === 2022) ggccMonthsThisYear = 3; // oct, nov, dic
-    else if (year === _currentYear) ggccMonthsThisYear = _currentMonth;
+    else if (year === _currentYear) ggccMonthsThisYear = _currentMonth - 1; // hasta mes anterior (mes vencido)
     else if (year > 2022 && year < _currentYear) ggccMonthsThisYear = 12;
     SOCIOS_ALL.forEach(s => { if (data[s].paid >= CUOTA_GGCC * ggccMonthsThisYear) sociosAlDia++; });
     const esperado = CUOTA_GGCC * SOCIOS_ALL.length * ggccMonthsThisYear;
@@ -2195,7 +2209,7 @@ function renderGGCC() {
             const val = d.months[m];
             monthTotals[m] += val;
             const mesEsGGCC = (year > 2022 || (year === 2022 && m + 1 >= 10));
-            const mesEsperado = mesEsGGCC && (year < _currentYear || (year === _currentYear && m + 1 <= _currentMonth));
+            const mesEsperado = mesEsGGCC && (year < _currentYear || (year === _currentYear && m + 1 <= _currentMonth - 1));
             if (!coveredMonths.has(m + 1) && !mesEsperado) {
                 html += '<td style="background:#f5f5f5; color:#bbb; text-align:center;">—</td>'; // Futuro o pre-GGCC
             } else if (!coveredMonths.has(m + 1) && mesEsperado) {
