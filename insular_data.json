@@ -5,7 +5,6 @@
     "fuente": "Cartolas Scotiabank + documentos legales",
     "nota": "Modelo de datos Insular SPA — fuente de verdad para el dashboard"
   },
-
   "sociedad": {
     "nombre": "Insular SPA",
     "rut": "77.152.855-4",
@@ -15,20 +14,142 @@
     "banco": "Scotiabank",
     "cuentaCorriente": "000977009065"
   },
-
   "socios": [
-    {"id": "Antonio", "nombreCompleto": "Inv. Acuña Ltda.", "alias": "Antonio", "ruts": ["13890149-1", "12106984-9", "76069305-7"], "keywords": ["GGCC Aporte Mobiliario", "TRANSF. DE ANTONIO PAULO"], "participaMobiliario": true, "mobPagadoFull": false, "participacion": 10},
-    {"id": "Camilo", "nombreCompleto": "Camilo Piga Díaz", "alias": null, "ruts": ["16095526-0"], "keywords": [], "participaMobiliario": true, "mobPagadoFull": false, "participacion": 10},
-    {"id": "Cristian", "nombreCompleto": "Cristian Segovia Peña", "alias": "Chueco", "ruts": ["13066600-0"], "keywords": [], "participaMobiliario": true, "mobPagadoFull": false, "participacion": 10},
-    {"id": "Cristóbal", "nombreCompleto": "Cristóbal Huneeus Lagos", "alias": null, "pareja": "Constanza", "ruts": ["7746703-3", "15362944-7"], "keywords": [], "participaMobiliario": false, "mobPagadoFull": true, "participacion": 10},
-    {"id": "Eduardo", "nombreCompleto": "Eduardo Moreno Araya", "alias": null, "pareja": "Anneli", "ruts": ["13270339-6", "13455042-2"], "keywords": [], "participaMobiliario": false, "mobPagadoFull": true, "participacion": 10},
-    {"id": "Felipe", "nombreCompleto": "Felipe Simonsohn González", "alias": null, "ruts": ["18273744-5"], "keywords": [], "participaMobiliario": true, "mobPagadoFull": false, "participacion": 10},
-    {"id": "Fernando", "nombreCompleto": "Fernando Encinas Ciesla", "alias": null, "pareja": "Yahisa", "ruts": ["12862395-7", "20083182-9"], "keywords": [], "participaMobiliario": true, "mobPagadoFull": false, "participacion": 10},
-    {"id": "Jordi", "nombreCompleto": "Jordi Segura Farias", "alias": null, "pareja": "Alyne", "ruts": ["13272830-5"], "keywords": [], "participaMobiliario": true, "mobPagadoFull": false, "participacion": 10},
-    {"id": "Laura", "nombreCompleto": "Laura Díaz Abramo", "alias": null, "pareja": "Thales", "ruts": ["16656248-1", "13028872-3"], "keywords": [], "participaMobiliario": false, "mobPagadoFull": true, "participacion": 10},
-    {"id": "Sebastián", "nombreCompleto": "Sebastián Acuña Keller", "alias": null, "ruts": ["13426837-9"], "keywords": [], "participaMobiliario": true, "mobPagadoFull": false, "participacion": 10}
+    {
+      "id": "Antonio",
+      "nombreCompleto": "Inv. Acuña Ltda.",
+      "alias": "Antonio",
+      "ruts": [
+        "13890149-1",
+        "12106984-9",
+        "76069305-7"
+      ],
+      "keywords": [
+        "GGCC Aporte Mobiliario",
+        "TRANSF. DE ANTONIO PAULO"
+      ],
+      "participaMobiliario": true,
+      "mobPagadoFull": false,
+      "participacion": 10
+    },
+    {
+      "id": "Camilo",
+      "nombreCompleto": "Camilo Piga Díaz",
+      "alias": null,
+      "ruts": [
+        "16095526-0"
+      ],
+      "keywords": [],
+      "participaMobiliario": true,
+      "mobPagadoFull": false,
+      "participacion": 10
+    },
+    {
+      "id": "Cristian",
+      "nombreCompleto": "Cristian Segovia Peña",
+      "alias": "Chueco",
+      "ruts": [
+        "13066600-0"
+      ],
+      "keywords": [],
+      "participaMobiliario": true,
+      "mobPagadoFull": false,
+      "participacion": 10
+    },
+    {
+      "id": "Cristóbal",
+      "nombreCompleto": "Cristóbal Huneeus Lagos",
+      "alias": null,
+      "pareja": "Constanza",
+      "ruts": [
+        "7746703-3",
+        "15362944-7"
+      ],
+      "keywords": [],
+      "participaMobiliario": false,
+      "mobPagadoFull": true,
+      "participacion": 10
+    },
+    {
+      "id": "Eduardo",
+      "nombreCompleto": "Eduardo Moreno Araya",
+      "alias": null,
+      "pareja": "Anneli",
+      "ruts": [
+        "13270339-6",
+        "13455042-2"
+      ],
+      "keywords": [],
+      "participaMobiliario": false,
+      "mobPagadoFull": true,
+      "participacion": 10
+    },
+    {
+      "id": "Felipe",
+      "nombreCompleto": "Felipe Simonsohn González",
+      "alias": null,
+      "ruts": [
+        "18273744-5"
+      ],
+      "keywords": [],
+      "participaMobiliario": true,
+      "mobPagadoFull": false,
+      "participacion": 10
+    },
+    {
+      "id": "Fernando",
+      "nombreCompleto": "Fernando Encinas Ciesla",
+      "alias": null,
+      "pareja": "Yahisa",
+      "ruts": [
+        "12862395-7",
+        "20083182-9"
+      ],
+      "keywords": [],
+      "participaMobiliario": true,
+      "mobPagadoFull": false,
+      "participacion": 10
+    },
+    {
+      "id": "Jordi",
+      "nombreCompleto": "Jordi Segura Farias",
+      "alias": null,
+      "pareja": "Alyne",
+      "ruts": [
+        "13272830-5"
+      ],
+      "keywords": [],
+      "participaMobiliario": true,
+      "mobPagadoFull": false,
+      "participacion": 10
+    },
+    {
+      "id": "Laura",
+      "nombreCompleto": "Laura Díaz Abramo",
+      "alias": null,
+      "pareja": "Thales",
+      "ruts": [
+        "16656248-1",
+        "13028872-3"
+      ],
+      "keywords": [],
+      "participaMobiliario": false,
+      "mobPagadoFull": true,
+      "participacion": 10
+    },
+    {
+      "id": "Sebastián",
+      "nombreCompleto": "Sebastián Acuña Keller",
+      "alias": null,
+      "ruts": [
+        "13426837-9"
+      ],
+      "keywords": [],
+      "participaMobiliario": true,
+      "mobPagadoFull": false,
+      "participacion": 10
+    }
   ],
-
   "acuerdos": {
     "capital": {
       "perSocio": 10000000,
@@ -41,10 +162,32 @@
       "total": 191000000,
       "descripcion": "Club House Chaicura ~440 m²",
       "hitos": [
-        {"monto": 8000000, "fecha": "2024-09", "descripcion": "Primera estimación construcción Club House", "tipo": "pago_unico"},
-        {"monto": 3500000, "fecha": "2025-07", "descripcion": "Cuota adicional construcción (hasta 3 cuotas)", "tipo": "cuotas", "cuotas": 3},
-        {"monto": 4000000, "fecha": "2026-01", "descripcion": "Cuota extraordinaria construcción — pago inmediato", "tipo": "pago_unico"},
-        {"monto": 3600000, "fecha": "2026", "descripcion": "Cuota extraordinaria construcción — 12 cuotas mensuales", "tipo": "cuotas", "cuotas": 12}
+        {
+          "monto": 8000000,
+          "fecha": "2024-09",
+          "descripcion": "Primera estimación construcción Club House",
+          "tipo": "pago_unico"
+        },
+        {
+          "monto": 3500000,
+          "fecha": "2025-07",
+          "descripcion": "Cuota adicional construcción (hasta 3 cuotas)",
+          "tipo": "cuotas",
+          "cuotas": 3
+        },
+        {
+          "monto": 4000000,
+          "fecha": "2026-01",
+          "descripcion": "Cuota extraordinaria construcción — pago inmediato",
+          "tipo": "pago_unico"
+        },
+        {
+          "monto": 3600000,
+          "fecha": "2026",
+          "descripcion": "Cuota extraordinaria construcción — 12 cuotas mensuales",
+          "tipo": "cuotas",
+          "cuotas": 12
+        }
       ]
     },
     "mobiliario": {
@@ -61,12 +204,19 @@
       "descripcion": "Gastos comunes mensuales por socio"
     }
   },
-
   "propiedad": {
     "ubicacion": "Sector Nal/Chaicura, Ancud, Chiloé",
     "lotes": [
-      {"nombre": "Lote A-4", "inscripcion": "Fs. 1215 Nº 963", "superficie": "~1 hectárea"},
-      {"nombre": "Lote A-5", "inscripcion": "Fs. 1217 Nº 964", "superficie": "~1 hectárea"}
+      {
+        "nombre": "Lote A-4",
+        "inscripcion": "Fs. 1215 Nº 963",
+        "superficie": "~1 hectárea"
+      },
+      {
+        "nombre": "Lote A-5",
+        "inscripcion": "Fs. 1217 Nº 964",
+        "superficie": "~1 hectárea"
+      }
     ],
     "compra": {
       "fecha": "2021-02-01",
@@ -75,7 +225,6 @@
     },
     "inscripcionActualizada": "Fs. 5941V Nº 4057 (Carátula 64515), 2023"
   },
-
   "construccion": {
     "proyecto": "Club House Chaicura",
     "superficie": 440.2,
@@ -89,374 +238,3222 @@
       "rutEmpresa": "77.712.084-0"
     },
     "etapas": [
-      {"numero": 1, "nombre": "Conceptualización", "estado": "completada"},
-      {"numero": 2, "nombre": "Anteproyecto", "estado": "completada", "costo": 7907596, "documento": "BHE Nº58", "fecha": "2022-10"},
-      {"numero": 3, "nombre": "Proyecto Licitación + Cierre", "estado": "completada", "costo": 6250000, "documento": "Contrato AQAA / Factura Nº10", "fecha": "2024-10-09"},
-      {"numero": 4, "nombre": "Construcción física", "estado": "pendiente", "nota": "Licitación a constructoras, permiso municipal, inicio de obra. Supervisión remota Arq. Aguayo (2 UF/visita)"}
+      {
+        "numero": 1,
+        "nombre": "Conceptualización",
+        "estado": "completada"
+      },
+      {
+        "numero": 2,
+        "nombre": "Anteproyecto",
+        "estado": "completada",
+        "costo": 7907596,
+        "documento": "BHE Nº58",
+        "fecha": "2022-10"
+      },
+      {
+        "numero": 3,
+        "nombre": "Proyecto Licitación + Cierre",
+        "estado": "completada",
+        "costo": 6250000,
+        "documento": "Contrato AQAA / Factura Nº10",
+        "fecha": "2024-10-09"
+      },
+      {
+        "numero": 4,
+        "nombre": "Construcción física",
+        "estado": "pendiente",
+        "nota": "Licitación a constructoras, permiso municipal, inicio de obra. Supervisión remota Arq. Aguayo (2 UF/visita)"
+      }
     ],
     "especialistas": {
-      "sanitario": {"empresa": "TROMÜ", "responsable": "Arturo Barrios", "rut": "15.933.714-6", "ubicacion": "Ancud", "documentos": ["Proyecto Agua Potable", "Proyecto Alcantarillado", "Consolidado Sanitario", "EETT + Memoria"], "bhe": {"numero": 222, "fecha": "2024-05-17", "monto": 258456}},
-      "calculo": {"responsable": "René Avendaño"},
-      "mecanicaSuelo": {"responsable": "Gastón Arriagada"}
+      "sanitario": {
+        "empresa": "TROMÜ",
+        "responsable": "Arturo Barrios",
+        "rut": "15.933.714-6",
+        "ubicacion": "Ancud",
+        "documentos": [
+          "Proyecto Agua Potable",
+          "Proyecto Alcantarillado",
+          "Consolidado Sanitario",
+          "EETT + Memoria"
+        ],
+        "bhe": {
+          "numero": 222,
+          "fecha": "2024-05-17",
+          "monto": 258456
+        }
+      },
+      "calculo": {
+        "responsable": "René Avendaño"
+      },
+      "mecanicaSuelo": {
+        "responsable": "Gastón Arriagada"
+      }
     }
   },
-
   "reglamento": [
-    {"regla": "Plazo de pago", "descripcion": "Los gastos comunes deben pagarse dentro de los primeros 10 días de cada mes."},
-    {"regla": "Restricción de acceso", "descripcion": "Si un socio acumula 18+ meses de deuda, pierde derecho de acceso a las instalaciones."},
-    {"regla": "Suspensión de voto", "descripcion": "Los socios con cuotas impagas tienen suspendido su derecho a voto en las juntas de accionistas."}
+    {
+      "regla": "Plazo de pago",
+      "descripcion": "Los gastos comunes deben pagarse dentro de los primeros 10 días de cada mes."
+    },
+    {
+      "regla": "Restricción de acceso",
+      "descripcion": "Si un socio acumula 18+ meses de deuda, pierde derecho de acceso a las instalaciones."
+    },
+    {
+      "regla": "Suspensión de voto",
+      "descripcion": "Los socios con cuotas impagas tienen suspendido su derecho a voto en las juntas de accionistas."
+    }
   ],
-
   "timeline": [
-    {"fecha": "2020-04-23", "titulo": "Constitución de Insular S.p.A.", "categoria": "constitucion", "descripcion": "Escritura pública, Repertorio 4688-2020. 10 socios, $100M capital (10% each)."},
-    {"fecha": "2020-04", "titulo": "Aportes de Capital Inicial", "categoria": "capital", "descripcion": "Socios depositan $4M iniciales. Cuenta Scotiabank: 000977009065."},
-    {"fecha": "2021-02-01", "titulo": "Compra de Terreno en Ancud, Chiloé", "categoria": "terreno", "descripcion": "Lotes A-4 y A-5 (~1 hectárea cada uno). Repertorio 255-2021, Notaría Ancud."},
-    {"fecha": "2021-03-24", "titulo": "Inscripción de Dominio — Lotes A-4 y A-5", "categoria": "terreno", "descripcion": "CBR Ancud: Lote A-4 (Fs. 1215 Nº 963), Lote A-5 (Fs. 1217 Nº 964). Libre de hipotecas."},
-    {"fecha": "2022-10", "titulo": "BHE Nº58 — Arquitectura Etapas 1-2 ($7.907.596)", "categoria": "construccion", "descripcion": "Boleta honorarios Maximiliano Aguayo. Club House 362,7 m² original."},
-    {"fecha": "2022-10-20", "titulo": "Junta de Socios — Sede Unholster", "categoria": "acuerdo", "descripcion": "Se establecen GGCC de $70.000/mes por socio."},
-    {"fecha": "2023", "titulo": "Nueva Inscripción de Propiedad", "categoria": "capital", "descripcion": "CBR Ancud actualización: Fs. 5941V Nº 4057 (Carátula 64515)."},
-    {"fecha": "2024-01", "titulo": "Proyectos Sanitarios TROMÜ — Agua Potable y Alcantarillado", "categoria": "construccion", "descripcion": "Arturo Barrios (15.933.714-6, Ancud). Consolidado ene-2024, planos definitivos abr-2024. BHE Nº222 ($258.456)."},
-    {"fecha": "2024-04-21", "titulo": "Junta de Socios — Onofre Jarpa", "categoria": "acuerdo", "descripcion": "Revisión avances del proyecto de arquitectura del Club House."},
-    {"fecha": "2024-09", "titulo": "Acuerdo de Socios — Compromisos financieros consolidados", "categoria": "acuerdo", "descripcion": "Se acuerdan 4 compromisos: (1) $10M capital inicial, (2) $8M para construcción, (3) GGCC $70.000/mes desde oct-2022, (4) $4M mobiliario."},
-    {"fecha": "2024-10-09", "titulo": "Contrato Arquitectura AQAA — Etapa 3 ($6.250.000)", "categoria": "construccion", "descripcion": "AQAA SPA (77.712.084-0). Etapa 3 Licitación + Cierre. Club House ~440 m². Factura Exenta Nº10."},
-    {"fecha": "2024-11-12", "titulo": "Reporte de Estado — Tabla de pagos por socio", "categoria": "reporte", "descripcion": "Anneli comparte reporte: Capital $92.5M de $100M. GGCC adeudados: $4.83M. Compromisos futuros: $68M construcción + $36M mobiliario."},
-    {"fecha": "2025-01-06", "titulo": "Compraventa de Acciones — Álvaro García → Laura Díaz", "categoria": "cambio", "descripcion": "Álvaro (13.028.872-3) vende acción a Laura (16.656.248-1) por $10M en 8 cuotas semestrales. CVE: 28382F18.", "documento": "CompraventaAcciones_Alvaro_Laura_2021.pdf"},
-    {"fecha": "2025-01", "titulo": "Cuota Extraordinaria Mobiliario", "categoria": "mobiliario", "descripcion": "Se aprueba cuota de $4M por socio, 24 cuotas de ~$166.333/mes sumadas a GGCC ($70k). Total mensual: $236.333."},
-    {"fecha": "2025-2026", "titulo": "Aporte de Mobiliario (en curso)", "categoria": "mobiliario", "descripcion": "24 cuotas mensuales de ~$166.333 sumadas a GGCC."},
-    {"fecha": "pendiente", "titulo": "Etapa 4 — Construcción física del Club House", "categoria": "proximo", "descripcion": "Licitación a constructoras, permiso municipal, inicio de obra. Costo ~4.290 UF (33 UF/m²). Supervisión remota Arq. Aguayo (2 UF/visita)."}
+    {
+      "fecha": "2020-04-23",
+      "titulo": "Constitución de Insular S.p.A.",
+      "categoria": "constitucion",
+      "descripcion": "Escritura pública, Repertorio 4688-2020. 10 socios, $100M capital (10% each)."
+    },
+    {
+      "fecha": "2020-04",
+      "titulo": "Aportes de Capital Inicial",
+      "categoria": "capital",
+      "descripcion": "Socios depositan $4M iniciales. Cuenta Scotiabank: 000977009065."
+    },
+    {
+      "fecha": "2021-02-01",
+      "titulo": "Compra de Terreno en Ancud, Chiloé",
+      "categoria": "terreno",
+      "descripcion": "Lotes A-4 y A-5 (~1 hectárea cada uno). Repertorio 255-2021, Notaría Ancud."
+    },
+    {
+      "fecha": "2021-03-24",
+      "titulo": "Inscripción de Dominio — Lotes A-4 y A-5",
+      "categoria": "terreno",
+      "descripcion": "CBR Ancud: Lote A-4 (Fs. 1215 Nº 963), Lote A-5 (Fs. 1217 Nº 964). Libre de hipotecas."
+    },
+    {
+      "fecha": "2022-10",
+      "titulo": "BHE Nº58 — Arquitectura Etapas 1-2 ($7.907.596)",
+      "categoria": "construccion",
+      "descripcion": "Boleta honorarios Maximiliano Aguayo. Club House 362,7 m² original."
+    },
+    {
+      "fecha": "2022-10-20",
+      "titulo": "Junta de Socios — Sede Unholster",
+      "categoria": "acuerdo",
+      "descripcion": "Se establecen GGCC de $70.000/mes por socio."
+    },
+    {
+      "fecha": "2023",
+      "titulo": "Nueva Inscripción de Propiedad",
+      "categoria": "capital",
+      "descripcion": "CBR Ancud actualización: Fs. 5941V Nº 4057 (Carátula 64515)."
+    },
+    {
+      "fecha": "2024-01",
+      "titulo": "Proyectos Sanitarios TROMÜ — Agua Potable y Alcantarillado",
+      "categoria": "construccion",
+      "descripcion": "Arturo Barrios (15.933.714-6, Ancud). Consolidado ene-2024, planos definitivos abr-2024. BHE Nº222 ($258.456)."
+    },
+    {
+      "fecha": "2024-04-21",
+      "titulo": "Junta de Socios — Onofre Jarpa",
+      "categoria": "acuerdo",
+      "descripcion": "Revisión avances del proyecto de arquitectura del Club House."
+    },
+    {
+      "fecha": "2024-09",
+      "titulo": "Acuerdo de Socios — Compromisos financieros consolidados",
+      "categoria": "acuerdo",
+      "descripcion": "Se acuerdan 4 compromisos: (1) $10M capital inicial, (2) $8M para construcción, (3) GGCC $70.000/mes desde oct-2022, (4) $4M mobiliario."
+    },
+    {
+      "fecha": "2024-10-09",
+      "titulo": "Contrato Arquitectura AQAA — Etapa 3 ($6.250.000)",
+      "categoria": "construccion",
+      "descripcion": "AQAA SPA (77.712.084-0). Etapa 3 Licitación + Cierre. Club House ~440 m². Factura Exenta Nº10."
+    },
+    {
+      "fecha": "2024-11-12",
+      "titulo": "Reporte de Estado — Tabla de pagos por socio",
+      "categoria": "reporte",
+      "descripcion": "Anneli comparte reporte: Capital $92.5M de $100M. GGCC adeudados: $4.83M. Compromisos futuros: $68M construcción + $36M mobiliario."
+    },
+    {
+      "fecha": "2025-01-06",
+      "titulo": "Compraventa de Acciones — Álvaro García → Laura Díaz",
+      "categoria": "cambio",
+      "descripcion": "Álvaro (13.028.872-3) vende acción a Laura (16.656.248-1) por $10M en 8 cuotas semestrales. CVE: 28382F18.",
+      "documento": "CompraventaAcciones_Alvaro_Laura_2021.pdf"
+    },
+    {
+      "fecha": "2025-01",
+      "titulo": "Cuota Extraordinaria Mobiliario",
+      "categoria": "mobiliario",
+      "descripcion": "Se aprueba cuota de $4M por socio, 24 cuotas de ~$166.333/mes sumadas a GGCC ($70k). Total mensual: $236.333."
+    },
+    {
+      "fecha": "2025-2026",
+      "titulo": "Aporte de Mobiliario (en curso)",
+      "categoria": "mobiliario",
+      "descripcion": "24 cuotas mensuales de ~$166.333 sumadas a GGCC."
+    },
+    {
+      "fecha": "pendiente",
+      "titulo": "Etapa 4 — Construcción física del Club House",
+      "categoria": "proximo",
+      "descripcion": "Licitación a constructoras, permiso municipal, inicio de obra. Costo ~4.290 UF (33 UF/m²). Supervisión remota Arq. Aguayo (2 UF/visita)."
+    }
   ],
-
   "documentos": {
     "constitucionYSociedad": [
-      {"nombre": "Constitución Insular SPA", "archivo": "docs_insular/Constitucion_Insular_SPA.pdf", "fecha": "2020-04-23", "nota": "Repertorio 4688-2020"},
-      {"nombre": "Pacto de Accionistas Insular SPA", "archivo": "docs_insular/PactoAccionistas_Insular_SPA.pdf"},
-      {"nombre": "Reglamento Insular SPA", "archivo": "docs_insular/Reglamento_Insular_SPA.pdf"},
-      {"nombre": "RUT Insular SPA", "archivo": "docs_insular/RUT_Insular_SPA.pdf", "nota": "SII certificate, RUT 77.152.855-4"},
-      {"nombre": "Compraventa de Acciones — Álvaro → Laura", "archivo": "cartolas/CompraventaAcciones_Alvaro_Laura_2021.pdf", "fecha": "2025-01-06", "nota": "$10M en 8 cuotas semestrales. CVE: 28382F18"}
+      {
+        "nombre": "Constitución Insular SPA",
+        "archivo": "docs_insular/Constitucion_Insular_SPA.pdf",
+        "fecha": "2020-04-23",
+        "nota": "Repertorio 4688-2020"
+      },
+      {
+        "nombre": "Pacto de Accionistas Insular SPA",
+        "archivo": "docs_insular/PactoAccionistas_Insular_SPA.pdf"
+      },
+      {
+        "nombre": "Reglamento Insular SPA",
+        "archivo": "docs_insular/Reglamento_Insular_SPA.pdf"
+      },
+      {
+        "nombre": "RUT Insular SPA",
+        "archivo": "docs_insular/RUT_Insular_SPA.pdf",
+        "nota": "SII certificate, RUT 77.152.855-4"
+      },
+      {
+        "nombre": "Compraventa de Acciones — Álvaro → Laura",
+        "archivo": "cartolas/CompraventaAcciones_Alvaro_Laura_2021.pdf",
+        "fecha": "2025-01-06",
+        "nota": "$10M en 8 cuotas semestrales. CVE: 28382F18"
+      }
     ],
     "propiedad": [
-      {"nombre": "Escritura Compraventa Lotes A-4 y A-5", "archivo": "docs_insular/EscrituraCompraventa_A4_A5.pdf", "fecha": "2021-02-01", "nota": "Rep. 255-2021"},
-      {"nombre": "Guía de Propiedad Lote A-4", "archivo": "docs_insular/Guia_LoteA4.pdf"},
-      {"nombre": "Guía de Propiedad Lote A-5", "archivo": "docs_insular/Guia_LoteA5.pdf"},
-      {"nombre": "Inscripción Lote A-4", "archivo": "docs_insular/Inscripcion_LoteA4.pdf"},
-      {"nombre": "Inscripción Lote A-5", "archivo": "docs_insular/Inscripcion_LoteA5.pdf"},
-      {"nombre": "Proyecto de Subdivisión", "archivo": "docs_insular/Subdivision_Lotes.pdf", "nota": "Lotes A-2 a A-8, 1:1.000"},
-      {"nombre": "Asignación de Roles SII", "archivo": "docs_insular/Roles_SII.pdf"}
+      {
+        "nombre": "Escritura Compraventa Lotes A-4 y A-5",
+        "archivo": "docs_insular/EscrituraCompraventa_A4_A5.pdf",
+        "fecha": "2021-02-01",
+        "nota": "Rep. 255-2021"
+      },
+      {
+        "nombre": "Guía de Propiedad Lote A-4",
+        "archivo": "docs_insular/Guia_LoteA4.pdf"
+      },
+      {
+        "nombre": "Guía de Propiedad Lote A-5",
+        "archivo": "docs_insular/Guia_LoteA5.pdf"
+      },
+      {
+        "nombre": "Inscripción Lote A-4",
+        "archivo": "docs_insular/Inscripcion_LoteA4.pdf"
+      },
+      {
+        "nombre": "Inscripción Lote A-5",
+        "archivo": "docs_insular/Inscripcion_LoteA5.pdf"
+      },
+      {
+        "nombre": "Proyecto de Subdivisión",
+        "archivo": "docs_insular/Subdivision_Lotes.pdf",
+        "nota": "Lotes A-2 a A-8, 1:1.000"
+      },
+      {
+        "nombre": "Asignación de Roles SII",
+        "archivo": "docs_insular/Roles_SII.pdf"
+      }
     ],
     "certificadosCBR": [
-      {"nombre": "Dominio Vigente #132840 (A-4)", "archivo": "docs_insular/CBR_DominioVigente_A4.pdf", "fecha": "2025-12-15"},
-      {"nombre": "Dominio Vigente #132843 (A-5)", "archivo": "docs_insular/CBR_DominioVigente_A5.pdf", "fecha": "2025-12-15"},
-      {"nombre": "Hipotecas y Gravámenes #132839 (A-4)", "archivo": "docs_insular/CBR_Hipotecas_A4.pdf", "fecha": "2025-12-15", "nota": "Sin hipotecas"},
-      {"nombre": "Hipotecas y Gravámenes #132844 (A-5)", "archivo": "docs_insular/CBR_Hipotecas_A5.pdf", "fecha": "2025-12-15", "nota": "Sin hipotecas"},
-      {"nombre": "Copia Simple #132848", "archivo": "docs_insular/CBR_CopiaSimple.pdf", "fecha": "2025-12-15"},
-      {"nombre": "Copia Vigente #132841 (A-4)", "archivo": "docs_insular/CBR_CopiaVigente_A4.pdf", "fecha": "2025-12-15"},
-      {"nombre": "Copia Vigente #132845 (A-5)", "archivo": "docs_insular/CBR_CopiaVigente_A5.pdf", "fecha": "2025-12-15"}
+      {
+        "nombre": "Dominio Vigente #132840 (A-4)",
+        "archivo": "docs_insular/CBR_DominioVigente_A4.pdf",
+        "fecha": "2025-12-15"
+      },
+      {
+        "nombre": "Dominio Vigente #132843 (A-5)",
+        "archivo": "docs_insular/CBR_DominioVigente_A5.pdf",
+        "fecha": "2025-12-15"
+      },
+      {
+        "nombre": "Hipotecas y Gravámenes #132839 (A-4)",
+        "archivo": "docs_insular/CBR_Hipotecas_A4.pdf",
+        "fecha": "2025-12-15",
+        "nota": "Sin hipotecas"
+      },
+      {
+        "nombre": "Hipotecas y Gravámenes #132844 (A-5)",
+        "archivo": "docs_insular/CBR_Hipotecas_A5.pdf",
+        "fecha": "2025-12-15",
+        "nota": "Sin hipotecas"
+      },
+      {
+        "nombre": "Copia Simple #132848",
+        "archivo": "docs_insular/CBR_CopiaSimple.pdf",
+        "fecha": "2025-12-15"
+      },
+      {
+        "nombre": "Copia Vigente #132841 (A-4)",
+        "archivo": "docs_insular/CBR_CopiaVigente_A4.pdf",
+        "fecha": "2025-12-15"
+      },
+      {
+        "nombre": "Copia Vigente #132845 (A-5)",
+        "archivo": "docs_insular/CBR_CopiaVigente_A5.pdf",
+        "fecha": "2025-12-15"
+      }
     ],
     "construccion": [
-      {"nombre": "Contrato AQAA (Etapa 3)", "archivo": "docs_insular/Contrato_AQAA_Etapa3.pdf", "fecha": "2024-10-09", "nota": "$6.250.000"},
-      {"nombre": "Carta de Honorarios Arquitectura", "archivo": "docs_insular/CartaHonorarios_Arquitectura.pdf", "nota": "1.4 UF/m², 5 etapas, 440.2 m²"},
-      {"nombre": "Desglose Honorarios Arquitectura", "archivo": "docs_insular/Desglose_Honorarios_Arq.pdf", "nota": "4.290 UF costo estimado"},
-      {"nombre": "Desglose Honorarios Especialistas", "archivo": "docs_insular/Desglose_Honorarios_Espec.pdf"},
-      {"nombre": "Estatutos AQAA Ltda", "archivo": "docs_insular/Estatutos_AQAA.pdf"},
-      {"nombre": "Factura Nº10 AQAA", "archivo": "docs_insular/Factura10_AQAA.pdf", "fecha": "2024-10-14", "nota": "$6.250.000 exenta"},
-      {"nombre": "BHE Nº222 Arturo Barrios", "archivo": "docs_insular/BHE222_Barrios.pdf", "fecha": "2024-05-17", "nota": "$258.456"}
+      {
+        "nombre": "Contrato AQAA (Etapa 3)",
+        "archivo": "docs_insular/Contrato_AQAA_Etapa3.pdf",
+        "fecha": "2024-10-09",
+        "nota": "$6.250.000"
+      },
+      {
+        "nombre": "Carta de Honorarios Arquitectura",
+        "archivo": "docs_insular/CartaHonorarios_Arquitectura.pdf",
+        "nota": "1.4 UF/m², 5 etapas, 440.2 m²"
+      },
+      {
+        "nombre": "Desglose Honorarios Arquitectura",
+        "archivo": "docs_insular/Desglose_Honorarios_Arq.pdf",
+        "nota": "4.290 UF costo estimado"
+      },
+      {
+        "nombre": "Desglose Honorarios Especialistas",
+        "archivo": "docs_insular/Desglose_Honorarios_Espec.pdf"
+      },
+      {
+        "nombre": "Estatutos AQAA Ltda",
+        "archivo": "docs_insular/Estatutos_AQAA.pdf"
+      },
+      {
+        "nombre": "Factura Nº10 AQAA",
+        "archivo": "docs_insular/Factura10_AQAA.pdf",
+        "fecha": "2024-10-14",
+        "nota": "$6.250.000 exenta"
+      },
+      {
+        "nombre": "BHE Nº222 Arturo Barrios",
+        "archivo": "docs_insular/BHE222_Barrios.pdf",
+        "fecha": "2024-05-17",
+        "nota": "$258.456"
+      }
     ],
     "sanitarios": [
-      {"nombre": "Proyecto Agua Potable", "archivo": "docs_insular/Sanitario_AguaPotable.pdf", "fecha": "2024-04"},
-      {"nombre": "Proyecto Alcantarillado", "archivo": "docs_insular/Sanitario_Alcantarillado.pdf", "fecha": "2024-04"},
-      {"nombre": "Consolidado Sanitario", "archivo": "docs_insular/Sanitario_Consolidado.pdf", "fecha": "2024-01"},
-      {"nombre": "EETT + Memoria Agua Potable", "archivo": "docs_insular/Sanitario_EETT_Memoria.pdf"}
+      {
+        "nombre": "Proyecto Agua Potable",
+        "archivo": "docs_insular/Sanitario_AguaPotable.pdf",
+        "fecha": "2024-04"
+      },
+      {
+        "nombre": "Proyecto Alcantarillado",
+        "archivo": "docs_insular/Sanitario_Alcantarillado.pdf",
+        "fecha": "2024-04"
+      },
+      {
+        "nombre": "Consolidado Sanitario",
+        "archivo": "docs_insular/Sanitario_Consolidado.pdf",
+        "fecha": "2024-01"
+      },
+      {
+        "nombre": "EETT + Memoria Agua Potable",
+        "archivo": "docs_insular/Sanitario_EETT_Memoria.pdf"
+      }
     ],
     "planosDWG": [
-      {"nombre": "Plano Agua Potable", "archivo": "docs_insular/Plano_AguaPotable.dwg", "tamaño": "21 MB"},
-      {"nombre": "Plano Alcantarillado", "archivo": "docs_insular/Plano_Alcantarillado.dwg", "tamaño": "2.2 MB"}
+      {
+        "nombre": "Plano Agua Potable",
+        "archivo": "docs_insular/Plano_AguaPotable.dwg",
+        "tamaño": "21 MB"
+      },
+      {
+        "nombre": "Plano Alcantarillado",
+        "archivo": "docs_insular/Plano_Alcantarillado.dwg",
+        "tamaño": "2.2 MB"
+      }
     ],
     "otros": [
-      {"nombre": "KMZ Chaicura", "archivo": "docs_insular/Chaicura.kmz", "nota": "Ubicación terreno Google Earth"}
+      {
+        "nombre": "KMZ Chaicura",
+        "archivo": "docs_insular/Chaicura.kmz",
+        "nota": "Ubicación terreno Google Earth"
+      }
     ]
   },
-
   "mobiliario": [
-    {"id":1, "nombre":"Mesa Comedor", "categoria":"cocina", "presupuesto":500000, "real":0, "comprado":false},
-    {"id":2, "nombre":"Sillas Comedor", "categoria":"cocina", "presupuesto":2080000, "real":1272000, "comprado":true},
-    {"id":3, "nombre":"Sillón", "categoria":"living", "presupuesto":3500000, "real":1999990, "comprado":true},
-    {"id":4, "nombre":"Sitiales", "categoria":"living", "presupuesto":2200000, "real":839980, "comprado":true},
-    {"id":5, "nombre":"Biblioteca baja", "categoria":"living", "presupuesto":500000, "real":0, "comprado":false},
-    {"id":6, "nombre":"Mesas Laterales", "categoria":"living", "presupuesto":500000, "real":0, "comprado":false},
-    {"id":7, "nombre":"Alfombra", "categoria":"living", "presupuesto":800000, "real":269990, "comprado":true},
-    {"id":8, "nombre":"Campana extractora", "categoria":"cocina", "presupuesto":1500000, "real":144980, "comprado":true},
-    {"id":9, "nombre":"Colgadores Closet", "categoria":"dormitorio", "presupuesto":300000, "real":0, "comprado":false},
-    {"id":10, "nombre":"Bajadas de Cama", "categoria":"dormitorio", "presupuesto":300000, "real":0, "comprado":false},
-    {"id":11, "nombre":"Colchones, Camas, Cojines, Sábanas, Toallas", "categoria":"dormitorio", "presupuesto":4100000, "real":4309031, "comprado":true},
-    {"id":12, "nombre":"Bosca (estufa a leña)", "categoria":"calefaccion", "presupuesto":1600000, "real":557120, "comprado":true},
-    {"id":13, "nombre":"Calefactores piezas eléctricos", "categoria":"calefaccion", "presupuesto":478000, "real":219980, "comprado":true},
-    {"id":14, "nombre":"Calefactores piso baños eléctricos", "categoria":"bano", "presupuesto":501980, "real":501980, "comprado":true},
-    {"id":15, "nombre":"Calienta Toallas", "categoria":"bano", "presupuesto":559980, "real":305280, "comprado":true},
-    {"id":16, "nombre":"Vajilla, Platos, Copas, Vasos, Cuchillería", "categoria":"cocina", "presupuesto":1320000, "real":913690, "comprado":true},
-    {"id":17, "nombre":"Cava de vinos", "categoria":"cocina", "presupuesto":1300000, "real":449990, "comprado":true},
-    {"id":18, "nombre":"Luminarias", "categoria":"general", "presupuesto":2500000, "real":252280, "comprado":true},
-    {"id":19, "nombre":"Porta Paraguas", "categoria":"general", "presupuesto":250000, "real":0, "comprado":false},
-    {"id":20, "nombre":"Tostadora", "categoria":"cocina", "presupuesto":200000, "real":62990, "comprado":true},
-    {"id":21, "nombre":"Thermomix", "categoria":"cocina", "presupuesto":1500000, "real":0, "comprado":false},
-    {"id":22, "nombre":"Parrilla a Gas", "categoria":"exterior", "presupuesto":900000, "real":900000, "comprado":true},
-    {"id":23, "nombre":"Fogón", "categoria":"exterior", "presupuesto":900000, "real":350000, "comprado":true},
-    {"id":24, "nombre":"Lavavajilla", "categoria":"cocina", "presupuesto":800000, "real":645990, "comprado":true},
-    {"id":25, "nombre":"Máquina hacer Pan", "categoria":"cocina", "presupuesto":150000, "real":69990, "comprado":true},
-    {"id":26, "nombre":"Cocina con Horno", "categoria":"cocina", "presupuesto":2400000, "real":602982, "comprado":true},
-    {"id":27, "nombre":"Microondas", "categoria":"cocina", "presupuesto":750000, "real":182691, "comprado":true},
-    {"id":28, "nombre":"Cafetera", "categoria":"cocina", "presupuesto":500000, "real":0, "comprado":false},
-    {"id":29, "nombre":"Calentador de Agua", "categoria":"bano", "presupuesto":1500000, "real":811981, "comprado":true},
-    {"id":30, "nombre":"Congelador", "categoria":"cocina", "presupuesto":600000, "real":279990, "comprado":true},
-    {"id":31, "nombre":"Refrigerador", "categoria":"cocina", "presupuesto":1500000, "real":737991, "comprado":true},
-    {"id":32, "nombre":"Lavadora", "categoria":"general", "presupuesto":0, "real":386991, "comprado":true},
-    {"id":33, "nombre":"MultiOlla", "categoria":"cocina", "presupuesto":0, "real":119990, "comprado":true},
-    {"id":34, "nombre":"AirFryer", "categoria":"cocina", "presupuesto":0, "real":129990, "comprado":true},
-    {"id":35, "nombre":"Televisión", "categoria":"living", "presupuesto":0, "real":879990, "comprado":true},
-    {"id":36, "nombre":"Artefactos casa (varios)", "categoria":"general", "presupuesto":0, "real":1134137, "comprado":true},
-    {"id":37, "nombre":"Máquina de Hielo", "categoria":"cocina", "presupuesto":0, "real":399990, "comprado":true},
-    {"id":38, "nombre":"Sandwichera", "categoria":"cocina", "presupuesto":0, "real":63990, "comprado":true},
-    {"id":39, "nombre":"Prensa Francesa", "categoria":"cocina", "presupuesto":0, "real":59980, "comprado":true},
-    {"id":40, "nombre":"Hervidor de Huevos", "categoria":"cocina", "presupuesto":0, "real":19990, "comprado":true},
-    {"id":41, "nombre":"Hervidor de Agua (x2)", "categoria":"cocina", "presupuesto":0, "real":119980, "comprado":true},
-    {"id":42, "nombre":"Batidora", "categoria":"cocina", "presupuesto":0, "real":41990, "comprado":true},
-    {"id":43, "nombre":"Balanza", "categoria":"cocina", "presupuesto":0, "real":13990, "comprado":true},
-    {"id":44, "nombre":"Molinillo", "categoria":"cocina", "presupuesto":0, "real":54990, "comprado":true},
-    {"id":45, "nombre":"Mantequillero", "categoria":"cocina", "presupuesto":0, "real":25980, "comprado":true},
-    {"id":46, "nombre":"Ventanas", "categoria":"general", "presupuesto":0, "real":0, "comprado":false},
-    {"id":47, "nombre":"Baños (terminaciones)", "categoria":"bano", "presupuesto":0, "real":2391015, "comprado":true}
+    {
+      "id": 1,
+      "nombre": "Mesa Comedor",
+      "categoria": "cocina",
+      "presupuesto": 500000,
+      "real": 0,
+      "comprado": false
+    },
+    {
+      "id": 2,
+      "nombre": "Sillas Comedor",
+      "categoria": "cocina",
+      "presupuesto": 2080000,
+      "real": 1272000,
+      "comprado": true
+    },
+    {
+      "id": 3,
+      "nombre": "Sillón",
+      "categoria": "living",
+      "presupuesto": 3500000,
+      "real": 1999990,
+      "comprado": true
+    },
+    {
+      "id": 4,
+      "nombre": "Sitiales",
+      "categoria": "living",
+      "presupuesto": 2200000,
+      "real": 839980,
+      "comprado": true
+    },
+    {
+      "id": 5,
+      "nombre": "Biblioteca baja",
+      "categoria": "living",
+      "presupuesto": 500000,
+      "real": 0,
+      "comprado": false
+    },
+    {
+      "id": 6,
+      "nombre": "Mesas Laterales",
+      "categoria": "living",
+      "presupuesto": 500000,
+      "real": 0,
+      "comprado": false
+    },
+    {
+      "id": 7,
+      "nombre": "Alfombra",
+      "categoria": "living",
+      "presupuesto": 800000,
+      "real": 269990,
+      "comprado": true
+    },
+    {
+      "id": 8,
+      "nombre": "Campana extractora",
+      "categoria": "cocina",
+      "presupuesto": 1500000,
+      "real": 144980,
+      "comprado": true
+    },
+    {
+      "id": 9,
+      "nombre": "Colgadores Closet",
+      "categoria": "dormitorio",
+      "presupuesto": 300000,
+      "real": 0,
+      "comprado": false
+    },
+    {
+      "id": 10,
+      "nombre": "Bajadas de Cama",
+      "categoria": "dormitorio",
+      "presupuesto": 300000,
+      "real": 0,
+      "comprado": false
+    },
+    {
+      "id": 11,
+      "nombre": "Colchones, Camas, Cojines, Sábanas, Toallas",
+      "categoria": "dormitorio",
+      "presupuesto": 4100000,
+      "real": 4309031,
+      "comprado": true
+    },
+    {
+      "id": 12,
+      "nombre": "Bosca (estufa a leña)",
+      "categoria": "calefaccion",
+      "presupuesto": 1600000,
+      "real": 557120,
+      "comprado": true
+    },
+    {
+      "id": 13,
+      "nombre": "Calefactores piezas eléctricos",
+      "categoria": "calefaccion",
+      "presupuesto": 478000,
+      "real": 219980,
+      "comprado": true
+    },
+    {
+      "id": 14,
+      "nombre": "Calefactores piso baños eléctricos",
+      "categoria": "bano",
+      "presupuesto": 501980,
+      "real": 501980,
+      "comprado": true
+    },
+    {
+      "id": 15,
+      "nombre": "Calienta Toallas",
+      "categoria": "bano",
+      "presupuesto": 559980,
+      "real": 305280,
+      "comprado": true
+    },
+    {
+      "id": 16,
+      "nombre": "Vajilla, Platos, Copas, Vasos, Cuchillería",
+      "categoria": "cocina",
+      "presupuesto": 1320000,
+      "real": 913690,
+      "comprado": true
+    },
+    {
+      "id": 17,
+      "nombre": "Cava de vinos",
+      "categoria": "cocina",
+      "presupuesto": 1300000,
+      "real": 449990,
+      "comprado": true
+    },
+    {
+      "id": 18,
+      "nombre": "Luminarias",
+      "categoria": "general",
+      "presupuesto": 2500000,
+      "real": 252280,
+      "comprado": true
+    },
+    {
+      "id": 19,
+      "nombre": "Porta Paraguas",
+      "categoria": "general",
+      "presupuesto": 250000,
+      "real": 0,
+      "comprado": false
+    },
+    {
+      "id": 20,
+      "nombre": "Tostadora",
+      "categoria": "cocina",
+      "presupuesto": 200000,
+      "real": 62990,
+      "comprado": true
+    },
+    {
+      "id": 21,
+      "nombre": "Thermomix",
+      "categoria": "cocina",
+      "presupuesto": 1500000,
+      "real": 0,
+      "comprado": false
+    },
+    {
+      "id": 22,
+      "nombre": "Parrilla a Gas",
+      "categoria": "exterior",
+      "presupuesto": 900000,
+      "real": 900000,
+      "comprado": true
+    },
+    {
+      "id": 23,
+      "nombre": "Fogón",
+      "categoria": "exterior",
+      "presupuesto": 900000,
+      "real": 350000,
+      "comprado": true
+    },
+    {
+      "id": 24,
+      "nombre": "Lavavajilla",
+      "categoria": "cocina",
+      "presupuesto": 800000,
+      "real": 645990,
+      "comprado": true
+    },
+    {
+      "id": 25,
+      "nombre": "Máquina hacer Pan",
+      "categoria": "cocina",
+      "presupuesto": 150000,
+      "real": 69990,
+      "comprado": true
+    },
+    {
+      "id": 26,
+      "nombre": "Cocina con Horno",
+      "categoria": "cocina",
+      "presupuesto": 2400000,
+      "real": 602982,
+      "comprado": true
+    },
+    {
+      "id": 27,
+      "nombre": "Microondas",
+      "categoria": "cocina",
+      "presupuesto": 750000,
+      "real": 182691,
+      "comprado": true
+    },
+    {
+      "id": 28,
+      "nombre": "Cafetera",
+      "categoria": "cocina",
+      "presupuesto": 500000,
+      "real": 0,
+      "comprado": false
+    },
+    {
+      "id": 29,
+      "nombre": "Calentador de Agua",
+      "categoria": "bano",
+      "presupuesto": 1500000,
+      "real": 811981,
+      "comprado": true
+    },
+    {
+      "id": 30,
+      "nombre": "Congelador",
+      "categoria": "cocina",
+      "presupuesto": 600000,
+      "real": 279990,
+      "comprado": true
+    },
+    {
+      "id": 31,
+      "nombre": "Refrigerador",
+      "categoria": "cocina",
+      "presupuesto": 1500000,
+      "real": 737991,
+      "comprado": true
+    },
+    {
+      "id": 32,
+      "nombre": "Lavadora",
+      "categoria": "general",
+      "presupuesto": 0,
+      "real": 386991,
+      "comprado": true
+    },
+    {
+      "id": 33,
+      "nombre": "MultiOlla",
+      "categoria": "cocina",
+      "presupuesto": 0,
+      "real": 119990,
+      "comprado": true
+    },
+    {
+      "id": 34,
+      "nombre": "AirFryer",
+      "categoria": "cocina",
+      "presupuesto": 0,
+      "real": 129990,
+      "comprado": true
+    },
+    {
+      "id": 35,
+      "nombre": "Televisión",
+      "categoria": "living",
+      "presupuesto": 0,
+      "real": 879990,
+      "comprado": true
+    },
+    {
+      "id": 36,
+      "nombre": "Artefactos casa (varios)",
+      "categoria": "general",
+      "presupuesto": 0,
+      "real": 1134137,
+      "comprado": true
+    },
+    {
+      "id": 37,
+      "nombre": "Máquina de Hielo",
+      "categoria": "cocina",
+      "presupuesto": 0,
+      "real": 399990,
+      "comprado": true
+    },
+    {
+      "id": 38,
+      "nombre": "Sandwichera",
+      "categoria": "cocina",
+      "presupuesto": 0,
+      "real": 63990,
+      "comprado": true
+    },
+    {
+      "id": 39,
+      "nombre": "Prensa Francesa",
+      "categoria": "cocina",
+      "presupuesto": 0,
+      "real": 59980,
+      "comprado": true
+    },
+    {
+      "id": 40,
+      "nombre": "Hervidor de Huevos",
+      "categoria": "cocina",
+      "presupuesto": 0,
+      "real": 19990,
+      "comprado": true
+    },
+    {
+      "id": 41,
+      "nombre": "Hervidor de Agua (x2)",
+      "categoria": "cocina",
+      "presupuesto": 0,
+      "real": 119980,
+      "comprado": true
+    },
+    {
+      "id": 42,
+      "nombre": "Batidora",
+      "categoria": "cocina",
+      "presupuesto": 0,
+      "real": 41990,
+      "comprado": true
+    },
+    {
+      "id": 43,
+      "nombre": "Balanza",
+      "categoria": "cocina",
+      "presupuesto": 0,
+      "real": 13990,
+      "comprado": true
+    },
+    {
+      "id": 44,
+      "nombre": "Molinillo",
+      "categoria": "cocina",
+      "presupuesto": 0,
+      "real": 54990,
+      "comprado": true
+    },
+    {
+      "id": 45,
+      "nombre": "Mantequillero",
+      "categoria": "cocina",
+      "presupuesto": 0,
+      "real": 25980,
+      "comprado": true
+    },
+    {
+      "id": 46,
+      "nombre": "Ventanas",
+      "categoria": "general",
+      "presupuesto": 0,
+      "real": 0,
+      "comprado": false
+    },
+    {
+      "id": 47,
+      "nombre": "Baños (terminaciones)",
+      "categoria": "bano",
+      "presupuesto": 0,
+      "real": 2391015,
+      "comprado": true
+    }
   ],
-
   "cartolas": [
-    {"archivo": "Insular cartola 1.pdf", "tipo": "pdf", "periodo": "01/06/2020→30/06/2020", "depositos": 25},
-    {"archivo": "Insular cartola 2.pdf", "tipo": "pdf", "periodo": "jul-2020", "depositos": 2},
-    {"archivo": "Insular cartola 3.pdf", "tipo": "pdf", "periodo": "01/08/2020→31/08/2020", "depositos": 1},
-    {"archivo": "Insular cartola 5.pdf", "tipo": "pdf", "periodo": "01/10/2020→30/10/2020", "depositos": 1},
-    {"archivo": "Insular cartola 6.pdf", "tipo": "pdf", "periodo": "01/11/2020→30/11/2020", "depositos": 3},
-    {"archivo": "Insular cartola 7.pdf", "tipo": "pdf", "periodo": "01/12/2020→30/12/2020", "depositos": 1},
-    {"archivo": "Insular cartola 8.pdf", "tipo": "pdf", "periodo": "01/01/2021→29/01/2021", "depositos": 1},
-    {"archivo": "typeDesc.xml", "tipo": "xml", "periodo": "21-01-2025→30-01-2025", "depositos": 2},
-    {"archivo": "typeDesc (1).xml", "tipo": "xml", "periodo": "03-02-2025→28-02-2025", "depositos": 18},
-    {"archivo": "typeDesc (2).xml", "tipo": "xml", "periodo": "03-03-2025→31-03-2025", "depositos": 10},
-    {"archivo": "typeDesc (3).xml", "tipo": "xml", "periodo": "01-04-2025→28-04-2025", "depositos": 8},
-    {"archivo": "typeDesc (4).xml", "tipo": "xml", "periodo": "02-05-2025→30-05-2025", "depositos": 10},
-    {"archivo": "typeDesc (5).xml", "tipo": "xml", "periodo": "02-06-2025→27-06-2025", "depositos": 10},
-    {"archivo": "typeDesc (6).xml", "tipo": "xml", "periodo": "01-07-2025→31-07-2025", "depositos": 14},
-    {"archivo": "typeDesc (7).xml", "tipo": "xml", "periodo": "01-08-2025→29-08-2025", "depositos": 11},
-    {"archivo": "typeDesc (8).xml", "tipo": "xml", "periodo": "01-09-2025→30-09-2025", "depositos": 10},
-    {"archivo": "typeDesc (9).xml", "tipo": "xml", "periodo": "01-10-2025→30-10-2025", "depositos": 8},
-    {"archivo": "typeDesc (10).xml", "tipo": "xml", "periodo": "03-11-2025→28-11-2025", "depositos": 12},
-    {"archivo": "typeDesc (11).xml", "tipo": "xml", "periodo": "01-12-2025→30-12-2025", "depositos": 13},
-    {"archivo": "typeDesc (13).xml", "tipo": "xml", "periodo": "02-01-2026→30-01-2026", "depositos": 20},
-    {"archivo": "typeDesc (14).xml", "tipo": "xml", "periodo": "02-02-2026→26-02-2026", "depositos": 14},
-    {"archivo": "typeDesc (15).xml", "tipo": "xml", "periodo": "02-03-2026→27-03-2026", "depositos": 12}
+    {
+      "archivo": "Insular cartola 1.pdf",
+      "tipo": "pdf",
+      "periodo": "01/06/2020→30/06/2020",
+      "depositos": 25
+    },
+    {
+      "archivo": "Insular cartola 2.pdf",
+      "tipo": "pdf",
+      "periodo": "jul-2020",
+      "depositos": 2
+    },
+    {
+      "archivo": "Insular cartola 3.pdf",
+      "tipo": "pdf",
+      "periodo": "01/08/2020→31/08/2020",
+      "depositos": 1
+    },
+    {
+      "archivo": "Insular cartola 5.pdf",
+      "tipo": "pdf",
+      "periodo": "01/10/2020→30/10/2020",
+      "depositos": 1
+    },
+    {
+      "archivo": "Insular cartola 6.pdf",
+      "tipo": "pdf",
+      "periodo": "01/11/2020→30/11/2020",
+      "depositos": 3
+    },
+    {
+      "archivo": "Insular cartola 7.pdf",
+      "tipo": "pdf",
+      "periodo": "01/12/2020→30/12/2020",
+      "depositos": 1
+    },
+    {
+      "archivo": "Insular cartola 8.pdf",
+      "tipo": "pdf",
+      "periodo": "01/01/2021→29/01/2021",
+      "depositos": 1
+    },
+    {
+      "archivo": "cartola_2024_EC44.pdf",
+      "tipo": "pdf",
+      "periodo": "01/01/2024→31/01/2024",
+      "depositos": 0,
+      "estadoCuenta": 44,
+      "saldoAnterior": 34107026,
+      "saldoActual": 33747462
+    },
+    {
+      "archivo": "cartola_2024_EC45.pdf",
+      "tipo": "pdf",
+      "periodo": "01/02/2024→29/02/2024",
+      "depositos": 0,
+      "estadoCuenta": 45,
+      "saldoAnterior": 33747462,
+      "saldoActual": 33747462
+    },
+    {
+      "archivo": "cartola_2024_EC46.pdf",
+      "tipo": "pdf",
+      "periodo": "01/03/2024→28/03/2024",
+      "depositos": 0,
+      "estadoCuenta": 46,
+      "saldoAnterior": 33747462,
+      "saldoActual": 30771091
+    },
+    {
+      "archivo": "cartola_2024_EC47.pdf",
+      "tipo": "pdf",
+      "periodo": "01/04/2024→30/04/2024",
+      "depositos": 5,
+      "estadoCuenta": 47,
+      "saldoAnterior": 30771091,
+      "saldoActual": 34117683
+    },
+    {
+      "archivo": "cartola_2024_EC48.pdf",
+      "tipo": "pdf",
+      "periodo": "01/05/2024→31/05/2024",
+      "depositos": 2,
+      "estadoCuenta": 48,
+      "saldoAnterior": 34117683,
+      "saldoActual": 35187683
+    },
+    {
+      "archivo": "cartola_2024_EC49.pdf",
+      "tipo": "pdf",
+      "periodo": "01/06/2024→28/06/2024",
+      "depositos": 1,
+      "estadoCuenta": 49,
+      "saldoAnterior": 35187683,
+      "saldoActual": 33257683
+    },
+    {
+      "archivo": "cartola_2024_EC50.pdf",
+      "tipo": "pdf",
+      "periodo": "01/07/2024→31/07/2024",
+      "depositos": 1,
+      "estadoCuenta": 50,
+      "saldoAnterior": 33257683,
+      "saldoActual": 33327683
+    },
+    {
+      "archivo": "cartola_2024_EC51.pdf",
+      "tipo": "pdf",
+      "periodo": "01/08/2024→30/08/2024",
+      "depositos": 1,
+      "estadoCuenta": 51,
+      "saldoAnterior": 33327683,
+      "saldoActual": 31897683
+    },
+    {
+      "archivo": "cartola_2024_EC52.pdf",
+      "tipo": "pdf",
+      "periodo": "01/09/2024→30/09/2024",
+      "depositos": 26,
+      "estadoCuenta": 52,
+      "saldoAnterior": 31897683,
+      "saldoActual": 74015227
+    },
+    {
+      "archivo": "cartola_2024_EC53.pdf",
+      "tipo": "pdf",
+      "periodo": "01/10/2024→30/10/2024",
+      "depositos": 10,
+      "estadoCuenta": 53,
+      "saldoAnterior": 74015227,
+      "saldoActual": 43366392
+    },
+    {
+      "archivo": "typeDesc.xml",
+      "tipo": "xml",
+      "periodo": "21-01-2025→30-01-2025",
+      "depositos": 2
+    },
+    {
+      "archivo": "typeDesc (1).xml",
+      "tipo": "xml",
+      "periodo": "03-02-2025→28-02-2025",
+      "depositos": 18
+    },
+    {
+      "archivo": "typeDesc (2).xml",
+      "tipo": "xml",
+      "periodo": "03-03-2025→31-03-2025",
+      "depositos": 10
+    },
+    {
+      "archivo": "typeDesc (3).xml",
+      "tipo": "xml",
+      "periodo": "01-04-2025→28-04-2025",
+      "depositos": 8
+    },
+    {
+      "archivo": "typeDesc (4).xml",
+      "tipo": "xml",
+      "periodo": "02-05-2025→30-05-2025",
+      "depositos": 10
+    },
+    {
+      "archivo": "typeDesc (5).xml",
+      "tipo": "xml",
+      "periodo": "02-06-2025→27-06-2025",
+      "depositos": 10
+    },
+    {
+      "archivo": "typeDesc (6).xml",
+      "tipo": "xml",
+      "periodo": "01-07-2025→31-07-2025",
+      "depositos": 14
+    },
+    {
+      "archivo": "typeDesc (7).xml",
+      "tipo": "xml",
+      "periodo": "01-08-2025→29-08-2025",
+      "depositos": 11
+    },
+    {
+      "archivo": "typeDesc (8).xml",
+      "tipo": "xml",
+      "periodo": "01-09-2025→30-09-2025",
+      "depositos": 10
+    },
+    {
+      "archivo": "typeDesc (9).xml",
+      "tipo": "xml",
+      "periodo": "01-10-2025→30-10-2025",
+      "depositos": 8
+    },
+    {
+      "archivo": "typeDesc (10).xml",
+      "tipo": "xml",
+      "periodo": "03-11-2025→28-11-2025",
+      "depositos": 12
+    },
+    {
+      "archivo": "typeDesc (11).xml",
+      "tipo": "xml",
+      "periodo": "01-12-2025→30-12-2025",
+      "depositos": 13
+    },
+    {
+      "archivo": "typeDesc (13).xml",
+      "tipo": "xml",
+      "periodo": "02-01-2026→30-01-2026",
+      "depositos": 20
+    },
+    {
+      "archivo": "typeDesc (14).xml",
+      "tipo": "xml",
+      "periodo": "02-02-2026→26-02-2026",
+      "depositos": 14
+    },
+    {
+      "archivo": "typeDesc (15).xml",
+      "tipo": "xml",
+      "periodo": "02-03-2026→27-03-2026",
+      "depositos": 12
+    }
   ],
-
   "depositos": [
-    {"socio": "Eduardo", "fecha": "2020-06-16", "monto": 350000, "descripcion": "TEF 13270339-6 Eduardo Enrique", "rut": "13270339-6", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Eduardo", "fecha": "2020-06-18", "monto": 3650000, "descripcion": "TEF 13270339-6 Eduardo Enrique", "rut": "13270339-6", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Felipe", "fecha": "2020-06-19", "monto": 250000, "descripcion": "TEF 18273744-5 FELIPE IGNACIO", "rut": "18273744-5", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Cristian", "fecha": "2020-06-19", "monto": 10000, "descripcion": "TEF 13066600-0", "rut": "13066600-0", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Camilo", "fecha": "2020-06-19", "monto": 250000, "descripcion": "TEF 16095526-0 Camilo", "rut": "16095526-0", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Camilo", "fecha": "2020-06-22", "monto": 250000, "descripcion": "TEF 16095526-0 Camilo", "rut": "16095526-0", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Camilo", "fecha": "2020-06-22", "monto": 250000, "descripcion": "TEF 16095526-0 Camilo", "rut": "16095526-0", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Camilo", "fecha": "2020-06-22", "monto": 250000, "descripcion": "TEF 16095526-0 Camilo", "rut": "16095526-0", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Fernando", "fecha": "2020-06-22", "monto": 250000, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Cristian", "fecha": "2020-06-22", "monto": 5990000, "descripcion": "TEF 13066600-0", "rut": "13066600-0", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Camilo", "fecha": "2020-06-22", "monto": 1000000, "descripcion": "TEF 16095526-0 Camilo", "rut": "16095526-0", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Felipe", "fecha": "2020-06-22", "monto": 3750000, "descripcion": "TEF 18273744-5 FELIPE IGNACIO", "rut": "18273744-5", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Laura", "fecha": "2020-06-22", "monto": 250000, "descripcion": "TEF 13028872-3 ALVARO MANUEL E", "rut": "13028872-3", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Fernando", "fecha": "2020-06-22", "monto": 3750000, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Jordi", "fecha": "2020-06-22", "monto": 300000, "descripcion": "TRANSF. DE SEGURA FARIAS JORDI", "rut": "", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Cristóbal", "fecha": "2020-06-22", "monto": 350000, "descripcion": "TEF 15362944-7 Constanza", "rut": "15362944-7", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Antonio", "fecha": "2020-06-23", "monto": 4000000, "descripcion": "TEF 76069305-7 INVERSIONES ACU", "rut": "76069305-7", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Sebastián", "fecha": "2020-06-23", "monto": 250000, "descripcion": "TEF 13426837-9 SEBASTIAN PABLO", "rut": "13426837-9", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Camilo", "fecha": "2020-06-23", "monto": 500000, "descripcion": "TEF 16095526-0 Camilo", "rut": "16095526-0", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Laura", "fecha": "2020-06-23", "monto": 3750000, "descripcion": "TEF 13028872-3 ALVARO MANUEL E", "rut": "13028872-3", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Cristóbal", "fecha": "2020-06-23", "monto": 3650000, "descripcion": "TEF 15362944-7 Constanza Jimen", "rut": "15362944-7", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Camilo", "fecha": "2020-06-24", "monto": 500000, "descripcion": "TEF 16095526-0 Camilo", "rut": "16095526-0", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Sebastián", "fecha": "2020-06-24", "monto": 4750000, "descripcion": "TEF 13426837-9 SEBASTIAN PABLO", "rut": "13426837-9", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Camilo", "fecha": "2020-06-26", "monto": 500000, "descripcion": "TEF 16095526-0 Camilo", "rut": "16095526-0", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Camilo", "fecha": "2020-06-30", "monto": 500000, "descripcion": "TEF 16095526-0 Camilo", "rut": "16095526-0", "cartola": "Insular cartola 1.pdf", "periodo": "01/06/2020→30/06/2020"},
-    {"socio": "Jordi", "fecha": "2020-07-07", "monto": 3700000, "descripcion": "TEF 13272830-5 JORDI OSVALDO S", "rut": "13272830-5", "cartola": "Insular cartola 2.pdf", "periodo": "jul-2020"},
-    {"socio": "Antonio", "fecha": "2020-07-07", "monto": 600000, "descripcion": "TEF 76069305-7 INVERSIONES ACU", "rut": "76069305-7", "cartola": "Insular cartola 2.pdf", "periodo": "jul-2020"},
-    {"socio": "Felipe", "fecha": "2020-08-14", "monto": 1200000, "descripcion": "TEF 18273744-5 FELIPE IGNACIO", "rut": "18273744-5", "cartola": "Insular cartola 3.pdf", "periodo": "01/08/2020→31/08/2020"},
-    {"socio": "Felipe", "fecha": "2020-10-13", "monto": 1200000, "descripcion": "TEF 18273744-5 FELIPE IGNACIO", "rut": "18273744-5", "cartola": "Insular cartola 5.pdf", "periodo": "01/10/2020→30/10/2020"},
-    {"socio": "Felipe", "fecha": "2020-11-13", "monto": 1200000, "descripcion": "TEF 18273744-5 FELIPE IGNACIO", "rut": "18273744-5", "cartola": "Insular cartola 6.pdf", "periodo": "01/11/2020→30/11/2020"},
-    {"socio": "Cristóbal", "fecha": "2020-11-17", "monto": 3000000, "descripcion": "TEF 15362944-7 Constanza", "rut": "15362944-7", "cartola": "Insular cartola 6.pdf", "periodo": "01/11/2020→30/11/2020"},
-    {"socio": "Sebastián", "fecha": "2020-11-25", "monto": 2000000, "descripcion": "TEF 13426837-9 SEBASTIAN PABLO", "rut": "13426837-9", "cartola": "Insular cartola 6.pdf", "periodo": "01/11/2020→30/11/2020"},
-    {"socio": "Felipe", "fecha": "2020-12-15", "monto": 1200000, "descripcion": "TEF 18273744-5 FELIPE IGNACIO", "rut": "18273744-5", "cartola": "Insular cartola 7.pdf", "periodo": "01/12/2020→30/12/2020"},
-    {"socio": "Eduardo", "fecha": "2021-01-18", "monto": 4000000, "descripcion": "TEF 13270339-6 Eduardo Enrique", "rut": "13270339-6", "cartola": "Insular cartola 8.pdf", "periodo": "01/01/2021→29/01/2021"},
-    {"socio": "Antonio", "fecha": "2025-02-03", "monto": 236666, "descripcion": "TRANSF. DE ANTONIO PAULO DIAZ", "rut": "", "cartola": "typeDesc (1).xml", "periodo": "03-02-2025→28-02-2025"},
-    {"socio": "Laura", "fecha": "2025-02-03", "monto": 70000, "descripcion": "TEF 16656248-1 Laura Diaz", "rut": "16656248-1", "cartola": "typeDesc (1).xml", "periodo": "03-02-2025→28-02-2025"},
-    {"socio": "Cristóbal", "fecha": "2025-02-03", "monto": 70000, "descripcion": "TEF  7746703-3 Cristobal Eduar", "rut": "7746703-3", "cartola": "typeDesc (1).xml", "periodo": "03-02-2025→28-02-2025"},
-    {"socio": "Fernando", "fecha": "2025-02-04", "monto": 166666, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "typeDesc (1).xml", "periodo": "03-02-2025→28-02-2025"},
-    {"socio": "Camilo", "fecha": "2025-02-05", "monto": 236667, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (1).xml", "periodo": "03-02-2025→28-02-2025"},
-    {"socio": "Camilo", "fecha": "2025-02-06", "monto": 500000, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (1).xml", "periodo": "03-02-2025→28-02-2025"},
-    {"socio": "Jordi", "fecha": "2025-02-10", "monto": 2166667, "descripcion": "TEF 13272830-5", "rut": "13272830-5", "cartola": "typeDesc (1).xml", "periodo": "03-02-2025→28-02-2025"},
-    {"socio": "Jordi", "fecha": "2025-02-10", "monto": 100000, "descripcion": "TEF 13272830-5", "rut": "13272830-5", "cartola": "typeDesc (1).xml", "periodo": "03-02-2025→28-02-2025"},
-    {"socio": "Felipe", "fecha": "2025-02-12", "monto": 236666, "descripcion": "TEF 18273744-5 SIMONSOHN GONZA", "rut": "18273744-5", "cartola": "typeDesc (1).xml", "periodo": "03-02-2025→28-02-2025"},
-    {"socio": "Camilo", "fecha": "2025-02-14", "monto": 500000, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (1).xml", "periodo": "03-02-2025→28-02-2025"},
-    {"socio": "Camilo", "fecha": "2025-02-18", "monto": 500000, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (1).xml", "periodo": "03-02-2025→28-02-2025"},
-    {"socio": "Jordi", "fecha": "2025-02-18", "monto": 2000000, "descripcion": "TEF 13272830-5", "rut": "13272830-5", "cartola": "typeDesc (1).xml", "periodo": "03-02-2025→28-02-2025"},
-    {"socio": "Cristian", "fecha": "2025-02-18", "monto": 1419996, "descripcion": "TEF 13066600-0", "rut": "13066600-0", "cartola": "typeDesc (1).xml", "periodo": "03-02-2025→28-02-2025"},
-    {"socio": "Jordi", "fecha": "2025-02-20", "monto": 2000000, "descripcion": "TEF 13272830-5", "rut": "13272830-5", "cartola": "typeDesc (1).xml", "periodo": "03-02-2025→28-02-2025"},
-    {"socio": "Camilo", "fecha": "2025-02-24", "monto": 500000, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (1).xml", "periodo": "03-02-2025→28-02-2025"},
-    {"socio": "Cristian", "fecha": "2025-02-26", "monto": 2000000, "descripcion": "TEF 13066600-0", "rut": "13066600-0", "cartola": "typeDesc (1).xml", "periodo": "03-02-2025→28-02-2025"},
-    {"socio": "Laura", "fecha": "2025-02-28", "monto": 70000, "descripcion": "TEF 16656248-1 Laura Diaz", "rut": "16656248-1", "cartola": "typeDesc (1).xml", "periodo": "03-02-2025→28-02-2025"},
-    {"socio": "Camilo", "fecha": "2025-02-28", "monto": 236667, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (1).xml", "periodo": "03-02-2025→28-02-2025"},
-    {"socio": "Laura", "fecha": "2025-11-03", "monto": 75000, "descripcion": "TEF 16656248-1 Laura Diaz", "rut": "16656248-1", "cartola": "typeDesc (10).xml", "periodo": "03-11-2025→28-11-2025"},
-    {"socio": "Cristóbal", "fecha": "2025-11-03", "monto": 70000, "descripcion": "TEF  7746703-3 Cristobal Eduar", "rut": "7746703-3", "cartola": "typeDesc (10).xml", "periodo": "03-11-2025→28-11-2025"},
-    {"socio": "Antonio", "fecha": "2025-11-03", "monto": 236666, "descripcion": "GGCC Aporte Mobiliario", "rut": "", "cartola": "typeDesc (10).xml", "periodo": "03-11-2025→28-11-2025"},
-    {"socio": "Eduardo", "fecha": "2025-11-04", "monto": 70000, "descripcion": "TEF 13270339-6 Eduardo Enrique", "rut": "13270339-6", "cartola": "typeDesc (10).xml", "periodo": "03-11-2025→28-11-2025"},
-    {"socio": "Antonio", "fecha": "2025-11-05", "monto": 236666, "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT", "rut": "13890149-1", "cartola": "typeDesc (10).xml", "periodo": "03-11-2025→28-11-2025"},
-    {"socio": "Fernando", "fecha": "2025-11-05", "monto": 236665, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "typeDesc (10).xml", "periodo": "03-11-2025→28-11-2025"},
-    {"socio": "Felipe", "fecha": "2025-11-12", "monto": 236666, "descripcion": "TEF 18273744-5 SIMONSOHN GONZA", "rut": "18273744-5", "cartola": "typeDesc (10).xml", "periodo": "03-11-2025→28-11-2025"},
-    {"socio": "Camilo", "fecha": "2025-11-19", "monto": 236667, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (10).xml", "periodo": "03-11-2025→28-11-2025"},
-    {"socio": "Camilo", "fecha": "2025-11-19", "monto": 500000, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (10).xml", "periodo": "03-11-2025→28-11-2025"},
-    {"socio": "Sebastián", "fecha": "2025-11-21", "monto": 5000000, "descripcion": "TEF 13426837-9", "rut": "13426837-9", "cartola": "typeDesc (10).xml", "periodo": "03-11-2025→28-11-2025"},
-    {"socio": "Jordi", "fecha": "2025-11-24", "monto": 3500000, "descripcion": "TEF 13272830-5", "rut": "13272830-5", "cartola": "typeDesc (10).xml", "periodo": "03-11-2025→28-11-2025"},
-    {"socio": "Jordi", "fecha": "2025-11-25", "monto": 1183330, "descripcion": "TEF 13272830-5", "rut": "13272830-5", "cartola": "typeDesc (10).xml", "periodo": "03-11-2025→28-11-2025"},
-    {"socio": "Antonio", "fecha": "2025-12-01", "monto": 236666, "descripcion": "GGCC Aporte Mobiliario", "rut": "", "cartola": "typeDesc (11).xml", "periodo": "01-12-2025→30-12-2025"},
-    {"socio": "Laura", "fecha": "2025-12-01", "monto": 75000, "descripcion": "TEF 16656248-1 Laura Diaz", "rut": "16656248-1", "cartola": "typeDesc (11).xml", "periodo": "01-12-2025→30-12-2025"},
-    {"socio": "Fernando", "fecha": "2025-12-02", "monto": 236665, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "typeDesc (11).xml", "periodo": "01-12-2025→30-12-2025"},
-    {"socio": "Cristóbal", "fecha": "2025-12-03", "monto": 70000, "descripcion": "TEF  7746703-3 Cristobal Eduar", "rut": "7746703-3", "cartola": "typeDesc (11).xml", "periodo": "01-12-2025→30-12-2025"},
-    {"socio": "Eduardo", "fecha": "2025-12-04", "monto": 70000, "descripcion": "TEF 13270339-6 Eduardo Enrique", "rut": "13270339-6", "cartola": "typeDesc (11).xml", "periodo": "01-12-2025→30-12-2025"},
-    {"socio": "Antonio", "fecha": "2025-12-05", "monto": 236666, "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT", "rut": "13890149-1", "cartola": "typeDesc (11).xml", "periodo": "01-12-2025→30-12-2025"},
-    {"socio": "Felipe", "fecha": "2025-12-12", "monto": 236666, "descripcion": "TEF 18273744-5 SIMONSOHN GONZA", "rut": "18273744-5", "cartola": "typeDesc (11).xml", "periodo": "01-12-2025→30-12-2025"},
-    {"socio": "Camilo", "fecha": "2025-12-19", "monto": 500000, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (11).xml", "periodo": "01-12-2025→30-12-2025"},
-    {"socio": "Camilo", "fecha": "2025-12-29", "monto": 500000, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (11).xml", "periodo": "01-12-2025→30-12-2025"},
-    {"socio": "Felipe", "fecha": "2025-12-29", "monto": 2000000, "descripcion": "TEF 18273744-5 FELIPE IGNACIO", "rut": "18273744-5", "cartola": "typeDesc (11).xml", "periodo": "01-12-2025→30-12-2025"},
-    {"socio": "Camilo", "fecha": "2025-12-30", "monto": 536667, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (11).xml", "periodo": "01-12-2025→30-12-2025"},
-    {"socio": "Eduardo", "fecha": "2025-12-30", "monto": 4000000, "descripcion": "TEF 13455042-2 Anneli De La Lu", "rut": "13455042-2", "cartola": "typeDesc (11).xml", "periodo": "01-12-2025→30-12-2025"},
-    {"socio": "Sebastián", "fecha": "2025-12-30", "monto": 4000000, "descripcion": "TEF 13426837-9 SEBASTIAN PABLO", "rut": "13426837-9", "cartola": "typeDesc (11).xml", "periodo": "01-12-2025→30-12-2025"},
-    {"socio": "Camilo", "fecha": "2026-01-02", "monto": 2000000, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (13).xml", "periodo": "02-01-2026→30-01-2026"},
-    {"socio": "Antonio", "fecha": "2026-01-02", "monto": 236666, "descripcion": "GGCC Aporte Mobiliario", "rut": "", "cartola": "typeDesc (13).xml", "periodo": "02-01-2026→30-01-2026"},
-    {"socio": "Laura", "fecha": "2026-01-02", "monto": 75000, "descripcion": "TEF 16656248-1 Laura Diaz", "rut": "16656248-1", "cartola": "typeDesc (13).xml", "periodo": "02-01-2026→30-01-2026"},
-    {"socio": "Fernando", "fecha": "2026-01-02", "monto": 236666, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "typeDesc (13).xml", "periodo": "02-01-2026→30-01-2026"},
-    {"socio": "Cristóbal", "fecha": "2026-01-05", "monto": 70000, "descripcion": "TEF  7746703-3 Cristobal Eduar", "rut": "7746703-3", "cartola": "typeDesc (13).xml", "periodo": "02-01-2026→30-01-2026"},
-    {"socio": "Eduardo", "fecha": "2026-01-05", "monto": 70000, "descripcion": "TEF 13270339-6 Eduardo Enrique", "rut": "13270339-6", "cartola": "typeDesc (13).xml", "periodo": "02-01-2026→30-01-2026"},
-    {"socio": "Antonio", "fecha": "2026-01-05", "monto": 236666, "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT", "rut": "13890149-1", "cartola": "typeDesc (13).xml", "periodo": "02-01-2026→30-01-2026"},
-    {"socio": "Fernando", "fecha": "2026-01-05", "monto": 2500000, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "typeDesc (13).xml", "periodo": "02-01-2026→30-01-2026"},
-    {"socio": "Felipe", "fecha": "2026-01-12", "monto": 236666, "descripcion": "TEF 18273744-5 SIMONSOHN GONZA", "rut": "18273744-5", "cartola": "typeDesc (13).xml", "periodo": "02-01-2026→30-01-2026"},
-    {"socio": "Camilo", "fecha": "2026-01-13", "monto": 1000000, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (13).xml", "periodo": "02-01-2026→30-01-2026"},
-    {"socio": "Fernando", "fecha": "2026-01-13", "monto": 300000, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "typeDesc (13).xml", "periodo": "02-01-2026→30-01-2026"},
-    {"socio": "Eduardo", "fecha": "2026-01-14", "monto": 300000, "descripcion": "TEF 13455042-2 Anneli De La Lu", "rut": "13455042-2", "cartola": "typeDesc (13).xml", "periodo": "02-01-2026→30-01-2026"},
-    {"socio": "Cristóbal", "fecha": "2026-01-14", "monto": 1000000, "descripcion": "TEF  7746703-3 Cristobal Eduar", "rut": "7746703-3", "cartola": "typeDesc (13).xml", "periodo": "02-01-2026→30-01-2026"},
-    {"socio": "Felipe", "fecha": "2026-01-14", "monto": 1000000, "descripcion": "TEF 18273744-5 FELIPE IGNACIO", "rut": "18273744-5", "cartola": "typeDesc (13).xml", "periodo": "02-01-2026→30-01-2026"},
-    {"socio": "Cristóbal", "fecha": "2026-01-15", "monto": 300000, "descripcion": "TEF  7746703-3 Cristobal Eduar", "rut": "7746703-3", "cartola": "typeDesc (13).xml", "periodo": "02-01-2026→30-01-2026"},
-    {"socio": "Camilo", "fecha": "2026-01-16", "monto": 1000000, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (13).xml", "periodo": "02-01-2026→30-01-2026"},
-    {"socio": "Jordi", "fecha": "2026-01-26", "monto": 1000000, "descripcion": "TEF 13272830-5", "rut": "13272830-5", "cartola": "typeDesc (13).xml", "periodo": "02-01-2026→30-01-2026"},
-    {"socio": "Camilo", "fecha": "2026-01-30", "monto": 300000, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (13).xml", "periodo": "02-01-2026→30-01-2026"},
-    {"socio": "Camilo", "fecha": "2026-01-30", "monto": 236667, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (13).xml", "periodo": "02-01-2026→30-01-2026"},
-    {"socio": "Felipe", "fecha": "2026-01-30", "monto": 1000000, "descripcion": "TEF 18273744-5 FELIPE IGNACIO", "rut": "18273744-5", "cartola": "typeDesc (13).xml", "periodo": "02-01-2026→30-01-2026"},
-    {"socio": "Laura", "fecha": "2026-02-02", "monto": 75000, "descripcion": "TEF 16656248-1 Laura Diaz", "rut": "16656248-1", "cartola": "typeDesc (14).xml", "periodo": "02-02-2026→26-02-2026"},
-    {"socio": "Antonio", "fecha": "2026-02-02", "monto": 236666, "descripcion": "GGCC Aporte Mobiliario", "rut": "", "cartola": "typeDesc (14).xml", "periodo": "02-02-2026→26-02-2026"},
-    {"socio": "Eduardo", "fecha": "2026-02-04", "monto": 70000, "descripcion": "TEF 13270339-6 Eduardo Enrique", "rut": "13270339-6", "cartola": "typeDesc (14).xml", "periodo": "02-02-2026→26-02-2026"},
-    {"socio": "Fernando", "fecha": "2026-02-04", "monto": 236665, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "typeDesc (14).xml", "periodo": "02-02-2026→26-02-2026"},
-    {"socio": "Fernando", "fecha": "2026-02-04", "monto": 300000, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "typeDesc (14).xml", "periodo": "02-02-2026→26-02-2026"},
-    {"socio": "Antonio", "fecha": "2026-02-05", "monto": 236666, "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT", "rut": "13890149-1", "cartola": "typeDesc (14).xml", "periodo": "02-02-2026→26-02-2026"},
-    {"socio": "Eduardo", "fecha": "2026-02-09", "monto": 300000, "descripcion": "TEF 13455042-2 Anneli De La Lu", "rut": "13455042-2", "cartola": "typeDesc (14).xml", "periodo": "02-02-2026→26-02-2026"},
-    {"socio": "Felipe", "fecha": "2026-02-12", "monto": 236666, "descripcion": "TEF 18273744-5 SIMONSOHN GONZA", "rut": "18273744-5", "cartola": "typeDesc (14).xml", "periodo": "02-02-2026→26-02-2026"},
-    {"socio": "Cristóbal", "fecha": "2026-02-16", "monto": 300000, "descripcion": "TEF  7746703-3 Cristobal Eduar", "rut": "7746703-3", "cartola": "typeDesc (14).xml", "periodo": "02-02-2026→26-02-2026"},
-    {"socio": "Eduardo", "fecha": "2026-02-16", "monto": 3000000, "descripcion": "TEF 13455042-2 Anneli De La Lu", "rut": "13455042-2", "cartola": "typeDesc (14).xml", "periodo": "02-02-2026→26-02-2026"},
-    {"socio": "Jordi", "fecha": "2026-02-16", "monto": 2000000, "descripcion": "TEF 13272830-5", "rut": "13272830-5", "cartola": "typeDesc (14).xml", "periodo": "02-02-2026→26-02-2026"},
-    {"socio": "Camilo", "fecha": "2026-02-20", "monto": 236667, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (14).xml", "periodo": "02-02-2026→26-02-2026"},
-    {"socio": "Cristóbal", "fecha": "2026-02-23", "monto": 1500000, "descripcion": "TEF  7746703-3 Cristobal Eduar", "rut": "7746703-3", "cartola": "typeDesc (14).xml", "periodo": "02-02-2026→26-02-2026"},
-    {"socio": "Camilo", "fecha": "2026-02-26", "monto": 300000, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (14).xml", "periodo": "02-02-2026→26-02-2026"},
-    {"socio": "Laura", "fecha": "2026-03-02", "monto": 75000, "descripcion": "TEF 16656248-1 Laura Diaz", "rut": "16656248-1", "cartola": "typeDesc (15).xml", "periodo": "02-03-2026→27-03-2026"},
-    {"socio": "Antonio", "fecha": "2026-03-02", "monto": 236666, "descripcion": "GGCC Aporte Mobiliario", "rut": "", "cartola": "typeDesc (15).xml", "periodo": "02-03-2026→27-03-2026"},
-    {"socio": "Fernando", "fecha": "2026-03-03", "monto": 236665, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "typeDesc (15).xml", "periodo": "02-03-2026→27-03-2026"},
-    {"socio": "Fernando", "fecha": "2026-03-03", "monto": 300000, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "typeDesc (15).xml", "periodo": "02-03-2026→27-03-2026"},
-    {"socio": "Eduardo", "fecha": "2026-03-04", "monto": 70000, "descripcion": "TEF 13270339-6 Eduardo Enrique", "rut": "13270339-6", "cartola": "typeDesc (15).xml", "periodo": "02-03-2026→27-03-2026"},
-    {"socio": "Antonio", "fecha": "2026-03-05", "monto": 236666, "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT", "rut": "13890149-1", "cartola": "typeDesc (15).xml", "periodo": "02-03-2026→27-03-2026"},
-    {"socio": "Sebastián", "fecha": "2026-03-05", "monto": 1500000, "descripcion": "TEF 13426837-9", "rut": "13426837-9", "cartola": "typeDesc (15).xml", "periodo": "02-03-2026→27-03-2026"},
-    {"socio": "Jordi", "fecha": "2026-03-05", "monto": 1000000, "descripcion": "TEF 13272830-5", "rut": "13272830-5", "cartola": "typeDesc (15).xml", "periodo": "02-03-2026→27-03-2026"},
-    {"socio": "Jordi", "fecha": "2026-03-05", "monto": 300000, "descripcion": "TEF 13272830-5", "rut": "13272830-5", "cartola": "typeDesc (15).xml", "periodo": "02-03-2026→27-03-2026"},
-    {"socio": "Cristóbal", "fecha": "2026-03-16", "monto": 300000, "descripcion": "TEF  7746703-3 Cristobal Eduar", "rut": "7746703-3", "cartola": "typeDesc (15).xml", "periodo": "02-03-2026→27-03-2026"},
-    {"socio": "Camilo", "fecha": "2026-03-23", "monto": 236667, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (15).xml", "periodo": "02-03-2026→27-03-2026"},
-    {"socio": "Camilo", "fecha": "2026-03-27", "monto": 300000, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (15).xml", "periodo": "02-03-2026→27-03-2026"},
-    {"socio": "Antonio", "fecha": "2025-03-03", "monto": 236666, "descripcion": "GGCC Aporte Mobiliario", "rut": "", "cartola": "typeDesc (2).xml", "periodo": "03-03-2025→31-03-2025"},
-    {"socio": "Cristóbal", "fecha": "2025-03-03", "monto": 70000, "descripcion": "TEF  7746703-3 Cristobal Eduar", "rut": "7746703-3", "cartola": "typeDesc (2).xml", "periodo": "03-03-2025→31-03-2025"},
-    {"socio": "Eduardo", "fecha": "2025-03-03", "monto": 140000, "descripcion": "TEF 13270339-6 Eduardo Enrique", "rut": "13270339-6", "cartola": "typeDesc (2).xml", "periodo": "03-03-2025→31-03-2025"},
-    {"socio": "Fernando", "fecha": "2025-03-03", "monto": 236666, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "typeDesc (2).xml", "periodo": "03-03-2025→31-03-2025"},
-    {"socio": "Eduardo", "fecha": "2025-03-04", "monto": 70000, "descripcion": "TEF 13270339-6 Eduardo Enrique", "rut": "13270339-6", "cartola": "typeDesc (2).xml", "periodo": "03-03-2025→31-03-2025"},
-    {"socio": "Antonio", "fecha": "2025-03-05", "monto": 236666, "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT", "rut": "13890149-1", "cartola": "typeDesc (2).xml", "periodo": "03-03-2025→31-03-2025"},
-    {"socio": "Eduardo", "fecha": "2025-03-06", "monto": 4000000, "descripcion": "TEF 13455042-2 Anneli De La Lu", "rut": "13455042-2", "cartola": "typeDesc (2).xml", "periodo": "03-03-2025→31-03-2025"},
-    {"socio": "Felipe", "fecha": "2025-03-12", "monto": 236666, "descripcion": "TEF 18273744-5 SIMONSOHN GONZA", "rut": "18273744-5", "cartola": "typeDesc (2).xml", "periodo": "03-03-2025→31-03-2025"},
-    {"socio": "Camilo", "fecha": "2025-03-28", "monto": 236667, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (2).xml", "periodo": "03-03-2025→31-03-2025"},
-    {"socio": "Jordi", "fecha": "2025-03-31", "monto": 206666, "descripcion": "TEF 13272830-5", "rut": "13272830-5", "cartola": "typeDesc (2).xml", "periodo": "03-03-2025→31-03-2025"},
-    {"socio": "Antonio", "fecha": "2025-04-01", "monto": 236666, "descripcion": "GGCC Aporte Mobiliario", "rut": "", "cartola": "typeDesc (3).xml", "periodo": "01-04-2025→28-04-2025"},
-    {"socio": "Laura", "fecha": "2025-04-01", "monto": 70000, "descripcion": "TEF 16656248-1 Laura Diaz", "rut": "16656248-1", "cartola": "typeDesc (3).xml", "periodo": "01-04-2025→28-04-2025"},
-    {"socio": "Cristóbal", "fecha": "2025-04-03", "monto": 70000, "descripcion": "TEF  7746703-3 Cristobal Eduar", "rut": "7746703-3", "cartola": "typeDesc (3).xml", "periodo": "01-04-2025→28-04-2025"},
-    {"socio": "Eduardo", "fecha": "2025-04-04", "monto": 70000, "descripcion": "TEF 13270339-6 Eduardo Enrique", "rut": "13270339-6", "cartola": "typeDesc (3).xml", "periodo": "01-04-2025→28-04-2025"},
-    {"socio": "Fernando", "fecha": "2025-04-07", "monto": 236665, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "typeDesc (3).xml", "periodo": "01-04-2025→28-04-2025"},
-    {"socio": "Antonio", "fecha": "2025-04-07", "monto": 236666, "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT", "rut": "13890149-1", "cartola": "typeDesc (3).xml", "periodo": "01-04-2025→28-04-2025"},
-    {"socio": "Felipe", "fecha": "2025-04-14", "monto": 236666, "descripcion": "TEF 18273744-5 SIMONSOHN GONZA", "rut": "18273744-5", "cartola": "typeDesc (3).xml", "periodo": "01-04-2025→28-04-2025"},
-    {"socio": "Camilo", "fecha": "2025-04-25", "monto": 236667, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (3).xml", "periodo": "01-04-2025→28-04-2025"},
-    {"socio": "Laura", "fecha": "2025-05-02", "monto": 70000, "descripcion": "TEF 16656248-1 Laura Diaz", "rut": "16656248-1", "cartola": "typeDesc (4).xml", "periodo": "02-05-2025→30-05-2025"},
-    {"socio": "Antonio", "fecha": "2025-05-02", "monto": 236666, "descripcion": "GGCC Aporte Mobiliario", "rut": "", "cartola": "typeDesc (4).xml", "periodo": "02-05-2025→30-05-2025"},
-    {"socio": "Cristóbal", "fecha": "2025-05-05", "monto": 70000, "descripcion": "TEF  7746703-3 Cristobal Eduar", "rut": "7746703-3", "cartola": "typeDesc (4).xml", "periodo": "02-05-2025→30-05-2025"},
-    {"socio": "Eduardo", "fecha": "2025-05-05", "monto": 70000, "descripcion": "TEF 13270339-6 Eduardo Enrique", "rut": "13270339-6", "cartola": "typeDesc (4).xml", "periodo": "02-05-2025→30-05-2025"},
-    {"socio": "Antonio", "fecha": "2025-05-05", "monto": 236666, "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT", "rut": "13890149-1", "cartola": "typeDesc (4).xml", "periodo": "02-05-2025→30-05-2025"},
-    {"socio": "Jordi", "fecha": "2025-05-05", "monto": 679998, "descripcion": "TEF 13272830-5", "rut": "13272830-5", "cartola": "typeDesc (4).xml", "periodo": "02-05-2025→30-05-2025"},
-    {"socio": "Felipe", "fecha": "2025-05-12", "monto": 236666, "descripcion": "TEF 18273744-5 SIMONSOHN GONZA", "rut": "18273744-5", "cartola": "typeDesc (4).xml", "periodo": "02-05-2025→30-05-2025"},
-    {"socio": "Sebastián", "fecha": "2025-05-15", "monto": 300000, "descripcion": "TEF 13426837-9", "rut": "13426837-9", "cartola": "typeDesc (4).xml", "periodo": "02-05-2025→30-05-2025"},
-    {"socio": "Sebastián", "fecha": "2025-05-27", "monto": 946664, "descripcion": "TEF 13426837-9", "rut": "13426837-9", "cartola": "typeDesc (4).xml", "periodo": "02-05-2025→30-05-2025"},
-    {"socio": "Camilo", "fecha": "2025-05-30", "monto": 236667, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (4).xml", "periodo": "02-05-2025→30-05-2025"},
-    {"socio": "Fernando", "fecha": "2025-06-02", "monto": 236665, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "typeDesc (5).xml", "periodo": "02-06-2025→27-06-2025"},
-    {"socio": "Antonio", "fecha": "2025-06-02", "monto": 236666, "descripcion": "GGCC Aporte Mobiliario", "rut": "", "cartola": "typeDesc (5).xml", "periodo": "02-06-2025→27-06-2025"},
-    {"socio": "Laura", "fecha": "2025-06-02", "monto": 70000, "descripcion": "TEF 16656248-1 Laura Diaz", "rut": "16656248-1", "cartola": "typeDesc (5).xml", "periodo": "02-06-2025→27-06-2025"},
-    {"socio": "Cristóbal", "fecha": "2025-06-03", "monto": 70000, "descripcion": "TEF  7746703-3 Cristobal Eduar", "rut": "7746703-3", "cartola": "typeDesc (5).xml", "periodo": "02-06-2025→27-06-2025"},
-    {"socio": "Jordi", "fecha": "2025-06-03", "monto": 236666, "descripcion": "TEF 13272830-5", "rut": "13272830-5", "cartola": "typeDesc (5).xml", "periodo": "02-06-2025→27-06-2025"},
-    {"socio": "Eduardo", "fecha": "2025-06-04", "monto": 70000, "descripcion": "TEF 13270339-6 Eduardo Enrique", "rut": "13270339-6", "cartola": "typeDesc (5).xml", "periodo": "02-06-2025→27-06-2025"},
-    {"socio": "Antonio", "fecha": "2025-06-05", "monto": 236666, "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT", "rut": "13890149-1", "cartola": "typeDesc (5).xml", "periodo": "02-06-2025→27-06-2025"},
-    {"socio": "Felipe", "fecha": "2025-06-12", "monto": 236666, "descripcion": "TEF 18273744-5 SIMONSOHN GONZA", "rut": "18273744-5", "cartola": "typeDesc (5).xml", "periodo": "02-06-2025→27-06-2025"},
-    {"socio": "Camilo", "fecha": "2025-06-25", "monto": 236667, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (5).xml", "periodo": "02-06-2025→27-06-2025"},
-    {"socio": "Fernando", "fecha": "2025-06-27", "monto": 236665, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "typeDesc (5).xml", "periodo": "02-06-2025→27-06-2025"},
-    {"socio": "Antonio", "fecha": "2025-07-01", "monto": 236666, "descripcion": "GGCC Aporte Mobiliario", "rut": "", "cartola": "typeDesc (6).xml", "periodo": "01-07-2025→31-07-2025"},
-    {"socio": "Laura", "fecha": "2025-07-01", "monto": 75000, "descripcion": "TEF 16656248-1 Laura Diaz", "rut": "16656248-1", "cartola": "typeDesc (6).xml", "periodo": "01-07-2025→31-07-2025"},
-    {"socio": "Cristóbal", "fecha": "2025-07-03", "monto": 70000, "descripcion": "TEF  7746703-3 Cristobal Eduar", "rut": "7746703-3", "cartola": "typeDesc (6).xml", "periodo": "01-07-2025→31-07-2025"},
-    {"socio": "Eduardo", "fecha": "2025-07-04", "monto": 70000, "descripcion": "TEF 13270339-6 Eduardo Enrique", "rut": "13270339-6", "cartola": "typeDesc (6).xml", "periodo": "01-07-2025→31-07-2025"},
-    {"socio": "Antonio", "fecha": "2025-07-07", "monto": 236666, "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT", "rut": "13890149-1", "cartola": "typeDesc (6).xml", "periodo": "01-07-2025→31-07-2025"},
-    {"socio": "Felipe", "fecha": "2025-07-14", "monto": 236666, "descripcion": "TEF 18273744-5 SIMONSOHN GONZA", "rut": "18273744-5", "cartola": "typeDesc (6).xml", "periodo": "01-07-2025→31-07-2025"},
-    {"socio": "Antonio", "fecha": "2025-07-15", "monto": 250000, "descripcion": "TEF 12106984-9 ALEJANDRA ACUNA", "rut": "12106984-9", "cartola": "typeDesc (6).xml", "periodo": "01-07-2025→31-07-2025"},
-    {"socio": "Antonio", "fecha": "2025-07-21", "monto": 3250000, "descripcion": "TEF 12106984-9 ALEJANDRA ACUNA", "rut": "12106984-9", "cartola": "typeDesc (6).xml", "periodo": "01-07-2025→31-07-2025"},
-    {"socio": "Laura", "fecha": "2025-07-22", "monto": 3500000, "descripcion": "TEF 16656248-1 Laura Diaz", "rut": "16656248-1", "cartola": "typeDesc (6).xml", "periodo": "01-07-2025→31-07-2025"},
-    {"socio": "Camilo", "fecha": "2025-07-22", "monto": 236667, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (6).xml", "periodo": "01-07-2025→31-07-2025"},
-    {"socio": "Camilo", "fecha": "2025-07-22", "monto": 500000, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (6).xml", "periodo": "01-07-2025→31-07-2025"},
-    {"socio": "Cristian", "fecha": "2025-07-22", "monto": 3500000, "descripcion": "TEF 13066600-0", "rut": "13066600-0", "cartola": "typeDesc (6).xml", "periodo": "01-07-2025→31-07-2025"},
-    {"socio": "Cristóbal", "fecha": "2025-07-31", "monto": 3500000, "descripcion": "TEF  7746703-3 Cristobal Eduar", "rut": "7746703-3", "cartola": "typeDesc (6).xml", "periodo": "01-07-2025→31-07-2025"},
-    {"socio": "Felipe", "fecha": "2025-07-31", "monto": 3500000, "descripcion": "TEF 18273744-5 FELIPE IGNACIO", "rut": "18273744-5", "cartola": "typeDesc (6).xml", "periodo": "01-07-2025→31-07-2025"},
-    {"socio": "Antonio", "fecha": "2025-08-01", "monto": 236666, "descripcion": "GGCC Aporte Mobiliario", "rut": "", "cartola": "typeDesc (7).xml", "periodo": "01-08-2025→29-08-2025"},
-    {"socio": "Laura", "fecha": "2025-08-01", "monto": 75000, "descripcion": "TEF 16656248-1 Laura Diaz", "rut": "16656248-1", "cartola": "typeDesc (7).xml", "periodo": "01-08-2025→29-08-2025"},
-    {"socio": "Fernando", "fecha": "2025-08-04", "monto": 236665, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "typeDesc (7).xml", "periodo": "01-08-2025→29-08-2025"},
-    {"socio": "Cristóbal", "fecha": "2025-08-04", "monto": 70000, "descripcion": "TEF  7746703-3 Cristobal Eduar", "rut": "7746703-3", "cartola": "typeDesc (7).xml", "periodo": "01-08-2025→29-08-2025"},
-    {"socio": "Eduardo", "fecha": "2025-08-04", "monto": 70000, "descripcion": "TEF 13270339-6 Eduardo Enrique", "rut": "13270339-6", "cartola": "typeDesc (7).xml", "periodo": "01-08-2025→29-08-2025"},
-    {"socio": "Antonio", "fecha": "2025-08-05", "monto": 236666, "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT", "rut": "13890149-1", "cartola": "typeDesc (7).xml", "periodo": "01-08-2025→29-08-2025"},
-    {"socio": "Eduardo", "fecha": "2025-08-05", "monto": 3500000, "descripcion": "TEF 13455042-2 Anneli De La Lu", "rut": "13455042-2", "cartola": "typeDesc (7).xml", "periodo": "01-08-2025→29-08-2025"},
-    {"socio": "Fernando", "fecha": "2025-08-05", "monto": 3500000, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "typeDesc (7).xml", "periodo": "01-08-2025→29-08-2025"},
-    {"socio": "Felipe", "fecha": "2025-08-12", "monto": 236666, "descripcion": "TEF 18273744-5 SIMONSOHN GONZA", "rut": "18273744-5", "cartola": "typeDesc (7).xml", "periodo": "01-08-2025→29-08-2025"},
-    {"socio": "Camilo", "fecha": "2025-08-29", "monto": 236667, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (7).xml", "periodo": "01-08-2025→29-08-2025"},
-    {"socio": "Camilo", "fecha": "2025-08-29", "monto": 500000, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (7).xml", "periodo": "01-08-2025→29-08-2025"},
-    {"socio": "Antonio", "fecha": "2025-09-01", "monto": 236666, "descripcion": "GGCC Aporte Mobiliario", "rut": "", "cartola": "typeDesc (8).xml", "periodo": "01-09-2025→30-09-2025"},
-    {"socio": "Laura", "fecha": "2025-09-01", "monto": 75000, "descripcion": "TEF 16656248-1 Laura Diaz", "rut": "16656248-1", "cartola": "typeDesc (8).xml", "periodo": "01-09-2025→30-09-2025"},
-    {"socio": "Cristóbal", "fecha": "2025-09-03", "monto": 70000, "descripcion": "TEF  7746703-3 Cristobal Eduar", "rut": "7746703-3", "cartola": "typeDesc (8).xml", "periodo": "01-09-2025→30-09-2025"},
-    {"socio": "Fernando", "fecha": "2025-09-03", "monto": 236665, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "typeDesc (8).xml", "periodo": "01-09-2025→30-09-2025"},
-    {"socio": "Eduardo", "fecha": "2025-09-04", "monto": 70000, "descripcion": "TEF 13270339-6 Eduardo Enrique", "rut": "13270339-6", "cartola": "typeDesc (8).xml", "periodo": "01-09-2025→30-09-2025"},
-    {"socio": "Antonio", "fecha": "2025-09-05", "monto": 236666, "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT", "rut": "13890149-1", "cartola": "typeDesc (8).xml", "periodo": "01-09-2025→30-09-2025"},
-    {"socio": "Felipe", "fecha": "2025-09-12", "monto": 236666, "descripcion": "TEF 18273744-5 SIMONSOHN GONZA", "rut": "18273744-5", "cartola": "typeDesc (8).xml", "periodo": "01-09-2025→30-09-2025"},
-    {"socio": "Fernando", "fecha": "2025-09-26", "monto": 236665, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "typeDesc (8).xml", "periodo": "01-09-2025→30-09-2025"},
-    {"socio": "Camilo", "fecha": "2025-09-30", "monto": 236667, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (8).xml", "periodo": "01-09-2025→30-09-2025"},
-    {"socio": "Camilo", "fecha": "2025-09-30", "monto": 500000, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (8).xml", "periodo": "01-09-2025→30-09-2025"},
-    {"socio": "Antonio", "fecha": "2025-10-01", "monto": 236666, "descripcion": "GGCC Aporte Mobiliario", "rut": "", "cartola": "typeDesc (9).xml", "periodo": "01-10-2025→30-10-2025"},
-    {"socio": "Laura", "fecha": "2025-10-01", "monto": 75000, "descripcion": "TEF 16656248-1 Laura Diaz", "rut": "16656248-1", "cartola": "typeDesc (9).xml", "periodo": "01-10-2025→30-10-2025"},
-    {"socio": "Cristóbal", "fecha": "2025-10-03", "monto": 70000, "descripcion": "TEF  7746703-3 Cristobal Eduar", "rut": "7746703-3", "cartola": "typeDesc (9).xml", "periodo": "01-10-2025→30-10-2025"},
-    {"socio": "Eduardo", "fecha": "2025-10-06", "monto": 70000, "descripcion": "TEF 13270339-6 Eduardo Enrique", "rut": "13270339-6", "cartola": "typeDesc (9).xml", "periodo": "01-10-2025→30-10-2025"},
-    {"socio": "Antonio", "fecha": "2025-10-06", "monto": 236666, "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT", "rut": "13890149-1", "cartola": "typeDesc (9).xml", "periodo": "01-10-2025→30-10-2025"},
-    {"socio": "Felipe", "fecha": "2025-10-13", "monto": 236666, "descripcion": "TEF 18273744-5 SIMONSOHN GONZA", "rut": "18273744-5", "cartola": "typeDesc (9).xml", "periodo": "01-10-2025→30-10-2025"},
-    {"socio": "Camilo", "fecha": "2025-10-30", "monto": 236667, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (9).xml", "periodo": "01-10-2025→30-10-2025"},
-    {"socio": "Camilo", "fecha": "2025-10-30", "monto": 500000, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc (9).xml", "periodo": "01-10-2025→30-10-2025"},
-    {"socio": "Fernando", "fecha": "2025-01-29", "monto": 70000, "descripcion": "TEF 20083182-9 YAHISA FRANCISC", "rut": "20083182-9", "cartola": "typeDesc.xml", "periodo": "21-01-2025→30-01-2025"},
-    {"socio": "Camilo", "fecha": "2025-01-30", "monto": 1000000, "descripcion": "TEF 16095526-0 Camilo Antonio", "rut": "16095526-0", "cartola": "typeDesc.xml", "periodo": "21-01-2025→30-01-2025"}
+    {
+      "socio": "Eduardo",
+      "fecha": "2020-06-16",
+      "monto": 350000,
+      "descripcion": "TEF 13270339-6 Eduardo Enrique",
+      "rut": "13270339-6",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2020-06-18",
+      "monto": 3650000,
+      "descripcion": "TEF 13270339-6 Eduardo Enrique",
+      "rut": "13270339-6",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2020-06-19",
+      "monto": 250000,
+      "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
+      "rut": "18273744-5",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Cristian",
+      "fecha": "2020-06-19",
+      "monto": 10000,
+      "descripcion": "TEF 13066600-0",
+      "rut": "13066600-0",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2020-06-19",
+      "monto": 250000,
+      "descripcion": "TEF 16095526-0 Camilo",
+      "rut": "16095526-0",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2020-06-22",
+      "monto": 250000,
+      "descripcion": "TEF 16095526-0 Camilo",
+      "rut": "16095526-0",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2020-06-22",
+      "monto": 250000,
+      "descripcion": "TEF 16095526-0 Camilo",
+      "rut": "16095526-0",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2020-06-22",
+      "monto": 250000,
+      "descripcion": "TEF 16095526-0 Camilo",
+      "rut": "16095526-0",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2020-06-22",
+      "monto": 250000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Cristian",
+      "fecha": "2020-06-22",
+      "monto": 5990000,
+      "descripcion": "TEF 13066600-0",
+      "rut": "13066600-0",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2020-06-22",
+      "monto": 1000000,
+      "descripcion": "TEF 16095526-0 Camilo",
+      "rut": "16095526-0",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2020-06-22",
+      "monto": 3750000,
+      "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
+      "rut": "18273744-5",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2020-06-22",
+      "monto": 250000,
+      "descripcion": "TEF 13028872-3 ALVARO MANUEL E",
+      "rut": "13028872-3",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2020-06-22",
+      "monto": 3750000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2020-06-22",
+      "monto": 300000,
+      "descripcion": "TRANSF. DE SEGURA FARIAS JORDI",
+      "rut": "",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2020-06-22",
+      "monto": 350000,
+      "descripcion": "TEF 15362944-7 Constanza",
+      "rut": "15362944-7",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2020-06-23",
+      "monto": 4000000,
+      "descripcion": "TEF 76069305-7 INVERSIONES ACU",
+      "rut": "76069305-7",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Sebastián",
+      "fecha": "2020-06-23",
+      "monto": 250000,
+      "descripcion": "TEF 13426837-9 SEBASTIAN PABLO",
+      "rut": "13426837-9",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2020-06-23",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo",
+      "rut": "16095526-0",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2020-06-23",
+      "monto": 3750000,
+      "descripcion": "TEF 13028872-3 ALVARO MANUEL E",
+      "rut": "13028872-3",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2020-06-23",
+      "monto": 3650000,
+      "descripcion": "TEF 15362944-7 Constanza Jimen",
+      "rut": "15362944-7",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2020-06-24",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo",
+      "rut": "16095526-0",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Sebastián",
+      "fecha": "2020-06-24",
+      "monto": 4750000,
+      "descripcion": "TEF 13426837-9 SEBASTIAN PABLO",
+      "rut": "13426837-9",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2020-06-26",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo",
+      "rut": "16095526-0",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2020-06-30",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo",
+      "rut": "16095526-0",
+      "cartola": "Insular cartola 1.pdf",
+      "periodo": "01/06/2020→30/06/2020"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2020-07-07",
+      "monto": 3700000,
+      "descripcion": "TEF 13272830-5 JORDI OSVALDO S",
+      "rut": "13272830-5",
+      "cartola": "Insular cartola 2.pdf",
+      "periodo": "jul-2020"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2020-07-07",
+      "monto": 600000,
+      "descripcion": "TEF 76069305-7 INVERSIONES ACU",
+      "rut": "76069305-7",
+      "cartola": "Insular cartola 2.pdf",
+      "periodo": "jul-2020"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2020-08-14",
+      "monto": 1200000,
+      "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
+      "rut": "18273744-5",
+      "cartola": "Insular cartola 3.pdf",
+      "periodo": "01/08/2020→31/08/2020"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2020-10-13",
+      "monto": 1200000,
+      "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
+      "rut": "18273744-5",
+      "cartola": "Insular cartola 5.pdf",
+      "periodo": "01/10/2020→30/10/2020"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2020-11-13",
+      "monto": 1200000,
+      "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
+      "rut": "18273744-5",
+      "cartola": "Insular cartola 6.pdf",
+      "periodo": "01/11/2020→30/11/2020"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2020-11-17",
+      "monto": 3000000,
+      "descripcion": "TEF 15362944-7 Constanza",
+      "rut": "15362944-7",
+      "cartola": "Insular cartola 6.pdf",
+      "periodo": "01/11/2020→30/11/2020"
+    },
+    {
+      "socio": "Sebastián",
+      "fecha": "2020-11-25",
+      "monto": 2000000,
+      "descripcion": "TEF 13426837-9 SEBASTIAN PABLO",
+      "rut": "13426837-9",
+      "cartola": "Insular cartola 6.pdf",
+      "periodo": "01/11/2020→30/11/2020"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2020-12-15",
+      "monto": 1200000,
+      "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
+      "rut": "18273744-5",
+      "cartola": "Insular cartola 7.pdf",
+      "periodo": "01/12/2020→30/12/2020"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2021-01-18",
+      "monto": 4000000,
+      "descripcion": "TEF 13270339-6 Eduardo Enrique",
+      "rut": "13270339-6",
+      "cartola": "Insular cartola 8.pdf",
+      "periodo": "01/01/2021→29/01/2021"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2024-04-22",
+      "monto": 250000,
+      "descripcion": "TEF 13890149-1 ANTONIO PAULO D",
+      "rut": "13890149-1",
+      "cartola": "cartola_2024_EC47.pdf",
+      "periodo": "01/04/2024→30/04/2024"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2024-04-22",
+      "monto": 600000,
+      "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
+      "rut": "18273744-5",
+      "cartola": "cartola_2024_EC47.pdf",
+      "periodo": "01/04/2024→30/04/2024"
+    },
+    {
+      "socio": "Cristian",
+      "fecha": "2024-04-22",
+      "monto": 1325260,
+      "descripcion": "TEF 13066600-0",
+      "rut": "13066600-0",
+      "cartola": "cartola_2024_EC47.pdf",
+      "periodo": "01/04/2024→30/04/2024"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2024-04-23",
+      "monto": 560000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2024_EC47.pdf",
+      "periodo": "01/04/2024→30/04/2024"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2024-04-23",
+      "monto": 611332,
+      "descripcion": "TEF 13890149-1 ANTONIO PAULO D",
+      "rut": "13890149-1",
+      "cartola": "cartola_2024_EC47.pdf",
+      "periodo": "01/04/2024→30/04/2024"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2024-05-06",
+      "monto": 70000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2024_EC48.pdf",
+      "periodo": "01/05/2024→31/05/2024"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2024-05-17",
+      "monto": 1000000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "cartola_2024_EC48.pdf",
+      "periodo": "01/05/2024→31/05/2024"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2024-06-03",
+      "monto": 70000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2024_EC49.pdf",
+      "periodo": "01/06/2024→28/06/2024"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2024-07-08",
+      "monto": 70000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2024_EC50.pdf",
+      "periodo": "01/07/2024→31/07/2024"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2024-08-12",
+      "monto": 70000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2024_EC51.pdf",
+      "periodo": "01/08/2024→30/08/2024"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2024-09-03",
+      "monto": 70000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2024-09-12",
+      "monto": 300000,
+      "descripcion": "TEF 13272830-5",
+      "rut": "13272830-5",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Cristian",
+      "fecha": "2024-09-12",
+      "monto": 1610000,
+      "descripcion": "TEF 13066600-0",
+      "rut": "13066600-0",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2024-09-12",
+      "monto": 350000,
+      "descripcion": "TEF 13455042-2 Anneli De La Lu",
+      "rut": "13455042-2",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2024-09-12",
+      "monto": 1610000,
+      "descripcion": "TEF 13890149-1 ANTONIO PAULO D",
+      "rut": "13890149-1",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Sebastián",
+      "fecha": "2024-09-12",
+      "monto": 3000000,
+      "descripcion": "TEF 13426837-9 SEBASTIAN PABLO",
+      "rut": "13426837-9",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2024-09-13",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2024-09-13",
+      "monto": 1260000,
+      "descripcion": "TEF 13455042-2 Anneli De La Lu",
+      "rut": "13455042-2",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2024-09-13",
+      "monto": 2000000,
+      "descripcion": "TEF 13890149-1 ANTONIO PAULO D",
+      "rut": "13890149-1",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Cristian",
+      "fecha": "2024-09-13",
+      "monto": 2000000,
+      "descripcion": "TEF 13066600-0",
+      "rut": "13066600-0",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2024-09-13",
+      "monto": 5160000,
+      "descripcion": "TEF 13272830-5",
+      "rut": "13272830-5",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2024-09-13",
+      "monto": 500000,
+      "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
+      "rut": "18273744-5",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Sebastián",
+      "fecha": "2024-09-13",
+      "monto": 1610000,
+      "descripcion": "TEF 13426837-9 SEBASTIAN PABLO",
+      "rut": "13426837-9",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2024-09-13",
+      "monto": 490000,
+      "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
+      "rut": "18273744-5",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2024-09-16",
+      "monto": 1500000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2024-09-16",
+      "monto": 4000000,
+      "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
+      "rut": "18273744-5",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2024-09-16",
+      "monto": 1610000,
+      "descripcion": "TEF 15362944-7 Constanza Jimen",
+      "rut": "15362944-7",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2024-09-16",
+      "monto": 3000000,
+      "descripcion": "TEF 15362944-7 Constanza Jimen",
+      "rut": "15362944-7",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2024-09-16",
+      "monto": 1680000,
+      "descripcion": "TEF 13272830-5",
+      "rut": "13272830-5",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2024-09-16",
+      "monto": 5000000,
+      "descripcion": "TEF 15362944-7 Constanza Jimen",
+      "rut": "15362944-7",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2024-09-16",
+      "monto": 610000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2024-09-23",
+      "monto": 2000000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2024-09-23",
+      "monto": 2000000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2024-09-30",
+      "monto": 250000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2024-09-30",
+      "monto": 70000,
+      "descripcion": "TEF 13455042-2 Anneli De La Lu",
+      "rut": "13455042-2",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Cristian",
+      "fecha": "2024-09-30",
+      "monto": 280000,
+      "descripcion": "TEF 13066600-0",
+      "rut": "13066600-0",
+      "cartola": "cartola_2024_EC52.pdf",
+      "periodo": "01/09/2024→30/09/2024"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2024-10-02",
+      "monto": 280000,
+      "descripcion": "TEF 13890149-1 ANTONIO PAULO D",
+      "rut": "13890149-1",
+      "cartola": "cartola_2024_EC53.pdf",
+      "periodo": "01/10/2024→30/10/2024"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2024-10-03",
+      "monto": 70000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2024_EC53.pdf",
+      "periodo": "01/10/2024→30/10/2024"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2024-10-07",
+      "monto": 320000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "cartola_2024_EC53.pdf",
+      "periodo": "01/10/2024→30/10/2024"
+    },
+    {
+      "socio": "Sebastián",
+      "fecha": "2024-10-09",
+      "monto": 5000000,
+      "descripcion": "TEF 13426837-9 SEBASTIAN PABLO",
+      "rut": "13426837-9",
+      "cartola": "cartola_2024_EC53.pdf",
+      "periodo": "01/10/2024→30/10/2024"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2024-10-09",
+      "monto": 280000,
+      "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
+      "rut": "18273744-5",
+      "cartola": "cartola_2024_EC53.pdf",
+      "periodo": "01/10/2024→30/10/2024"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2024-10-14",
+      "monto": 450000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "cartola_2024_EC53.pdf",
+      "periodo": "01/10/2024→30/10/2024"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2024-10-14",
+      "monto": 2000000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2024_EC53.pdf",
+      "periodo": "01/10/2024→30/10/2024"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2024-10-16",
+      "monto": 2000000,
+      "descripcion": "TEF 13890149-1 ANTONIO PAULO D",
+      "rut": "13890149-1",
+      "cartola": "cartola_2024_EC53.pdf",
+      "periodo": "01/10/2024→30/10/2024"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2024-10-22",
+      "monto": 260000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "cartola_2024_EC53.pdf",
+      "periodo": "01/10/2024→30/10/2024"
+    },
+    {
+      "socio": "Sebastián",
+      "fecha": "2024-10-22",
+      "monto": 3280000,
+      "descripcion": "TEF 13426837-9 SEBASTIAN PABLO",
+      "rut": "13426837-9",
+      "cartola": "cartola_2024_EC53.pdf",
+      "periodo": "01/10/2024→30/10/2024"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2025-01-29",
+      "monto": 70000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "typeDesc.xml",
+      "periodo": "21-01-2025→30-01-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-01-30",
+      "monto": 1000000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc.xml",
+      "periodo": "21-01-2025→30-01-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-02-03",
+      "monto": 236666,
+      "descripcion": "TRANSF. DE ANTONIO PAULO DIAZ",
+      "rut": "",
+      "cartola": "typeDesc (1).xml",
+      "periodo": "03-02-2025→28-02-2025"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2025-02-03",
+      "monto": 70000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "typeDesc (1).xml",
+      "periodo": "03-02-2025→28-02-2025"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2025-02-03",
+      "monto": 70000,
+      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "rut": "7746703-3",
+      "cartola": "typeDesc (1).xml",
+      "periodo": "03-02-2025→28-02-2025"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2025-02-04",
+      "monto": 166666,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "typeDesc (1).xml",
+      "periodo": "03-02-2025→28-02-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-02-05",
+      "monto": 236667,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (1).xml",
+      "periodo": "03-02-2025→28-02-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-02-06",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (1).xml",
+      "periodo": "03-02-2025→28-02-2025"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2025-02-10",
+      "monto": 2166667,
+      "descripcion": "TEF 13272830-5",
+      "rut": "13272830-5",
+      "cartola": "typeDesc (1).xml",
+      "periodo": "03-02-2025→28-02-2025"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2025-02-10",
+      "monto": 100000,
+      "descripcion": "TEF 13272830-5",
+      "rut": "13272830-5",
+      "cartola": "typeDesc (1).xml",
+      "periodo": "03-02-2025→28-02-2025"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2025-02-12",
+      "monto": 236666,
+      "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
+      "rut": "18273744-5",
+      "cartola": "typeDesc (1).xml",
+      "periodo": "03-02-2025→28-02-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-02-14",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (1).xml",
+      "periodo": "03-02-2025→28-02-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-02-18",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (1).xml",
+      "periodo": "03-02-2025→28-02-2025"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2025-02-18",
+      "monto": 2000000,
+      "descripcion": "TEF 13272830-5",
+      "rut": "13272830-5",
+      "cartola": "typeDesc (1).xml",
+      "periodo": "03-02-2025→28-02-2025"
+    },
+    {
+      "socio": "Cristian",
+      "fecha": "2025-02-18",
+      "monto": 1419996,
+      "descripcion": "TEF 13066600-0",
+      "rut": "13066600-0",
+      "cartola": "typeDesc (1).xml",
+      "periodo": "03-02-2025→28-02-2025"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2025-02-20",
+      "monto": 2000000,
+      "descripcion": "TEF 13272830-5",
+      "rut": "13272830-5",
+      "cartola": "typeDesc (1).xml",
+      "periodo": "03-02-2025→28-02-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-02-24",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (1).xml",
+      "periodo": "03-02-2025→28-02-2025"
+    },
+    {
+      "socio": "Cristian",
+      "fecha": "2025-02-26",
+      "monto": 2000000,
+      "descripcion": "TEF 13066600-0",
+      "rut": "13066600-0",
+      "cartola": "typeDesc (1).xml",
+      "periodo": "03-02-2025→28-02-2025"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2025-02-28",
+      "monto": 70000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "typeDesc (1).xml",
+      "periodo": "03-02-2025→28-02-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-02-28",
+      "monto": 236667,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (1).xml",
+      "periodo": "03-02-2025→28-02-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-03-03",
+      "monto": 236666,
+      "descripcion": "GGCC Aporte Mobiliario",
+      "rut": "",
+      "cartola": "typeDesc (2).xml",
+      "periodo": "03-03-2025→31-03-2025"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2025-03-03",
+      "monto": 70000,
+      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "rut": "7746703-3",
+      "cartola": "typeDesc (2).xml",
+      "periodo": "03-03-2025→31-03-2025"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2025-03-03",
+      "monto": 140000,
+      "descripcion": "TEF 13270339-6 Eduardo Enrique",
+      "rut": "13270339-6",
+      "cartola": "typeDesc (2).xml",
+      "periodo": "03-03-2025→31-03-2025"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2025-03-03",
+      "monto": 236666,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "typeDesc (2).xml",
+      "periodo": "03-03-2025→31-03-2025"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2025-03-04",
+      "monto": 70000,
+      "descripcion": "TEF 13270339-6 Eduardo Enrique",
+      "rut": "13270339-6",
+      "cartola": "typeDesc (2).xml",
+      "periodo": "03-03-2025→31-03-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-03-05",
+      "monto": 236666,
+      "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
+      "rut": "13890149-1",
+      "cartola": "typeDesc (2).xml",
+      "periodo": "03-03-2025→31-03-2025"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2025-03-06",
+      "monto": 4000000,
+      "descripcion": "TEF 13455042-2 Anneli De La Lu",
+      "rut": "13455042-2",
+      "cartola": "typeDesc (2).xml",
+      "periodo": "03-03-2025→31-03-2025"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2025-03-12",
+      "monto": 236666,
+      "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
+      "rut": "18273744-5",
+      "cartola": "typeDesc (2).xml",
+      "periodo": "03-03-2025→31-03-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-03-28",
+      "monto": 236667,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (2).xml",
+      "periodo": "03-03-2025→31-03-2025"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2025-03-31",
+      "monto": 206666,
+      "descripcion": "TEF 13272830-5",
+      "rut": "13272830-5",
+      "cartola": "typeDesc (2).xml",
+      "periodo": "03-03-2025→31-03-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-04-01",
+      "monto": 236666,
+      "descripcion": "GGCC Aporte Mobiliario",
+      "rut": "",
+      "cartola": "typeDesc (3).xml",
+      "periodo": "01-04-2025→28-04-2025"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2025-04-01",
+      "monto": 70000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "typeDesc (3).xml",
+      "periodo": "01-04-2025→28-04-2025"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2025-04-03",
+      "monto": 70000,
+      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "rut": "7746703-3",
+      "cartola": "typeDesc (3).xml",
+      "periodo": "01-04-2025→28-04-2025"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2025-04-04",
+      "monto": 70000,
+      "descripcion": "TEF 13270339-6 Eduardo Enrique",
+      "rut": "13270339-6",
+      "cartola": "typeDesc (3).xml",
+      "periodo": "01-04-2025→28-04-2025"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2025-04-07",
+      "monto": 236665,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "typeDesc (3).xml",
+      "periodo": "01-04-2025→28-04-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-04-07",
+      "monto": 236666,
+      "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
+      "rut": "13890149-1",
+      "cartola": "typeDesc (3).xml",
+      "periodo": "01-04-2025→28-04-2025"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2025-04-14",
+      "monto": 236666,
+      "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
+      "rut": "18273744-5",
+      "cartola": "typeDesc (3).xml",
+      "periodo": "01-04-2025→28-04-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-04-25",
+      "monto": 236667,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (3).xml",
+      "periodo": "01-04-2025→28-04-2025"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2025-05-02",
+      "monto": 70000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "typeDesc (4).xml",
+      "periodo": "02-05-2025→30-05-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-05-02",
+      "monto": 236666,
+      "descripcion": "GGCC Aporte Mobiliario",
+      "rut": "",
+      "cartola": "typeDesc (4).xml",
+      "periodo": "02-05-2025→30-05-2025"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2025-05-05",
+      "monto": 70000,
+      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "rut": "7746703-3",
+      "cartola": "typeDesc (4).xml",
+      "periodo": "02-05-2025→30-05-2025"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2025-05-05",
+      "monto": 70000,
+      "descripcion": "TEF 13270339-6 Eduardo Enrique",
+      "rut": "13270339-6",
+      "cartola": "typeDesc (4).xml",
+      "periodo": "02-05-2025→30-05-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-05-05",
+      "monto": 236666,
+      "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
+      "rut": "13890149-1",
+      "cartola": "typeDesc (4).xml",
+      "periodo": "02-05-2025→30-05-2025"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2025-05-05",
+      "monto": 679998,
+      "descripcion": "TEF 13272830-5",
+      "rut": "13272830-5",
+      "cartola": "typeDesc (4).xml",
+      "periodo": "02-05-2025→30-05-2025"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2025-05-12",
+      "monto": 236666,
+      "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
+      "rut": "18273744-5",
+      "cartola": "typeDesc (4).xml",
+      "periodo": "02-05-2025→30-05-2025"
+    },
+    {
+      "socio": "Sebastián",
+      "fecha": "2025-05-15",
+      "monto": 300000,
+      "descripcion": "TEF 13426837-9",
+      "rut": "13426837-9",
+      "cartola": "typeDesc (4).xml",
+      "periodo": "02-05-2025→30-05-2025"
+    },
+    {
+      "socio": "Sebastián",
+      "fecha": "2025-05-27",
+      "monto": 946664,
+      "descripcion": "TEF 13426837-9",
+      "rut": "13426837-9",
+      "cartola": "typeDesc (4).xml",
+      "periodo": "02-05-2025→30-05-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-05-30",
+      "monto": 236667,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (4).xml",
+      "periodo": "02-05-2025→30-05-2025"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2025-06-02",
+      "monto": 236665,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "typeDesc (5).xml",
+      "periodo": "02-06-2025→27-06-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-06-02",
+      "monto": 236666,
+      "descripcion": "GGCC Aporte Mobiliario",
+      "rut": "",
+      "cartola": "typeDesc (5).xml",
+      "periodo": "02-06-2025→27-06-2025"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2025-06-02",
+      "monto": 70000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "typeDesc (5).xml",
+      "periodo": "02-06-2025→27-06-2025"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2025-06-03",
+      "monto": 70000,
+      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "rut": "7746703-3",
+      "cartola": "typeDesc (5).xml",
+      "periodo": "02-06-2025→27-06-2025"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2025-06-03",
+      "monto": 236666,
+      "descripcion": "TEF 13272830-5",
+      "rut": "13272830-5",
+      "cartola": "typeDesc (5).xml",
+      "periodo": "02-06-2025→27-06-2025"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2025-06-04",
+      "monto": 70000,
+      "descripcion": "TEF 13270339-6 Eduardo Enrique",
+      "rut": "13270339-6",
+      "cartola": "typeDesc (5).xml",
+      "periodo": "02-06-2025→27-06-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-06-05",
+      "monto": 236666,
+      "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
+      "rut": "13890149-1",
+      "cartola": "typeDesc (5).xml",
+      "periodo": "02-06-2025→27-06-2025"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2025-06-12",
+      "monto": 236666,
+      "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
+      "rut": "18273744-5",
+      "cartola": "typeDesc (5).xml",
+      "periodo": "02-06-2025→27-06-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-06-25",
+      "monto": 236667,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (5).xml",
+      "periodo": "02-06-2025→27-06-2025"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2025-06-27",
+      "monto": 236665,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "typeDesc (5).xml",
+      "periodo": "02-06-2025→27-06-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-07-01",
+      "monto": 236666,
+      "descripcion": "GGCC Aporte Mobiliario",
+      "rut": "",
+      "cartola": "typeDesc (6).xml",
+      "periodo": "01-07-2025→31-07-2025"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2025-07-01",
+      "monto": 75000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "typeDesc (6).xml",
+      "periodo": "01-07-2025→31-07-2025"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2025-07-03",
+      "monto": 70000,
+      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "rut": "7746703-3",
+      "cartola": "typeDesc (6).xml",
+      "periodo": "01-07-2025→31-07-2025"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2025-07-04",
+      "monto": 70000,
+      "descripcion": "TEF 13270339-6 Eduardo Enrique",
+      "rut": "13270339-6",
+      "cartola": "typeDesc (6).xml",
+      "periodo": "01-07-2025→31-07-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-07-07",
+      "monto": 236666,
+      "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
+      "rut": "13890149-1",
+      "cartola": "typeDesc (6).xml",
+      "periodo": "01-07-2025→31-07-2025"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2025-07-14",
+      "monto": 236666,
+      "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
+      "rut": "18273744-5",
+      "cartola": "typeDesc (6).xml",
+      "periodo": "01-07-2025→31-07-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-07-15",
+      "monto": 250000,
+      "descripcion": "TEF 12106984-9 ALEJANDRA ACUNA",
+      "rut": "12106984-9",
+      "cartola": "typeDesc (6).xml",
+      "periodo": "01-07-2025→31-07-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-07-21",
+      "monto": 3250000,
+      "descripcion": "TEF 12106984-9 ALEJANDRA ACUNA",
+      "rut": "12106984-9",
+      "cartola": "typeDesc (6).xml",
+      "periodo": "01-07-2025→31-07-2025"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2025-07-22",
+      "monto": 3500000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "typeDesc (6).xml",
+      "periodo": "01-07-2025→31-07-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-07-22",
+      "monto": 236667,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (6).xml",
+      "periodo": "01-07-2025→31-07-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-07-22",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (6).xml",
+      "periodo": "01-07-2025→31-07-2025"
+    },
+    {
+      "socio": "Cristian",
+      "fecha": "2025-07-22",
+      "monto": 3500000,
+      "descripcion": "TEF 13066600-0",
+      "rut": "13066600-0",
+      "cartola": "typeDesc (6).xml",
+      "periodo": "01-07-2025→31-07-2025"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2025-07-31",
+      "monto": 3500000,
+      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "rut": "7746703-3",
+      "cartola": "typeDesc (6).xml",
+      "periodo": "01-07-2025→31-07-2025"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2025-07-31",
+      "monto": 3500000,
+      "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
+      "rut": "18273744-5",
+      "cartola": "typeDesc (6).xml",
+      "periodo": "01-07-2025→31-07-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-08-01",
+      "monto": 236666,
+      "descripcion": "GGCC Aporte Mobiliario",
+      "rut": "",
+      "cartola": "typeDesc (7).xml",
+      "periodo": "01-08-2025→29-08-2025"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2025-08-01",
+      "monto": 75000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "typeDesc (7).xml",
+      "periodo": "01-08-2025→29-08-2025"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2025-08-04",
+      "monto": 236665,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "typeDesc (7).xml",
+      "periodo": "01-08-2025→29-08-2025"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2025-08-04",
+      "monto": 70000,
+      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "rut": "7746703-3",
+      "cartola": "typeDesc (7).xml",
+      "periodo": "01-08-2025→29-08-2025"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2025-08-04",
+      "monto": 70000,
+      "descripcion": "TEF 13270339-6 Eduardo Enrique",
+      "rut": "13270339-6",
+      "cartola": "typeDesc (7).xml",
+      "periodo": "01-08-2025→29-08-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-08-05",
+      "monto": 236666,
+      "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
+      "rut": "13890149-1",
+      "cartola": "typeDesc (7).xml",
+      "periodo": "01-08-2025→29-08-2025"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2025-08-05",
+      "monto": 3500000,
+      "descripcion": "TEF 13455042-2 Anneli De La Lu",
+      "rut": "13455042-2",
+      "cartola": "typeDesc (7).xml",
+      "periodo": "01-08-2025→29-08-2025"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2025-08-05",
+      "monto": 3500000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "typeDesc (7).xml",
+      "periodo": "01-08-2025→29-08-2025"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2025-08-12",
+      "monto": 236666,
+      "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
+      "rut": "18273744-5",
+      "cartola": "typeDesc (7).xml",
+      "periodo": "01-08-2025→29-08-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-08-29",
+      "monto": 236667,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (7).xml",
+      "periodo": "01-08-2025→29-08-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-08-29",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (7).xml",
+      "periodo": "01-08-2025→29-08-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-09-01",
+      "monto": 236666,
+      "descripcion": "GGCC Aporte Mobiliario",
+      "rut": "",
+      "cartola": "typeDesc (8).xml",
+      "periodo": "01-09-2025→30-09-2025"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2025-09-01",
+      "monto": 75000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "typeDesc (8).xml",
+      "periodo": "01-09-2025→30-09-2025"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2025-09-03",
+      "monto": 70000,
+      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "rut": "7746703-3",
+      "cartola": "typeDesc (8).xml",
+      "periodo": "01-09-2025→30-09-2025"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2025-09-03",
+      "monto": 236665,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "typeDesc (8).xml",
+      "periodo": "01-09-2025→30-09-2025"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2025-09-04",
+      "monto": 70000,
+      "descripcion": "TEF 13270339-6 Eduardo Enrique",
+      "rut": "13270339-6",
+      "cartola": "typeDesc (8).xml",
+      "periodo": "01-09-2025→30-09-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-09-05",
+      "monto": 236666,
+      "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
+      "rut": "13890149-1",
+      "cartola": "typeDesc (8).xml",
+      "periodo": "01-09-2025→30-09-2025"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2025-09-12",
+      "monto": 236666,
+      "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
+      "rut": "18273744-5",
+      "cartola": "typeDesc (8).xml",
+      "periodo": "01-09-2025→30-09-2025"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2025-09-26",
+      "monto": 236665,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "typeDesc (8).xml",
+      "periodo": "01-09-2025→30-09-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-09-30",
+      "monto": 236667,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (8).xml",
+      "periodo": "01-09-2025→30-09-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-09-30",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (8).xml",
+      "periodo": "01-09-2025→30-09-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-10-01",
+      "monto": 236666,
+      "descripcion": "GGCC Aporte Mobiliario",
+      "rut": "",
+      "cartola": "typeDesc (9).xml",
+      "periodo": "01-10-2025→30-10-2025"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2025-10-01",
+      "monto": 75000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "typeDesc (9).xml",
+      "periodo": "01-10-2025→30-10-2025"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2025-10-03",
+      "monto": 70000,
+      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "rut": "7746703-3",
+      "cartola": "typeDesc (9).xml",
+      "periodo": "01-10-2025→30-10-2025"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2025-10-06",
+      "monto": 70000,
+      "descripcion": "TEF 13270339-6 Eduardo Enrique",
+      "rut": "13270339-6",
+      "cartola": "typeDesc (9).xml",
+      "periodo": "01-10-2025→30-10-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-10-06",
+      "monto": 236666,
+      "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
+      "rut": "13890149-1",
+      "cartola": "typeDesc (9).xml",
+      "periodo": "01-10-2025→30-10-2025"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2025-10-13",
+      "monto": 236666,
+      "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
+      "rut": "18273744-5",
+      "cartola": "typeDesc (9).xml",
+      "periodo": "01-10-2025→30-10-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-10-30",
+      "monto": 236667,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (9).xml",
+      "periodo": "01-10-2025→30-10-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-10-30",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (9).xml",
+      "periodo": "01-10-2025→30-10-2025"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2025-11-03",
+      "monto": 75000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "typeDesc (10).xml",
+      "periodo": "03-11-2025→28-11-2025"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2025-11-03",
+      "monto": 70000,
+      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "rut": "7746703-3",
+      "cartola": "typeDesc (10).xml",
+      "periodo": "03-11-2025→28-11-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-11-03",
+      "monto": 236666,
+      "descripcion": "GGCC Aporte Mobiliario",
+      "rut": "",
+      "cartola": "typeDesc (10).xml",
+      "periodo": "03-11-2025→28-11-2025"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2025-11-04",
+      "monto": 70000,
+      "descripcion": "TEF 13270339-6 Eduardo Enrique",
+      "rut": "13270339-6",
+      "cartola": "typeDesc (10).xml",
+      "periodo": "03-11-2025→28-11-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-11-05",
+      "monto": 236666,
+      "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
+      "rut": "13890149-1",
+      "cartola": "typeDesc (10).xml",
+      "periodo": "03-11-2025→28-11-2025"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2025-11-05",
+      "monto": 236665,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "typeDesc (10).xml",
+      "periodo": "03-11-2025→28-11-2025"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2025-11-12",
+      "monto": 236666,
+      "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
+      "rut": "18273744-5",
+      "cartola": "typeDesc (10).xml",
+      "periodo": "03-11-2025→28-11-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-11-19",
+      "monto": 236667,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (10).xml",
+      "periodo": "03-11-2025→28-11-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-11-19",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (10).xml",
+      "periodo": "03-11-2025→28-11-2025"
+    },
+    {
+      "socio": "Sebastián",
+      "fecha": "2025-11-21",
+      "monto": 5000000,
+      "descripcion": "TEF 13426837-9",
+      "rut": "13426837-9",
+      "cartola": "typeDesc (10).xml",
+      "periodo": "03-11-2025→28-11-2025"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2025-11-24",
+      "monto": 3500000,
+      "descripcion": "TEF 13272830-5",
+      "rut": "13272830-5",
+      "cartola": "typeDesc (10).xml",
+      "periodo": "03-11-2025→28-11-2025"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2025-11-25",
+      "monto": 1183330,
+      "descripcion": "TEF 13272830-5",
+      "rut": "13272830-5",
+      "cartola": "typeDesc (10).xml",
+      "periodo": "03-11-2025→28-11-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-12-01",
+      "monto": 236666,
+      "descripcion": "GGCC Aporte Mobiliario",
+      "rut": "",
+      "cartola": "typeDesc (11).xml",
+      "periodo": "01-12-2025→30-12-2025"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2025-12-01",
+      "monto": 75000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "typeDesc (11).xml",
+      "periodo": "01-12-2025→30-12-2025"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2025-12-02",
+      "monto": 236665,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "typeDesc (11).xml",
+      "periodo": "01-12-2025→30-12-2025"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2025-12-03",
+      "monto": 70000,
+      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "rut": "7746703-3",
+      "cartola": "typeDesc (11).xml",
+      "periodo": "01-12-2025→30-12-2025"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2025-12-04",
+      "monto": 70000,
+      "descripcion": "TEF 13270339-6 Eduardo Enrique",
+      "rut": "13270339-6",
+      "cartola": "typeDesc (11).xml",
+      "periodo": "01-12-2025→30-12-2025"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2025-12-05",
+      "monto": 236666,
+      "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
+      "rut": "13890149-1",
+      "cartola": "typeDesc (11).xml",
+      "periodo": "01-12-2025→30-12-2025"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2025-12-12",
+      "monto": 236666,
+      "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
+      "rut": "18273744-5",
+      "cartola": "typeDesc (11).xml",
+      "periodo": "01-12-2025→30-12-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-12-19",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (11).xml",
+      "periodo": "01-12-2025→30-12-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-12-29",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (11).xml",
+      "periodo": "01-12-2025→30-12-2025"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2025-12-29",
+      "monto": 2000000,
+      "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
+      "rut": "18273744-5",
+      "cartola": "typeDesc (11).xml",
+      "periodo": "01-12-2025→30-12-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2025-12-30",
+      "monto": 536667,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (11).xml",
+      "periodo": "01-12-2025→30-12-2025"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2025-12-30",
+      "monto": 4000000,
+      "descripcion": "TEF 13455042-2 Anneli De La Lu",
+      "rut": "13455042-2",
+      "cartola": "typeDesc (11).xml",
+      "periodo": "01-12-2025→30-12-2025"
+    },
+    {
+      "socio": "Sebastián",
+      "fecha": "2025-12-30",
+      "monto": 4000000,
+      "descripcion": "TEF 13426837-9 SEBASTIAN PABLO",
+      "rut": "13426837-9",
+      "cartola": "typeDesc (11).xml",
+      "periodo": "01-12-2025→30-12-2025"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2026-01-02",
+      "monto": 2000000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (13).xml",
+      "periodo": "02-01-2026→30-01-2026"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2026-01-02",
+      "monto": 236666,
+      "descripcion": "GGCC Aporte Mobiliario",
+      "rut": "",
+      "cartola": "typeDesc (13).xml",
+      "periodo": "02-01-2026→30-01-2026"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2026-01-02",
+      "monto": 75000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "typeDesc (13).xml",
+      "periodo": "02-01-2026→30-01-2026"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2026-01-02",
+      "monto": 236666,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "typeDesc (13).xml",
+      "periodo": "02-01-2026→30-01-2026"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2026-01-05",
+      "monto": 70000,
+      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "rut": "7746703-3",
+      "cartola": "typeDesc (13).xml",
+      "periodo": "02-01-2026→30-01-2026"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2026-01-05",
+      "monto": 70000,
+      "descripcion": "TEF 13270339-6 Eduardo Enrique",
+      "rut": "13270339-6",
+      "cartola": "typeDesc (13).xml",
+      "periodo": "02-01-2026→30-01-2026"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2026-01-05",
+      "monto": 236666,
+      "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
+      "rut": "13890149-1",
+      "cartola": "typeDesc (13).xml",
+      "periodo": "02-01-2026→30-01-2026"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2026-01-05",
+      "monto": 2500000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "typeDesc (13).xml",
+      "periodo": "02-01-2026→30-01-2026"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2026-01-12",
+      "monto": 236666,
+      "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
+      "rut": "18273744-5",
+      "cartola": "typeDesc (13).xml",
+      "periodo": "02-01-2026→30-01-2026"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2026-01-13",
+      "monto": 1000000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (13).xml",
+      "periodo": "02-01-2026→30-01-2026"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2026-01-13",
+      "monto": 300000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "typeDesc (13).xml",
+      "periodo": "02-01-2026→30-01-2026"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2026-01-14",
+      "monto": 300000,
+      "descripcion": "TEF 13455042-2 Anneli De La Lu",
+      "rut": "13455042-2",
+      "cartola": "typeDesc (13).xml",
+      "periodo": "02-01-2026→30-01-2026"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2026-01-14",
+      "monto": 1000000,
+      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "rut": "7746703-3",
+      "cartola": "typeDesc (13).xml",
+      "periodo": "02-01-2026→30-01-2026"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2026-01-14",
+      "monto": 1000000,
+      "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
+      "rut": "18273744-5",
+      "cartola": "typeDesc (13).xml",
+      "periodo": "02-01-2026→30-01-2026"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2026-01-15",
+      "monto": 300000,
+      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "rut": "7746703-3",
+      "cartola": "typeDesc (13).xml",
+      "periodo": "02-01-2026→30-01-2026"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2026-01-16",
+      "monto": 1000000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (13).xml",
+      "periodo": "02-01-2026→30-01-2026"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2026-01-26",
+      "monto": 1000000,
+      "descripcion": "TEF 13272830-5",
+      "rut": "13272830-5",
+      "cartola": "typeDesc (13).xml",
+      "periodo": "02-01-2026→30-01-2026"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2026-01-30",
+      "monto": 300000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (13).xml",
+      "periodo": "02-01-2026→30-01-2026"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2026-01-30",
+      "monto": 236667,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (13).xml",
+      "periodo": "02-01-2026→30-01-2026"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2026-01-30",
+      "monto": 1000000,
+      "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
+      "rut": "18273744-5",
+      "cartola": "typeDesc (13).xml",
+      "periodo": "02-01-2026→30-01-2026"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2026-02-02",
+      "monto": 75000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "typeDesc (14).xml",
+      "periodo": "02-02-2026→26-02-2026"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2026-02-02",
+      "monto": 236666,
+      "descripcion": "GGCC Aporte Mobiliario",
+      "rut": "",
+      "cartola": "typeDesc (14).xml",
+      "periodo": "02-02-2026→26-02-2026"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2026-02-04",
+      "monto": 70000,
+      "descripcion": "TEF 13270339-6 Eduardo Enrique",
+      "rut": "13270339-6",
+      "cartola": "typeDesc (14).xml",
+      "periodo": "02-02-2026→26-02-2026"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2026-02-04",
+      "monto": 236665,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "typeDesc (14).xml",
+      "periodo": "02-02-2026→26-02-2026"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2026-02-04",
+      "monto": 300000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "typeDesc (14).xml",
+      "periodo": "02-02-2026→26-02-2026"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2026-02-05",
+      "monto": 236666,
+      "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
+      "rut": "13890149-1",
+      "cartola": "typeDesc (14).xml",
+      "periodo": "02-02-2026→26-02-2026"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2026-02-09",
+      "monto": 300000,
+      "descripcion": "TEF 13455042-2 Anneli De La Lu",
+      "rut": "13455042-2",
+      "cartola": "typeDesc (14).xml",
+      "periodo": "02-02-2026→26-02-2026"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2026-02-12",
+      "monto": 236666,
+      "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
+      "rut": "18273744-5",
+      "cartola": "typeDesc (14).xml",
+      "periodo": "02-02-2026→26-02-2026"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2026-02-16",
+      "monto": 300000,
+      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "rut": "7746703-3",
+      "cartola": "typeDesc (14).xml",
+      "periodo": "02-02-2026→26-02-2026"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2026-02-16",
+      "monto": 3000000,
+      "descripcion": "TEF 13455042-2 Anneli De La Lu",
+      "rut": "13455042-2",
+      "cartola": "typeDesc (14).xml",
+      "periodo": "02-02-2026→26-02-2026"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2026-02-16",
+      "monto": 2000000,
+      "descripcion": "TEF 13272830-5",
+      "rut": "13272830-5",
+      "cartola": "typeDesc (14).xml",
+      "periodo": "02-02-2026→26-02-2026"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2026-02-20",
+      "monto": 236667,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (14).xml",
+      "periodo": "02-02-2026→26-02-2026"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2026-02-23",
+      "monto": 1500000,
+      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "rut": "7746703-3",
+      "cartola": "typeDesc (14).xml",
+      "periodo": "02-02-2026→26-02-2026"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2026-02-26",
+      "monto": 300000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (14).xml",
+      "periodo": "02-02-2026→26-02-2026"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2026-03-02",
+      "monto": 75000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "typeDesc (15).xml",
+      "periodo": "02-03-2026→27-03-2026"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2026-03-02",
+      "monto": 236666,
+      "descripcion": "GGCC Aporte Mobiliario",
+      "rut": "",
+      "cartola": "typeDesc (15).xml",
+      "periodo": "02-03-2026→27-03-2026"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2026-03-03",
+      "monto": 236665,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "typeDesc (15).xml",
+      "periodo": "02-03-2026→27-03-2026"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2026-03-03",
+      "monto": 300000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "typeDesc (15).xml",
+      "periodo": "02-03-2026→27-03-2026"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2026-03-04",
+      "monto": 70000,
+      "descripcion": "TEF 13270339-6 Eduardo Enrique",
+      "rut": "13270339-6",
+      "cartola": "typeDesc (15).xml",
+      "periodo": "02-03-2026→27-03-2026"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2026-03-05",
+      "monto": 236666,
+      "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
+      "rut": "13890149-1",
+      "cartola": "typeDesc (15).xml",
+      "periodo": "02-03-2026→27-03-2026"
+    },
+    {
+      "socio": "Sebastián",
+      "fecha": "2026-03-05",
+      "monto": 1500000,
+      "descripcion": "TEF 13426837-9",
+      "rut": "13426837-9",
+      "cartola": "typeDesc (15).xml",
+      "periodo": "02-03-2026→27-03-2026"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2026-03-05",
+      "monto": 1000000,
+      "descripcion": "TEF 13272830-5",
+      "rut": "13272830-5",
+      "cartola": "typeDesc (15).xml",
+      "periodo": "02-03-2026→27-03-2026"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2026-03-05",
+      "monto": 300000,
+      "descripcion": "TEF 13272830-5",
+      "rut": "13272830-5",
+      "cartola": "typeDesc (15).xml",
+      "periodo": "02-03-2026→27-03-2026"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2026-03-16",
+      "monto": 300000,
+      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "rut": "7746703-3",
+      "cartola": "typeDesc (15).xml",
+      "periodo": "02-03-2026→27-03-2026"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2026-03-23",
+      "monto": 236667,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (15).xml",
+      "periodo": "02-03-2026→27-03-2026"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2026-03-27",
+      "monto": 300000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "typeDesc (15).xml",
+      "periodo": "02-03-2026→27-03-2026"
+    }
   ]
 }
