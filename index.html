@@ -1164,15 +1164,23 @@ function getLastCartolaMonth() {
 }
 
 // GGCC: meses esperados = solo meses con cartola desde oct-2022
+// Meses GGCC con cartola verificada (para validación)
 function getGGCCMesesFromCartolas() {
     const covered = getCartolaCoverage();
     let count = 0;
     covered.forEach(key => {
         const [y, m] = key.split('-').map(Number);
-        // GGCC empieza oct-2022
         if (y > 2022 || (y === 2022 && m >= 10)) count++;
     });
     return count;
+}
+
+// Meses GGCC ESPERADOS por calendario (obligación).
+// GGCC se paga por mes vencido: en abril se paga marzo.
+// Por lo tanto el mes actual está incluido como obligación vigente.
+// oct-2022 hasta mes actual inclusive.
+function getGGCCMesesEsperados() {
+    return (_currentYear - 2022) * 12 + _currentMonth - 10 + 1;
 }
 
 // Último mes cubierto en formato legible
@@ -1186,7 +1194,8 @@ function validateDataIntegrity() {
     const lastC = getLastCartolaMonth();
     const cls = classifyAllDeposits();
     const ggccMesesCartola = getGGCCMesesFromCartolas();
-    const ggccExpectedPerSocio = CUOTA_GGCC * ggccMesesCartola;
+    const ggccMesesEsperados = getGGCCMesesEsperados();
+    const ggccExpectedPerSocio = CUOTA_GGCC * ggccMesesEsperados;
 
     // ═══ REGLAS GENERALES (cartolas) ═══
 
@@ -1199,10 +1208,10 @@ function validateDataIntegrity() {
         }
     });
 
-    // G2) Cartolas faltantes vs calendario (mes vencido: en abril se espera hasta marzo)
-    const ggccMesesCalendario = (_currentYear - 2022) * 12 + _currentMonth - 10;
-    if (ggccMesesCartola < ggccMesesCalendario) {
-        warnings.push('[General] Faltan cartolas: ' + ggccMesesCartola + ' meses con cartola desde oct-2022, calendario indica ' + ggccMesesCalendario + '. Último: ' + LAST_CARTOLA_LABEL + '.');
+    // G2) Cartolas faltantes vs calendario (mes vencido: en abril se paga marzo, abril ya es obligación)
+    if (ggccMesesCartola < ggccMesesEsperados) {
+        const faltantes = ggccMesesEsperados - ggccMesesCartola;
+        warnings.push('[General] Faltan ' + faltantes + ' cartola(s) GGCC: hay ' + ggccMesesCartola + ' meses con cartola pero ' + ggccMesesEsperados + ' meses de obligación. Última cartola: ' + LAST_CARTOLA_LABEL + '.');
     }
 
     // G3) Gaps en la secuencia de cartolas (jun-2020 → última)
@@ -1313,11 +1322,11 @@ function validateDataIntegrity() {
         const ggccPaid = d.totals.ggcc;
         // GC2) GGCC pagado excede esperado (pagó meses de más = adelantado, no es error pero avisar)
         if (ggccPaid > ggccExpectedPerSocio * 1.1) {
-            warnings.push('[GGCC] ' + s + ': pagado ' + fmt(ggccPaid) + ' excede esperado ' + fmt(ggccExpectedPerSocio) + ' (' + ggccMesesCartola + ' meses). Posibles pagos adelantados.');
+            warnings.push('[GGCC] ' + s + ': pagado ' + fmt(ggccPaid) + ' excede esperado ' + fmt(ggccExpectedPerSocio) + ' (' + ggccMesesEsperados + ' meses). Posibles pagos adelantados.');
         }
-        // GC3) Meses pagados vs meses con cartola
-        if (d.ggccMonthsPaid > ggccMesesCartola) {
-            warnings.push('[GGCC] ' + s + ': tiene ' + d.ggccMonthsPaid + ' meses GGCC pagados pero solo hay ' + ggccMesesCartola + ' meses con cartola.');
+        // GC3) Meses pagados vs meses esperados
+        if (d.ggccMonthsPaid > ggccMesesEsperados) {
+            warnings.push('[GGCC] ' + s + ': tiene ' + d.ggccMonthsPaid + ' meses GGCC pagados pero solo se esperan ' + ggccMesesEsperados + '.');
         }
     });
 
@@ -1337,7 +1346,7 @@ function validateDataIntegrity() {
     SOCIOS_ALL.forEach(s => ggccGlobal += cls[s].totals.ggcc);
     const ggccExpectedGlobal = ggccExpectedPerSocio * SOCIOS_ALL.length;
     if (ggccGlobal > ggccExpectedGlobal * 1.05) {
-        warnings.push('[GGCC] Total GGCC recaudado (' + fmt(ggccGlobal) + ') excede esperado global (' + fmt(ggccExpectedGlobal) + ' = ' + ggccMesesCartola + ' meses × ' + SOCIOS_ALL.length + ' socios × ' + fmt(CUOTA_GGCC) + ').');
+        warnings.push('[GGCC] Total GGCC recaudado (' + fmt(ggccGlobal) + ') excede esperado global (' + fmt(ggccExpectedGlobal) + ' = ' + ggccMesesEsperados + ' meses × ' + SOCIOS_ALL.length + ' socios × ' + fmt(CUOTA_GGCC) + ').');
     }
 
     // ═══ BALANCE GENERAL ═══
@@ -1499,8 +1508,8 @@ function renderResumen() {
     const capitalMeta = ACUERDOS.capital.total;            // $100M
     const constrMeta  = ACUERDOS.construccion.total;       // $76M
     const mobMeta     = ACUERDOS.mobiliario.total;         // $40M
-    // GGCC esperados: solo meses con cartola verificada desde oct-2022
-    const ggccMeses   = getGGCCMesesFromCartolas();
+    // GGCC esperados: por calendario (obligación por mes vencido, incluye mes actual)
+    const ggccMeses   = getGGCCMesesEsperados();
     const ggccMeta    = CUOTA_GGCC * SOCIOS_ALL.length * ggccMeses;
 
     const capitalFalta = Math.max(0, capitalMeta - capitalPagado);
@@ -1551,7 +1560,7 @@ function renderResumen() {
 
     // ─── FUENTE ───
     html += '<div style="background:#f5f5f5; border-radius:8px; padding:8px 14px; margin-bottom:20px; font-size:11px; color:#666; display:flex; align-items:center; gap:8px;">';
-    html += '<strong>Fuente:</strong> Todos los montos calculados exclusivamente desde cartolas Scotiabank verificadas (' + ALL_DEPOSITS.length + ' depósitos). Cobertura: jun-2020 → ' + LAST_CARTOLA_LABEL + '. GGCC esperados: ' + ggccMeses + ' meses con cartola (desde oct-2022).</div>';
+    html += '<strong>Fuente:</strong> Pagos desde cartolas Scotiabank verificadas (' + ALL_DEPOSITS.length + ' depósitos, hasta ' + LAST_CARTOLA_LABEL + '). GGCC: ' + ggccMeses + ' meses de obligación (oct-2022 → ' + MONTHS[_currentMonth-1] + ' ' + _currentYear + ', mes vencido).</div>';
 
     // ═══════════════════════════════════════════
     // SECCIÓN 1: APORTES COMPROMETIDOS
@@ -2130,11 +2139,8 @@ function renderGGCC() {
     }
     const year = parseInt(sel.value);
     const cls = classifyAllDeposits();
-    // Meses con cartola verificada para este año
+    // Cartolas verificadas para este año (para marcar celdas sin cartola)
     const _covered = getCartolaCoverage();
-    const _lc = getLastCartolaMonth();
-    const maxMonth = (year === _lc.y) ? _lc.m : (year < _lc.y ? 12 : 0);
-    // Set de meses cubiertos para este año (para detectar gaps)
     const coveredMonths = new Set();
     _covered.forEach(k => { const [y,m] = k.split('-').map(Number); if (y === year) coveredMonths.add(m); });
 
@@ -2153,9 +2159,12 @@ function renderGGCC() {
         }
         ggccTotal += data[s].paid;
     });
-    // Meses GGCC esperados para este año = meses con cartola que estén en periodo GGCC (>=oct-2022)
+    // Meses GGCC esperados para este año = por calendario (obligación, mes vencido)
+    // 2022: oct-dic=3, año actual: hasta mes actual, otros: 12
     let ggccMonthsThisYear = 0;
-    coveredMonths.forEach(m => { if (year > 2022 || (year === 2022 && m >= 10)) ggccMonthsThisYear++; });
+    if (year === 2022) ggccMonthsThisYear = 3; // oct, nov, dic
+    else if (year === _currentYear) ggccMonthsThisYear = _currentMonth;
+    else if (year > 2022 && year < _currentYear) ggccMonthsThisYear = 12;
     SOCIOS_ALL.forEach(s => { if (data[s].paid >= CUOTA_GGCC * ggccMonthsThisYear) sociosAlDia++; });
     const esperado = CUOTA_GGCC * SOCIOS_ALL.length * ggccMonthsThisYear;
     const saldo = ggccTotal - esperado;
@@ -2188,8 +2197,12 @@ function renderGGCC() {
         for (let m = 0; m < 12; m++) {
             const val = d.months[m];
             monthTotals[m] += val;
-            if (!coveredMonths.has(m + 1)) {
-                html += '<td style="background:#f5f5f5; color:#bbb; text-align:center;">—</td>'; // Sin cartola
+            const mesEsGGCC = (year > 2022 || (year === 2022 && m + 1 >= 10));
+            const mesEsperado = mesEsGGCC && (year < _currentYear || (year === _currentYear && m + 1 <= _currentMonth));
+            if (!coveredMonths.has(m + 1) && !mesEsperado) {
+                html += '<td style="background:#f5f5f5; color:#bbb; text-align:center;">—</td>'; // Futuro o pre-GGCC
+            } else if (!coveredMonths.has(m + 1) && mesEsperado) {
+                html += '<td style="background:#fff3e0; color:#e65100; text-align:center; font-size:10px;" title="Sin cartola para ' + MONTHS[m] + ' ' + year + '">⏳</td>'; // Esperado pero sin cartola
             } else if (val >= CUOTA_GGCC) {
                 html += '<td class="ggcc-paid">' + fmt(val) + '</td>';
             } else if (val > 0) {
@@ -2428,7 +2441,7 @@ function renderVistaSocio(socioOverride) {
 
     const t = data.totals;
     const deps = data.deposits;
-    const totalGGCCMonths = getGGCCMesesFromCartolas();
+    const totalGGCCMonths = getGGCCMesesEsperados();
     const ggccExpected = CUOTA_GGCC * totalGGCCMonths;
     const isMobFull = MOB_PAGADO_FULL.includes(socio);
     const isMobSocio = SOCIOS_MOB.includes(socio);
@@ -2683,7 +2696,7 @@ function showSocioBitacora(socio) {
     if (!data) return;
     const deps = data.deposits;
     const t = data.totals;
-    const totalGGCCMonths = getGGCCMesesFromCartolas();
+    const totalGGCCMonths = getGGCCMesesEsperados();
 
     // Header con resumen
     let html = '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(120px,1fr)); gap:8px; margin-bottom:16px;">';
