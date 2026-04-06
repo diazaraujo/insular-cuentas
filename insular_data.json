@@ -1515,6 +1515,36 @@
   ],
   "depositos": [
     {
+      "socio": "Antonio",
+      "fecha": "2020-04-30",
+      "monto": 4238668,
+      "descripcion": "Gastos efectivo: escrituras, conservador, comisión corredora, viajes, topografía (no reembolsados)",
+      "rut": "13890149-1",
+      "cartola": "planilla_gastos_insular_terrenos",
+      "periodo": "2019-2021",
+      "tipo": "efectivo"
+    },
+    {
+      "socio": "Cristian",
+      "fecha": "2020-04-30",
+      "monto": 1037654,
+      "descripcion": "Gastos efectivo: escrituras, pasajes (no reembolsados)",
+      "rut": "13066600-0",
+      "cartola": "planilla_gastos_insular_terrenos",
+      "periodo": "2020-2022",
+      "tipo": "efectivo"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2020-04-30",
+      "monto": 540000,
+      "descripcion": "Gastos efectivo: escrituras, arriendo auto, bencina, pasajes (no reembolsados)",
+      "rut": "13272830-5",
+      "cartola": "planilla_gastos_insular_terrenos",
+      "periodo": "2020",
+      "tipo": "efectivo"
+    },
+    {
       "socio": "Eduardo",
       "fecha": "2020-06-16",
       "monto": 350000,
@@ -1810,6 +1840,16 @@
       "rut": "18273744-5",
       "cartola": "Insular cartola 7.pdf",
       "periodo": "01/12/2020→30/12/2020"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2021-01-01",
+      "monto": 1900000,
+      "descripcion": "Mudanza (no reembolsado)",
+      "rut": "13890149-1",
+      "cartola": "planilla_gastos_insular_terrenos",
+      "periodo": "2021",
+      "tipo": "efectivo"
     },
     {
       "socio": "Eduardo",
