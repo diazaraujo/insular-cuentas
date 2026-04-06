@@ -967,43 +967,289 @@
       "archivo": "Insular cartola 1.pdf",
       "tipo": "pdf",
       "periodo": "01/06/2020→30/06/2020",
-      "depositos": 25
+      "depositos": 25,
+      "estadoCuenta": 1
     },
     {
       "archivo": "Insular cartola 2.pdf",
       "tipo": "pdf",
       "periodo": "jul-2020",
-      "depositos": 2
+      "depositos": 2,
+      "estadoCuenta": 2
     },
     {
       "archivo": "Insular cartola 3.pdf",
       "tipo": "pdf",
       "periodo": "01/08/2020→31/08/2020",
-      "depositos": 1
+      "depositos": 1,
+      "estadoCuenta": 3
+    },
+    {
+      "archivo": "cartola_2020_EC4.pdf",
+      "tipo": "pdf",
+      "periodo": "01/09/2020→30/09/2020",
+      "depositos": 0,
+      "estadoCuenta": 4,
+      "nota": "No Existen Datos"
     },
     {
       "archivo": "Insular cartola 5.pdf",
       "tipo": "pdf",
       "periodo": "01/10/2020→30/10/2020",
-      "depositos": 1
+      "depositos": 1,
+      "estadoCuenta": 5
     },
     {
       "archivo": "Insular cartola 6.pdf",
       "tipo": "pdf",
       "periodo": "01/11/2020→30/11/2020",
-      "depositos": 3
+      "depositos": 3,
+      "estadoCuenta": 6
     },
     {
       "archivo": "Insular cartola 7.pdf",
       "tipo": "pdf",
       "periodo": "01/12/2020→30/12/2020",
-      "depositos": 1
+      "depositos": 1,
+      "estadoCuenta": 7
     },
     {
       "archivo": "Insular cartola 8.pdf",
       "tipo": "pdf",
       "periodo": "01/01/2021→29/01/2021",
-      "depositos": 1
+      "depositos": 1,
+      "estadoCuenta": 8
+    },
+    {
+      "archivo": "cartola_2021_EC9.pdf",
+      "tipo": "pdf",
+      "periodo": "01/02/2021→26/02/2021",
+      "depositos": 0,
+      "estadoCuenta": 9
+    },
+    {
+      "archivo": "cartola_2021_EC10.pdf",
+      "tipo": "pdf",
+      "periodo": "01/03/2021→31/03/2021",
+      "depositos": 2,
+      "estadoCuenta": 10
+    },
+    {
+      "archivo": "cartola_2021_EC11.pdf",
+      "tipo": "pdf",
+      "periodo": "01/04/2021→30/04/2021",
+      "depositos": 0,
+      "estadoCuenta": 11
+    },
+    {
+      "archivo": "cartola_2021_EC12.pdf",
+      "tipo": "pdf",
+      "periodo": "01/05/2021→31/05/2021",
+      "depositos": 0,
+      "estadoCuenta": 12
+    },
+    {
+      "archivo": "cartola_2021_EC13.pdf",
+      "tipo": "pdf",
+      "periodo": "01/06/2021→30/06/2021",
+      "depositos": 0,
+      "estadoCuenta": 13
+    },
+    {
+      "archivo": "cartola_2021_EC14.pdf",
+      "tipo": "pdf",
+      "periodo": "01/07/2021→30/07/2021",
+      "depositos": 0,
+      "estadoCuenta": 14
+    },
+    {
+      "archivo": "cartola_2021_EC15.pdf",
+      "tipo": "pdf",
+      "periodo": "01/08/2021→31/08/2021",
+      "depositos": 0,
+      "estadoCuenta": 15
+    },
+    {
+      "archivo": "cartola_2021_EC16.pdf",
+      "tipo": "pdf",
+      "periodo": "01/09/2021→30/09/2021",
+      "depositos": 0,
+      "estadoCuenta": 16
+    },
+    {
+      "archivo": "cartola_2021_EC17.pdf",
+      "tipo": "pdf",
+      "periodo": "01/10/2021→29/10/2021",
+      "depositos": 0,
+      "estadoCuenta": 17
+    },
+    {
+      "archivo": "cartola_2021_EC18.pdf",
+      "tipo": "pdf",
+      "periodo": "01/11/2021→30/11/2021",
+      "depositos": 0,
+      "estadoCuenta": 18
+    },
+    {
+      "archivo": "cartola_2021_EC19.pdf",
+      "tipo": "pdf",
+      "periodo": "01/12/2021→31/12/2021",
+      "depositos": 0,
+      "estadoCuenta": 19
+    },
+    {
+      "archivo": "cartola_2022_EC20.pdf",
+      "tipo": "pdf",
+      "periodo": "01/01/2022→31/01/2022",
+      "depositos": 0,
+      "estadoCuenta": 20
+    },
+    {
+      "archivo": "cartola_2022_EC21.pdf",
+      "tipo": "pdf",
+      "periodo": "01/02/2022→28/02/2022",
+      "depositos": 0,
+      "estadoCuenta": 21
+    },
+    {
+      "archivo": "cartola_2022_EC22.pdf",
+      "tipo": "pdf",
+      "periodo": "01/03/2022→31/03/2022",
+      "depositos": 0,
+      "estadoCuenta": 22
+    },
+    {
+      "archivo": "cartola_2022_EC23.pdf",
+      "tipo": "pdf",
+      "periodo": "01/04/2022→29/04/2022",
+      "depositos": 0,
+      "estadoCuenta": 23
+    },
+    {
+      "archivo": "cartola_2022_EC24.pdf",
+      "tipo": "pdf",
+      "periodo": "01/05/2022→31/05/2022",
+      "depositos": 0,
+      "estadoCuenta": 24
+    },
+    {
+      "archivo": "cartola_2022_EC25.pdf",
+      "tipo": "pdf",
+      "periodo": "01/06/2022→30/06/2022",
+      "depositos": 0,
+      "estadoCuenta": 25
+    },
+    {
+      "archivo": "cartola_2022_EC26.pdf",
+      "tipo": "pdf",
+      "periodo": "01/07/2022→29/07/2022",
+      "depositos": 0,
+      "estadoCuenta": 26
+    },
+    {
+      "archivo": "cartola_2022_EC27.pdf",
+      "tipo": "pdf",
+      "periodo": "01/08/2022→31/08/2022",
+      "depositos": 0,
+      "estadoCuenta": 27
+    },
+    {
+      "archivo": "cartola_2022_EC28.pdf",
+      "tipo": "pdf",
+      "periodo": "01/09/2022→30/09/2022",
+      "depositos": 0,
+      "estadoCuenta": 28
+    },
+    {
+      "archivo": "cartola_2022_EC29.pdf",
+      "tipo": "pdf",
+      "periodo": "01/10/2022→31/10/2022",
+      "depositos": 9,
+      "estadoCuenta": 29
+    },
+    {
+      "archivo": "cartola_2023_EC32.pdf",
+      "tipo": "pdf",
+      "periodo": "01/01/2023→31/01/2023",
+      "depositos": 2,
+      "estadoCuenta": 32
+    },
+    {
+      "archivo": "cartola_2023_EC33.pdf",
+      "tipo": "pdf",
+      "periodo": "01/02/2023→28/02/2023",
+      "depositos": 2,
+      "estadoCuenta": 33
+    },
+    {
+      "archivo": "cartola_2023_EC34.pdf",
+      "tipo": "pdf",
+      "periodo": "01/03/2023→31/03/2023",
+      "depositos": 1,
+      "estadoCuenta": 34
+    },
+    {
+      "archivo": "cartola_2023_EC35.pdf",
+      "tipo": "pdf",
+      "periodo": "01/04/2023→28/04/2023",
+      "depositos": 1,
+      "estadoCuenta": 35
+    },
+    {
+      "archivo": "cartola_2023_EC36.pdf",
+      "tipo": "pdf",
+      "periodo": "01/05/2023→31/05/2023",
+      "depositos": 1,
+      "estadoCuenta": 36
+    },
+    {
+      "archivo": "cartola_2023_EC37.pdf",
+      "tipo": "pdf",
+      "periodo": "01/06/2023→30/06/2023",
+      "depositos": 1,
+      "estadoCuenta": 37
+    },
+    {
+      "archivo": "cartola_2023_EC38.pdf",
+      "tipo": "pdf",
+      "periodo": "01/07/2023→31/07/2023",
+      "depositos": 1,
+      "estadoCuenta": 38
+    },
+    {
+      "archivo": "cartola_2023_EC39.pdf",
+      "tipo": "pdf",
+      "periodo": "01/08/2023→31/08/2023",
+      "depositos": 1,
+      "estadoCuenta": 39
+    },
+    {
+      "archivo": "cartola_2023_EC40.pdf",
+      "tipo": "pdf",
+      "periodo": "01/09/2023→29/09/2023",
+      "depositos": 1,
+      "estadoCuenta": 40
+    },
+    {
+      "archivo": "cartola_2023_EC41.pdf",
+      "tipo": "pdf",
+      "periodo": "01/10/2023→31/10/2023",
+      "depositos": 0,
+      "estadoCuenta": 41
+    },
+    {
+      "archivo": "cartola_2023_EC42.pdf",
+      "tipo": "pdf",
+      "periodo": "01/11/2023→30/11/2023",
+      "depositos": 0,
+      "estadoCuenta": 42
+    },
+    {
+      "archivo": "cartola_2023_EC43.pdf",
+      "tipo": "pdf",
+      "periodo": "01/12/2023→29/12/2023",
+      "depositos": 0,
+      "estadoCuenta": 43
     },
     {
       "archivo": "cartola_2024_EC44.pdf",
@@ -1492,6 +1738,204 @@
       "rut": "13270339-6",
       "cartola": "Insular cartola 8.pdf",
       "periodo": "01/01/2021→29/01/2021"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2021-03-15",
+      "monto": 2000000,
+      "descripcion": "TEF 13270339-6 Eduardo",
+      "rut": "13270339-6",
+      "cartola": "cartola_2021_EC10.pdf",
+      "periodo": "01/03/2021→31/03/2021"
+    },
+    {
+      "socio": "Cristian",
+      "fecha": "2021-03-22",
+      "monto": 362914,
+      "descripcion": "TEF 13066600-0",
+      "rut": "13066600-0",
+      "cartola": "cartola_2021_EC10.pdf",
+      "periodo": "01/03/2021→31/03/2021"
+    },
+    {
+      "socio": "Cristian",
+      "fecha": "2022-10-05",
+      "monto": 1637086,
+      "descripcion": "TEF 13066600-0",
+      "rut": "13066600-0",
+      "cartola": "cartola_2022_EC29.pdf",
+      "periodo": "01/10/2022→31/10/2022"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2022-10-05",
+      "monto": 300000,
+      "descripcion": "TEF 13890149-1 ANTONIO PAULO D",
+      "rut": "13890149-1",
+      "cartola": "cartola_2022_EC29.pdf",
+      "periodo": "01/10/2022→31/10/2022"
+    },
+    {
+      "socio": "Sebastián",
+      "fecha": "2022-10-07",
+      "monto": 3000000,
+      "descripcion": "TEF 13426837-9 SEBASTIAN PABLO",
+      "rut": "13426837-9",
+      "cartola": "cartola_2022_EC29.pdf",
+      "periodo": "01/10/2022→31/10/2022"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2022-10-11",
+      "monto": 350000,
+      "descripcion": "TEF 12862395-7 FERNANDO JAVIER",
+      "rut": "12862395-7",
+      "cartola": "cartola_2022_EC29.pdf",
+      "periodo": "01/10/2022→31/10/2022"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2022-10-13",
+      "monto": 4500000,
+      "descripcion": "TEF 12862395-7 FERNANDO JAVIER",
+      "rut": "12862395-7",
+      "cartola": "cartola_2022_EC29.pdf",
+      "periodo": "01/10/2022→31/10/2022"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2022-10-14",
+      "monto": 1150000,
+      "descripcion": "TEF 12862395-7 FERNANDO JAVIER",
+      "rut": "12862395-7",
+      "cartola": "cartola_2022_EC29.pdf",
+      "periodo": "01/10/2022→31/10/2022"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2022-10-17",
+      "monto": 3000000,
+      "descripcion": "TEF 15362944-7 Constanza Jimen",
+      "rut": "15362944-7",
+      "cartola": "cartola_2022_EC29.pdf",
+      "periodo": "01/10/2022→31/10/2022"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2022-10-18",
+      "monto": 1200000,
+      "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
+      "rut": "18273744-5",
+      "cartola": "cartola_2022_EC29.pdf",
+      "periodo": "01/10/2022→31/10/2022"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2022-10-28",
+      "monto": 70000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2022_EC29.pdf",
+      "periodo": "01/10/2022→31/10/2022"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2023-01-27",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "cartola_2023_EC32.pdf",
+      "periodo": "01/01/2023→31/01/2023"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2023-01-30",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "cartola_2023_EC32.pdf",
+      "periodo": "01/01/2023→31/01/2023"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2023-02-01",
+      "monto": 70000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2023_EC33.pdf",
+      "periodo": "01/02/2023→28/02/2023"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2023-02-28",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "cartola_2023_EC33.pdf",
+      "periodo": "01/02/2023→28/02/2023"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2023-03-06",
+      "monto": 70000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2023_EC34.pdf",
+      "periodo": "01/03/2023→31/03/2023"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2023-04-10",
+      "monto": 70000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2023_EC35.pdf",
+      "periodo": "01/04/2023→28/04/2023"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2023-05-15",
+      "monto": 70000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2023_EC36.pdf",
+      "periodo": "01/05/2023→31/05/2023"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2023-06-16",
+      "monto": 70000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2023_EC37.pdf",
+      "periodo": "01/06/2023→30/06/2023"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2023-07-18",
+      "monto": 70000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2023_EC38.pdf",
+      "periodo": "01/07/2023→31/07/2023"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2023-08-28",
+      "monto": 70000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2023_EC39.pdf",
+      "periodo": "01/08/2023→31/08/2023"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2023-09-25",
+      "monto": 70000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2023_EC40.pdf",
+      "periodo": "01/09/2023→29/09/2023"
     },
     {
       "socio": "Antonio",
