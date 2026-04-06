@@ -1978,9 +1978,10 @@ function renderAportesCapital() {
         const capMeta = 10000000;
         const conMeta = c.constrQuota;
         const mobMeta = 4000000;
+        const isMobAdelantado = MOB_PAGADO_FULL.includes(s);
         const capDeuda = Math.max(0, capMeta - c.capitalPaid);
         const conDeuda = Math.max(0, conMeta - c.constrPaid);
-        const mobDeuda = Math.max(0, mobMeta - c.mobPaid);
+        const mobDeuda = isMobAdelantado ? 0 : Math.max(0, mobMeta - c.mobPaid);
         const deuda = capDeuda + conDeuda + mobDeuda;
         totalDeuda += deuda;
         const isAlDia = deuda === 0;
@@ -2006,7 +2007,8 @@ function renderAportesCapital() {
         // Mobiliario
         const mobPct = Math.min(100, c.mobPaid / mobMeta * 100);
         html += '<td style="text-align:center;">';
-        if (mobPct >= 100) html += '<span style="color:#2e7d32; font-weight:700;">✓ $4M</span>';
+        if (isMobAdelantado) html += '<span style="color:#2e7d32; font-weight:700;">✓ Pagado adelantado</span>';
+        else if (mobPct >= 100) html += '<span style="color:#2e7d32; font-weight:700;">✓ $4M</span>';
         else if (c.mobPaid > 0) html += '<div class="progress-bar" style="height:18px;"><div class="progress-fill ' + (mobPct >= 50 ? 'partial' : 'low') + '" style="width:' + mobPct + '%;font-size:10px;">' + mobPct.toFixed(0) + '%</div></div><small style="color:#888;">' + fmt(c.mobPaid) + ' / $4M</small>';
         else html += '<span class="badge badge-red">Pendiente</span>';
         html += '</td>';
