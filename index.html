@@ -1573,7 +1573,7 @@ function renderResumen() {
 
     html += '<div class="table-section">';
     html += '<div class="table-wrapper"><table class="hito-table"><thead><tr>';
-    html += '<th>Socio</th><th class="col-right">Capital<br><small>($10M)</small></th><th class="col-right">Construcción<br><small>($19.1M)</small></th><th class="col-right">Mobiliario<br><small>($4M)</small></th><th class="col-right">GGCC<br><small>(' + ggccMeses + ' meses)</small></th><th class="col-right">Deuda Total</th><th class="col-center">Estado</th>';
+    html += '<th>Socio</th><th class="col-right">Total Aportado</th><th class="col-right">Capital<br><small>($10M)</small></th><th class="col-right">Construcción<br><small>($19.1M)</small></th><th class="col-right">Mobiliario<br><small>($4M)</small></th><th class="col-right">GGCC<br><small>(' + ggccMeses + ' meses)</small></th><th class="col-right">Deuda Total</th><th class="col-center">Estado</th>';
     html += '</tr></thead><tbody>';
 
     SOCIOS_ALL.forEach(s => {
@@ -1587,8 +1587,10 @@ function renderResumen() {
         const isAlDia   = totalDebt === 0;
         const bgStyle   = isAlDia ? ' style="background:#e8f5e9;"' : '';
 
+        const totalAportado = d.totals.total;
         html += '<tr' + bgStyle + '>';
         html += '<td>' + (FULL_NAMES[s] || s) + '</td>';
+        html += '<td class="col-right" style="font-weight:700;">' + fmt(totalAportado) + '</td>';
         html += '<td class="col-right" style="color:' + (capDebt > 0 ? '#c62828' : '#2e7d32') + ';">' + (capDebt > 0 ? fmt(capDebt) : '✓') + '</td>';
         html += '<td class="col-right" style="color:' + (constrDbt > 0 ? '#c62828' : '#2e7d32') + ';">' + (constrDbt > 0 ? fmt(constrDbt) : '✓') + '</td>';
         html += '<td class="col-right" style="color:' + (mobDbt > 0 ? '#e65100' : '#2e7d32') + ';">' + (MOB_PAGADO_FULL.includes(s) ? '✓' : (mobDbt > 0 ? fmt(mobDbt) : '✓')) + '</td>';
