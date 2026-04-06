@@ -1651,15 +1651,11 @@ const CAT_COLORS = {
 };
 const CAT_ORDER = ['inicial', 'construccion', 'mobiliario', 'ggcc', 'otros'];
 
-// Comprehensive allocation: classify every deposit into categories
+// Clasificación por PROPÓSITO del depósito según monto:
+// ─ GGCC (línea aparte): múltiplos de $70k (≤$840k) y porción $70k de $236,666
+// ─ MOB: porción $166,666 de depósitos $236,666
+// ─ CASCADA (el resto): Capital $10M → Construcción $19.1M → Otros
 function classifyAllDeposits() {
-    // Waterfall: pedidos de capital en orden cronológico,
-    // cuotas (GGCC/MOB) con aceleración y prioridad sobre lump sums:
-    // 1. Capital $10M (abr-2020) — primer pedido
-    // 2. GGCC $70k/mes (oct-2022) — acelerado hasta abr-2026
-    // 3. MOB $166,666/mes (feb-2025) — acelerado hasta ene-2027
-    // 4. Construcción $19.1M ($8M sep-2024 + $3.5M jul-2025 + $4M ene-2026 + $3.6M 2026)
-    // 5. Otros
     const result = {};
 
     // Tope de aceleración GGCC: dinámico hasta mes actual
@@ -1667,8 +1663,29 @@ function classifyAllDeposits() {
     // Tope de aceleración MOB: 24 cuotas = hasta ene-2027
     const MOB_END_Y = 2027, MOB_END_M = 1;
 
+    // Identificar tipo de depósito por monto
+    const isGGCCOnly = (amt) => amt % 70000 === 0 && amt <= 840000 && amt > 0;
+    const isGGCCplusMOB = (amt) => amt >= 236665 && amt <= 236667;
+
+    // Generar lista de meses GGCC (oct-2022 hasta mes actual)
+    const ggccAllMonths = [];
+    { let gy = 2022, gm = 10;
+      while (gy < GGCC_END_Y || (gy === GGCC_END_Y && gm <= GGCC_END_M)) {
+          ggccAllMonths.push(gy + '-' + gm);
+          gm++; if (gm > 12) { gm = 1; gy++; }
+      }
+    }
+    // Generar lista de meses MOB (feb-2025 hasta ene-2027)
+    const mobAllMonths = [];
+    { let my = 2025, mm = 2;
+      while (my < MOB_END_Y || (my === MOB_END_Y && mm <= MOB_END_M)) {
+          mobAllMonths.push(my + '-' + mm);
+          mm++; if (mm > 12) { mm = 1; my++; }
+      }
+    }
+
     SOCIOS_ALL.forEach(s => {
-        const constrQuota = 19100000; // $8M + $3.5M + $4M + $3.6M
+        const constrQuota = 19100000;
         let capitalPaid = 0, constrPaid = 0, mobPaid = 0;
         const ggccByMonth = {}, mobCuotaByMonth = {};
 
@@ -1681,80 +1698,107 @@ function classifyAllDeposits() {
         deps.forEach(dep => {
             let remaining = dep.amt;
             const alloc = { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, otros: 0 };
+            const depAfterGGCC = dep.y > 2022 || (dep.y === 2022 && dep.m >= 10);
 
-            // ── Step 1: Capital $10M (abr-2020, primer pedido) ──
-            if (capitalPaid < 10000000 && remaining > 0) {
-                const capTake = Math.min(remaining, 10000000 - capitalPaid);
-                alloc.inicial += capTake;
-                capitalPaid += capTake;
-                remaining -= capTake;
-            }
+            // ══════════════════════════════════════════════════════
+            // IDENTIFICAR PROPÓSITO DEL DEPÓSITO POR SU MONTO
+            // ══════════════════════════════════════════════════════
 
-            // ── Step 2: GGCC $70k/mes (desde oct-2022, CON ACELERACIÓN) ──
-            // Llena meses desde oct-2022 hasta abr-2026 (futuro = acelerar)
-            if (remaining > 0 && (dep.y > 2022 || (dep.y === 2022 && dep.m >= 10))) {
-                const ggccMonths = [];
-                let gy = 2022, gm = 10;
-                while (gy < GGCC_END_Y || (gy === GGCC_END_Y && gm <= GGCC_END_M)) {
-                    ggccMonths.push(gy + '-' + gm);
-                    gm++;
-                    if (gm > 12) { gm = 1; gy++; }
-                }
-                for (const monthKey of ggccMonths) {
+            if (depAfterGGCC && isGGCCOnly(dep.amt)) {
+                // ── TIPO A: Múltiplo de $70k (≤$840k) → TODO a GGCC ──
+                for (const monthKey of ggccAllMonths) {
                     if (remaining <= 0) break;
-                    const ggccAlready = ggccByMonth[monthKey] || 0;
-                    const ggccTake = Math.min(remaining, Math.max(0, CUOTA_GGCC - ggccAlready));
-                    if (ggccTake > 0) {
-                        alloc.ggcc += ggccTake;
-                        ggccByMonth[monthKey] = ggccAlready + ggccTake;
-                        remaining -= ggccTake;
+                    const already = ggccByMonth[monthKey] || 0;
+                    const take = Math.min(remaining, Math.max(0, CUOTA_GGCC - already));
+                    if (take > 0) {
+                        alloc.ggcc += take;
+                        ggccByMonth[monthKey] = already + take;
+                        remaining -= take;
                     }
                 }
-            }
+                // Si sobra (más meses pagados que existentes), va a otros
+                if (remaining > 0) { alloc.otros += remaining; remaining = 0; }
 
-            // ── Step 3: MOB cuotas $166,666/mes (desde feb-2025, CON ACELERACIÓN) ──
-            // Llena meses desde feb-2025 hasta ene-2027 (24 cuotas, futuro = acelerar)
-            if (remaining > 0 && (dep.y > 2025 || (dep.y === 2025 && dep.m >= 2)) && SOCIOS_MOB.includes(s) && mobPaid < 4000000) {
-                const mobMonths = [];
-                let my = 2025, mm = 2;
-                while (my < MOB_END_Y || (my === MOB_END_Y && mm <= MOB_END_M)) {
-                    mobMonths.push(my + '-' + mm);
-                    mm++;
-                    if (mm > 12) { mm = 1; my++; }
-                }
-                for (const monthKey of mobMonths) {
-                    if (remaining <= 0 || mobPaid >= 4000000) break;
-                    const mobCAlready = mobCuotaByMonth[monthKey] || 0;
-                    let mobTake = Math.min(remaining, Math.max(0, CUOTA_MOB - mobCAlready));
-                    mobTake = Math.min(mobTake, 4000000 - mobPaid);
-                    if (mobTake > 0) {
-                        alloc.mobiliario += mobTake;
-                        mobCuotaByMonth[monthKey] = mobCAlready + mobTake;
-                        mobPaid += mobTake;
-                        remaining -= mobTake;
+            } else if (depAfterGGCC && isGGCCplusMOB(dep.amt)) {
+                // ── TIPO B: $236,666 (±1) → $70k GGCC + resto MOB ──
+                // Parte GGCC
+                for (const monthKey of ggccAllMonths) {
+                    if (alloc.ggcc >= 70000 || remaining <= 0) break;
+                    const already = ggccByMonth[monthKey] || 0;
+                    const take = Math.min(remaining, Math.max(0, CUOTA_GGCC - already));
+                    if (take > 0) {
+                        alloc.ggcc += take;
+                        ggccByMonth[monthKey] = already + take;
+                        remaining -= take;
                     }
                 }
-            }
+                // Parte MOB (el resto ~$166,666)
+                if (remaining > 0 && SOCIOS_MOB.includes(s) && mobPaid < 4000000) {
+                    for (const monthKey of mobAllMonths) {
+                        if (remaining <= 0 || mobPaid >= 4000000) break;
+                        const already = mobCuotaByMonth[monthKey] || 0;
+                        let take = Math.min(remaining, Math.max(0, CUOTA_MOB - already));
+                        take = Math.min(take, 4000000 - mobPaid);
+                        if (take > 0) {
+                            alloc.mobiliario += take;
+                            mobCuotaByMonth[monthKey] = already + take;
+                            mobPaid += take;
+                            remaining -= take;
+                        }
+                    }
+                }
+                // Si sobra algo (redondeo, MOB lleno), va a cascada
+                if (remaining > 0) {
+                    if (capitalPaid < 10000000) {
+                        const t = Math.min(remaining, 10000000 - capitalPaid);
+                        alloc.inicial += t; capitalPaid += t; remaining -= t;
+                    }
+                    if (constrPaid < constrQuota && remaining > 0) {
+                        const t = Math.min(remaining, constrQuota - constrPaid);
+                        alloc.construccion += t; constrPaid += t; remaining -= t;
+                    }
+                    if (remaining > 0) { alloc.otros += remaining; remaining = 0; }
+                }
 
-            // ── Step 4: Construcción $19.1M total ──
-            if (constrPaid < constrQuota && remaining > 0) {
-                const cTake = Math.min(remaining, constrQuota - constrPaid);
-                alloc.construccion += cTake;
-                constrPaid += cTake;
-                remaining -= cTake;
-            }
-
-            // ── Step 5: MOB lump (resto hasta $4M) ──
-            if (mobPaid < 4000000 && remaining > 0 && SOCIOS_MOB.includes(s)) {
-                const mTake = Math.min(remaining, 4000000 - mobPaid);
-                alloc.mobiliario += mTake;
-                mobPaid += mTake;
-                remaining -= mTake;
-            }
-
-            // ── Step 6: Otros ──
-            if (remaining > 0) {
-                alloc.otros += remaining;
+            } else {
+                // ── TIPO C: Cualquier otro monto ──
+                // 1) Extraer GGCC pendientes (sin tope por depósito)
+                // 2) Cascada: Capital $10M → MOB $4M → Construcción $19.1M → Otros
+                if (depAfterGGCC && remaining > 0) {
+                    for (const monthKey of ggccAllMonths) {
+                        if (remaining <= 0) break;
+                        const already = ggccByMonth[monthKey] || 0;
+                        const take = Math.min(remaining, Math.max(0, CUOTA_GGCC - already));
+                        if (take > 0) {
+                            alloc.ggcc += take;
+                            ggccByMonth[monthKey] = already + take;
+                            remaining -= take;
+                        }
+                    }
+                }
+                if (capitalPaid < 10000000 && remaining > 0) {
+                    const t = Math.min(remaining, 10000000 - capitalPaid);
+                    alloc.inicial += t; capitalPaid += t; remaining -= t;
+                }
+                if (remaining > 0 && SOCIOS_MOB.includes(s) && mobPaid < 4000000) {
+                    for (const monthKey of mobAllMonths) {
+                        if (remaining <= 0 || mobPaid >= 4000000) break;
+                        const already = mobCuotaByMonth[monthKey] || 0;
+                        let take = Math.min(remaining, Math.max(0, CUOTA_MOB - already));
+                        take = Math.min(take, 4000000 - mobPaid);
+                        if (take > 0) {
+                            alloc.mobiliario += take;
+                            mobCuotaByMonth[monthKey] = already + take;
+                            mobPaid += take;
+                            remaining -= take;
+                        }
+                    }
+                }
+                if (constrPaid < constrQuota && remaining > 0) {
+                    const t = Math.min(remaining, constrQuota - constrPaid);
+                    alloc.construccion += t; constrPaid += t; remaining -= t;
+                }
+                if (remaining > 0) { alloc.otros += remaining; }
             }
 
             classified.push({ ...dep, alloc });
