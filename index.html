@@ -1226,7 +1226,11 @@ const SOCIOS_MOB = ['Antonio','Camilo','Cristian','Felipe','Fernando','Jordi','S
 const MOB_PAGADO_FULL = ['Laura','Eduardo','Cristóbal'];
 const CUOTA_GGCC = 70000;
 const CUOTA_MOB = 166666;
-const MESES_CON_DATOS_2026 = 3; // Jan-Mar only
+// Dinámico: calcula meses del año actual hasta el mes en curso
+const _now = new Date();
+const _currentYear = _now.getFullYear();
+const _currentMonth = _now.getMonth() + 1; // 1-12
+const MESES_CON_DATOS_2026 = (_currentYear === 2026) ? _currentMonth : (_currentYear > 2026 ? 12 : 0);
 const MONTHS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 let ggccHighlightSocio = null; // Socio a resaltar al abrir tab GGCC
 
@@ -1431,7 +1435,8 @@ function renderResumen() {
     const capitalMeta = ACUERDOS.capital.total;            // $100M
     const constrMeta  = ACUERDOS.construccion.total;       // $76M
     const mobMeta     = ACUERDOS.mobiliario.total;         // $40M
-    const ggccMeses   = 3 + 12 + 12 + 12 + MESES_CON_DATOS_2026; // oct-2022 a último mes con cartola
+    // Dinámico: meses desde oct-2022 hasta mes actual
+    const ggccMeses   = (_currentYear - 2022) * 12 + _currentMonth - 10 + 1; // oct-2022 = mes 1
     const ggccMeta    = CUOTA_GGCC * 10 * ggccMeses;
 
     const capitalFalta = Math.max(0, capitalMeta - capitalPagado);
@@ -1657,8 +1662,8 @@ function classifyAllDeposits() {
     // 5. Otros
     const result = {};
 
-    // Tope de aceleración GGCC: hasta abr-2026 (mes actual)
-    const GGCC_END_Y = 2026, GGCC_END_M = 4;
+    // Tope de aceleración GGCC: dinámico hasta mes actual
+    const GGCC_END_Y = _currentYear, GGCC_END_M = _currentMonth;
     // Tope de aceleración MOB: 24 cuotas = hasta ene-2027
     const MOB_END_Y = 2027, MOB_END_M = 1;
 
@@ -2024,7 +2029,7 @@ function renderGGCC() {
     }
     const year = parseInt(sel.value);
     const alloc = allocateDeposits();
-    const maxMonth = (year === 2026) ? MESES_CON_DATOS_2026 : 12;
+    const maxMonth = (year === _currentYear) ? _currentMonth : 12;
     
     let ggccTotal = 0, sociosAlDia = 0;
     
