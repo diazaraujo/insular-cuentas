@@ -84,6 +84,19 @@
         .legend-item { display: flex; align-items: center; gap: 6px; }
         .legend-color { width: 16px; height: 16px; border-radius: 3px; border: 1px solid #ddd; }
 
+        /* Hover tooltip for traceability */
+        .tt-wrap { position: relative; display: inline-block; cursor: help; border-bottom: 1px dashed currentColor; }
+        .tt-wrap .tt-box { visibility: hidden; opacity: 0; position: absolute; z-index: 999; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: #1a1a2e; color: #e0e0e0; border-radius: 8px; padding: 10px 14px; font-size: 10px; line-height: 1.5; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.25); pointer-events: none; transition: opacity 0.15s, visibility 0.15s; max-width: 380px; white-space: normal; }
+        .tt-wrap .tt-box::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: #1a1a2e; }
+        .tt-wrap:hover .tt-box { visibility: visible; opacity: 1; pointer-events: auto; }
+        .tt-box .tt-step { display: flex; gap: 6px; align-items: baseline; padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .tt-box .tt-step:last-child { border-bottom: none; }
+        .tt-box .tt-label { color: #90caf9; font-weight: 700; min-width: 65px; }
+        .tt-box .tt-amt { color: #4caf50; font-weight: 600; min-width: 70px; text-align: right; }
+        .tt-box .tt-note { color: #aaa; font-size: 9px; }
+        .tt-box .tt-header { color: #fff; font-weight: 700; font-size: 11px; margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.15); }
+        .tt-box .tt-tipo { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 9px; font-weight: 700; margin-left: 6px; }
+
         .info-snippet { background: #f8f9fa; border-left: 4px solid #90a4ae; border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 12px 0 16px 0; font-size: 12px; color: #455a64; line-height: 1.6; }
         .info-snippet summary { cursor: pointer; font-weight: 700; color: #37474f; font-size: 13px; user-select: none; }
         .info-snippet summary:hover { color: #00838f; }
@@ -2107,7 +2120,20 @@ function renderResumen() {
     const kFill = capitalPct >= 90 ? 'complete' : capitalPct >= 50 ? 'partial' : 'low';
     html += '<div class="hito-card capital" onclick="switchTab(\'aportescapital\', document.querySelectorAll(\'.tab-btn\')[1])">';
     html += '<h4 style="color:#1565c0;">Capital Inicial</h4><div class="hito-sub">' + fmtM(ACUERDOS.capital.perSocio) + '/socio — Constitución abr-2020</div>';
-    html += '<div class="hito-amount" style="color:#1565c0;">' + fmtM(capitalPagado) + ' / ' + fmtM(capitalMeta) + '</div>';
+    // Tooltips per-socio para hitos (generados desde cls)
+    function hitoTT(cat, total, meta) {
+        let h = '<span class="tt-box" style="min-width:240px;">';
+        h += '<div class="tt-header">' + (CAT_COLORS[cat]?CAT_COLORS[cat].label:cat) + ': ' + fmtM(total) + ' / ' + fmtM(meta) + '</div>';
+        SOCIOS_ALL.forEach(s => {
+            const v = cls[s].totals[cat];
+            const pct = Math.round(v / (meta/SOCIOS_ALL.length) * 100);
+            const ok = pct >= 100;
+            h += '<div class="tt-step"><span class="tt-label">' + s + '</span><span class="tt-amt" style="color:' + (ok?'#4caf50':'#ff9800') + ';">$' + v.toLocaleString() + '</span><span class="tt-note">' + pct + '%</span></div>';
+        });
+        h += '</span>';
+        return h;
+    }
+    html += '<div class="hito-amount" style="color:#1565c0;">' + wtt(fmtM(capitalPagado) + ' / ' + fmtM(capitalMeta), hitoTT('inicial', capitalPagado, capitalMeta)) + '</div>';
     html += '<div class="progress-bar"><div class="progress-fill ' + kFill + '" style="width:' + capitalPct + '%">' + capitalPct + '%</div></div>';
     html += '<div class="hito-stats"><div><span class="stat-label">Al día:</span> <span class="stat-value" style="color:#2e7d32;">' + capitalAlDia + '/' + SOCIOS_ALL.length + '</span></div><div><span class="stat-label">Falta:</span> <span class="stat-value" style="color:' + (capitalFalta > 0 ? '#c62828' : '#2e7d32') + ';">' + fmtM(capitalFalta) + '</span></div></div>';
     html += '</div>';
@@ -2115,7 +2141,7 @@ function renderResumen() {
     const cFillClass = constrPct >= 90 ? 'complete' : constrPct >= 50 ? 'partial' : 'low';
     html += '<div class="hito-card construccion" onclick="switchTab(\'aportescapital\', document.querySelectorAll(\'.tab-btn\')[1])">';
     html += '<h4 style="color:#7b1fa2;">Construcción</h4><div class="hito-sub">' + fmtM(ACUERDOS.construccion.perSocio) + '/socio — $8M + $3.5M + $4M + $3.6M</div>';
-    html += '<div class="hito-amount" style="color:#7b1fa2;">' + fmtM(constrPagado) + ' / ' + fmtM(constrMeta) + '</div>';
+    html += '<div class="hito-amount" style="color:#7b1fa2;">' + wtt(fmtM(constrPagado) + ' / ' + fmtM(constrMeta), hitoTT('construccion', constrPagado, constrMeta)) + '</div>';
     html += '<div class="progress-bar"><div class="progress-fill ' + cFillClass + '" style="width:' + constrPct + '%">' + constrPct + '%</div></div>';
     html += '<div class="hito-stats"><div><span class="stat-label">Al día:</span> <span class="stat-value" style="color:#2e7d32;">' + constrAlDia + '/' + SOCIOS_ALL.length + '</span></div><div><span class="stat-label">Falta:</span> <span class="stat-value" style="color:#c62828;">' + fmtM(constrFalta) + '</span></div></div>';
     html += '</div>';
@@ -2123,7 +2149,7 @@ function renderResumen() {
     const mFillClass = mobPct >= 90 ? 'complete' : mobPct >= 50 ? 'partial' : 'low';
     html += '<div class="hito-card mobiliario" onclick="switchTab(\'aportescapital\', document.querySelectorAll(\'.tab-btn\')[1])">';
     html += '<h4 style="color:#e65100;">Mobiliario</h4><div class="hito-sub">' + fmtM(ACUERDOS.mobiliario.perSocio) + '/socio — ' + MOB_CUOTAS + ' cuotas desde feb-2025</div>';
-    html += '<div class="hito-amount" style="color:#e65100;">' + fmtM(mobPagado) + ' / ' + fmtM(mobMeta) + '</div>';
+    html += '<div class="hito-amount" style="color:#e65100;">' + wtt(fmtM(mobPagado) + ' / ' + fmtM(mobMeta), hitoTT('mobiliario', mobPagado, mobMeta)) + '</div>';
     html += '<div class="progress-bar"><div class="progress-fill ' + mFillClass + '" style="width:' + mobPct + '%">' + mobPct + '%</div></div>';
     html += '<div class="hito-stats"><div><span class="stat-label">Al día:</span> <span class="stat-value" style="color:#2e7d32;">' + mobAlDia + '/' + SOCIOS_ALL.length + '</span></div><div><span class="stat-label">Falta:</span> <span class="stat-value" style="color:#c62828;">' + fmtM(mobFalta) + '</span></div></div>';
     html += '</div>';
@@ -2140,7 +2166,11 @@ function renderResumen() {
     // KPI GGCC
     html += '<section class="kpis" style="margin-bottom:16px;">';
     html += '<div class="kpi" style="border-left:4px solid #00838f; background:#e0f2f1;"><div class="label">Total Esperado</div><div class="value" style="color:#00838f;">' + fmtM(ggccMeta) + '</div><div class="sub">' + ggccMeses + ' meses × ' + fmt(CUOTA_GGCC) + ' × ' + SOCIOS_ALL.length + ' socios</div></div>';
-    html += '<div class="kpi" style="border-left:4px solid #00838f;"><div class="label">Recaudado GGCC</div><div class="value" style="color:#00838f;">' + fmtM(ggccPagado) + '</div><div class="sub">' + Math.round(ggccPagado/ggccMeta*100) + '% del esperado</div></div>';
+    // GGCC tooltip per-socio
+    var ggccTTh = '<span class="tt-box" style="min-width:240px;"><div class="tt-header">GGCC Recaudado: ' + fmtM(ggccPagado) + '</div>';
+    SOCIOS_ALL.forEach(s => { ggccTTh += '<div class="tt-step"><span class="tt-label">' + s + '</span><span class="tt-amt">$' + cls[s].totals.ggcc.toLocaleString() + '</span><span class="tt-note">' + cls[s].ggccMonthsPaid + '/' + ggccMeses + ' meses</span></div>'; });
+    ggccTTh += '</span>';
+    html += '<div class="kpi" style="border-left:4px solid #00838f;"><div class="label">Recaudado GGCC</div><div class="value" style="color:#00838f;">' + wtt(fmtM(ggccPagado), ggccTTh) + '</div><div class="sub">' + Math.round(ggccPagado/ggccMeta*100) + '% del esperado</div></div>';
     html += '<div class="kpi" style="border-left:4px solid ' + (ggccFalta > 0 ? '#c62828' : '#2e7d32') + ';"><div class="label">Pendiente GGCC</div><div class="value" style="color:' + (ggccFalta > 0 ? '#c62828' : '#2e7d32') + ';">' + fmtM(ggccFalta) + '</div><div class="sub">Al día: ' + ggccAlDia + '/' + SOCIOS_ALL.length + ' socios</div></div>';
     html += '</section>';
 
@@ -2166,7 +2196,7 @@ function renderResumen() {
         html += '<tr style="background:' + (ok ? '#e8f5e9' : '#fff') + '; cursor:pointer;" onclick="ggccHighlightSocio=\'' + s + '\'; switchTab(\'ggcc\', document.querySelectorAll(\'.tab-btn\')[2])" title="Ver detalle GGCC de ' + s + '">';
         html += '<td style="text-decoration:underline; color:#00838f;">' + (FULL_NAMES[s] || s) + '</td>';
         html += '<td style="text-align:center;">' + mesesPagados + ' / ' + ggccMeses + '</td>';
-        html += '<td class="col-right">' + fmt(gPaid) + '</td>';
+        html += '<td class="col-right">' + wtt(fmt(gPaid), ttAgg(cls[s].deposits, 'ggcc')) + '</td>';
         html += '<td class="col-right">' + fmt(ggccExpectedPerSocio) + '</td>';
         html += '<td class="col-right" style="color:' + (ok ? '#2e7d32' : '#c62828') + '; font-weight:600;">' + (gDiff >= 0 ? '+' : '') + fmt(gDiff) + '</td>';
         if (ok) {
@@ -2279,6 +2309,77 @@ const CAT_COLORS = {
     otros:        { bg: '#616161', light: '#f5f5f5', text: '#616161', label: 'Otros' }
 };
 const CAT_ORDER = ['inicial', 'construccion', 'mobiliario', 'ggcc', 'otros'];
+
+// ── Tooltip helpers para trazabilidad on-hover ──
+const _ttTipoColors = {A:'#00838f', A2:'#0097a7', B:'#e65100', C:'#7b1fa2', PRE:'#795548'};
+const _ttTipoLabels = {A:'GGCC', A2:'GGCC+', B:'Combo', C:'Cascada', PRE:'Pre-GGCC'};
+const _ttTipoBgs = {A:'#e0f2f1', A2:'#e0f7fa', B:'#fff3e0', C:'#ede7f6', PRE:'#efebe9'};
+
+// Tooltip para UN depósito individual (muestra detalle paso a paso)
+function ttDep(d) {
+    if (!d || !d.detalle || d.detalle.length === 0) return '';
+    const tipo = d.regla || 'C';
+    let h = '<span class="tt-box">';
+    h += '<div class="tt-header">$' + d.amt.toLocaleString() + ' — Tipo ' + tipo + '<span class="tt-tipo" style="background:' + (_ttTipoBgs[tipo]||'#eee') + '; color:' + (_ttTipoColors[tipo]||'#666') + ';">' + (_ttTipoLabels[tipo]||tipo) + '</span></div>';
+    d.detalle.forEach(function(s) {
+        h += '<div class="tt-step">';
+        h += '<span class="tt-label">' + s.paso + '</span>';
+        h += '<span class="tt-amt">$' + s.monto.toLocaleString() + '</span>';
+        h += '<span class="tt-note">' + s.nota + '</span>';
+        h += '</div>';
+    });
+    h += '</span>';
+    return h;
+}
+
+// Tooltip para una CELDA de categoría de un depósito (filtra solo los pasos de esa categoría)
+function ttDepCat(d, cat) {
+    if (!d || !d.detalle || d.detalle.length === 0 || !d.alloc[cat]) return '';
+    const tipo = d.regla || 'C';
+    const catMap = {inicial:'CASCADA-1', construccion:'CASCADA-2,CASCADA-4', mobiliario:'CASCADA-3,P1-MOB', ggcc:'P1-GGCC,P2-GGCC'};
+    const keys = (catMap[cat]||'').split(',');
+    const steps = d.detalle.filter(function(s) { return keys.some(function(k) { return s.paso.includes(k) || s.regla === k; }); });
+    if (steps.length === 0) return ttDep(d); // fallback: show all
+    let h = '<span class="tt-box">';
+    h += '<div class="tt-header">' + CAT_COLORS[cat].label + ': $' + d.alloc[cat].toLocaleString() + '<span class="tt-tipo" style="background:' + (_ttTipoBgs[tipo]||'#eee') + '; color:' + (_ttTipoColors[tipo]||'#666') + ';">Tipo ' + tipo + '</span></div>';
+    steps.forEach(function(s) {
+        h += '<div class="tt-step">';
+        h += '<span class="tt-label">' + s.paso + '</span>';
+        h += '<span class="tt-amt">$' + s.monto.toLocaleString() + '</span>';
+        h += '<span class="tt-note">' + s.nota + '</span>';
+        h += '</div>';
+    });
+    h += '</span>';
+    return h;
+}
+
+// Tooltip para un AGREGADO (suma de varios depósitos para una categoría)
+function ttAgg(deposits, cat) {
+    if (!deposits || deposits.length === 0) return '';
+    const relevant = deposits.filter(function(d) { return d.alloc && d.alloc[cat] > 0; });
+    if (relevant.length === 0) return '';
+    let total = 0;
+    relevant.forEach(function(d) { total += d.alloc[cat]; });
+    let h = '<span class="tt-box">';
+    h += '<div class="tt-header">' + (CAT_COLORS[cat]?CAT_COLORS[cat].label:cat) + ': $' + total.toLocaleString() + ' (' + relevant.length + ' depósitos)</div>';
+    relevant.slice(0, 8).forEach(function(d) {
+        const tipo = d.regla || 'C';
+        h += '<div class="tt-step">';
+        h += '<span class="tt-label" style="color:' + (_ttTipoColors[tipo]||'#666') + ';">' + String(d.d).padStart(2,'0') + '/' + String(d.m).padStart(2,'0') + '/' + d.y + '</span>';
+        h += '<span class="tt-amt">$' + d.alloc[cat].toLocaleString() + '</span>';
+        h += '<span class="tt-note">de $' + d.amt.toLocaleString() + ' (Tipo ' + tipo + ')</span>';
+        h += '</div>';
+    });
+    if (relevant.length > 8) h += '<div style="color:#888; font-size:9px; padding-top:3px;">… y ' + (relevant.length - 8) + ' depósitos más</div>';
+    h += '</span>';
+    return h;
+}
+
+// Wrap un valor con tooltip
+function wtt(value, tooltipHtml) {
+    if (!tooltipHtml) return value;
+    return '<span class="tt-wrap">' + value + tooltipHtml + '</span>';
+}
 
 // Clasificación por PROPÓSITO del depósito según monto:
 // ─ GGCC (línea aparte): múltiplos de $70k (≤$840k) y porción $70k de $236,666
@@ -2477,14 +2578,27 @@ function renderAportesCapital() {
     html += '<div class="rule"><strong>MOB_PAGADO_FULL (' + MOB_PAGADO_FULL.join(', ') + '):</strong> Estos socios pagaron $4M de mobiliario por adelantado, fuera de cartola. Sus depósitos no asignan a MOB.</div>';
     html += '</div></details>';
 
-    // Category KPI cards
+    // Flat list of all classified deposits (for global tooltips)
+    const allClassDeps = []; SOCIOS_ALL.forEach(s => allClassDeps.push(...classified[s].deposits));
+
+    // Category KPI cards (with hover tooltips showing per-socio breakdown)
+    function kpiTT(cat) {
+        let h = '<span class="tt-box" style="min-width:220px;">';
+        h += '<div class="tt-header">' + (CAT_COLORS[cat]?CAT_COLORS[cat].label:cat) + ': ' + fmt(globalCats[cat]) + '</div>';
+        SOCIOS_ALL.forEach(s => {
+            const v = classified[s].totals[cat];
+            if (v > 0) { h += '<div class="tt-step"><span class="tt-label">' + s + '</span><span class="tt-amt">$' + v.toLocaleString() + '</span></div>'; }
+        });
+        h += '</span>';
+        return h;
+    }
     html += '<section class="kpis">';
-    html += '<div class="kpi blue"><div class="label">Aporte Inicial</div><div class="value">' + fmt(globalCats.inicial) + '</div><div class="sub">de $100M comprometido</div></div>';
-    html += '<div class="kpi purple"><div class="label">Construcción</div><div class="value">' + fmt(globalCats.construccion) + '</div><div class="sub">de $76M comprometido</div></div>';
-    html += '<div class="kpi orange"><div class="label">Mobiliario</div><div class="value">' + fmt(globalCats.mobiliario) + '</div><div class="sub">de $40M comprometido</div></div>';
-    html += '<div class="kpi teal"><div class="label">GGCC</div><div class="value">' + fmt(globalCats.ggcc) + '</div><div class="sub">Gastos comunes mensuales</div></div>';
+    html += '<div class="kpi blue"><div class="label">Aporte Inicial</div><div class="value">' + wtt(fmt(globalCats.inicial), kpiTT('inicial')) + '</div><div class="sub">de $100M comprometido</div></div>';
+    html += '<div class="kpi purple"><div class="label">Construcción</div><div class="value">' + wtt(fmt(globalCats.construccion), kpiTT('construccion')) + '</div><div class="sub">de $76M comprometido</div></div>';
+    html += '<div class="kpi orange"><div class="label">Mobiliario</div><div class="value">' + wtt(fmt(globalCats.mobiliario), kpiTT('mobiliario')) + '</div><div class="sub">de $40M comprometido</div></div>';
+    html += '<div class="kpi teal"><div class="label">GGCC</div><div class="value">' + wtt(fmt(globalCats.ggcc), kpiTT('ggcc')) + '</div><div class="sub">Gastos comunes mensuales</div></div>';
     if (globalCats.otros > 0) {
-        html += '<div class="kpi"><div class="label">Otros</div><div class="value">' + fmt(globalCats.otros) + '</div><div class="sub">Excedentes</div></div>';
+        html += '<div class="kpi"><div class="label">Otros</div><div class="value">' + wtt(fmt(globalCats.otros), kpiTT('otros')) + '</div><div class="sub">Excedentes</div></div>';
     }
     html += '</section>';
 
@@ -2550,12 +2664,13 @@ function renderAportesCapital() {
 
         SOCIOS_ALL.forEach(s => {
             const sd = yearData[s];
+            const sDeps = classified[s].deposits.filter(d => d.y === year);
             html += '<tr style="cursor:pointer;" onclick="showSocioBitacora(\'' + s + '\')" title="Ver depósitos de ' + s + '"><td style="color:#1565c0; text-decoration:underline;">' + (FULL_NAMES[s] || s) + '</td>';
             CAT_ORDER.forEach(c => {
                 if (yearCats[c] > 0 || c === 'inicial' || c === 'construccion' || c === 'mobiliario') {
                     const val = sd[c];
                     if (val > 0) {
-                        html += '<td style="text-align:right; background:' + CAT_COLORS[c].light + '; color:' + CAT_COLORS[c].text + '; font-weight:600;">' + fmt(val) + '</td>';
+                        html += '<td style="text-align:right; background:' + CAT_COLORS[c].light + '; color:' + CAT_COLORS[c].text + '; font-weight:600;">' + wtt(fmt(val), ttAgg(sDeps, c)) + '</td>';
                     } else {
                         html += '<td style="text-align:center; color:#ddd;">—</td>';
                     }
@@ -3280,41 +3395,24 @@ function renderVistaSocio(socioOverride) {
         html += '<tr style="background:' + rowBg + '; border-bottom:1px solid #eee;' + (hasDetalle ? ' cursor:pointer;' : '') + '"' + (hasDetalle ? ' onclick="var el=document.getElementById(\'' + dRowId + '\'); el.style.display=el.style.display===\'none\'?\'table-row\':\'none\';"' : '') + '>';
         html += '<td style="padding:5px 8px; color:#aaa;">' + (i+1) + (hasDetalle ? ' ▸' : '') + '</td>';
         html += '<td style="padding:5px 8px; white-space:nowrap;">' + String(d.d).padStart(2,'0') + '/' + String(d.m).padStart(2,'0') + '/' + d.y + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; font-weight:600;">$' + d.amt.toLocaleString() + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#00838f; font-weight:' + (a.ggcc > 0 ? '600' : '400') + ';">' + (a.ggcc > 0 ? '$'+a.ggcc.toLocaleString() : '—') + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#1565c0; font-weight:' + (a.inicial > 0 ? '600' : '400') + ';">' + (a.inicial > 0 ? '$'+a.inicial.toLocaleString() : '—') + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#7b1fa2; font-weight:' + (a.construccion > 0 ? '600' : '400') + ';">' + (a.construccion > 0 ? '$'+a.construccion.toLocaleString() : '—') + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#e65100; font-weight:' + (a.mobiliario > 0 ? '600' : '400') + ';">' + (a.mobiliario > 0 ? '$'+a.mobiliario.toLocaleString() : '—') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; font-weight:600;">' + wtt('$' + d.amt.toLocaleString(), ttDep(d)) + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#00838f; font-weight:' + (a.ggcc > 0 ? '600' : '400') + ';">' + (a.ggcc > 0 ? wtt('$'+a.ggcc.toLocaleString(), ttDepCat(d,'ggcc')) : '—') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#1565c0; font-weight:' + (a.inicial > 0 ? '600' : '400') + ';">' + (a.inicial > 0 ? wtt('$'+a.inicial.toLocaleString(), ttDepCat(d,'inicial')) : '—') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#7b1fa2; font-weight:' + (a.construccion > 0 ? '600' : '400') + ';">' + (a.construccion > 0 ? wtt('$'+a.construccion.toLocaleString(), ttDepCat(d,'construccion')) : '—') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#e65100; font-weight:' + (a.mobiliario > 0 ? '600' : '400') + ';">' + (a.mobiliario > 0 ? wtt('$'+a.mobiliario.toLocaleString(), ttDepCat(d,'mobiliario')) : '—') + '</td>';
         html += '<td style="padding:5px 8px;"><span style="background:' + tColor + '20; color:' + tColor + '; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:600;">' + tLabel + '</span></td>';
         html += '<td style="padding:5px 8px; font-size:10px; color:#666; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + (d.desc||'').replace(/"/g,'&quot;') + '">' + (d.desc||'') + '</td>';
         html += '<td style="padding:5px 8px; font-size:9px; color:#aaa; white-space:nowrap;">' + (d.file||'') + '</td>';
         html += '</tr>';
-
-        // Fila expandible de trazabilidad
-        if (hasDetalle) {
-            html += '<tr id="' + dRowId + '" style="display:none; background:#f0f4f8;">';
-            html += '<td colspan="10" style="padding:6px 16px 10px 32px;">';
-            html += '<div style="font-size:10px; color:#455a64; font-weight:700; margin-bottom:4px;">Trazabilidad (Tipo ' + tipo + ') — ' + d.detalle.length + ' pasos:</div>';
-            html += '<div style="display:flex; flex-wrap:wrap; gap:6px;">';
-            d.detalle.forEach(function(step) {
-                var sColor = step.regla.startsWith('CASCADA') ? '#1565c0' : (_tipoColors[step.regla] || '#666');
-                html += '<div style="background:white; border:1px solid ' + sColor + '30; border-radius:6px; padding:4px 10px; font-size:10px;">';
-                html += '<span style="font-weight:700; color:' + sColor + ';">' + step.paso + '</span> ';
-                html += '<span style="color:#666;">$' + step.monto.toLocaleString() + '</span>';
-                html += '<div style="color:#999; font-size:9px; margin-top:1px;">' + step.nota + '</div>';
-                html += '</div>';
-            });
-            html += '</div></td></tr>';
-        }
     });
 
     html += '<tr style="background:#1a1a2e; color:white; font-weight:700;">';
     html += '<td colspan="2" style="padding:6px 8px;">TOTAL (' + deps.length + ')</td>';
     html += '<td style="padding:6px 8px; text-align:right;">$' + t.total.toLocaleString() + '</td>';
-    html += '<td style="padding:6px 8px; text-align:right; color:#00bcd4;">$' + runGGCC.toLocaleString() + '</td>';
-    html += '<td style="padding:6px 8px; text-align:right; color:#90caf9;">$' + runCap.toLocaleString() + '</td>';
-    html += '<td style="padding:6px 8px; text-align:right; color:#e040fb;">$' + runConstr.toLocaleString() + '</td>';
-    html += '<td style="padding:6px 8px; text-align:right; color:#ff9800;">$' + runMob.toLocaleString() + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#00bcd4;">' + wtt('$' + runGGCC.toLocaleString(), ttAgg(deps,'ggcc')) + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#90caf9;">' + wtt('$' + runCap.toLocaleString(), ttAgg(deps,'inicial')) + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#e040fb;">' + wtt('$' + runConstr.toLocaleString(), ttAgg(deps,'construccion')) + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#ff9800;">' + wtt('$' + runMob.toLocaleString(), ttAgg(deps,'mobiliario')) + '</td>';
     html += '<td colspan="3"></td>';
     html += '</tr></tbody></table></div></div>';
 
@@ -3397,41 +3495,24 @@ function showSocioBitacora(socio) {
         html += '<tr style="background:' + rowBg + '; border-bottom:1px solid #eee;' + (hasDetalle ? ' cursor:pointer;' : '') + '"' + (hasDetalle ? ' onclick="var el=document.getElementById(\'' + rowId + '\'); el.style.display=el.style.display===\'none\'?\'table-row\':\'none\';"' : '') + '>';
         html += '<td style="padding:5px 8px; color:#aaa;">' + (i+1) + (hasDetalle ? ' ▸' : '') + '</td>';
         html += '<td style="padding:5px 8px; white-space:nowrap;">' + String(d.d).padStart(2,'0') + '/' + String(d.m).padStart(2,'0') + '/' + d.y + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; font-weight:600;">$' + d.amt.toLocaleString() + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#00838f; font-weight:' + (a.ggcc > 0 ? '600' : '400') + ';">' + (a.ggcc > 0 ? '$'+a.ggcc.toLocaleString() : '—') + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#1565c0; font-weight:' + (a.inicial > 0 ? '600' : '400') + ';">' + (a.inicial > 0 ? '$'+a.inicial.toLocaleString() : '—') + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#7b1fa2; font-weight:' + (a.construccion > 0 ? '600' : '400') + ';">' + (a.construccion > 0 ? '$'+a.construccion.toLocaleString() : '—') + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#e65100; font-weight:' + (a.mobiliario > 0 ? '600' : '400') + ';">' + (a.mobiliario > 0 ? '$'+a.mobiliario.toLocaleString() : '—') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; font-weight:600;">' + wtt('$' + d.amt.toLocaleString(), ttDep(d)) + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#00838f; font-weight:' + (a.ggcc > 0 ? '600' : '400') + ';">' + (a.ggcc > 0 ? wtt('$'+a.ggcc.toLocaleString(), ttDepCat(d,'ggcc')) : '—') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#1565c0; font-weight:' + (a.inicial > 0 ? '600' : '400') + ';">' + (a.inicial > 0 ? wtt('$'+a.inicial.toLocaleString(), ttDepCat(d,'inicial')) : '—') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#7b1fa2; font-weight:' + (a.construccion > 0 ? '600' : '400') + ';">' + (a.construccion > 0 ? wtt('$'+a.construccion.toLocaleString(), ttDepCat(d,'construccion')) : '—') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#e65100; font-weight:' + (a.mobiliario > 0 ? '600' : '400') + ';">' + (a.mobiliario > 0 ? wtt('$'+a.mobiliario.toLocaleString(), ttDepCat(d,'mobiliario')) : '—') + '</td>';
         html += '<td style="padding:5px 8px;"><span style="background:' + tColor + '20; color:' + tColor + '; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:600;">' + tLabel + '</span></td>';
         html += '<td style="padding:5px 8px; font-size:10px; color:#666; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + (d.desc||'').replace(/"/g,'&quot;') + '">' + (d.desc||'') + '</td>';
         html += '</tr>';
-
-        // Fila expandible de trazabilidad (detalle[])
-        if (hasDetalle) {
-            html += '<tr id="' + rowId + '" style="display:none; background:#f0f4f8;">';
-            html += '<td colspan="9" style="padding:6px 16px 10px 32px;">';
-            html += '<div style="font-size:10px; color:#455a64; font-weight:700; margin-bottom:4px;">Trazabilidad — ' + d.detalle.length + ' pasos de asignación:</div>';
-            html += '<div style="display:flex; flex-wrap:wrap; gap:6px;">';
-            d.detalle.forEach(step => {
-                const sColor = step.regla.startsWith('CASCADA') ? '#1565c0' : (tipoColors[step.regla] || '#666');
-                html += '<div style="background:white; border:1px solid ' + sColor + '30; border-radius:6px; padding:4px 10px; font-size:10px;">';
-                html += '<span style="font-weight:700; color:' + sColor + ';">' + step.paso + '</span> ';
-                html += '<span style="color:#666;">$' + step.monto.toLocaleString() + '</span>';
-                html += '<div style="color:#999; font-size:9px; margin-top:1px;">' + step.nota + '</div>';
-                html += '</div>';
-            });
-            html += '</div></td></tr>';
-        }
     });
 
     // Total row
     html += '<tr style="background:#1a1a2e; color:white; font-weight:700;">';
     html += '<td colspan="2" style="padding:6px 8px;">TOTAL (' + deps.length + ' depósitos)</td>';
     html += '<td style="padding:6px 8px; text-align:right;">$' + t.total.toLocaleString() + '</td>';
-    html += '<td style="padding:6px 8px; text-align:right; color:#00bcd4;">$' + runGGCC.toLocaleString() + '</td>';
-    html += '<td style="padding:6px 8px; text-align:right; color:#90caf9;">$' + runCap.toLocaleString() + '</td>';
-    html += '<td style="padding:6px 8px; text-align:right; color:#e040fb;">$' + runConstr.toLocaleString() + '</td>';
-    html += '<td style="padding:6px 8px; text-align:right; color:#ff9800;">$' + runMob.toLocaleString() + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#00bcd4;">' + wtt('$' + runGGCC.toLocaleString(), ttAgg(deps,'ggcc')) + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#90caf9;">' + wtt('$' + runCap.toLocaleString(), ttAgg(deps,'inicial')) + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#e040fb;">' + wtt('$' + runConstr.toLocaleString(), ttAgg(deps,'construccion')) + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#ff9800;">' + wtt('$' + runMob.toLocaleString(), ttAgg(deps,'mobiliario')) + '</td>';
     html += '<td colspan="2"></td>';
     html += '</tr></tbody></table></div>';
 
