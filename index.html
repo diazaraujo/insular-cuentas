@@ -1648,15 +1648,25 @@ const CAT_ORDER = ['inicial', 'construccion', 'mobiliario', 'ggcc', 'otros'];
 
 // Comprehensive allocation: classify every deposit into categories
 function classifyAllDeposits() {
-    const result = {}; // result[socio] = { deposits: [{...dep, alloc:{inicial,construccion,mobiliario,ggcc,otros}}], totals:{...} }
+    // Waterfall: pedidos de capital en orden cronológico,
+    // cuotas (GGCC/MOB) con aceleración y prioridad sobre lump sums:
+    // 1. Capital $10M (abr-2020) — primer pedido
+    // 2. GGCC $70k/mes (oct-2022) — acelerado hasta abr-2026
+    // 3. MOB $166,666/mes (feb-2025) — acelerado hasta ene-2027
+    // 4. Construcción $19.1M ($8M sep-2024 + $3.5M jul-2025 + $4M ene-2026 + $3.6M 2026)
+    // 5. Otros
+    const result = {};
+
+    // Tope de aceleración GGCC: hasta abr-2026 (mes actual)
+    const GGCC_END_Y = 2026, GGCC_END_M = 4;
+    // Tope de aceleración MOB: 24 cuotas = hasta ene-2027
+    const MOB_END_Y = 2027, MOB_END_M = 1;
 
     SOCIOS_ALL.forEach(s => {
-        // Construcción: $8M + $3.5M + $4M + $3.6M = $19.1M para todos
-        const constrQuota = 19100000;
+        const constrQuota = 19100000; // $8M + $3.5M + $4M + $3.6M
         let capitalPaid = 0, constrPaid = 0, mobPaid = 0;
         const ggccByMonth = {}, mobCuotaByMonth = {};
 
-        // Sort this socio's deposits chronologically
         const deps = ALL_DEPOSITS.filter(d => d.s === s)
             .map(d => ({...d}))
             .sort((a,b) => (a.y*10000 + a.m*100 + a.d) - (b.y*10000 + b.m*100 + b.d));
@@ -1666,20 +1676,25 @@ function classifyAllDeposits() {
         deps.forEach(dep => {
             let remaining = dep.amt;
             const alloc = { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, otros: 0 };
-            const mk = dep.y + '-' + dep.m;
 
-            // Step 1: GGCC ($70k/month from Oct 2022)
-            // Fill current month first, then catch up unpaid past months chronologically
-            if (dep.y > 2022 || (dep.y === 2022 && dep.m >= 10)) {
-                // Build list of all GGCC months from Oct 2022 up to deposit month
+            // ── Step 1: Capital $10M (abr-2020, primer pedido) ──
+            if (capitalPaid < 10000000 && remaining > 0) {
+                const capTake = Math.min(remaining, 10000000 - capitalPaid);
+                alloc.inicial += capTake;
+                capitalPaid += capTake;
+                remaining -= capTake;
+            }
+
+            // ── Step 2: GGCC $70k/mes (desde oct-2022, CON ACELERACIÓN) ──
+            // Llena meses desde oct-2022 hasta abr-2026 (futuro = acelerar)
+            if (remaining > 0 && (dep.y > 2022 || (dep.y === 2022 && dep.m >= 10))) {
                 const ggccMonths = [];
                 let gy = 2022, gm = 10;
-                while (gy < dep.y || (gy === dep.y && gm <= dep.m)) {
+                while (gy < GGCC_END_Y || (gy === GGCC_END_Y && gm <= GGCC_END_M)) {
                     ggccMonths.push(gy + '-' + gm);
                     gm++;
                     if (gm > 12) { gm = 1; gy++; }
                 }
-                // Fill unpaid months in chronological order
                 for (const monthKey of ggccMonths) {
                     if (remaining <= 0) break;
                     const ggccAlready = ggccByMonth[monthKey] || 0;
@@ -1692,12 +1707,12 @@ function classifyAllDeposits() {
                 }
             }
 
-            // Step 2: Mob cuota ($166,666/month from Feb 2025, only SOCIOS_MOB)
-            // Fill current month first, then catch up unpaid past months chronologically
-            if ((dep.y > 2025 || (dep.y === 2025 && dep.m >= 2)) && SOCIOS_MOB.includes(s) && mobPaid < 4000000) {
+            // ── Step 3: MOB cuotas $166,666/mes (desde feb-2025, CON ACELERACIÓN) ──
+            // Llena meses desde feb-2025 hasta ene-2027 (24 cuotas, futuro = acelerar)
+            if (remaining > 0 && (dep.y > 2025 || (dep.y === 2025 && dep.m >= 2)) && SOCIOS_MOB.includes(s) && mobPaid < 4000000) {
                 const mobMonths = [];
                 let my = 2025, mm = 2;
-                while (my < dep.y || (my === dep.y && mm <= dep.m)) {
+                while (my < MOB_END_Y || (my === MOB_END_Y && mm <= MOB_END_M)) {
                     mobMonths.push(my + '-' + mm);
                     mm++;
                     if (mm > 12) { mm = 1; my++; }
@@ -1716,15 +1731,7 @@ function classifyAllDeposits() {
                 }
             }
 
-            // Step 3: Aporte Inicial (until $10M)
-            if (capitalPaid < 10000000 && remaining > 0) {
-                const capTake = Math.min(remaining, 10000000 - capitalPaid);
-                alloc.inicial += capTake;
-                capitalPaid += capTake;
-                remaining -= capTake;
-            }
-
-            // Step 4: Construcción (until quota)
+            // ── Step 4: Construcción $19.1M total ──
             if (constrPaid < constrQuota && remaining > 0) {
                 const cTake = Math.min(remaining, constrQuota - constrPaid);
                 alloc.construccion += cTake;
@@ -1732,15 +1739,15 @@ function classifyAllDeposits() {
                 remaining -= cTake;
             }
 
-            // Step 5: Mobiliario lump (until $4M)
-            if (mobPaid < 4000000 && remaining > 0) {
+            // ── Step 5: MOB lump (resto hasta $4M) ──
+            if (mobPaid < 4000000 && remaining > 0 && SOCIOS_MOB.includes(s)) {
                 const mTake = Math.min(remaining, 4000000 - mobPaid);
                 alloc.mobiliario += mTake;
                 mobPaid += mTake;
                 remaining -= mTake;
             }
 
-            // Step 6: Otros
+            // ── Step 6: Otros ──
             if (remaining > 0) {
                 alloc.otros += remaining;
             }
@@ -1755,7 +1762,7 @@ function classifyAllDeposits() {
             totals.total += d.amt;
         });
 
-        // Count GGCC months fully paid
+        // Count GGCC months fully paid (incluye meses adelantados)
         const ggccMonthsPaid = Object.values(ggccByMonth).filter(v => v >= CUOTA_GGCC).length;
         const ggccMonthsPartial = Object.keys(ggccByMonth).length - ggccMonthsPaid;
         result[s] = { deposits: classified, totals, capitalPaid, constrPaid, mobPaid, constrQuota, ggccByMonth, ggccMonthsPaid, ggccMonthsPartial };
