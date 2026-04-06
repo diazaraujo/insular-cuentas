@@ -1342,94 +1342,139 @@
       "saldoActual": 43366392
     },
     {
-      "archivo": "typeDesc.xml",
-      "tipo": "xml",
-      "periodo": "21-01-2025→30-01-2025",
-      "depositos": 2
+      "archivo": "cartola_2025_EC56.pdf",
+      "tipo": "pdf",
+      "periodo": "01/01/2025→31/01/2025",
+      "depositos": 2,
+      "estadoCuenta": 56,
+      "saldoAnterior": 72665803,
+      "saldoActual": 46066952
     },
     {
-      "archivo": "typeDesc (1).xml",
-      "tipo": "xml",
-      "periodo": "03-02-2025→28-02-2025",
-      "depositos": 18
+      "archivo": "cartola_2025_EC57.pdf",
+      "tipo": "pdf",
+      "periodo": "01/02/2025→28/02/2025",
+      "depositos": 18,
+      "estadoCuenta": 57,
+      "saldoAnterior": 46066952,
+      "saldoActual": 41136992
     },
     {
-      "archivo": "typeDesc (2).xml",
-      "tipo": "xml",
-      "periodo": "03-03-2025→31-03-2025",
-      "depositos": 10
+      "archivo": "cartola_2025_EC58.pdf",
+      "tipo": "pdf",
+      "periodo": "01/03/2025→31/03/2025",
+      "depositos": 10,
+      "estadoCuenta": 58,
+      "saldoAnterior": 41136992,
+      "saldoActual": 36471775
     },
     {
-      "archivo": "typeDesc (3).xml",
-      "tipo": "xml",
-      "periodo": "01-04-2025→28-04-2025",
-      "depositos": 8
+      "archivo": "cartola_2025_EC59.pdf",
+      "tipo": "pdf",
+      "periodo": "01/04/2025→30/04/2025",
+      "depositos": 8,
+      "estadoCuenta": 59,
+      "saldoAnterior": 36471775,
+      "saldoActual": 20592266
     },
     {
-      "archivo": "typeDesc (4).xml",
-      "tipo": "xml",
-      "periodo": "02-05-2025→30-05-2025",
-      "depositos": 10
+      "archivo": "cartola_2025_EC60.pdf",
+      "tipo": "pdf",
+      "periodo": "01/05/2025→30/05/2025",
+      "depositos": 10,
+      "estadoCuenta": 60,
+      "saldoAnterior": 20592266,
+      "saldoActual": 16246352
     },
     {
-      "archivo": "typeDesc (5).xml",
-      "tipo": "xml",
-      "periodo": "02-06-2025→27-06-2025",
-      "depositos": 10
+      "archivo": "cartola_2025_EC61.pdf",
+      "tipo": "pdf",
+      "periodo": "01/06/2025→30/06/2025",
+      "depositos": 10,
+      "estadoCuenta": 61,
+      "saldoAnterior": 16246352,
+      "saldoActual": 5341586
     },
     {
-      "archivo": "typeDesc (6).xml",
-      "tipo": "xml",
-      "periodo": "01-07-2025→31-07-2025",
-      "depositos": 14
+      "archivo": "cartola_2025_EC62.pdf",
+      "tipo": "pdf",
+      "periodo": "01/07/2025→31/07/2025",
+      "depositos": 14,
+      "estadoCuenta": 62,
+      "saldoAnterior": 5341586,
+      "saldoActual": 15542751
     },
     {
-      "archivo": "typeDesc (7).xml",
-      "tipo": "xml",
-      "periodo": "01-08-2025→29-08-2025",
-      "depositos": 11
+      "archivo": "cartola_2025_EC63.pdf",
+      "tipo": "pdf",
+      "periodo": "01/08/2025→29/08/2025",
+      "depositos": 11,
+      "estadoCuenta": 63,
+      "saldoAnterior": 15542751,
+      "saldoActual": 7792580
     },
     {
-      "archivo": "typeDesc (8).xml",
-      "tipo": "xml",
-      "periodo": "01-09-2025→30-09-2025",
-      "depositos": 10
+      "archivo": "cartola_2025_EC64.pdf",
+      "tipo": "pdf",
+      "periodo": "01/09/2025→30/09/2025",
+      "depositos": 10,
+      "estadoCuenta": 64,
+      "saldoAnterior": 7792580,
+      "saldoActual": 9433075
     },
     {
-      "archivo": "typeDesc (9).xml",
-      "tipo": "xml",
-      "periodo": "01-10-2025→30-10-2025",
-      "depositos": 8
+      "archivo": "cartola_2025_EC65.pdf",
+      "tipo": "pdf",
+      "periodo": "01/10/2025→30/10/2025",
+      "depositos": 8,
+      "estadoCuenta": 65,
+      "saldoAnterior": 9433075,
+      "saldoActual": 5903384
     },
     {
-      "archivo": "typeDesc (10).xml",
-      "tipo": "xml",
-      "periodo": "03-11-2025→28-11-2025",
-      "depositos": 12
+      "archivo": "cartola_2025_EC66.pdf",
+      "tipo": "pdf",
+      "periodo": "01/11/2025→28/11/2025",
+      "depositos": 12,
+      "estadoCuenta": 66,
+      "saldoAnterior": 5903384,
+      "saldoActual": 7016380
     },
     {
-      "archivo": "typeDesc (11).xml",
-      "tipo": "xml",
-      "periodo": "01-12-2025→30-12-2025",
-      "depositos": 13
+      "archivo": "cartola_2025_EC67.pdf",
+      "tipo": "pdf",
+      "periodo": "01/12/2025→30/12/2025",
+      "depositos": 13,
+      "estadoCuenta": 67,
+      "saldoAnterior": 7016380,
+      "saldoActual": 12028083
     },
     {
-      "archivo": "typeDesc (13).xml",
-      "tipo": "xml",
-      "periodo": "02-01-2026→30-01-2026",
-      "depositos": 20
+      "archivo": "cartola_2026_EC68.pdf",
+      "tipo": "pdf",
+      "periodo": "01/01/2026→30/01/2026",
+      "depositos": 20,
+      "estadoCuenta": 68,
+      "saldoAnterior": 12028083,
+      "saldoActual": 2989214
     },
     {
-      "archivo": "typeDesc (14).xml",
-      "tipo": "xml",
-      "periodo": "02-02-2026→26-02-2026",
-      "depositos": 14
+      "archivo": "cartola_2026_EC69.pdf",
+      "tipo": "pdf",
+      "periodo": "01/02/2026→27/02/2026",
+      "depositos": 14,
+      "estadoCuenta": 69,
+      "saldoAnterior": 2989214,
+      "saldoActual": 5448633
     },
     {
-      "archivo": "typeDesc (15).xml",
-      "tipo": "xml",
-      "periodo": "02-03-2026→27-03-2026",
-      "depositos": 12
+      "archivo": "cartola_2026_EC70.pdf",
+      "tipo": "pdf",
+      "periodo": "01/03/2026→31/03/2026",
+      "depositos": 12,
+      "estadoCuenta": 70,
+      "saldoAnterior": 5448633,
+      "saldoActual": 4798874
     }
   ],
   "depositos": [
@@ -2357,8 +2402,8 @@
       "monto": 70000,
       "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
       "rut": "20083182-9",
-      "cartola": "typeDesc.xml",
-      "periodo": "21-01-2025→30-01-2025"
+      "cartola": "cartola_2025_EC56.pdf",
+      "periodo": "01/01/2025→31/01/2025"
     },
     {
       "socio": "Camilo",
@@ -2366,17 +2411,17 @@
       "monto": 1000000,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc.xml",
-      "periodo": "21-01-2025→30-01-2025"
+      "cartola": "cartola_2025_EC56.pdf",
+      "periodo": "01/01/2025→31/01/2025"
     },
     {
       "socio": "Antonio",
       "fecha": "2025-02-03",
       "monto": 236666,
       "descripcion": "TRANSF. DE ANTONIO PAULO DIAZ",
-      "rut": "",
-      "cartola": "typeDesc (1).xml",
-      "periodo": "03-02-2025→28-02-2025"
+      "rut": "13890149-1",
+      "cartola": "cartola_2025_EC57.pdf",
+      "periodo": "01/02/2025→28/02/2025"
     },
     {
       "socio": "Laura",
@@ -2384,17 +2429,17 @@
       "monto": 70000,
       "descripcion": "TEF 16656248-1 Laura Diaz",
       "rut": "16656248-1",
-      "cartola": "typeDesc (1).xml",
-      "periodo": "03-02-2025→28-02-2025"
+      "cartola": "cartola_2025_EC57.pdf",
+      "periodo": "01/02/2025→28/02/2025"
     },
     {
       "socio": "Cristóbal",
       "fecha": "2025-02-03",
       "monto": 70000,
-      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "descripcion": "TEF 7746703-3 Cristobal Eduar",
       "rut": "7746703-3",
-      "cartola": "typeDesc (1).xml",
-      "periodo": "03-02-2025→28-02-2025"
+      "cartola": "cartola_2025_EC57.pdf",
+      "periodo": "01/02/2025→28/02/2025"
     },
     {
       "socio": "Fernando",
@@ -2402,8 +2447,8 @@
       "monto": 166666,
       "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
       "rut": "20083182-9",
-      "cartola": "typeDesc (1).xml",
-      "periodo": "03-02-2025→28-02-2025"
+      "cartola": "cartola_2025_EC57.pdf",
+      "periodo": "01/02/2025→28/02/2025"
     },
     {
       "socio": "Camilo",
@@ -2411,8 +2456,8 @@
       "monto": 236667,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (1).xml",
-      "periodo": "03-02-2025→28-02-2025"
+      "cartola": "cartola_2025_EC57.pdf",
+      "periodo": "01/02/2025→28/02/2025"
     },
     {
       "socio": "Camilo",
@@ -2420,8 +2465,8 @@
       "monto": 500000,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (1).xml",
-      "periodo": "03-02-2025→28-02-2025"
+      "cartola": "cartola_2025_EC57.pdf",
+      "periodo": "01/02/2025→28/02/2025"
     },
     {
       "socio": "Jordi",
@@ -2429,8 +2474,8 @@
       "monto": 2166667,
       "descripcion": "TEF 13272830-5",
       "rut": "13272830-5",
-      "cartola": "typeDesc (1).xml",
-      "periodo": "03-02-2025→28-02-2025"
+      "cartola": "cartola_2025_EC57.pdf",
+      "periodo": "01/02/2025→28/02/2025"
     },
     {
       "socio": "Jordi",
@@ -2438,8 +2483,8 @@
       "monto": 100000,
       "descripcion": "TEF 13272830-5",
       "rut": "13272830-5",
-      "cartola": "typeDesc (1).xml",
-      "periodo": "03-02-2025→28-02-2025"
+      "cartola": "cartola_2025_EC57.pdf",
+      "periodo": "01/02/2025→28/02/2025"
     },
     {
       "socio": "Felipe",
@@ -2447,8 +2492,8 @@
       "monto": 236666,
       "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
       "rut": "18273744-5",
-      "cartola": "typeDesc (1).xml",
-      "periodo": "03-02-2025→28-02-2025"
+      "cartola": "cartola_2025_EC57.pdf",
+      "periodo": "01/02/2025→28/02/2025"
     },
     {
       "socio": "Camilo",
@@ -2456,8 +2501,8 @@
       "monto": 500000,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (1).xml",
-      "periodo": "03-02-2025→28-02-2025"
+      "cartola": "cartola_2025_EC57.pdf",
+      "periodo": "01/02/2025→28/02/2025"
     },
     {
       "socio": "Camilo",
@@ -2465,8 +2510,8 @@
       "monto": 500000,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (1).xml",
-      "periodo": "03-02-2025→28-02-2025"
+      "cartola": "cartola_2025_EC57.pdf",
+      "periodo": "01/02/2025→28/02/2025"
     },
     {
       "socio": "Jordi",
@@ -2474,8 +2519,8 @@
       "monto": 2000000,
       "descripcion": "TEF 13272830-5",
       "rut": "13272830-5",
-      "cartola": "typeDesc (1).xml",
-      "periodo": "03-02-2025→28-02-2025"
+      "cartola": "cartola_2025_EC57.pdf",
+      "periodo": "01/02/2025→28/02/2025"
     },
     {
       "socio": "Cristian",
@@ -2483,8 +2528,8 @@
       "monto": 1419996,
       "descripcion": "TEF 13066600-0",
       "rut": "13066600-0",
-      "cartola": "typeDesc (1).xml",
-      "periodo": "03-02-2025→28-02-2025"
+      "cartola": "cartola_2025_EC57.pdf",
+      "periodo": "01/02/2025→28/02/2025"
     },
     {
       "socio": "Jordi",
@@ -2492,8 +2537,8 @@
       "monto": 2000000,
       "descripcion": "TEF 13272830-5",
       "rut": "13272830-5",
-      "cartola": "typeDesc (1).xml",
-      "periodo": "03-02-2025→28-02-2025"
+      "cartola": "cartola_2025_EC57.pdf",
+      "periodo": "01/02/2025→28/02/2025"
     },
     {
       "socio": "Camilo",
@@ -2501,8 +2546,8 @@
       "monto": 500000,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (1).xml",
-      "periodo": "03-02-2025→28-02-2025"
+      "cartola": "cartola_2025_EC57.pdf",
+      "periodo": "01/02/2025→28/02/2025"
     },
     {
       "socio": "Cristian",
@@ -2510,8 +2555,8 @@
       "monto": 2000000,
       "descripcion": "TEF 13066600-0",
       "rut": "13066600-0",
-      "cartola": "typeDesc (1).xml",
-      "periodo": "03-02-2025→28-02-2025"
+      "cartola": "cartola_2025_EC57.pdf",
+      "periodo": "01/02/2025→28/02/2025"
     },
     {
       "socio": "Laura",
@@ -2519,8 +2564,8 @@
       "monto": 70000,
       "descripcion": "TEF 16656248-1 Laura Diaz",
       "rut": "16656248-1",
-      "cartola": "typeDesc (1).xml",
-      "periodo": "03-02-2025→28-02-2025"
+      "cartola": "cartola_2025_EC57.pdf",
+      "periodo": "01/02/2025→28/02/2025"
     },
     {
       "socio": "Camilo",
@@ -2528,26 +2573,26 @@
       "monto": 236667,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (1).xml",
-      "periodo": "03-02-2025→28-02-2025"
+      "cartola": "cartola_2025_EC57.pdf",
+      "periodo": "01/02/2025→28/02/2025"
     },
     {
       "socio": "Antonio",
       "fecha": "2025-03-03",
       "monto": 236666,
       "descripcion": "GGCC Aporte Mobiliario",
-      "rut": "",
-      "cartola": "typeDesc (2).xml",
-      "periodo": "03-03-2025→31-03-2025"
+      "rut": "13890149-1",
+      "cartola": "cartola_2025_EC58.pdf",
+      "periodo": "01/03/2025→31/03/2025"
     },
     {
       "socio": "Cristóbal",
       "fecha": "2025-03-03",
       "monto": 70000,
-      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "descripcion": "TEF 7746703-3 Cristobal Eduar",
       "rut": "7746703-3",
-      "cartola": "typeDesc (2).xml",
-      "periodo": "03-03-2025→31-03-2025"
+      "cartola": "cartola_2025_EC58.pdf",
+      "periodo": "01/03/2025→31/03/2025"
     },
     {
       "socio": "Eduardo",
@@ -2555,8 +2600,8 @@
       "monto": 140000,
       "descripcion": "TEF 13270339-6 Eduardo Enrique",
       "rut": "13270339-6",
-      "cartola": "typeDesc (2).xml",
-      "periodo": "03-03-2025→31-03-2025"
+      "cartola": "cartola_2025_EC58.pdf",
+      "periodo": "01/03/2025→31/03/2025"
     },
     {
       "socio": "Fernando",
@@ -2564,8 +2609,8 @@
       "monto": 236666,
       "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
       "rut": "20083182-9",
-      "cartola": "typeDesc (2).xml",
-      "periodo": "03-03-2025→31-03-2025"
+      "cartola": "cartola_2025_EC58.pdf",
+      "periodo": "01/03/2025→31/03/2025"
     },
     {
       "socio": "Eduardo",
@@ -2573,8 +2618,8 @@
       "monto": 70000,
       "descripcion": "TEF 13270339-6 Eduardo Enrique",
       "rut": "13270339-6",
-      "cartola": "typeDesc (2).xml",
-      "periodo": "03-03-2025→31-03-2025"
+      "cartola": "cartola_2025_EC58.pdf",
+      "periodo": "01/03/2025→31/03/2025"
     },
     {
       "socio": "Antonio",
@@ -2582,8 +2627,8 @@
       "monto": 236666,
       "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
       "rut": "13890149-1",
-      "cartola": "typeDesc (2).xml",
-      "periodo": "03-03-2025→31-03-2025"
+      "cartola": "cartola_2025_EC58.pdf",
+      "periodo": "01/03/2025→31/03/2025"
     },
     {
       "socio": "Eduardo",
@@ -2591,8 +2636,8 @@
       "monto": 4000000,
       "descripcion": "TEF 13455042-2 Anneli De La Lu",
       "rut": "13455042-2",
-      "cartola": "typeDesc (2).xml",
-      "periodo": "03-03-2025→31-03-2025"
+      "cartola": "cartola_2025_EC58.pdf",
+      "periodo": "01/03/2025→31/03/2025"
     },
     {
       "socio": "Felipe",
@@ -2600,8 +2645,8 @@
       "monto": 236666,
       "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
       "rut": "18273744-5",
-      "cartola": "typeDesc (2).xml",
-      "periodo": "03-03-2025→31-03-2025"
+      "cartola": "cartola_2025_EC58.pdf",
+      "periodo": "01/03/2025→31/03/2025"
     },
     {
       "socio": "Camilo",
@@ -2609,8 +2654,8 @@
       "monto": 236667,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (2).xml",
-      "periodo": "03-03-2025→31-03-2025"
+      "cartola": "cartola_2025_EC58.pdf",
+      "periodo": "01/03/2025→31/03/2025"
     },
     {
       "socio": "Jordi",
@@ -2618,17 +2663,17 @@
       "monto": 206666,
       "descripcion": "TEF 13272830-5",
       "rut": "13272830-5",
-      "cartola": "typeDesc (2).xml",
-      "periodo": "03-03-2025→31-03-2025"
+      "cartola": "cartola_2025_EC58.pdf",
+      "periodo": "01/03/2025→31/03/2025"
     },
     {
       "socio": "Antonio",
       "fecha": "2025-04-01",
       "monto": 236666,
       "descripcion": "GGCC Aporte Mobiliario",
-      "rut": "",
-      "cartola": "typeDesc (3).xml",
-      "periodo": "01-04-2025→28-04-2025"
+      "rut": "13890149-1",
+      "cartola": "cartola_2025_EC59.pdf",
+      "periodo": "01/04/2025→30/04/2025"
     },
     {
       "socio": "Laura",
@@ -2636,17 +2681,17 @@
       "monto": 70000,
       "descripcion": "TEF 16656248-1 Laura Diaz",
       "rut": "16656248-1",
-      "cartola": "typeDesc (3).xml",
-      "periodo": "01-04-2025→28-04-2025"
+      "cartola": "cartola_2025_EC59.pdf",
+      "periodo": "01/04/2025→30/04/2025"
     },
     {
       "socio": "Cristóbal",
       "fecha": "2025-04-03",
       "monto": 70000,
-      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "descripcion": "TEF 7746703-3 Cristobal Eduar",
       "rut": "7746703-3",
-      "cartola": "typeDesc (3).xml",
-      "periodo": "01-04-2025→28-04-2025"
+      "cartola": "cartola_2025_EC59.pdf",
+      "periodo": "01/04/2025→30/04/2025"
     },
     {
       "socio": "Eduardo",
@@ -2654,8 +2699,8 @@
       "monto": 70000,
       "descripcion": "TEF 13270339-6 Eduardo Enrique",
       "rut": "13270339-6",
-      "cartola": "typeDesc (3).xml",
-      "periodo": "01-04-2025→28-04-2025"
+      "cartola": "cartola_2025_EC59.pdf",
+      "periodo": "01/04/2025→30/04/2025"
     },
     {
       "socio": "Fernando",
@@ -2663,8 +2708,8 @@
       "monto": 236665,
       "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
       "rut": "20083182-9",
-      "cartola": "typeDesc (3).xml",
-      "periodo": "01-04-2025→28-04-2025"
+      "cartola": "cartola_2025_EC59.pdf",
+      "periodo": "01/04/2025→30/04/2025"
     },
     {
       "socio": "Antonio",
@@ -2672,8 +2717,8 @@
       "monto": 236666,
       "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
       "rut": "13890149-1",
-      "cartola": "typeDesc (3).xml",
-      "periodo": "01-04-2025→28-04-2025"
+      "cartola": "cartola_2025_EC59.pdf",
+      "periodo": "01/04/2025→30/04/2025"
     },
     {
       "socio": "Felipe",
@@ -2681,8 +2726,8 @@
       "monto": 236666,
       "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
       "rut": "18273744-5",
-      "cartola": "typeDesc (3).xml",
-      "periodo": "01-04-2025→28-04-2025"
+      "cartola": "cartola_2025_EC59.pdf",
+      "periodo": "01/04/2025→30/04/2025"
     },
     {
       "socio": "Camilo",
@@ -2690,8 +2735,8 @@
       "monto": 236667,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (3).xml",
-      "periodo": "01-04-2025→28-04-2025"
+      "cartola": "cartola_2025_EC59.pdf",
+      "periodo": "01/04/2025→30/04/2025"
     },
     {
       "socio": "Laura",
@@ -2699,26 +2744,26 @@
       "monto": 70000,
       "descripcion": "TEF 16656248-1 Laura Diaz",
       "rut": "16656248-1",
-      "cartola": "typeDesc (4).xml",
-      "periodo": "02-05-2025→30-05-2025"
+      "cartola": "cartola_2025_EC60.pdf",
+      "periodo": "01/05/2025→30/05/2025"
     },
     {
       "socio": "Antonio",
       "fecha": "2025-05-02",
       "monto": 236666,
       "descripcion": "GGCC Aporte Mobiliario",
-      "rut": "",
-      "cartola": "typeDesc (4).xml",
-      "periodo": "02-05-2025→30-05-2025"
+      "rut": "13890149-1",
+      "cartola": "cartola_2025_EC60.pdf",
+      "periodo": "01/05/2025→30/05/2025"
     },
     {
       "socio": "Cristóbal",
       "fecha": "2025-05-05",
       "monto": 70000,
-      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "descripcion": "TEF 7746703-3 Cristobal Eduar",
       "rut": "7746703-3",
-      "cartola": "typeDesc (4).xml",
-      "periodo": "02-05-2025→30-05-2025"
+      "cartola": "cartola_2025_EC60.pdf",
+      "periodo": "01/05/2025→30/05/2025"
     },
     {
       "socio": "Eduardo",
@@ -2726,8 +2771,8 @@
       "monto": 70000,
       "descripcion": "TEF 13270339-6 Eduardo Enrique",
       "rut": "13270339-6",
-      "cartola": "typeDesc (4).xml",
-      "periodo": "02-05-2025→30-05-2025"
+      "cartola": "cartola_2025_EC60.pdf",
+      "periodo": "01/05/2025→30/05/2025"
     },
     {
       "socio": "Antonio",
@@ -2735,8 +2780,8 @@
       "monto": 236666,
       "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
       "rut": "13890149-1",
-      "cartola": "typeDesc (4).xml",
-      "periodo": "02-05-2025→30-05-2025"
+      "cartola": "cartola_2025_EC60.pdf",
+      "periodo": "01/05/2025→30/05/2025"
     },
     {
       "socio": "Jordi",
@@ -2744,8 +2789,8 @@
       "monto": 679998,
       "descripcion": "TEF 13272830-5",
       "rut": "13272830-5",
-      "cartola": "typeDesc (4).xml",
-      "periodo": "02-05-2025→30-05-2025"
+      "cartola": "cartola_2025_EC60.pdf",
+      "periodo": "01/05/2025→30/05/2025"
     },
     {
       "socio": "Felipe",
@@ -2753,8 +2798,8 @@
       "monto": 236666,
       "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
       "rut": "18273744-5",
-      "cartola": "typeDesc (4).xml",
-      "periodo": "02-05-2025→30-05-2025"
+      "cartola": "cartola_2025_EC60.pdf",
+      "periodo": "01/05/2025→30/05/2025"
     },
     {
       "socio": "Sebastián",
@@ -2762,8 +2807,8 @@
       "monto": 300000,
       "descripcion": "TEF 13426837-9",
       "rut": "13426837-9",
-      "cartola": "typeDesc (4).xml",
-      "periodo": "02-05-2025→30-05-2025"
+      "cartola": "cartola_2025_EC60.pdf",
+      "periodo": "01/05/2025→30/05/2025"
     },
     {
       "socio": "Sebastián",
@@ -2771,8 +2816,8 @@
       "monto": 946664,
       "descripcion": "TEF 13426837-9",
       "rut": "13426837-9",
-      "cartola": "typeDesc (4).xml",
-      "periodo": "02-05-2025→30-05-2025"
+      "cartola": "cartola_2025_EC60.pdf",
+      "periodo": "01/05/2025→30/05/2025"
     },
     {
       "socio": "Camilo",
@@ -2780,8 +2825,8 @@
       "monto": 236667,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (4).xml",
-      "periodo": "02-05-2025→30-05-2025"
+      "cartola": "cartola_2025_EC60.pdf",
+      "periodo": "01/05/2025→30/05/2025"
     },
     {
       "socio": "Fernando",
@@ -2789,17 +2834,17 @@
       "monto": 236665,
       "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
       "rut": "20083182-9",
-      "cartola": "typeDesc (5).xml",
-      "periodo": "02-06-2025→27-06-2025"
+      "cartola": "cartola_2025_EC61.pdf",
+      "periodo": "01/06/2025→30/06/2025"
     },
     {
       "socio": "Antonio",
       "fecha": "2025-06-02",
       "monto": 236666,
       "descripcion": "GGCC Aporte Mobiliario",
-      "rut": "",
-      "cartola": "typeDesc (5).xml",
-      "periodo": "02-06-2025→27-06-2025"
+      "rut": "13890149-1",
+      "cartola": "cartola_2025_EC61.pdf",
+      "periodo": "01/06/2025→30/06/2025"
     },
     {
       "socio": "Laura",
@@ -2807,17 +2852,17 @@
       "monto": 70000,
       "descripcion": "TEF 16656248-1 Laura Diaz",
       "rut": "16656248-1",
-      "cartola": "typeDesc (5).xml",
-      "periodo": "02-06-2025→27-06-2025"
+      "cartola": "cartola_2025_EC61.pdf",
+      "periodo": "01/06/2025→30/06/2025"
     },
     {
       "socio": "Cristóbal",
       "fecha": "2025-06-03",
       "monto": 70000,
-      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "descripcion": "TEF 7746703-3 Cristobal Eduar",
       "rut": "7746703-3",
-      "cartola": "typeDesc (5).xml",
-      "periodo": "02-06-2025→27-06-2025"
+      "cartola": "cartola_2025_EC61.pdf",
+      "periodo": "01/06/2025→30/06/2025"
     },
     {
       "socio": "Jordi",
@@ -2825,8 +2870,8 @@
       "monto": 236666,
       "descripcion": "TEF 13272830-5",
       "rut": "13272830-5",
-      "cartola": "typeDesc (5).xml",
-      "periodo": "02-06-2025→27-06-2025"
+      "cartola": "cartola_2025_EC61.pdf",
+      "periodo": "01/06/2025→30/06/2025"
     },
     {
       "socio": "Eduardo",
@@ -2834,8 +2879,8 @@
       "monto": 70000,
       "descripcion": "TEF 13270339-6 Eduardo Enrique",
       "rut": "13270339-6",
-      "cartola": "typeDesc (5).xml",
-      "periodo": "02-06-2025→27-06-2025"
+      "cartola": "cartola_2025_EC61.pdf",
+      "periodo": "01/06/2025→30/06/2025"
     },
     {
       "socio": "Antonio",
@@ -2843,8 +2888,8 @@
       "monto": 236666,
       "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
       "rut": "13890149-1",
-      "cartola": "typeDesc (5).xml",
-      "periodo": "02-06-2025→27-06-2025"
+      "cartola": "cartola_2025_EC61.pdf",
+      "periodo": "01/06/2025→30/06/2025"
     },
     {
       "socio": "Felipe",
@@ -2852,8 +2897,8 @@
       "monto": 236666,
       "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
       "rut": "18273744-5",
-      "cartola": "typeDesc (5).xml",
-      "periodo": "02-06-2025→27-06-2025"
+      "cartola": "cartola_2025_EC61.pdf",
+      "periodo": "01/06/2025→30/06/2025"
     },
     {
       "socio": "Camilo",
@@ -2861,8 +2906,8 @@
       "monto": 236667,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (5).xml",
-      "periodo": "02-06-2025→27-06-2025"
+      "cartola": "cartola_2025_EC61.pdf",
+      "periodo": "01/06/2025→30/06/2025"
     },
     {
       "socio": "Fernando",
@@ -2870,17 +2915,17 @@
       "monto": 236665,
       "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
       "rut": "20083182-9",
-      "cartola": "typeDesc (5).xml",
-      "periodo": "02-06-2025→27-06-2025"
+      "cartola": "cartola_2025_EC61.pdf",
+      "periodo": "01/06/2025→30/06/2025"
     },
     {
       "socio": "Antonio",
       "fecha": "2025-07-01",
       "monto": 236666,
       "descripcion": "GGCC Aporte Mobiliario",
-      "rut": "",
-      "cartola": "typeDesc (6).xml",
-      "periodo": "01-07-2025→31-07-2025"
+      "rut": "13890149-1",
+      "cartola": "cartola_2025_EC62.pdf",
+      "periodo": "01/07/2025→31/07/2025"
     },
     {
       "socio": "Laura",
@@ -2888,17 +2933,17 @@
       "monto": 75000,
       "descripcion": "TEF 16656248-1 Laura Diaz",
       "rut": "16656248-1",
-      "cartola": "typeDesc (6).xml",
-      "periodo": "01-07-2025→31-07-2025"
+      "cartola": "cartola_2025_EC62.pdf",
+      "periodo": "01/07/2025→31/07/2025"
     },
     {
       "socio": "Cristóbal",
       "fecha": "2025-07-03",
       "monto": 70000,
-      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "descripcion": "TEF 7746703-3 Cristobal Eduar",
       "rut": "7746703-3",
-      "cartola": "typeDesc (6).xml",
-      "periodo": "01-07-2025→31-07-2025"
+      "cartola": "cartola_2025_EC62.pdf",
+      "periodo": "01/07/2025→31/07/2025"
     },
     {
       "socio": "Eduardo",
@@ -2906,8 +2951,8 @@
       "monto": 70000,
       "descripcion": "TEF 13270339-6 Eduardo Enrique",
       "rut": "13270339-6",
-      "cartola": "typeDesc (6).xml",
-      "periodo": "01-07-2025→31-07-2025"
+      "cartola": "cartola_2025_EC62.pdf",
+      "periodo": "01/07/2025→31/07/2025"
     },
     {
       "socio": "Antonio",
@@ -2915,8 +2960,8 @@
       "monto": 236666,
       "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
       "rut": "13890149-1",
-      "cartola": "typeDesc (6).xml",
-      "periodo": "01-07-2025→31-07-2025"
+      "cartola": "cartola_2025_EC62.pdf",
+      "periodo": "01/07/2025→31/07/2025"
     },
     {
       "socio": "Felipe",
@@ -2924,8 +2969,8 @@
       "monto": 236666,
       "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
       "rut": "18273744-5",
-      "cartola": "typeDesc (6).xml",
-      "periodo": "01-07-2025→31-07-2025"
+      "cartola": "cartola_2025_EC62.pdf",
+      "periodo": "01/07/2025→31/07/2025"
     },
     {
       "socio": "Antonio",
@@ -2933,8 +2978,8 @@
       "monto": 250000,
       "descripcion": "TEF 12106984-9 ALEJANDRA ACUNA",
       "rut": "12106984-9",
-      "cartola": "typeDesc (6).xml",
-      "periodo": "01-07-2025→31-07-2025"
+      "cartola": "cartola_2025_EC62.pdf",
+      "periodo": "01/07/2025→31/07/2025"
     },
     {
       "socio": "Antonio",
@@ -2942,8 +2987,8 @@
       "monto": 3250000,
       "descripcion": "TEF 12106984-9 ALEJANDRA ACUNA",
       "rut": "12106984-9",
-      "cartola": "typeDesc (6).xml",
-      "periodo": "01-07-2025→31-07-2025"
+      "cartola": "cartola_2025_EC62.pdf",
+      "periodo": "01/07/2025→31/07/2025"
     },
     {
       "socio": "Laura",
@@ -2951,8 +2996,8 @@
       "monto": 3500000,
       "descripcion": "TEF 16656248-1 Laura Diaz",
       "rut": "16656248-1",
-      "cartola": "typeDesc (6).xml",
-      "periodo": "01-07-2025→31-07-2025"
+      "cartola": "cartola_2025_EC62.pdf",
+      "periodo": "01/07/2025→31/07/2025"
     },
     {
       "socio": "Camilo",
@@ -2960,8 +3005,8 @@
       "monto": 236667,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (6).xml",
-      "periodo": "01-07-2025→31-07-2025"
+      "cartola": "cartola_2025_EC62.pdf",
+      "periodo": "01/07/2025→31/07/2025"
     },
     {
       "socio": "Camilo",
@@ -2969,8 +3014,8 @@
       "monto": 500000,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (6).xml",
-      "periodo": "01-07-2025→31-07-2025"
+      "cartola": "cartola_2025_EC62.pdf",
+      "periodo": "01/07/2025→31/07/2025"
     },
     {
       "socio": "Cristian",
@@ -2978,17 +3023,17 @@
       "monto": 3500000,
       "descripcion": "TEF 13066600-0",
       "rut": "13066600-0",
-      "cartola": "typeDesc (6).xml",
-      "periodo": "01-07-2025→31-07-2025"
+      "cartola": "cartola_2025_EC62.pdf",
+      "periodo": "01/07/2025→31/07/2025"
     },
     {
       "socio": "Cristóbal",
       "fecha": "2025-07-31",
       "monto": 3500000,
-      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "descripcion": "TEF 7746703-3 Cristobal Eduar",
       "rut": "7746703-3",
-      "cartola": "typeDesc (6).xml",
-      "periodo": "01-07-2025→31-07-2025"
+      "cartola": "cartola_2025_EC62.pdf",
+      "periodo": "01/07/2025→31/07/2025"
     },
     {
       "socio": "Felipe",
@@ -2996,17 +3041,17 @@
       "monto": 3500000,
       "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
       "rut": "18273744-5",
-      "cartola": "typeDesc (6).xml",
-      "periodo": "01-07-2025→31-07-2025"
+      "cartola": "cartola_2025_EC62.pdf",
+      "periodo": "01/07/2025→31/07/2025"
     },
     {
       "socio": "Antonio",
       "fecha": "2025-08-01",
       "monto": 236666,
       "descripcion": "GGCC Aporte Mobiliario",
-      "rut": "",
-      "cartola": "typeDesc (7).xml",
-      "periodo": "01-08-2025→29-08-2025"
+      "rut": "13890149-1",
+      "cartola": "cartola_2025_EC63.pdf",
+      "periodo": "01/08/2025→29/08/2025"
     },
     {
       "socio": "Laura",
@@ -3014,8 +3059,8 @@
       "monto": 75000,
       "descripcion": "TEF 16656248-1 Laura Diaz",
       "rut": "16656248-1",
-      "cartola": "typeDesc (7).xml",
-      "periodo": "01-08-2025→29-08-2025"
+      "cartola": "cartola_2025_EC63.pdf",
+      "periodo": "01/08/2025→29/08/2025"
     },
     {
       "socio": "Fernando",
@@ -3023,17 +3068,17 @@
       "monto": 236665,
       "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
       "rut": "20083182-9",
-      "cartola": "typeDesc (7).xml",
-      "periodo": "01-08-2025→29-08-2025"
+      "cartola": "cartola_2025_EC63.pdf",
+      "periodo": "01/08/2025→29/08/2025"
     },
     {
       "socio": "Cristóbal",
       "fecha": "2025-08-04",
       "monto": 70000,
-      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "descripcion": "TEF 7746703-3 Cristobal Eduar",
       "rut": "7746703-3",
-      "cartola": "typeDesc (7).xml",
-      "periodo": "01-08-2025→29-08-2025"
+      "cartola": "cartola_2025_EC63.pdf",
+      "periodo": "01/08/2025→29/08/2025"
     },
     {
       "socio": "Eduardo",
@@ -3041,8 +3086,8 @@
       "monto": 70000,
       "descripcion": "TEF 13270339-6 Eduardo Enrique",
       "rut": "13270339-6",
-      "cartola": "typeDesc (7).xml",
-      "periodo": "01-08-2025→29-08-2025"
+      "cartola": "cartola_2025_EC63.pdf",
+      "periodo": "01/08/2025→29/08/2025"
     },
     {
       "socio": "Antonio",
@@ -3050,8 +3095,8 @@
       "monto": 236666,
       "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
       "rut": "13890149-1",
-      "cartola": "typeDesc (7).xml",
-      "periodo": "01-08-2025→29-08-2025"
+      "cartola": "cartola_2025_EC63.pdf",
+      "periodo": "01/08/2025→29/08/2025"
     },
     {
       "socio": "Eduardo",
@@ -3059,8 +3104,8 @@
       "monto": 3500000,
       "descripcion": "TEF 13455042-2 Anneli De La Lu",
       "rut": "13455042-2",
-      "cartola": "typeDesc (7).xml",
-      "periodo": "01-08-2025→29-08-2025"
+      "cartola": "cartola_2025_EC63.pdf",
+      "periodo": "01/08/2025→29/08/2025"
     },
     {
       "socio": "Fernando",
@@ -3068,8 +3113,8 @@
       "monto": 3500000,
       "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
       "rut": "20083182-9",
-      "cartola": "typeDesc (7).xml",
-      "periodo": "01-08-2025→29-08-2025"
+      "cartola": "cartola_2025_EC63.pdf",
+      "periodo": "01/08/2025→29/08/2025"
     },
     {
       "socio": "Felipe",
@@ -3077,8 +3122,8 @@
       "monto": 236666,
       "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
       "rut": "18273744-5",
-      "cartola": "typeDesc (7).xml",
-      "periodo": "01-08-2025→29-08-2025"
+      "cartola": "cartola_2025_EC63.pdf",
+      "periodo": "01/08/2025→29/08/2025"
     },
     {
       "socio": "Camilo",
@@ -3086,8 +3131,8 @@
       "monto": 236667,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (7).xml",
-      "periodo": "01-08-2025→29-08-2025"
+      "cartola": "cartola_2025_EC63.pdf",
+      "periodo": "01/08/2025→29/08/2025"
     },
     {
       "socio": "Camilo",
@@ -3095,17 +3140,17 @@
       "monto": 500000,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (7).xml",
-      "periodo": "01-08-2025→29-08-2025"
+      "cartola": "cartola_2025_EC63.pdf",
+      "periodo": "01/08/2025→29/08/2025"
     },
     {
       "socio": "Antonio",
       "fecha": "2025-09-01",
       "monto": 236666,
       "descripcion": "GGCC Aporte Mobiliario",
-      "rut": "",
-      "cartola": "typeDesc (8).xml",
-      "periodo": "01-09-2025→30-09-2025"
+      "rut": "13890149-1",
+      "cartola": "cartola_2025_EC64.pdf",
+      "periodo": "01/09/2025→30/09/2025"
     },
     {
       "socio": "Laura",
@@ -3113,17 +3158,17 @@
       "monto": 75000,
       "descripcion": "TEF 16656248-1 Laura Diaz",
       "rut": "16656248-1",
-      "cartola": "typeDesc (8).xml",
-      "periodo": "01-09-2025→30-09-2025"
+      "cartola": "cartola_2025_EC64.pdf",
+      "periodo": "01/09/2025→30/09/2025"
     },
     {
       "socio": "Cristóbal",
       "fecha": "2025-09-03",
       "monto": 70000,
-      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "descripcion": "TEF 7746703-3 Cristobal Eduar",
       "rut": "7746703-3",
-      "cartola": "typeDesc (8).xml",
-      "periodo": "01-09-2025→30-09-2025"
+      "cartola": "cartola_2025_EC64.pdf",
+      "periodo": "01/09/2025→30/09/2025"
     },
     {
       "socio": "Fernando",
@@ -3131,8 +3176,8 @@
       "monto": 236665,
       "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
       "rut": "20083182-9",
-      "cartola": "typeDesc (8).xml",
-      "periodo": "01-09-2025→30-09-2025"
+      "cartola": "cartola_2025_EC64.pdf",
+      "periodo": "01/09/2025→30/09/2025"
     },
     {
       "socio": "Eduardo",
@@ -3140,8 +3185,8 @@
       "monto": 70000,
       "descripcion": "TEF 13270339-6 Eduardo Enrique",
       "rut": "13270339-6",
-      "cartola": "typeDesc (8).xml",
-      "periodo": "01-09-2025→30-09-2025"
+      "cartola": "cartola_2025_EC64.pdf",
+      "periodo": "01/09/2025→30/09/2025"
     },
     {
       "socio": "Antonio",
@@ -3149,8 +3194,8 @@
       "monto": 236666,
       "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
       "rut": "13890149-1",
-      "cartola": "typeDesc (8).xml",
-      "periodo": "01-09-2025→30-09-2025"
+      "cartola": "cartola_2025_EC64.pdf",
+      "periodo": "01/09/2025→30/09/2025"
     },
     {
       "socio": "Felipe",
@@ -3158,8 +3203,8 @@
       "monto": 236666,
       "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
       "rut": "18273744-5",
-      "cartola": "typeDesc (8).xml",
-      "periodo": "01-09-2025→30-09-2025"
+      "cartola": "cartola_2025_EC64.pdf",
+      "periodo": "01/09/2025→30/09/2025"
     },
     {
       "socio": "Fernando",
@@ -3167,8 +3212,8 @@
       "monto": 236665,
       "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
       "rut": "20083182-9",
-      "cartola": "typeDesc (8).xml",
-      "periodo": "01-09-2025→30-09-2025"
+      "cartola": "cartola_2025_EC64.pdf",
+      "periodo": "01/09/2025→30/09/2025"
     },
     {
       "socio": "Camilo",
@@ -3176,8 +3221,8 @@
       "monto": 236667,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (8).xml",
-      "periodo": "01-09-2025→30-09-2025"
+      "cartola": "cartola_2025_EC64.pdf",
+      "periodo": "01/09/2025→30/09/2025"
     },
     {
       "socio": "Camilo",
@@ -3185,17 +3230,17 @@
       "monto": 500000,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (8).xml",
-      "periodo": "01-09-2025→30-09-2025"
+      "cartola": "cartola_2025_EC64.pdf",
+      "periodo": "01/09/2025→30/09/2025"
     },
     {
       "socio": "Antonio",
       "fecha": "2025-10-01",
       "monto": 236666,
       "descripcion": "GGCC Aporte Mobiliario",
-      "rut": "",
-      "cartola": "typeDesc (9).xml",
-      "periodo": "01-10-2025→30-10-2025"
+      "rut": "13890149-1",
+      "cartola": "cartola_2025_EC65.pdf",
+      "periodo": "01/10/2025→30/10/2025"
     },
     {
       "socio": "Laura",
@@ -3203,17 +3248,17 @@
       "monto": 75000,
       "descripcion": "TEF 16656248-1 Laura Diaz",
       "rut": "16656248-1",
-      "cartola": "typeDesc (9).xml",
-      "periodo": "01-10-2025→30-10-2025"
+      "cartola": "cartola_2025_EC65.pdf",
+      "periodo": "01/10/2025→30/10/2025"
     },
     {
       "socio": "Cristóbal",
       "fecha": "2025-10-03",
       "monto": 70000,
-      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "descripcion": "TEF 7746703-3 Cristobal Eduar",
       "rut": "7746703-3",
-      "cartola": "typeDesc (9).xml",
-      "periodo": "01-10-2025→30-10-2025"
+      "cartola": "cartola_2025_EC65.pdf",
+      "periodo": "01/10/2025→30/10/2025"
     },
     {
       "socio": "Eduardo",
@@ -3221,8 +3266,8 @@
       "monto": 70000,
       "descripcion": "TEF 13270339-6 Eduardo Enrique",
       "rut": "13270339-6",
-      "cartola": "typeDesc (9).xml",
-      "periodo": "01-10-2025→30-10-2025"
+      "cartola": "cartola_2025_EC65.pdf",
+      "periodo": "01/10/2025→30/10/2025"
     },
     {
       "socio": "Antonio",
@@ -3230,8 +3275,8 @@
       "monto": 236666,
       "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
       "rut": "13890149-1",
-      "cartola": "typeDesc (9).xml",
-      "periodo": "01-10-2025→30-10-2025"
+      "cartola": "cartola_2025_EC65.pdf",
+      "periodo": "01/10/2025→30/10/2025"
     },
     {
       "socio": "Felipe",
@@ -3239,8 +3284,8 @@
       "monto": 236666,
       "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
       "rut": "18273744-5",
-      "cartola": "typeDesc (9).xml",
-      "periodo": "01-10-2025→30-10-2025"
+      "cartola": "cartola_2025_EC65.pdf",
+      "periodo": "01/10/2025→30/10/2025"
     },
     {
       "socio": "Camilo",
@@ -3248,8 +3293,8 @@
       "monto": 236667,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (9).xml",
-      "periodo": "01-10-2025→30-10-2025"
+      "cartola": "cartola_2025_EC65.pdf",
+      "periodo": "01/10/2025→30/10/2025"
     },
     {
       "socio": "Camilo",
@@ -3257,8 +3302,8 @@
       "monto": 500000,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (9).xml",
-      "periodo": "01-10-2025→30-10-2025"
+      "cartola": "cartola_2025_EC65.pdf",
+      "periodo": "01/10/2025→30/10/2025"
     },
     {
       "socio": "Laura",
@@ -3266,26 +3311,26 @@
       "monto": 75000,
       "descripcion": "TEF 16656248-1 Laura Diaz",
       "rut": "16656248-1",
-      "cartola": "typeDesc (10).xml",
-      "periodo": "03-11-2025→28-11-2025"
+      "cartola": "cartola_2025_EC66.pdf",
+      "periodo": "01/11/2025→28/11/2025"
     },
     {
       "socio": "Cristóbal",
       "fecha": "2025-11-03",
       "monto": 70000,
-      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "descripcion": "TEF 7746703-3 Cristobal Eduar",
       "rut": "7746703-3",
-      "cartola": "typeDesc (10).xml",
-      "periodo": "03-11-2025→28-11-2025"
+      "cartola": "cartola_2025_EC66.pdf",
+      "periodo": "01/11/2025→28/11/2025"
     },
     {
       "socio": "Antonio",
       "fecha": "2025-11-03",
       "monto": 236666,
       "descripcion": "GGCC Aporte Mobiliario",
-      "rut": "",
-      "cartola": "typeDesc (10).xml",
-      "periodo": "03-11-2025→28-11-2025"
+      "rut": "13890149-1",
+      "cartola": "cartola_2025_EC66.pdf",
+      "periodo": "01/11/2025→28/11/2025"
     },
     {
       "socio": "Eduardo",
@@ -3293,8 +3338,8 @@
       "monto": 70000,
       "descripcion": "TEF 13270339-6 Eduardo Enrique",
       "rut": "13270339-6",
-      "cartola": "typeDesc (10).xml",
-      "periodo": "03-11-2025→28-11-2025"
+      "cartola": "cartola_2025_EC66.pdf",
+      "periodo": "01/11/2025→28/11/2025"
     },
     {
       "socio": "Antonio",
@@ -3302,8 +3347,8 @@
       "monto": 236666,
       "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
       "rut": "13890149-1",
-      "cartola": "typeDesc (10).xml",
-      "periodo": "03-11-2025→28-11-2025"
+      "cartola": "cartola_2025_EC66.pdf",
+      "periodo": "01/11/2025→28/11/2025"
     },
     {
       "socio": "Fernando",
@@ -3311,8 +3356,8 @@
       "monto": 236665,
       "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
       "rut": "20083182-9",
-      "cartola": "typeDesc (10).xml",
-      "periodo": "03-11-2025→28-11-2025"
+      "cartola": "cartola_2025_EC66.pdf",
+      "periodo": "01/11/2025→28/11/2025"
     },
     {
       "socio": "Felipe",
@@ -3320,8 +3365,8 @@
       "monto": 236666,
       "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
       "rut": "18273744-5",
-      "cartola": "typeDesc (10).xml",
-      "periodo": "03-11-2025→28-11-2025"
+      "cartola": "cartola_2025_EC66.pdf",
+      "periodo": "01/11/2025→28/11/2025"
     },
     {
       "socio": "Camilo",
@@ -3329,8 +3374,8 @@
       "monto": 236667,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (10).xml",
-      "periodo": "03-11-2025→28-11-2025"
+      "cartola": "cartola_2025_EC66.pdf",
+      "periodo": "01/11/2025→28/11/2025"
     },
     {
       "socio": "Camilo",
@@ -3338,8 +3383,8 @@
       "monto": 500000,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (10).xml",
-      "periodo": "03-11-2025→28-11-2025"
+      "cartola": "cartola_2025_EC66.pdf",
+      "periodo": "01/11/2025→28/11/2025"
     },
     {
       "socio": "Sebastián",
@@ -3347,8 +3392,8 @@
       "monto": 5000000,
       "descripcion": "TEF 13426837-9",
       "rut": "13426837-9",
-      "cartola": "typeDesc (10).xml",
-      "periodo": "03-11-2025→28-11-2025"
+      "cartola": "cartola_2025_EC66.pdf",
+      "periodo": "01/11/2025→28/11/2025"
     },
     {
       "socio": "Jordi",
@@ -3356,8 +3401,8 @@
       "monto": 3500000,
       "descripcion": "TEF 13272830-5",
       "rut": "13272830-5",
-      "cartola": "typeDesc (10).xml",
-      "periodo": "03-11-2025→28-11-2025"
+      "cartola": "cartola_2025_EC66.pdf",
+      "periodo": "01/11/2025→28/11/2025"
     },
     {
       "socio": "Jordi",
@@ -3365,17 +3410,17 @@
       "monto": 1183330,
       "descripcion": "TEF 13272830-5",
       "rut": "13272830-5",
-      "cartola": "typeDesc (10).xml",
-      "periodo": "03-11-2025→28-11-2025"
+      "cartola": "cartola_2025_EC66.pdf",
+      "periodo": "01/11/2025→28/11/2025"
     },
     {
       "socio": "Antonio",
       "fecha": "2025-12-01",
       "monto": 236666,
       "descripcion": "GGCC Aporte Mobiliario",
-      "rut": "",
-      "cartola": "typeDesc (11).xml",
-      "periodo": "01-12-2025→30-12-2025"
+      "rut": "13890149-1",
+      "cartola": "cartola_2025_EC67.pdf",
+      "periodo": "01/12/2025→30/12/2025"
     },
     {
       "socio": "Laura",
@@ -3383,8 +3428,8 @@
       "monto": 75000,
       "descripcion": "TEF 16656248-1 Laura Diaz",
       "rut": "16656248-1",
-      "cartola": "typeDesc (11).xml",
-      "periodo": "01-12-2025→30-12-2025"
+      "cartola": "cartola_2025_EC67.pdf",
+      "periodo": "01/12/2025→30/12/2025"
     },
     {
       "socio": "Fernando",
@@ -3392,17 +3437,17 @@
       "monto": 236665,
       "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
       "rut": "20083182-9",
-      "cartola": "typeDesc (11).xml",
-      "periodo": "01-12-2025→30-12-2025"
+      "cartola": "cartola_2025_EC67.pdf",
+      "periodo": "01/12/2025→30/12/2025"
     },
     {
       "socio": "Cristóbal",
       "fecha": "2025-12-03",
       "monto": 70000,
-      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "descripcion": "TEF 7746703-3 Cristobal Eduar",
       "rut": "7746703-3",
-      "cartola": "typeDesc (11).xml",
-      "periodo": "01-12-2025→30-12-2025"
+      "cartola": "cartola_2025_EC67.pdf",
+      "periodo": "01/12/2025→30/12/2025"
     },
     {
       "socio": "Eduardo",
@@ -3410,8 +3455,8 @@
       "monto": 70000,
       "descripcion": "TEF 13270339-6 Eduardo Enrique",
       "rut": "13270339-6",
-      "cartola": "typeDesc (11).xml",
-      "periodo": "01-12-2025→30-12-2025"
+      "cartola": "cartola_2025_EC67.pdf",
+      "periodo": "01/12/2025→30/12/2025"
     },
     {
       "socio": "Antonio",
@@ -3419,8 +3464,8 @@
       "monto": 236666,
       "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
       "rut": "13890149-1",
-      "cartola": "typeDesc (11).xml",
-      "periodo": "01-12-2025→30-12-2025"
+      "cartola": "cartola_2025_EC67.pdf",
+      "periodo": "01/12/2025→30/12/2025"
     },
     {
       "socio": "Felipe",
@@ -3428,8 +3473,8 @@
       "monto": 236666,
       "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
       "rut": "18273744-5",
-      "cartola": "typeDesc (11).xml",
-      "periodo": "01-12-2025→30-12-2025"
+      "cartola": "cartola_2025_EC67.pdf",
+      "periodo": "01/12/2025→30/12/2025"
     },
     {
       "socio": "Camilo",
@@ -3437,8 +3482,8 @@
       "monto": 500000,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (11).xml",
-      "periodo": "01-12-2025→30-12-2025"
+      "cartola": "cartola_2025_EC67.pdf",
+      "periodo": "01/12/2025→30/12/2025"
     },
     {
       "socio": "Camilo",
@@ -3446,8 +3491,8 @@
       "monto": 500000,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (11).xml",
-      "periodo": "01-12-2025→30-12-2025"
+      "cartola": "cartola_2025_EC67.pdf",
+      "periodo": "01/12/2025→30/12/2025"
     },
     {
       "socio": "Felipe",
@@ -3455,8 +3500,8 @@
       "monto": 2000000,
       "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
       "rut": "18273744-5",
-      "cartola": "typeDesc (11).xml",
-      "periodo": "01-12-2025→30-12-2025"
+      "cartola": "cartola_2025_EC67.pdf",
+      "periodo": "01/12/2025→30/12/2025"
     },
     {
       "socio": "Camilo",
@@ -3464,8 +3509,8 @@
       "monto": 536667,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (11).xml",
-      "periodo": "01-12-2025→30-12-2025"
+      "cartola": "cartola_2025_EC67.pdf",
+      "periodo": "01/12/2025→30/12/2025"
     },
     {
       "socio": "Eduardo",
@@ -3473,8 +3518,8 @@
       "monto": 4000000,
       "descripcion": "TEF 13455042-2 Anneli De La Lu",
       "rut": "13455042-2",
-      "cartola": "typeDesc (11).xml",
-      "periodo": "01-12-2025→30-12-2025"
+      "cartola": "cartola_2025_EC67.pdf",
+      "periodo": "01/12/2025→30/12/2025"
     },
     {
       "socio": "Sebastián",
@@ -3482,8 +3527,8 @@
       "monto": 4000000,
       "descripcion": "TEF 13426837-9 SEBASTIAN PABLO",
       "rut": "13426837-9",
-      "cartola": "typeDesc (11).xml",
-      "periodo": "01-12-2025→30-12-2025"
+      "cartola": "cartola_2025_EC67.pdf",
+      "periodo": "01/12/2025→30/12/2025"
     },
     {
       "socio": "Camilo",
@@ -3491,17 +3536,17 @@
       "monto": 2000000,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (13).xml",
-      "periodo": "02-01-2026→30-01-2026"
+      "cartola": "cartola_2026_EC68.pdf",
+      "periodo": "01/01/2026→30/01/2026"
     },
     {
       "socio": "Antonio",
       "fecha": "2026-01-02",
       "monto": 236666,
       "descripcion": "GGCC Aporte Mobiliario",
-      "rut": "",
-      "cartola": "typeDesc (13).xml",
-      "periodo": "02-01-2026→30-01-2026"
+      "rut": "13890149-1",
+      "cartola": "cartola_2026_EC68.pdf",
+      "periodo": "01/01/2026→30/01/2026"
     },
     {
       "socio": "Laura",
@@ -3509,8 +3554,8 @@
       "monto": 75000,
       "descripcion": "TEF 16656248-1 Laura Diaz",
       "rut": "16656248-1",
-      "cartola": "typeDesc (13).xml",
-      "periodo": "02-01-2026→30-01-2026"
+      "cartola": "cartola_2026_EC68.pdf",
+      "periodo": "01/01/2026→30/01/2026"
     },
     {
       "socio": "Fernando",
@@ -3518,17 +3563,17 @@
       "monto": 236666,
       "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
       "rut": "20083182-9",
-      "cartola": "typeDesc (13).xml",
-      "periodo": "02-01-2026→30-01-2026"
+      "cartola": "cartola_2026_EC68.pdf",
+      "periodo": "01/01/2026→30/01/2026"
     },
     {
       "socio": "Cristóbal",
       "fecha": "2026-01-05",
       "monto": 70000,
-      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "descripcion": "TEF 7746703-3 Cristobal Eduar",
       "rut": "7746703-3",
-      "cartola": "typeDesc (13).xml",
-      "periodo": "02-01-2026→30-01-2026"
+      "cartola": "cartola_2026_EC68.pdf",
+      "periodo": "01/01/2026→30/01/2026"
     },
     {
       "socio": "Eduardo",
@@ -3536,8 +3581,8 @@
       "monto": 70000,
       "descripcion": "TEF 13270339-6 Eduardo Enrique",
       "rut": "13270339-6",
-      "cartola": "typeDesc (13).xml",
-      "periodo": "02-01-2026→30-01-2026"
+      "cartola": "cartola_2026_EC68.pdf",
+      "periodo": "01/01/2026→30/01/2026"
     },
     {
       "socio": "Antonio",
@@ -3545,8 +3590,8 @@
       "monto": 236666,
       "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
       "rut": "13890149-1",
-      "cartola": "typeDesc (13).xml",
-      "periodo": "02-01-2026→30-01-2026"
+      "cartola": "cartola_2026_EC68.pdf",
+      "periodo": "01/01/2026→30/01/2026"
     },
     {
       "socio": "Fernando",
@@ -3554,8 +3599,8 @@
       "monto": 2500000,
       "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
       "rut": "20083182-9",
-      "cartola": "typeDesc (13).xml",
-      "periodo": "02-01-2026→30-01-2026"
+      "cartola": "cartola_2026_EC68.pdf",
+      "periodo": "01/01/2026→30/01/2026"
     },
     {
       "socio": "Felipe",
@@ -3563,8 +3608,8 @@
       "monto": 236666,
       "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
       "rut": "18273744-5",
-      "cartola": "typeDesc (13).xml",
-      "periodo": "02-01-2026→30-01-2026"
+      "cartola": "cartola_2026_EC68.pdf",
+      "periodo": "01/01/2026→30/01/2026"
     },
     {
       "socio": "Camilo",
@@ -3572,8 +3617,8 @@
       "monto": 1000000,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (13).xml",
-      "periodo": "02-01-2026→30-01-2026"
+      "cartola": "cartola_2026_EC68.pdf",
+      "periodo": "01/01/2026→30/01/2026"
     },
     {
       "socio": "Fernando",
@@ -3581,8 +3626,8 @@
       "monto": 300000,
       "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
       "rut": "20083182-9",
-      "cartola": "typeDesc (13).xml",
-      "periodo": "02-01-2026→30-01-2026"
+      "cartola": "cartola_2026_EC68.pdf",
+      "periodo": "01/01/2026→30/01/2026"
     },
     {
       "socio": "Eduardo",
@@ -3590,17 +3635,17 @@
       "monto": 300000,
       "descripcion": "TEF 13455042-2 Anneli De La Lu",
       "rut": "13455042-2",
-      "cartola": "typeDesc (13).xml",
-      "periodo": "02-01-2026→30-01-2026"
+      "cartola": "cartola_2026_EC68.pdf",
+      "periodo": "01/01/2026→30/01/2026"
     },
     {
       "socio": "Cristóbal",
       "fecha": "2026-01-14",
       "monto": 1000000,
-      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "descripcion": "TEF 7746703-3 Cristobal Eduar",
       "rut": "7746703-3",
-      "cartola": "typeDesc (13).xml",
-      "periodo": "02-01-2026→30-01-2026"
+      "cartola": "cartola_2026_EC68.pdf",
+      "periodo": "01/01/2026→30/01/2026"
     },
     {
       "socio": "Felipe",
@@ -3608,17 +3653,17 @@
       "monto": 1000000,
       "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
       "rut": "18273744-5",
-      "cartola": "typeDesc (13).xml",
-      "periodo": "02-01-2026→30-01-2026"
+      "cartola": "cartola_2026_EC68.pdf",
+      "periodo": "01/01/2026→30/01/2026"
     },
     {
       "socio": "Cristóbal",
       "fecha": "2026-01-15",
       "monto": 300000,
-      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "descripcion": "TEF 7746703-3 Cristobal Eduar",
       "rut": "7746703-3",
-      "cartola": "typeDesc (13).xml",
-      "periodo": "02-01-2026→30-01-2026"
+      "cartola": "cartola_2026_EC68.pdf",
+      "periodo": "01/01/2026→30/01/2026"
     },
     {
       "socio": "Camilo",
@@ -3626,8 +3671,8 @@
       "monto": 1000000,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (13).xml",
-      "periodo": "02-01-2026→30-01-2026"
+      "cartola": "cartola_2026_EC68.pdf",
+      "periodo": "01/01/2026→30/01/2026"
     },
     {
       "socio": "Jordi",
@@ -3635,8 +3680,8 @@
       "monto": 1000000,
       "descripcion": "TEF 13272830-5",
       "rut": "13272830-5",
-      "cartola": "typeDesc (13).xml",
-      "periodo": "02-01-2026→30-01-2026"
+      "cartola": "cartola_2026_EC68.pdf",
+      "periodo": "01/01/2026→30/01/2026"
     },
     {
       "socio": "Camilo",
@@ -3644,8 +3689,8 @@
       "monto": 300000,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (13).xml",
-      "periodo": "02-01-2026→30-01-2026"
+      "cartola": "cartola_2026_EC68.pdf",
+      "periodo": "01/01/2026→30/01/2026"
     },
     {
       "socio": "Camilo",
@@ -3653,8 +3698,8 @@
       "monto": 236667,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (13).xml",
-      "periodo": "02-01-2026→30-01-2026"
+      "cartola": "cartola_2026_EC68.pdf",
+      "periodo": "01/01/2026→30/01/2026"
     },
     {
       "socio": "Felipe",
@@ -3662,8 +3707,8 @@
       "monto": 1000000,
       "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
       "rut": "18273744-5",
-      "cartola": "typeDesc (13).xml",
-      "periodo": "02-01-2026→30-01-2026"
+      "cartola": "cartola_2026_EC68.pdf",
+      "periodo": "01/01/2026→30/01/2026"
     },
     {
       "socio": "Laura",
@@ -3671,17 +3716,17 @@
       "monto": 75000,
       "descripcion": "TEF 16656248-1 Laura Diaz",
       "rut": "16656248-1",
-      "cartola": "typeDesc (14).xml",
-      "periodo": "02-02-2026→26-02-2026"
+      "cartola": "cartola_2026_EC69.pdf",
+      "periodo": "01/02/2026→27/02/2026"
     },
     {
       "socio": "Antonio",
       "fecha": "2026-02-02",
       "monto": 236666,
       "descripcion": "GGCC Aporte Mobiliario",
-      "rut": "",
-      "cartola": "typeDesc (14).xml",
-      "periodo": "02-02-2026→26-02-2026"
+      "rut": "13890149-1",
+      "cartola": "cartola_2026_EC69.pdf",
+      "periodo": "01/02/2026→27/02/2026"
     },
     {
       "socio": "Eduardo",
@@ -3689,8 +3734,8 @@
       "monto": 70000,
       "descripcion": "TEF 13270339-6 Eduardo Enrique",
       "rut": "13270339-6",
-      "cartola": "typeDesc (14).xml",
-      "periodo": "02-02-2026→26-02-2026"
+      "cartola": "cartola_2026_EC69.pdf",
+      "periodo": "01/02/2026→27/02/2026"
     },
     {
       "socio": "Fernando",
@@ -3698,8 +3743,8 @@
       "monto": 236665,
       "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
       "rut": "20083182-9",
-      "cartola": "typeDesc (14).xml",
-      "periodo": "02-02-2026→26-02-2026"
+      "cartola": "cartola_2026_EC69.pdf",
+      "periodo": "01/02/2026→27/02/2026"
     },
     {
       "socio": "Fernando",
@@ -3707,8 +3752,8 @@
       "monto": 300000,
       "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
       "rut": "20083182-9",
-      "cartola": "typeDesc (14).xml",
-      "periodo": "02-02-2026→26-02-2026"
+      "cartola": "cartola_2026_EC69.pdf",
+      "periodo": "01/02/2026→27/02/2026"
     },
     {
       "socio": "Antonio",
@@ -3716,8 +3761,8 @@
       "monto": 236666,
       "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
       "rut": "13890149-1",
-      "cartola": "typeDesc (14).xml",
-      "periodo": "02-02-2026→26-02-2026"
+      "cartola": "cartola_2026_EC69.pdf",
+      "periodo": "01/02/2026→27/02/2026"
     },
     {
       "socio": "Eduardo",
@@ -3725,8 +3770,8 @@
       "monto": 300000,
       "descripcion": "TEF 13455042-2 Anneli De La Lu",
       "rut": "13455042-2",
-      "cartola": "typeDesc (14).xml",
-      "periodo": "02-02-2026→26-02-2026"
+      "cartola": "cartola_2026_EC69.pdf",
+      "periodo": "01/02/2026→27/02/2026"
     },
     {
       "socio": "Felipe",
@@ -3734,17 +3779,17 @@
       "monto": 236666,
       "descripcion": "TEF 18273744-5 SIMONSOHN GONZA",
       "rut": "18273744-5",
-      "cartola": "typeDesc (14).xml",
-      "periodo": "02-02-2026→26-02-2026"
+      "cartola": "cartola_2026_EC69.pdf",
+      "periodo": "01/02/2026→27/02/2026"
     },
     {
       "socio": "Cristóbal",
       "fecha": "2026-02-16",
       "monto": 300000,
-      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "descripcion": "TEF 7746703-3 Cristobal Eduar",
       "rut": "7746703-3",
-      "cartola": "typeDesc (14).xml",
-      "periodo": "02-02-2026→26-02-2026"
+      "cartola": "cartola_2026_EC69.pdf",
+      "periodo": "01/02/2026→27/02/2026"
     },
     {
       "socio": "Eduardo",
@@ -3752,8 +3797,8 @@
       "monto": 3000000,
       "descripcion": "TEF 13455042-2 Anneli De La Lu",
       "rut": "13455042-2",
-      "cartola": "typeDesc (14).xml",
-      "periodo": "02-02-2026→26-02-2026"
+      "cartola": "cartola_2026_EC69.pdf",
+      "periodo": "01/02/2026→27/02/2026"
     },
     {
       "socio": "Jordi",
@@ -3761,8 +3806,8 @@
       "monto": 2000000,
       "descripcion": "TEF 13272830-5",
       "rut": "13272830-5",
-      "cartola": "typeDesc (14).xml",
-      "periodo": "02-02-2026→26-02-2026"
+      "cartola": "cartola_2026_EC69.pdf",
+      "periodo": "01/02/2026→27/02/2026"
     },
     {
       "socio": "Camilo",
@@ -3770,17 +3815,17 @@
       "monto": 236667,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (14).xml",
-      "periodo": "02-02-2026→26-02-2026"
+      "cartola": "cartola_2026_EC69.pdf",
+      "periodo": "01/02/2026→27/02/2026"
     },
     {
       "socio": "Cristóbal",
       "fecha": "2026-02-23",
       "monto": 1500000,
-      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "descripcion": "TEF 7746703-3 Cristobal Eduar",
       "rut": "7746703-3",
-      "cartola": "typeDesc (14).xml",
-      "periodo": "02-02-2026→26-02-2026"
+      "cartola": "cartola_2026_EC69.pdf",
+      "periodo": "01/02/2026→27/02/2026"
     },
     {
       "socio": "Camilo",
@@ -3788,8 +3833,8 @@
       "monto": 300000,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (14).xml",
-      "periodo": "02-02-2026→26-02-2026"
+      "cartola": "cartola_2026_EC69.pdf",
+      "periodo": "01/02/2026→27/02/2026"
     },
     {
       "socio": "Laura",
@@ -3797,17 +3842,17 @@
       "monto": 75000,
       "descripcion": "TEF 16656248-1 Laura Diaz",
       "rut": "16656248-1",
-      "cartola": "typeDesc (15).xml",
-      "periodo": "02-03-2026→27-03-2026"
+      "cartola": "cartola_2026_EC70.pdf",
+      "periodo": "01/03/2026→31/03/2026"
     },
     {
       "socio": "Antonio",
       "fecha": "2026-03-02",
       "monto": 236666,
       "descripcion": "GGCC Aporte Mobiliario",
-      "rut": "",
-      "cartola": "typeDesc (15).xml",
-      "periodo": "02-03-2026→27-03-2026"
+      "rut": "13890149-1",
+      "cartola": "cartola_2026_EC70.pdf",
+      "periodo": "01/03/2026→31/03/2026"
     },
     {
       "socio": "Fernando",
@@ -3815,8 +3860,8 @@
       "monto": 236665,
       "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
       "rut": "20083182-9",
-      "cartola": "typeDesc (15).xml",
-      "periodo": "02-03-2026→27-03-2026"
+      "cartola": "cartola_2026_EC70.pdf",
+      "periodo": "01/03/2026→31/03/2026"
     },
     {
       "socio": "Fernando",
@@ -3824,8 +3869,8 @@
       "monto": 300000,
       "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
       "rut": "20083182-9",
-      "cartola": "typeDesc (15).xml",
-      "periodo": "02-03-2026→27-03-2026"
+      "cartola": "cartola_2026_EC70.pdf",
+      "periodo": "01/03/2026→31/03/2026"
     },
     {
       "socio": "Eduardo",
@@ -3833,8 +3878,8 @@
       "monto": 70000,
       "descripcion": "TEF 13270339-6 Eduardo Enrique",
       "rut": "13270339-6",
-      "cartola": "typeDesc (15).xml",
-      "periodo": "02-03-2026→27-03-2026"
+      "cartola": "cartola_2026_EC70.pdf",
+      "periodo": "01/03/2026→31/03/2026"
     },
     {
       "socio": "Antonio",
@@ -3842,8 +3887,8 @@
       "monto": 236666,
       "descripcion": "TEF 13890149-1 DIAZ ARAUJO ANT",
       "rut": "13890149-1",
-      "cartola": "typeDesc (15).xml",
-      "periodo": "02-03-2026→27-03-2026"
+      "cartola": "cartola_2026_EC70.pdf",
+      "periodo": "01/03/2026→31/03/2026"
     },
     {
       "socio": "Sebastián",
@@ -3851,8 +3896,8 @@
       "monto": 1500000,
       "descripcion": "TEF 13426837-9",
       "rut": "13426837-9",
-      "cartola": "typeDesc (15).xml",
-      "periodo": "02-03-2026→27-03-2026"
+      "cartola": "cartola_2026_EC70.pdf",
+      "periodo": "01/03/2026→31/03/2026"
     },
     {
       "socio": "Jordi",
@@ -3860,8 +3905,8 @@
       "monto": 1000000,
       "descripcion": "TEF 13272830-5",
       "rut": "13272830-5",
-      "cartola": "typeDesc (15).xml",
-      "periodo": "02-03-2026→27-03-2026"
+      "cartola": "cartola_2026_EC70.pdf",
+      "periodo": "01/03/2026→31/03/2026"
     },
     {
       "socio": "Jordi",
@@ -3869,17 +3914,17 @@
       "monto": 300000,
       "descripcion": "TEF 13272830-5",
       "rut": "13272830-5",
-      "cartola": "typeDesc (15).xml",
-      "periodo": "02-03-2026→27-03-2026"
+      "cartola": "cartola_2026_EC70.pdf",
+      "periodo": "01/03/2026→31/03/2026"
     },
     {
       "socio": "Cristóbal",
       "fecha": "2026-03-16",
       "monto": 300000,
-      "descripcion": "TEF  7746703-3 Cristobal Eduar",
+      "descripcion": "TEF 7746703-3 Cristobal Eduar",
       "rut": "7746703-3",
-      "cartola": "typeDesc (15).xml",
-      "periodo": "02-03-2026→27-03-2026"
+      "cartola": "cartola_2026_EC70.pdf",
+      "periodo": "01/03/2026→31/03/2026"
     },
     {
       "socio": "Camilo",
@@ -3887,8 +3932,8 @@
       "monto": 236667,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (15).xml",
-      "periodo": "02-03-2026→27-03-2026"
+      "cartola": "cartola_2026_EC70.pdf",
+      "periodo": "01/03/2026→31/03/2026"
     },
     {
       "socio": "Camilo",
@@ -3896,8 +3941,8 @@
       "monto": 300000,
       "descripcion": "TEF 16095526-0 Camilo Antonio",
       "rut": "16095526-0",
-      "cartola": "typeDesc (15).xml",
-      "periodo": "02-03-2026→27-03-2026"
+      "cartola": "cartola_2026_EC70.pdf",
+      "periodo": "01/03/2026→31/03/2026"
     }
   ]
 }
