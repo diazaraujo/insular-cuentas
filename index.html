@@ -84,6 +84,17 @@
         .legend-item { display: flex; align-items: center; gap: 6px; }
         .legend-color { width: 16px; height: 16px; border-radius: 3px; border: 1px solid #ddd; }
 
+        .info-snippet { background: #f8f9fa; border-left: 4px solid #90a4ae; border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 12px 0 16px 0; font-size: 12px; color: #455a64; line-height: 1.6; }
+        .info-snippet summary { cursor: pointer; font-weight: 700; color: #37474f; font-size: 13px; user-select: none; }
+        .info-snippet summary:hover { color: #00838f; }
+        .info-snippet .rule { margin: 6px 0; padding-left: 12px; border-left: 2px solid #cfd8dc; }
+        .info-snippet .tag { display: inline-block; padding: 1px 7px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 4px; }
+        .info-snippet .tag-a { background: #e8f5e9; color: #2e7d32; }
+        .info-snippet .tag-a2 { background: #e0f7fa; color: #00838f; }
+        .info-snippet .tag-b { background: #fff3e0; color: #e65100; }
+        .info-snippet .tag-c { background: #ede7f6; color: #7b1fa2; }
+        .info-snippet .tag-cascade { background: #e3f2fd; color: #1565c0; }
+
         .empty-state { text-align: center; padding: 60px 20px; color: #888; }
         .empty-state h2 { font-size: 20px; margin-bottom: 8px; color: #555; }
 
@@ -302,6 +313,7 @@
         <button class="tab-btn" onclick="switchTab('ggcc', this)">GGCC (Cartolas)</button>
         <button class="tab-btn" onclick="switchTab('sociedad', this)">Sociedad</button>
         <button class="tab-btn" onclick="switchTab('socio', this)" id="tabBtnSocio">Vista por Socio</button>
+        <button class="tab-btn" onclick="switchTab('metodologia', this)" style="margin-left:auto;">Metodología</button>
     </div>
     <!-- TAB: RESUMEN -->
     <div id="tab-resumen" class="tab-content active"></div>
@@ -746,6 +758,11 @@
             <select id="socioSelector" onchange="renderVistaSocio()" style="padding:10px 20px; border-radius:8px; border:2px solid #1a1a2e; font-size:14px; font-weight:600; background:white; cursor:pointer; min-width:280px;"></select>
         </div>
         <div id="socioViewContent"></div>
+    </div>
+
+    <!-- TAB: METODOLOGÍA -->
+    <div id="tab-metodologia" class="tab-content">
+        <div id="metodologiaContent"></div>
     </div>
 
 <!-- Deposit detail modal -->
@@ -1399,6 +1416,7 @@ function switchTab(tabName, btn) {
     if (tabName === 'aportescapital') renderAportesCapital();
     if (tabName === 'ggcc') renderGGCC();
     if (tabName === 'socio') renderVistaSocio();
+    if (tabName === 'metodologia') renderMetodologia();
 }
 
 // ==================== CONSTRUCCIÓN (dinámico desde cartolas) ====================
@@ -1484,6 +1502,301 @@ function buildConstruccionSection(cls) {
     return html;
 }
 
+// ==================== METODOLOGÍA ====================
+function renderMetodologia() {
+    const el = document.getElementById('metodologiaContent');
+    if (el._rendered) return;
+    el._rendered = true;
+
+    const ggccMeses = getGGCCMesesEsperados();
+    const lastC = getLastCartolaMonth();
+    const MONTHS_SHORT = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    const lastCLabel = MONTHS_SHORT[lastC.m - 1] + '-' + lastC.y;
+
+    let h = '';
+
+    // ═══ HEADER ═══
+    h += '<div style="margin-bottom:32px;">';
+    h += '<h2 style="font-size:20px; color:#1a1a2e; margin-bottom:8px;">Metodología de Clasificación de Fondos</h2>';
+    h += '<p style="font-size:13px; color:#666; line-height:1.6;">Este documento describe cómo cada depósito que ingresa a la cuenta Scotiabank de Insular S.p.A. se clasifica y asigna a las distintas categorías de compromiso. Toda la información proviene exclusivamente de las cartolas bancarias verificadas.</p>';
+    h += '</div>';
+
+    // ═══ DIAGRAMA 1: FLUJO PRINCIPAL ═══
+    h += '<div style="background:white; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:24px;">';
+    h += '<h3 style="font-size:16px; color:#1a1a2e; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">1. Flujo de Clasificación de Depósitos</h3>';
+
+    // SVG Flowchart
+    h += '<div style="overflow-x:auto; padding:8px 0;">';
+    h += '<svg viewBox="0 0 900 620" style="width:100%; max-width:900px; min-width:600px; display:block; margin:0 auto;" xmlns="http://www.w3.org/2000/svg">';
+
+    // Defs
+    h += '<defs>';
+    h += '<marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#90a4ae"/></marker>';
+    h += '<filter id="shadow"><feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.1"/></filter>';
+    h += '</defs>';
+
+    // Row 1: DEPÓSITO INGRESA
+    h += '<rect x="320" y="10" width="260" height="50" rx="25" fill="#1a1a2e" filter="url(#shadow)"/>';
+    h += '<text x="450" y="40" text-anchor="middle" fill="white" font-size="14" font-weight="700">Depósito ingresa a cartola</text>';
+
+    // Arrow down
+    h += '<line x1="450" y1="60" x2="450" y2="90" stroke="#90a4ae" stroke-width="2" marker-end="url(#arrowhead)"/>';
+
+    // Row 2: DETECCIÓN DE TIPO
+    h += '<rect x="300" y="90" width="300" height="44" rx="8" fill="#f5f5f5" stroke="#90a4ae" stroke-width="1.5"/>';
+    h += '<text x="450" y="117" text-anchor="middle" fill="#455a64" font-size="13" font-weight="600">¿Qué tipo de depósito es?</text>';
+
+    // 4 branches
+    // Branch A: left
+    h += '<line x1="350" y1="134" x2="100" y2="180" stroke="#00838f" stroke-width="2" marker-end="url(#arrowhead)"/>';
+    // Branch A2
+    h += '<line x1="400" y1="134" x2="280" y2="180" stroke="#0097a7" stroke-width="2" marker-end="url(#arrowhead)"/>';
+    // Branch B
+    h += '<line x1="500" y1="134" x2="520" y2="180" stroke="#e65100" stroke-width="2" marker-end="url(#arrowhead)"/>';
+    // Branch C
+    h += '<line x1="550" y1="134" x2="740" y2="180" stroke="#7b1fa2" stroke-width="2" marker-end="url(#arrowhead)"/>';
+
+    // ── TIPO A ──
+    h += '<rect x="10" y="180" width="180" height="70" rx="8" fill="#e0f2f1" stroke="#00838f" stroke-width="2" filter="url(#shadow)"/>';
+    h += '<text x="100" y="202" text-anchor="middle" fill="#00838f" font-size="12" font-weight="700">TIPO A</text>';
+    h += '<text x="100" y="218" text-anchor="middle" fill="#455a64" font-size="10">Múltiplo de $70k</text>';
+    h += '<text x="100" y="232" text-anchor="middle" fill="#455a64" font-size="10">(hasta $840k)</text>';
+    h += '<text x="100" y="246" text-anchor="middle" fill="#00838f" font-size="10" font-weight="600">→ TODO a GGCC</text>';
+
+    // ── TIPO A2 ──
+    h += '<rect x="200" y="180" width="170" height="70" rx="8" fill="#e0f7fa" stroke="#0097a7" stroke-width="2" filter="url(#shadow)"/>';
+    h += '<text x="285" y="202" text-anchor="middle" fill="#0097a7" font-size="12" font-weight="700">TIPO A2</text>';
+    h += '<text x="285" y="218" text-anchor="middle" fill="#455a64" font-size="10">$70k–$140k</text>';
+    h += '<text x="285" y="232" text-anchor="middle" fill="#455a64" font-size="10">(no múltiplo, ej: $75k)</text>';
+    h += '<text x="285" y="246" text-anchor="middle" fill="#0097a7" font-size="10" font-weight="600">→ $70k GGCC + resto</text>';
+
+    // ── TIPO B ──
+    h += '<rect x="430" y="180" width="180" height="70" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="2" filter="url(#shadow)"/>';
+    h += '<text x="520" y="202" text-anchor="middle" fill="#e65100" font-size="12" font-weight="700">TIPO B</text>';
+    h += '<text x="520" y="218" text-anchor="middle" fill="#455a64" font-size="10">Exactamente $236.666</text>';
+    h += '<text x="520" y="232" text-anchor="middle" fill="#455a64" font-size="10">(cuota combinada)</text>';
+    h += '<text x="520" y="246" text-anchor="middle" fill="#e65100" font-size="10" font-weight="600">→ $70k GGCC + $166k MOB</text>';
+
+    // ── TIPO C ──
+    h += '<rect x="650" y="180" width="180" height="70" rx="8" fill="#ede7f6" stroke="#7b1fa2" stroke-width="2" filter="url(#shadow)"/>';
+    h += '<text x="740" y="202" text-anchor="middle" fill="#7b1fa2" font-size="12" font-weight="700">TIPO C</text>';
+    h += '<text x="740" y="218" text-anchor="middle" fill="#455a64" font-size="10">Cualquier otro monto</text>';
+    h += '<text x="740" y="232" text-anchor="middle" fill="#455a64" font-size="10">(ej: $5M, $2M, $500k)</text>';
+    h += '<text x="740" y="246" text-anchor="middle" fill="#7b1fa2" font-size="10" font-weight="600">→ Cubre GGCC + cascada</text>';
+
+    // PASADA 1 label
+    h += '<rect x="0" y="170" width="8" height="85" rx="4" fill="#00838f"/>';
+    h += '<text x="-8" y="218" text-anchor="end" fill="#00838f" font-size="10" font-weight="700" transform="rotate(-90,-8,218)">PASADA 1</text>';
+
+    // Arrows down from all types to cascade
+    h += '<line x1="100" y1="250" x2="100" y2="290" stroke="#90a4ae" stroke-width="1.5" stroke-dasharray="4"/>';
+    h += '<text x="100" y="285" text-anchor="middle" fill="#90a4ae" font-size="9">resto</text>';
+    h += '<line x1="285" y1="250" x2="285" y2="310" stroke="#90a4ae" stroke-width="1.5" stroke-dasharray="4"/>';
+    h += '<text x="285" y="305" text-anchor="middle" fill="#90a4ae" font-size="9">resto</text>';
+    h += '<line x1="520" y1="250" x2="520" y2="310" stroke="#90a4ae" stroke-width="1.5" stroke-dasharray="4"/>';
+    h += '<text x="520" y="305" text-anchor="middle" fill="#90a4ae" font-size="9">resto</text>';
+    h += '<line x1="740" y1="250" x2="740" y2="310" stroke="#90a4ae" stroke-width="1.5" stroke-dasharray="4"/>';
+
+    // ═══ PASADA 2: CASCADA ═══
+    h += '<rect x="0" y="310" width="8" height="300" rx="4" fill="#1565c0"/>';
+    h += '<text x="-8" y="460" text-anchor="end" fill="#1565c0" font-size="10" font-weight="700" transform="rotate(-90,-8,460)">PASADA 2 — CASCADA</text>';
+
+    // GGCC pendientes
+    h += '<rect x="30" y="315" width="840" height="42" rx="8" fill="#e0f2f1" stroke="#00838f" stroke-width="1.5"/>';
+    h += '<text x="450" y="333" text-anchor="middle" fill="#00838f" font-size="12" font-weight="700">Primero: cubrir GGCC pendientes ($70k/mes)</text>';
+    h += '<text x="450" y="349" text-anchor="middle" fill="#666" font-size="10">Slots oct-2022 → ' + lastCLabel + ' (' + ggccMeses + ' meses). Si todos llenos, salta al paso siguiente.</text>';
+
+    // Arrow
+    h += '<line x1="450" y1="357" x2="450" y2="380" stroke="#90a4ae" stroke-width="2" marker-end="url(#arrowhead)"/>';
+    h += '<text x="460" y="374" fill="#90a4ae" font-size="9">remanente</text>';
+
+    // Cascade boxes - 4 in a row
+    const cascW = 190, cascGap = 15, cascStartX = 30;
+    const cascItems = [
+        { label: '① Capital Inicial', sub: 'Hasta $' + (ACUERDOS.capital.perSocio/1e6) + 'M/socio', color: '#1565c0', bg: '#e3f2fd' },
+        { label: '② Construcción', sub: 'Hasta $' + (ACUERDOS.construccion.perSocio/1e6) + 'M/socio', color: '#7b1fa2', bg: '#f3e5f5' },
+        { label: '③ Mobiliario', sub: 'Hasta $' + (ACUERDOS.mobiliario.perSocio/1e6) + 'M (' + SOCIOS_MOB.length + ' socios)', color: '#e65100', bg: '#fff3e0' },
+        { label: '④ Construcción ∞', sub: 'Sin tope (bucket final)', color: '#7b1fa2', bg: '#f3e5f5' }
+    ];
+    cascItems.forEach((c, i) => {
+        const x = cascStartX + i * (cascW + cascGap);
+        h += '<rect x="' + x + '" y="385" width="' + cascW + '" height="55" rx="8" fill="' + c.bg + '" stroke="' + c.color + '" stroke-width="2" filter="url(#shadow)"/>';
+        h += '<text x="' + (x + cascW/2) + '" y="408" text-anchor="middle" fill="' + c.color + '" font-size="12" font-weight="700">' + c.label + '</text>';
+        h += '<text x="' + (x + cascW/2) + '" y="425" text-anchor="middle" fill="#666" font-size="10">' + c.sub + '</text>';
+        if (i < 3) {
+            h += '<line x1="' + (x + cascW) + '" y1="412" x2="' + (x + cascW + cascGap) + '" y2="412" stroke="#90a4ae" stroke-width="2" marker-end="url(#arrowhead)"/>';
+        }
+    });
+
+    // Arrow to final
+    h += '<line x1="450" y1="440" x2="450" y2="470" stroke="#90a4ae" stroke-width="2" marker-end="url(#arrowhead)"/>';
+
+    // RESULTADO
+    h += '<rect x="150" y="475" width="600" height="50" rx="10" fill="#1a1a2e" filter="url(#shadow)"/>';
+    h += '<text x="450" y="498" text-anchor="middle" fill="white" font-size="13" font-weight="700">Depósito 100% clasificado → GGCC + Capital + Construcción + MOB</text>';
+    h += '<text x="450" y="515" text-anchor="middle" fill="#90a4ae" font-size="10">Cada peso queda asignado. No hay categoría "Otros".</text>';
+
+    // Legend at bottom
+    h += '<text x="450" y="555" text-anchor="middle" fill="#999" font-size="11" font-style="italic">Las líneas punteadas indican que el remanente del depósito pasa al siguiente paso.</text>';
+    h += '<text x="450" y="572" text-anchor="middle" fill="#999" font-size="11" font-style="italic">Pasada 1 da prioridad a depósitos GGCC explícitos. Pasada 2 procesa todo lo demás.</text>';
+
+    h += '</svg></div></div>';
+
+    // ═══ DIAGRAMA 2: MES VENCIDO ═══
+    h += '<div style="background:white; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:24px;">';
+    h += '<h3 style="font-size:16px; color:#00838f; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">2. Mes Vencido — ¿Cómo funciona el GGCC?</h3>';
+
+    h += '<div style="overflow-x:auto; padding:8px 0;">';
+    h += '<svg viewBox="0 0 800 200" style="width:100%; max-width:800px; min-width:500px; display:block; margin:0 auto;" xmlns="http://www.w3.org/2000/svg">';
+
+    // Timeline months
+    const tMonths = ['Ene','Feb','Mar','Abr'];
+    const tX = [100, 280, 460, 640];
+    tMonths.forEach((m, i) => {
+        const x = tX[i];
+        const isCurrent = (i === 3); // Apr = current
+        h += '<rect x="' + (x-55) + '" y="20" width="110" height="36" rx="6" fill="' + (isCurrent ? '#fff3e0' : '#e0f2f1') + '" stroke="' + (isCurrent ? '#e65100' : '#00838f') + '" stroke-width="1.5"/>';
+        h += '<text x="' + x + '" y="43" text-anchor="middle" fill="' + (isCurrent ? '#e65100' : '#00838f') + '" font-size="13" font-weight="700">' + m + ' 2026</text>';
+        if (i < 3) h += '<line x1="' + (x+55) + '" y1="38" x2="' + tX[i+1]-55 + '" y2="38" stroke="#ccc" stroke-width="1.5" marker-end="url(#arrowhead)"/>';
+    });
+
+    // Cartola label
+    h += '<text x="280" y="80" text-anchor="middle" fill="#666" font-size="11">Cartola 31/01</text>';
+    h += '<text x="460" y="80" text-anchor="middle" fill="#666" font-size="11">Cartola 28/02</text>';
+    h += '<text x="640" y="80" text-anchor="middle" fill="#666" font-size="11">Cartola 31/03</text>';
+
+    // Arrows showing what pays what
+    h += '<path d="M 280 85 C 280 115, 100 115, 100 130" stroke="#00838f" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>';
+    h += '<path d="M 460 85 C 460 110, 280 110, 280 130" stroke="#00838f" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>';
+    h += '<path d="M 640 85 C 640 110, 460 110, 460 130" stroke="#00838f" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>';
+
+    // GGCC boxes
+    h += '<rect x="45" y="130" width="110" height="30" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>';
+    h += '<text x="100" y="150" text-anchor="middle" fill="#2e7d32" font-size="11" font-weight="600">GGCC Ene ✓</text>';
+    h += '<rect x="225" y="130" width="110" height="30" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>';
+    h += '<text x="280" y="150" text-anchor="middle" fill="#2e7d32" font-size="11" font-weight="600">GGCC Feb ✓</text>';
+    h += '<rect x="405" y="130" width="110" height="30" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>';
+    h += '<text x="460" y="150" text-anchor="middle" fill="#2e7d32" font-size="11" font-weight="600">GGCC Mar ✓</text>';
+    h += '<rect x="585" y="130" width="110" height="30" rx="6" fill="#ffebee" stroke="#c62828" stroke-width="1.5" stroke-dasharray="4"/>';
+    h += '<text x="640" y="150" text-anchor="middle" fill="#c62828" font-size="11" font-weight="600">GGCC Abr ?</text>';
+
+    // Legend
+    h += '<text x="400" y="185" text-anchor="middle" fill="#666" font-size="11">Los depósitos de un mes cubren el GGCC del mismo mes. Última cartola: ' + lastCLabel + ' → se esperan ' + ggccMeses + ' meses cubiertos.</text>';
+
+    h += '</svg></div></div>';
+
+    // ═══ SECCIÓN 3: TABLA DE CONSTANTES ═══
+    h += '<div style="background:white; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:24px;">';
+    h += '<h3 style="font-size:16px; color:#1a1a2e; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">3. Constantes y Parámetros del Sistema</h3>';
+
+    h += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:16px;">';
+
+    // Card: Compromisos
+    h += '<div style="background:#f8f9fa; border-radius:8px; padding:16px; border-left:4px solid #1565c0;">';
+    h += '<div style="font-weight:700; color:#1565c0; margin-bottom:8px;">Compromisos por Socio</div>';
+    h += '<div style="font-size:12px; color:#455a64; line-height:1.8;">';
+    h += 'Capital Inicial: <strong>$' + (ACUERDOS.capital.perSocio/1e6) + 'M</strong> (constitución abr-2020)<br>';
+    h += 'Construcción: <strong>$' + (ACUERDOS.construccion.perSocio/1e6) + 'M</strong> (4 llamados de capital)<br>';
+    h += 'Mobiliario: <strong>$' + (ACUERDOS.mobiliario.perSocio/1e6) + 'M</strong> (' + MOB_CUOTAS + ' cuotas de $' + fmt(CUOTA_MOB) + ')<br>';
+    h += 'Total por socio: <strong>$' + fmt(ACUERDOS.capital.perSocio + ACUERDOS.construccion.perSocio + ACUERDOS.mobiliario.perSocio) + '</strong>';
+    h += '</div></div>';
+
+    // Card: GGCC
+    h += '<div style="background:#f8f9fa; border-radius:8px; padding:16px; border-left:4px solid #00838f;">';
+    h += '<div style="font-weight:700; color:#00838f; margin-bottom:8px;">Gastos Comunes (GGCC)</div>';
+    h += '<div style="font-size:12px; color:#455a64; line-height:1.8;">';
+    h += 'Cuota mensual: <strong>$' + fmt(CUOTA_GGCC) + '/socio</strong><br>';
+    h += 'Vigente desde: <strong>Octubre 2022</strong><br>';
+    h += 'Meses acumulados: <strong>' + ggccMeses + '</strong> (mes vencido)<br>';
+    h += 'Total esperado: <strong>$' + fmt(CUOTA_GGCC * SOCIOS_ALL.length * ggccMeses) + '</strong>';
+    h += '</div></div>';
+
+    // Card: Socios
+    h += '<div style="background:#f8f9fa; border-radius:8px; padding:16px; border-left:4px solid #e65100;">';
+    h += '<div style="font-weight:700; color:#e65100; margin-bottom:8px;">Grupos de Socios</div>';
+    h += '<div style="font-size:12px; color:#455a64; line-height:1.8;">';
+    h += 'Total socios: <strong>' + SOCIOS_ALL.length + '</strong><br>';
+    h += 'Socios MOB (cuota mensual): <strong>' + SOCIOS_MOB.length + '</strong> — ' + SOCIOS_MOB.join(', ') + '<br>';
+    h += 'MOB pagado full: <strong>' + MOB_PAGADO_FULL.length + '</strong> — ' + MOB_PAGADO_FULL.join(', ') + '<br>';
+    h += '<span style="font-size:11px; color:#888;">(MOB full = pagaron $4M adelantado fuera de cartola)</span>';
+    h += '</div></div>';
+
+    // Card: Cartolas
+    h += '<div style="background:#f8f9fa; border-radius:8px; padding:16px; border-left:4px solid #795548;">';
+    h += '<div style="font-weight:700; color:#795548; margin-bottom:8px;">Fuente de Datos</div>';
+    h += '<div style="font-size:12px; color:#455a64; line-height:1.8;">';
+    h += 'Origen: <strong>Cartolas Scotiabank</strong><br>';
+    h += 'Total depósitos: <strong>' + ALL_DEPOSITS.length + '</strong><br>';
+    h += 'Período: <strong>Jun 2020 — ' + lastCLabel + '</strong><br>';
+    h += 'Última cartola: <strong>' + lastCLabel + '</strong>';
+    h += '</div></div>';
+
+    h += '</div></div>'; // grid + section
+
+    // ═══ SECCIÓN 4: TIPOS DE DEPÓSITO CON EJEMPLOS ═══
+    h += '<div style="background:white; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:24px;">';
+    h += '<h3 style="font-size:16px; color:#1a1a2e; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">4. Tipos de Depósito — Ejemplos Reales</h3>';
+
+    h += '<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:12px;">';
+    h += '<thead><tr style="background:#1a1a2e; color:white;">';
+    h += '<th style="padding:10px 12px; text-align:left;">Tipo</th>';
+    h += '<th style="padding:10px 12px; text-align:left;">Detección</th>';
+    h += '<th style="padding:10px 12px; text-align:left;">Ejemplo</th>';
+    h += '<th style="padding:10px 12px; text-align:left;">Asignación</th>';
+    h += '<th style="padding:10px 12px; text-align:left;">Pasada</th>';
+    h += '</tr></thead><tbody>';
+
+    const tipos = [
+        { tipo:'A', det:'amt % $70k == 0 y amt ≤ $840k', ej:'$70.000', asig:'$70k → GGCC (1 mes)', pasada:'1', color:'#00838f', bg:'#e0f2f1' },
+        { tipo:'A', det:'amt % $70k == 0 y amt ≤ $840k', ej:'$350.000', asig:'$350k → GGCC (5 meses)', pasada:'1', color:'#00838f', bg:'#e0f2f1' },
+        { tipo:'A2', det:'$70k ≤ amt < $140k, no múltiplo', ej:'$75.000', asig:'$70k → GGCC + $5k → cascada', pasada:'1', color:'#0097a7', bg:'#e0f7fa' },
+        { tipo:'A2', det:'$70k ≤ amt < $140k, no múltiplo', ej:'$100.000', asig:'$70k → GGCC + $30k → cascada', pasada:'1', color:'#0097a7', bg:'#e0f7fa' },
+        { tipo:'B', det:'$236.665 ≤ amt ≤ $236.667', ej:'$236.666', asig:'$70k → GGCC + $166.666 → MOB', pasada:'1', color:'#e65100', bg:'#fff3e0' },
+        { tipo:'C', det:'Cualquier otro monto', ej:'$5.000.000', asig:'GGCC pendiente → Capital → Constr → MOB → Constr', pasada:'2', color:'#7b1fa2', bg:'#ede7f6' },
+        { tipo:'C', det:'Cualquier otro monto', ej:'$2.000.000', asig:'Si capital y GGCC llenos → todo a Construcción', pasada:'2', color:'#7b1fa2', bg:'#ede7f6' },
+    ];
+    tipos.forEach((t, i) => {
+        h += '<tr style="background:' + (i%2===0 ? '#fff' : '#fafafa') + ';">';
+        h += '<td style="padding:8px 12px;"><span style="display:inline-block; padding:2px 10px; border-radius:4px; background:' + t.bg + '; color:' + t.color + '; font-weight:700; font-size:11px;">TIPO ' + t.tipo + '</span></td>';
+        h += '<td style="padding:8px 12px; color:#666;">' + t.det + '</td>';
+        h += '<td style="padding:8px 12px; font-weight:600;">' + t.ej + '</td>';
+        h += '<td style="padding:8px 12px; color:#455a64;">' + t.asig + '</td>';
+        h += '<td style="padding:8px 12px; text-align:center; font-weight:600; color:' + t.color + ';">' + t.pasada + '</td>';
+        h += '</tr>';
+    });
+    h += '</tbody></table></div></div>';
+
+    // ═══ SECCIÓN 5: REGLAS DE INTEGRIDAD ═══
+    h += '<div style="background:white; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:24px;">';
+    h += '<h3 style="font-size:16px; color:#c62828; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">5. Validación de Integridad de Datos</h3>';
+    h += '<p style="font-size:12px; color:#666; margin-bottom:16px;">El sistema ejecuta 20 reglas automáticas cada vez que se carga el dashboard. Si alguna falla, aparece una alerta naranja en el Resumen.</p>';
+
+    h += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:12px;">';
+    const ruleGroups = [
+        { title: 'General (5)', color: '#455a64', rules: ['Depósitos sin cartola asociada', 'Gaps en la secuencia de cartolas', 'Mismatch asignaciones vs total', 'Depósitos faltantes en el período', 'Cobertura cartolas vs calendario'] },
+        { title: 'Capital (3)', color: '#1565c0', rules: ['Excede meta >5%', 'Parcial <50%', 'Total global excede meta'] },
+        { title: 'Construcción (0)', color: '#7b1fa2', rules: ['Sin reglas — excedentes son normales (bucket final)'] },
+        { title: 'Mobiliario (4)', color: '#e65100', rules: ['MOB_FULL doble conteo', 'Excede meta MOB', 'Dual membership A/B', 'Socios sin clasificar'] },
+        { title: 'GGCC (4)', color: '#00838f', rules: ['Excede meses esperados', 'Meses > esperados', 'GGCC pre oct-2022', 'Total global GGCC'] },
+        { title: 'Balance (3)', color: '#795548', rules: ['Suma categorías ≠ total', 'ALL_DEPOSITS ≠ clasificados', 'Socios no reconocidos'] },
+    ];
+    ruleGroups.forEach(g => {
+        h += '<div style="background:#f8f9fa; border-radius:8px; padding:12px; border-left:3px solid ' + g.color + ';">';
+        h += '<div style="font-weight:700; color:' + g.color + '; font-size:12px; margin-bottom:6px;">' + g.title + '</div>';
+        h += '<div style="font-size:11px; color:#666; line-height:1.7;">';
+        g.rules.forEach(r => h += '• ' + r + '<br>');
+        h += '</div></div>';
+    });
+    h += '</div></div>';
+
+    // Footer
+    h += '<div style="text-align:center; padding:16px; color:#aaa; font-size:11px;">';
+    h += 'Documentación generada automáticamente desde classifyAllDeposits() — Insular S.p.A. Dashboard v3';
+    h += '</div>';
+
+    el.innerHTML = h;
+}
+
 // ==================== RESUMEN ====================
 function renderResumen() {
     // === TODO calculado desde classifyAllDeposits() (cartolas) ===
@@ -1556,8 +1869,27 @@ function renderResumen() {
     }
 
     // ─── FUENTE ───
-    html += '<div style="background:#f5f5f5; border-radius:8px; padding:8px 14px; margin-bottom:20px; font-size:11px; color:#666; display:flex; align-items:center; gap:8px;">';
-    html += '<strong>Fuente:</strong> Pagos desde cartolas Scotiabank verificadas (' + ALL_DEPOSITS.length + ' depósitos, hasta ' + LAST_CARTOLA_LABEL + '). GGCC: ' + ggccMeses + ' meses de obligación (oct-2022 → ' + MONTHS[_currentMonth-1] + ' ' + _currentYear + ', mes vencido).</div>';
+    html += '<div style="background:#f5f5f5; border-radius:8px; padding:8px 14px; margin-bottom:12px; font-size:11px; color:#666; display:flex; align-items:center; gap:8px;">';
+    html += '<strong>Fuente:</strong> Pagos desde cartolas Scotiabank verificadas (' + ALL_DEPOSITS.length + ' depósitos, hasta ' + LAST_CARTOLA_LABEL + '). GGCC: ' + ggccMeses + ' meses de obligación (oct-2022 → ' + MONTHS[_currentMonth-2 < 0 ? 11 : _currentMonth-2] + ' ' + (_currentMonth-2 < 0 ? _currentYear-1 : _currentYear) + ', mes vencido).</div>';
+
+    // Snippet: Cómo se clasifican los depósitos
+    html += '<details class="info-snippet" style="margin-bottom:20px;">';
+    html += '<summary>¿Cómo se clasifican los depósitos?</summary>';
+    html += '<div style="margin-top:8px;">';
+    html += '<p style="margin:0 0 8px;">Cada depósito de cartola se clasifica automáticamente en <strong>2 pasadas</strong>:</p>';
+    html += '<div class="rule"><strong>Pasada 1 — Depósitos explícitos (prioridad):</strong><br>';
+    html += '<span class="tag tag-a">TIPO A</span> Múltiplo exacto de $70.000 (hasta $840.000) → todo a GGCC. Ej: $70k = 1 mes, $140k = 2 meses, $350k = 5 meses.<br>';
+    html += '<span class="tag tag-a2">TIPO A2</span> Entre $70.000 y $140.000 pero no múltiplo exacto → $70k a GGCC + resto a cascada. Ej: $75.000 = $70k GGCC + $5k extra.<br>';
+    html += '<span class="tag tag-b">TIPO B</span> Exactamente $236.666 → $70.000 a GGCC + $166.666 a Mobiliario (cuota combinada mensual).</div>';
+    html += '<div class="rule"><strong>Pasada 2 — Resto + cascada:</strong><br>';
+    html += '<span class="tag tag-c">TIPO C</span> Cualquier otro monto → primero cubre GGCC pendientes, luego entra en la <strong>cascada de asignación</strong>.</div>';
+    html += '<div class="rule"><strong>Cascada de asignación (orden estricto):</strong><br>';
+    html += '<span class="tag tag-cascade">1.</span> Capital Inicial — hasta $10M/socio<br>';
+    html += '<span class="tag tag-cascade">2.</span> Construcción — hasta $19,1M/socio<br>';
+    html += '<span class="tag tag-cascade">3.</span> Mobiliario — hasta $4M/socio (solo socios MOB: ' + SOCIOS_MOB.length + ' de ' + SOCIOS_ALL.length + ')<br>';
+    html += '<span class="tag tag-cascade">4.</span> Construcción (excedente) — todo lo que sobra va aquí, sin tope.</div>';
+    html += '<div class="rule"><strong>Mes vencido (GGCC):</strong> El GGCC de un mes se paga en el mes siguiente. Ej: GGCC de enero se paga en febrero. Los depósitos de la cartola del 31/03 cubren hasta el GGCC de marzo. Se esperan ' + ggccMeses + ' meses de obligación.</div>';
+    html += '</div></details>';
 
     // ═══════════════════════════════════════════
     // SECCIÓN 1: APORTES COMPROMETIDOS
@@ -1616,6 +1948,16 @@ function renderResumen() {
     html += '<div class="kpi" style="border-left:4px solid ' + (ggccFalta > 0 ? '#c62828' : '#2e7d32') + ';"><div class="label">Pendiente GGCC</div><div class="value" style="color:' + (ggccFalta > 0 ? '#c62828' : '#2e7d32') + ';">' + fmtM(ggccFalta) + '</div><div class="sub">Al día: ' + ggccAlDia + '/' + SOCIOS_ALL.length + ' socios</div></div>';
     html += '</section>';
 
+    // Snippet GGCC resumen
+    html += '<details class="info-snippet" style="border-left-color:#00838f;">';
+    html += '<summary>¿Cómo se calcula el estado GGCC?</summary>';
+    html += '<div style="margin-top:8px;">';
+    html += '<div class="rule"><strong>Meses esperados:</strong> Desde oct-2022 hasta el mes anterior al actual (mes vencido). Hoy en ' + MONTHS[_currentMonth-1] + ' ' + _currentYear + ' → se esperan ' + ggccMeses + ' meses (hasta ' + MONTHS[_currentMonth-2 < 0 ? 11 : _currentMonth-2] + ').</div>';
+    html += '<div class="rule"><strong>Meses pagados:</strong> Se cuentan los "slots" GGCC cubiertos por depósitos. Cada slot = $' + (CUOTA_GGCC/1000) + 'k. Los depósitos llenan slots secuencialmente desde oct-2022 en adelante.</div>';
+    html += '<div class="rule"><strong>Prioridad:</strong> Depósitos explícitos (Tipo A/A2/B) llenan GGCC primero. Si quedan slots vacíos, depósitos grandes (Tipo C) los cubren desde la cascada.</div>';
+    html += '<div class="rule"><strong>Adelantado:</strong> Si un socio paga más de 1 cuota en un mes (ej: $140k = 2 meses, $350k = 5 meses), los meses extra se acreditan como adelanto.</div>';
+    html += '</div></details>';
+
     // Tabla GGCC por socio
     html += '<div class="table-section" style="border-left:4px solid #00838f;">';
     html += '<div class="table-wrapper"><table style="width:100%; border-collapse:collapse; font-size:13px;">';
@@ -1647,6 +1989,16 @@ function renderResumen() {
     html += '<div style="margin-bottom:32px;">';
     html += '<h2 style="font-size:18px; color:#1a1a2e; margin-bottom:4px; border-bottom:2px solid #1a1a2e; padding-bottom:8px;">Estado General por Socio</h2>';
     html += '<p style="font-size:12px; color:#888; margin:4px 0 16px;">Deuda pendiente por categoría — incluye aportes + GGCC — Socios al día: ' + (sociosAlDia > 0 ? '<strong style="color:#2e7d32;">' + sociosAlDiaNames.join(', ') + '</strong>' : '<span style="color:#c62828;">Ninguno</span>') + '</p>';
+
+    html += '<details class="info-snippet">';
+    html += '<summary>¿Cómo se calcula la deuda por socio?</summary>';
+    html += '<div style="margin-top:8px;">';
+    html += '<div class="rule"><strong>Capital:</strong> Meta $' + (ACUERDOS.capital.perSocio/1e6) + 'M/socio. Deuda = max(0, meta − pagado). Una vez cubierto aparece ✓.</div>';
+    html += '<div class="rule"><strong>Construcción:</strong> Meta $' + (ACUERDOS.construccion.perSocio/1e6) + 'M/socio. Puede exceder la meta (la cascada usa construcción como bucket final). Excedentes son normales.</div>';
+    html += '<div class="rule"><strong>Mobiliario:</strong> Meta $' + (ACUERDOS.mobiliario.perSocio/1e6) + 'M/socio. ' + MOB_PAGADO_FULL.length + ' socios (' + MOB_PAGADO_FULL.join(', ') + ') ya pagaron $4M por adelantado fuera de cartola → siempre ✓. Los otros ' + SOCIOS_MOB.length + ' pagan $' + (CUOTA_MOB/1000) + 'k/mes (' + MOB_CUOTAS + ' cuotas).</div>';
+    html += '<div class="rule"><strong>GGCC:</strong> $' + (CUOTA_GGCC/1000) + 'k/mes × ' + ggccMeses + ' meses = $' + fmt(ggccExpectedPerSocio) + '/socio. Si pagó todos los meses → ✓. Si debe meses, muestra el monto pendiente.</div>';
+    html += '<div class="rule"><strong>"Al día":</strong> significa que el socio no debe nada en ninguna categoría. Click en el nombre abre la bitácora del socio.</div>';
+    html += '</div></details>';
 
     html += '<div class="table-section">';
     html += '<div class="table-wrapper"><table class="hito-table"><thead><tr>';
@@ -1909,7 +2261,20 @@ function renderAportesCapital() {
     html += '<div class="table-section">';
     html += '<div class="detail-header"><h3>Aportes de Capital — Clasificación por Categoría</h3>';
     html += '<span class="detail-badge" style="background:#e3f2fd; color:#1565c0;">' + ALL_DEPOSITS.length + ' depósitos verificados</span></div>';
-    html += '<p style="font-size:12px; color:#666; margin-bottom:16px;">Cada depósito se clasifica automáticamente según el orden de compromisos: primero GGCC ($70k/mes desde oct-2022), luego cuota Mob ($166k/mes desde ene-2025), y el remanente llena Aporte Inicial → Construcción → Mobiliario → Otros. Haz clic en cualquier celda para ver detalle.</p>';
+    html += '<p style="font-size:12px; color:#666; margin-bottom:12px;">Cada depósito se clasifica automáticamente según el orden de compromisos. Haz clic en cualquier celda para ver detalle.</p>';
+
+    html += '<details class="info-snippet" style="border-left-color:#1565c0;">';
+    html += '<summary>¿Cómo se asignan los montos a cada categoría?</summary>';
+    html += '<div style="margin-top:8px;">';
+    html += '<div class="rule"><strong>Paso 1 — GGCC (Pasada 1):</strong> De cada depósito se extraen primero los GGCC. <span class="tag tag-a">$70k</span> y <span class="tag tag-a2">$75k</span> van directo a GGCC. <span class="tag tag-b">$236.666</span> se divide en $70k GGCC + $166k MOB.</div>';
+    html += '<div class="rule"><strong>Paso 2 — Cascada (Pasada 2):</strong> Lo que queda del depósito se asigna en orden estricto:<br>';
+    html += '① <strong style="color:#1565c0;">Capital</strong> hasta $' + (ACUERDOS.capital.perSocio/1e6) + 'M/socio → ';
+    html += '② <strong style="color:#7b1fa2;">Construcción</strong> hasta $' + (ACUERDOS.construccion.perSocio/1e6) + 'M/socio → ';
+    html += '③ <strong style="color:#e65100;">Mobiliario</strong> hasta $' + (ACUERDOS.mobiliario.perSocio/1e6) + 'M (solo ' + SOCIOS_MOB.length + ' socios) → ';
+    html += '④ <strong style="color:#7b1fa2;">Construcción</strong> (sin tope, absorbe todo excedente).</div>';
+    html += '<div class="rule"><strong>Construcción como bucket final:</strong> Todo excedente que sobra de la cascada va a Construcción. Es normal que algunos socios excedan la meta de $' + (ACUERDOS.construccion.perSocio/1e6) + 'M.</div>';
+    html += '<div class="rule"><strong>MOB_PAGADO_FULL (' + MOB_PAGADO_FULL.join(', ') + '):</strong> Estos socios pagaron $4M de mobiliario por adelantado, fuera de cartola. Sus depósitos no asignan a MOB.</div>';
+    html += '</div></details>';
 
     // Category KPI cards
     html += '<section class="kpis">';
@@ -2058,6 +2423,13 @@ function renderAportesCapital() {
     // Cumplimiento per socio
     html += '</div><div class="table-section">';
     html += '<h3>Cumplimiento de Compromisos por Socio</h3>';
+    html += '<details class="info-snippet" style="border-left-color:#0d47a1;">';
+    html += '<summary>¿Cómo se calcula el cumplimiento?</summary>';
+    html += '<div style="margin-top:8px;">';
+    html += '<div class="rule"><strong>Pagado vs Meta:</strong> Cada barra muestra cuánto ha pagado el socio en esa categoría vs su compromiso. El % puede superar 100% en Construcción (bucket final de la cascada).</div>';
+    html += '<div class="rule"><strong>Deuda pendiente:</strong> Suma de (meta − pagado) en Capital + Construcción + Mobiliario. Si una categoría está cubierta, contribuye $0 a la deuda.</div>';
+    html += '<div class="rule"><strong>No incluye GGCC:</strong> Esta tabla solo muestra compromisos de capital (aportes one-time). El estado de GGCC se ve en el tab de Gastos Comunes o en el Resumen.</div>';
+    html += '</div></details>';
     html += '<div class="table-wrapper"><table><thead><tr>';
     html += '<th style="background:#0d47a1;">Socio</th>';
     html += '<th style="background:#1565c0;">Capital<br><small>Meta ' + fmtM(ACUERDOS.capital.perSocio) + '</small></th>';
@@ -2192,7 +2564,22 @@ function renderGGCC() {
     html += '<div class="kpi ' + (sociosAlDia >= Math.ceil(SOCIOS_ALL.length/2) ? 'green' : 'orange') + '"><div class="label">Socios al día</div><div class="value">' + sociosAlDia + '/' + SOCIOS_ALL.length + '</div></div>';
     html += '<div class="kpi ' + (saldo >= 0 ? 'green' : 'red') + '"><div class="label">Saldo GGCC</div><div class="value">' + fmt(saldo) + '</div></div>';
     html += '</section>';
-    
+
+    // Snippet GGCC detalle
+    html += '<details class="info-snippet" style="border-left-color:#00838f;">';
+    html += '<summary>¿Cómo leer esta tabla?</summary>';
+    html += '<div style="margin-top:8px;">';
+    html += '<div class="rule"><strong>Grilla mensual:</strong> Cada celda muestra cuánto GGCC pagó ese socio en ese mes. <span style="background:#e8f5e9; padding:1px 4px; border-radius:3px;">Verde</span> = cuota completa ($' + (CUOTA_GGCC/1000) + 'k). <span style="background:#fff8e1; padding:1px 4px; border-radius:3px;">Amarillo</span> = parcial. <span style="color:#bbb;">—</span> = sin pago o mes no aplica.</div>';
+    html += '<div class="rule"><strong>Celdas <span style="background:#fff3e0; padding:1px 4px; border-radius:3px;">⏳</span>:</strong> Mes donde se esperaba GGCC pero no hay cartola disponible aún.</div>';
+    html += '<div class="rule"><strong>Tipos de depósito GGCC:</strong><br>';
+    html += '<span class="tag tag-a">TIPO A</span> Múltiplo de $70k → se asigna completo a GGCC (ej: $350k = 5 meses de golpe).<br>';
+    html += '<span class="tag tag-a2">TIPO A2</span> Monto cercano a $70k (ej: $75k) → $70k a GGCC + $5k a cascada.<br>';
+    html += '<span class="tag tag-b">TIPO B</span> $236.666 → $70k GGCC + $166.666 Mobiliario.<br>';
+    html += '<span class="tag tag-c">TIPO C</span> Otros montos → cubren GGCC pendientes primero, luego cascada.</div>';
+    html += '<div class="rule"><strong>Mes vencido:</strong> GGCC se paga en el mes siguiente. Los depósitos de marzo (cartola 31/03) cubren hasta el GGCC de marzo. Se esperan ' + ggccMonthsThisYear + ' meses para ' + year + '.</div>';
+    html += '<div class="rule"><strong>Saldo:</strong> Pagado − Esperado. Positivo = adelantado, negativo = debe meses, cero = al día.</div>';
+    html += '</div></details>';
+
     // Monthly grid
     html += '<div class="table-wrapper"><table><thead><tr><th>Socio</th>';
     for (let m = 0; m < 12; m++) html += '<th>' + MONTHS[m] + '</th>';
@@ -2243,7 +2630,14 @@ function renderGGCC() {
     html += '<div class="table-section">';
     html += '<div class="detail-header"><h3>Desglose ' + year + ' — GGCC + Mobiliario + Otros Aportes</h3>';
     html += '<span class="detail-badge" style="background:#e0f2f1; color:#00838f;">Cartola verificada</span></div>';
-    html += '<p style="font-size:12px; color:#666; margin-bottom:16px;">Cada depósito se clasifica con la misma lógica de dos pasadas del Resumen: GGCC (' + fmt(CUOTA_GGCC) + '/mes), MOB (' + fmt(CUOTA_MOB) + '/mes, ' + SOCIOS_MOB.length + ' socios), y el resto va a Capital → Construcción. Datos consistentes con todas las tablas.</p>';
+    html += '<details class="info-snippet" style="border-left-color:#00838f;">';
+    html += '<summary>¿Cómo se desglosa cada depósito?</summary>';
+    html += '<div style="margin-top:8px;">';
+    html += '<div class="rule"><strong>Misma lógica del Resumen:</strong> Cada depósito pasa por las 2 pasadas (GGCC primero, luego cascada). Los números aquí son 100% consistentes con los del tab Resumen y Aportes de Capital.</div>';
+    html += '<div class="rule"><strong>GGCC (' + fmt(CUOTA_GGCC) + '/mes):</strong> La columna verde muestra lo que cada depósito aportó a gastos comunes.</div>';
+    html += '<div class="rule"><strong>MOB (' + fmt(CUOTA_MOB) + '/mes):</strong> Solo para los ' + SOCIOS_MOB.length + ' socios con cuota de mobiliario activa. Los $236.666 se dividen en $70k GGCC + $166.666 MOB.</div>';
+    html += '<div class="rule"><strong>Capital / Construcción:</strong> El remanente se asigna por cascada: Capital ($' + (ACUERDOS.capital.perSocio/1e6) + 'M) → Construcción ($' + (ACUERDOS.construccion.perSocio/1e6) + 'M) → excedente a Construcción.</div>';
+    html += '</div></details>';
     
     // Year totals from classifyAllDeposits
     const yearDeps = ALL_DEPOSITS.filter(d => d.y === year);
@@ -2361,7 +2755,16 @@ function renderCasa() {
     const totalDone = casaItems.filter(i => i.done).length;
     
     let html = '<div class="casa-section"><h3 style="font-size:16px; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">Club House Chaicura — Equipamiento (47 items)</h3>';
-    
+
+    html += '<details class="info-snippet" style="border-left-color:#7b1fa2;">';
+    html += '<summary>¿Qué es esta sección?</summary>';
+    html += '<div style="margin-top:8px;">';
+    html += '<div class="rule"><strong>Equipamiento Club House:</strong> Lista de items necesarios para equipar el Club House de 440 m² en Chaicura, Ancud. Cada item tiene presupuesto estimado y gasto real.</div>';
+    html += '<div class="rule"><strong>Categorías:</strong> Cocina, Baño, Dormitorios, Living/Comedor, Exterior, Equipos, Otros. Se puede filtrar por categoría.</div>';
+    html += '<div class="rule"><strong>Estado:</strong> <span style="background:#e8f5e9; padding:1px 4px; border-radius:3px;">Completado</span> = ya comprado/instalado. <span style="background:#fff8e1; padding:1px 4px; border-radius:3px;">Pendiente</span> = por comprar. La diferencia (Presupuesto − Gasto Real) muestra ahorro o sobrecosto.</div>';
+    html += '<div class="rule"><strong>Relación con Aportes:</strong> Los aportes de Construcción del tab Aportes de Capital financian este equipamiento. El presupuesto total de equipamiento es parte del compromiso de $' + (ACUERDOS.construccion.perSocio/1e6) + 'M/socio.</div>';
+    html += '</div></details>';
+
     // Summary KPIs
     html += '<div class="casa-summary">';
     html += '<div class="kpi blue"><div class="label">Presupuesto Total</div><div class="value">' + fmt(totalPresup) + '</div></div>';
@@ -2466,6 +2869,16 @@ function renderVistaSocio(socioOverride) {
     const isAlDia = totalDebt === 0;
 
     let html = '';
+
+    // Snippet detalle socio
+    html += '<details class="info-snippet" style="border-left-color:#1a1a2e;">';
+    html += '<summary>¿Cómo leer la ficha del socio?</summary>';
+    html += '<div style="margin-top:8px;">';
+    html += '<div class="rule"><strong>4 KPIs:</strong> Cada tarjeta muestra pagado vs meta para Capital ($' + (ACUERDOS.capital.perSocio/1e6) + 'M), Construcción ($' + (ACUERDOS.construccion.perSocio/1e6) + 'M), Mobiliario ($' + (ACUERDOS.mobiliario.perSocio/1e6) + 'M) y GGCC (' + totalGGCCMonths + ' meses × $' + (CUOTA_GGCC/1000) + 'k). La barra de progreso muestra el % de avance.</div>';
+    html += '<div class="rule"><strong>Timeline GGCC:</strong> Cada cuadro = 1 mes. <span style="background:#e8f5e9; padding:1px 4px; border-radius:3px;">Verde</span> = pagado, <span style="background:#fff8e1; padding:1px 4px; border-radius:3px;">Amarillo</span> = parcial, <span style="background:#ffebee; padding:1px 4px; border-radius:3px;">Rojo</span> = sin pago.</div>';
+    html += '<div class="rule"><strong>Bitácora de depósitos:</strong> Cada fila es un depósito real de la cartola. Las columnas muestran cómo se asignó: cuánto fue a GGCC, cuánto a Capital, etc. Los colores identifican la categoría principal.</div>';
+    html += '<div class="rule"><strong>Clasificación:</strong> Los montos de cada depósito se asignan por la lógica de 2 pasadas + cascada (ver snippet del Resumen para detalle completo).</div>';
+    html += '</div></details>';
 
     // ── HERO CARD ──
     html += '<div style="background:linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); border-radius:14px; padding:24px 28px; margin-bottom:20px; color:white;">';
@@ -2627,6 +3040,13 @@ function renderVistaSocio(socioOverride) {
     // ── BITÁCORA COMPLETA ──
     html += '<div style="background:white; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08); margin-bottom:20px;">';
     html += '<h3 style="font-size:14px; color:#1a1a2e; margin-bottom:10px;">Bitácora de Depósitos (' + deps.length + ')</h3>';
+    html += '<details class="info-snippet" style="margin-top:0;">';
+    html += '<summary>¿Cómo leer la bitácora?</summary>';
+    html += '<div style="margin-top:8px;">';
+    html += '<div class="rule"><strong>Cada fila</strong> = un depósito real en la cartola Scotiabank. El monto total se descompone en las columnas de asignación (GGCC, Capital, Constr., MOB).</div>';
+    html += '<div class="rule"><strong>Columna "Tipo":</strong> <span class="tag tag-a">A</span> = múltiplo de $70k (todo GGCC). <span class="tag tag-a2">A2</span> = $70k + extra (ej: $75k). <span class="tag tag-b">B</span> = $236.666 (GGCC + MOB). <span class="tag tag-c">C</span> = otro monto (cascada).</div>';
+    html += '<div class="rule"><strong>Acumulados:</strong> Los totales al pie muestran cuánto ha ido a cada categoría sumando todos los depósitos.</div>';
+    html += '</div></details>';
     html += '<div style="overflow-x:auto;"><table style="width:100%; font-size:11px; border-collapse:collapse;">';
     html += '<thead><tr style="background:#1a1a2e; color:white;">';
     html += '<th style="padding:6px 8px; text-align:left;">#</th>';
@@ -2649,10 +3069,12 @@ function renderVistaSocio(socioOverride) {
         const isGA = d.amt % 70000 === 0 && d.amt <= 840000 && d.amt > 0;
         const isGB = d.amt >= 236665 && d.amt <= 236667;
         const afterGGCC = d.y > 2022 || (d.y === 2022 && d.m >= 10);
+        const isGA2 = d.amt >= CUOTA_GGCC && d.amt < CUOTA_GGCC * 2 && !isGA && !isGB;
         if (afterGGCC && isGA) tipo = 'A';
+        else if (afterGGCC && isGA2) tipo = 'A2';
         else if (afterGGCC && isGB) tipo = 'B';
-        const tipoColors = {A:'#00838f', B:'#e65100', C:'#666'};
-        const tipoLabels = {A:'GGCC', B:'Combo', C:'Cascada'};
+        const tipoColors = {A:'#00838f', A2:'#0097a7', B:'#e65100', C:'#666'};
+        const tipoLabels = {A:'GGCC', A2:'GGCC+', B:'Combo', C:'Cascada'};
         const rowBg = i % 2 === 0 ? '#fff' : '#f8f9fa';
 
         html += '<tr style="background:' + rowBg + '; border-bottom:1px solid #eee;">';
