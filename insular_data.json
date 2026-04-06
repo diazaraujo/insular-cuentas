@@ -1168,6 +1168,24 @@
       "estadoCuenta": 29
     },
     {
+      "archivo": "cartola_2022_EC30.pdf",
+      "tipo": "pdf",
+      "periodo": "01/11/2022→30/11/2022",
+      "depositos": 1,
+      "estadoCuenta": 30,
+      "saldoAnterior": 37757991,
+      "saldoActual": 37077991
+    },
+    {
+      "archivo": "cartola_2022_EC31.pdf",
+      "tipo": "pdf",
+      "periodo": "01/12/2022→30/12/2022",
+      "depositos": 1,
+      "estadoCuenta": 31,
+      "saldoAnterior": 37077991,
+      "saldoActual": 36134728
+    },
+    {
       "archivo": "cartola_2023_EC32.pdf",
       "tipo": "pdf",
       "periodo": "01/01/2023→31/01/2023",
@@ -1340,6 +1358,24 @@
       "estadoCuenta": 53,
       "saldoAnterior": 74015227,
       "saldoActual": 43366392
+    },
+    {
+      "archivo": "cartola_2024_EC54.pdf",
+      "tipo": "pdf",
+      "periodo": "01/11/2024→29/11/2024",
+      "depositos": 9,
+      "estadoCuenta": 54,
+      "saldoAnterior": 43366392,
+      "saldoActual": 47487033
+    },
+    {
+      "archivo": "cartola_2024_EC55.pdf",
+      "tipo": "pdf",
+      "periodo": "01/12/2024→30/12/2024",
+      "depositos": 14,
+      "estadoCuenta": 55,
+      "saldoAnterior": 47487033,
+      "saldoActual": 72665803
     },
     {
       "archivo": "cartola_2025_EC56.pdf",
@@ -1884,6 +1920,24 @@
       "periodo": "01/10/2022→31/10/2022"
     },
     {
+      "socio": "Fernando",
+      "fecha": "2022-11-28",
+      "monto": 70000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2022_EC30.pdf",
+      "periodo": "01/11/2022→30/11/2022"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2022-12-28",
+      "monto": 70000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2022_EC31.pdf",
+      "periodo": "01/12/2022→30/12/2022"
+    },
+    {
       "socio": "Camilo",
       "fecha": "2023-01-27",
       "monto": 500000,
@@ -2395,6 +2449,213 @@
       "rut": "13426837-9",
       "cartola": "cartola_2024_EC53.pdf",
       "periodo": "01/10/2024→30/10/2024"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2024-11-19",
+      "monto": 2000000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2024_EC54.pdf",
+      "periodo": "01/11/2024→29/11/2024"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2024-11-19",
+      "monto": 70000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2024_EC54.pdf",
+      "periodo": "01/11/2024→29/11/2024"
+    },
+    {
+      "socio": "Cristian",
+      "fecha": "2024-11-19",
+      "monto": 2000000,
+      "descripcion": "TEF 13066600-0",
+      "rut": "13066600-0",
+      "cartola": "cartola_2024_EC54.pdf",
+      "periodo": "01/11/2024→29/11/2024"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2024-11-19",
+      "monto": 280000,
+      "descripcion": "TEF 7746703-3 Cristobal Eduar",
+      "rut": "7746703-3",
+      "cartola": "cartola_2024_EC54.pdf",
+      "periodo": "01/11/2024→29/11/2024"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2024-11-19",
+      "monto": 210000,
+      "descripcion": "TEF 13272830-5",
+      "rut": "13272830-5",
+      "cartola": "cartola_2024_EC54.pdf",
+      "periodo": "01/11/2024→29/11/2024"
+    },
+    {
+      "socio": "Cristóbal",
+      "fecha": "2024-11-20",
+      "monto": 4000000,
+      "descripcion": "TEF 7746703-3 Cristobal Eduar",
+      "rut": "7746703-3",
+      "cartola": "cartola_2024_EC54.pdf",
+      "periodo": "01/11/2024→29/11/2024"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2024-11-28",
+      "monto": 4000000,
+      "descripcion": "TEF 13455042-2 Anneli De La Lu",
+      "rut": "13455042-2",
+      "cartola": "cartola_2024_EC54.pdf",
+      "periodo": "01/11/2024→29/11/2024"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2024-11-28",
+      "monto": 210000,
+      "descripcion": "TEF 13455042-2 Anneli De La Lu",
+      "rut": "13455042-2",
+      "cartola": "cartola_2024_EC54.pdf",
+      "periodo": "01/11/2024→29/11/2024"
+    },
+    {
+      "socio": "Felipe",
+      "fecha": "2024-11-28",
+      "monto": 4000000,
+      "descripcion": "TEF 18273744-5 FELIPE IGNACIO",
+      "rut": "18273744-5",
+      "cartola": "cartola_2024_EC54.pdf",
+      "periodo": "01/11/2024→29/11/2024"
+    },
+    {
+      "socio": "Eduardo",
+      "fecha": "2024-12-03",
+      "monto": 4000000,
+      "descripcion": "TEF 13455042-2 Anneli De La Lu",
+      "rut": "13455042-2",
+      "cartola": "cartola_2024_EC55.pdf",
+      "periodo": "01/12/2024→30/12/2024"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2024-12-03",
+      "monto": 350000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "cartola_2024_EC55.pdf",
+      "periodo": "01/12/2024→30/12/2024"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2024-12-03",
+      "monto": 4000000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "cartola_2024_EC55.pdf",
+      "periodo": "01/12/2024→30/12/2024"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2024-12-04",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "cartola_2024_EC55.pdf",
+      "periodo": "01/12/2024→30/12/2024"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2024-12-04",
+      "monto": 2000000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "cartola_2024_EC55.pdf",
+      "periodo": "01/12/2024→30/12/2024"
+    },
+    {
+      "socio": "Fernando",
+      "fecha": "2024-12-09",
+      "monto": 70000,
+      "descripcion": "TEF 20083182-9 YAHISA FRANCISC",
+      "rut": "20083182-9",
+      "cartola": "cartola_2024_EC55.pdf",
+      "periodo": "01/12/2024→30/12/2024"
+    },
+    {
+      "socio": "Camilo",
+      "fecha": "2024-12-09",
+      "monto": 500000,
+      "descripcion": "TEF 16095526-0 Camilo Antonio",
+      "rut": "16095526-0",
+      "cartola": "cartola_2024_EC55.pdf",
+      "periodo": "01/12/2024→30/12/2024"
+    },
+    {
+      "socio": "Jordi",
+      "fecha": "2024-12-09",
+      "monto": 2000000,
+      "descripcion": "TEF 13272830-5",
+      "rut": "13272830-5",
+      "cartola": "cartola_2024_EC55.pdf",
+      "periodo": "01/12/2024→30/12/2024"
+    },
+    {
+      "socio": "Antonio",
+      "fecha": "2024-12-13",
+      "monto": 2000000,
+      "descripcion": "TEF 13890149-1 ANTONIO PAULO D",
+      "rut": "13890149-1",
+      "cartola": "cartola_2024_EC55.pdf",
+      "periodo": "01/12/2024→30/12/2024"
+    },
+    {
+      "socio": "Cristian",
+      "fecha": "2024-12-13",
+      "monto": 2000000,
+      "descripcion": "TEF 13066600-0",
+      "rut": "13066600-0",
+      "cartola": "cartola_2024_EC55.pdf",
+      "periodo": "01/12/2024→30/12/2024"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2024-12-16",
+      "monto": 5000000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "cartola_2024_EC55.pdf",
+      "periodo": "01/12/2024→30/12/2024"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2024-12-16",
+      "monto": 5000000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "cartola_2024_EC55.pdf",
+      "periodo": "01/12/2024→30/12/2024"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2024-12-16",
+      "monto": 5000000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "cartola_2024_EC55.pdf",
+      "periodo": "01/12/2024→30/12/2024"
+    },
+    {
+      "socio": "Laura",
+      "fecha": "2024-12-17",
+      "monto": 2540000,
+      "descripcion": "TEF 16656248-1 Laura Diaz",
+      "rut": "16656248-1",
+      "cartola": "cartola_2024_EC55.pdf",
+      "periodo": "01/12/2024→30/12/2024"
     },
     {
       "socio": "Fernando",
