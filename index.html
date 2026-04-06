@@ -1074,7 +1074,7 @@ const MOB_CUOTAS = 24;
 const _now = new Date();
 const _currentYear = _now.getFullYear();
 const _currentMonth = _now.getMonth() + 1; // 1-12
-const MESES_CON_DATOS_2026 = (_currentYear === 2026) ? _currentMonth : (_currentYear > 2026 ? 12 : 0);
+// MESES_CON_DATOS_2026 se calcula después de cargar cartolas (ver getLastCartolaMonth)
 const MONTHS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 let ggccHighlightSocio = null; // Socio a resaltar al abrir tab GGCC
 
@@ -1106,6 +1106,255 @@ const FULL_NAMES = {
 
 function fmt(n) { return '$' + Math.round(n).toLocaleString('es-CL'); }
 function fmtM(n) { return '$' + (n/1000000).toFixed(1).replace('.0','') + 'M'; }
+
+// ==================== COBERTURA DE CARTOLAS (fuente de verdad) ====================
+// Calcula el último mes cubierto por cartolas reales (KNOWN_CARTOLA_ECS + depósitos).
+// TODAS las métricas "esperadas" deben derivarse de aquí, NUNCA del calendario.
+const CARTOLA_START_Y = 2020, CARTOLA_START_M = 6; // EC#1 = jun 2020
+
+function ecToYearMonth(ec) {
+    let total = (CARTOLA_START_Y * 12 + CARTOLA_START_M - 1) + (ec - 1);
+    return { y: Math.floor(total / 12), m: (total % 12) + 1 };
+}
+function yearMonthToEC(y, m) {
+    return (y * 12 + m - 1) - (CARTOLA_START_Y * 12 + CARTOLA_START_M - 1) + 1;
+}
+
+// Recopilar TODOS los meses cubiertos por cartolas (ECs conocidas + archivos de depósitos)
+function getCartolaCoverage() {
+    const covered = new Set();
+    // 1) ECs conocidas
+    KNOWN_CARTOLA_ECS.forEach(ec => {
+        const ym = ecToYearMonth(ec);
+        covered.add(ym.y + '-' + ym.m);
+    });
+    // 2) Meses de depósitos que referencian archivos de cartola
+    ALL_DEPOSITS.forEach(d => {
+        if (d.file && d.file.toLowerCase().includes('cartola') && d.y && d.m) {
+            covered.add(d.y + '-' + d.m);
+        }
+    });
+    return covered;
+}
+
+// Último mes cubierto por cartolas
+function getLastCartolaMonth() {
+    const covered = getCartolaCoverage();
+    let maxY = 0, maxM = 0;
+    covered.forEach(key => {
+        const [y, m] = key.split('-').map(Number);
+        if (y > maxY || (y === maxY && m > maxM)) { maxY = y; maxM = m; }
+    });
+    return { y: maxY, m: maxM };
+}
+
+// GGCC: meses esperados = solo meses con cartola desde oct-2022
+function getGGCCMesesFromCartolas() {
+    const covered = getCartolaCoverage();
+    let count = 0;
+    covered.forEach(key => {
+        const [y, m] = key.split('-').map(Number);
+        // GGCC empieza oct-2022
+        if (y > 2022 || (y === 2022 && m >= 10)) count++;
+    });
+    return count;
+}
+
+// Último mes cubierto en formato legible
+const _lastCartola = getLastCartolaMonth();
+const LAST_CARTOLA_LABEL = MONTHS[_lastCartola.m - 1] + ' ' + _lastCartola.y;
+
+// ==================== VALIDACIÓN DE INTEGRIDAD ====================
+function validateDataIntegrity() {
+    const warnings = [];
+    const covered = getCartolaCoverage();
+    const lastC = getLastCartolaMonth();
+    const cls = classifyAllDeposits();
+    const ggccMesesCartola = getGGCCMesesFromCartolas();
+    const ggccExpectedPerSocio = CUOTA_GGCC * ggccMesesCartola;
+
+    // ═══ REGLAS GENERALES (cartolas) ═══
+
+    // G1) Depósitos que referencian cartola de un mes sin cartola conocida
+    ALL_DEPOSITS.forEach(d => {
+        if (!d.file || !d.file.toLowerCase().includes('cartola')) return;
+        const key = d.y + '-' + d.m;
+        if (!covered.has(key)) {
+            warnings.push('[General] Depósito de ' + d.s + ' (' + MONTHS[d.m-1] + ' ' + d.y + ', ' + fmt(d.amt) + ') referencia cartola pero ese mes no está en cartolas conocidas.');
+        }
+    });
+
+    // G2) Cartolas faltantes vs calendario (mes vencido: en abril se espera hasta marzo)
+    const ggccMesesCalendario = (_currentYear - 2022) * 12 + _currentMonth - 10;
+    if (ggccMesesCartola < ggccMesesCalendario) {
+        warnings.push('[General] Faltan cartolas: ' + ggccMesesCartola + ' meses con cartola desde oct-2022, calendario indica ' + ggccMesesCalendario + '. Último: ' + LAST_CARTOLA_LABEL + '.');
+    }
+
+    // G3) Gaps en la secuencia de cartolas (jun-2020 → última)
+    let gy = 2020, gm = 6;
+    while (gy < lastC.y || (gy === lastC.y && gm <= lastC.m)) {
+        if (!covered.has(gy + '-' + gm)) {
+            warnings.push('[General] Gap: falta cartola de ' + MONTHS[gm-1] + ' ' + gy + '.');
+        }
+        gm++; if (gm > 12) { gm = 1; gy++; }
+    }
+
+    // G4) Suma de allocations debe igualar monto del depósito
+    let allocMismatch = 0;
+    SOCIOS_ALL.forEach(s => {
+        cls[s].deposits.forEach(d => {
+            const allocTotal = d.alloc.inicial + d.alloc.construccion + d.alloc.mobiliario + d.alloc.ggcc + d.alloc.otros;
+            if (Math.abs(allocTotal - d.amt) > 1) allocMismatch++;
+        });
+    });
+    if (allocMismatch > 0) {
+        warnings.push('[General] ' + allocMismatch + ' depósitos donde la suma de clasificaciones no cuadra con el monto original.');
+    }
+
+    // G5) Todos los socios tienen depósitos
+    SOCIOS_ALL.forEach(s => {
+        if (cls[s].deposits.length === 0) {
+            warnings.push('[General] ' + s + ' no tiene ningún depósito registrado.');
+        }
+    });
+
+    // ═══ CAPITAL ═══
+
+    SOCIOS_ALL.forEach(s => {
+        const d = cls[s];
+        // K1) Pagado excede meta por más de 5%
+        if (d.capitalPaid > ACUERDOS.capital.perSocio * 1.05) {
+            warnings.push('[Capital] ' + s + ': pagado ' + fmt(d.capitalPaid) + ' excede meta ' + fmtM(ACUERDOS.capital.perSocio) + ' (+' + Math.round((d.capitalPaid/ACUERDOS.capital.perSocio - 1)*100) + '%).');
+        }
+        // K2) Capital parcial: pagó algo pero no completó (puede indicar clasificación incorrecta)
+        if (d.capitalPaid > 0 && d.capitalPaid < ACUERDOS.capital.perSocio * 0.5) {
+            warnings.push('[Capital] ' + s + ': solo tiene ' + fmt(d.capitalPaid) + ' de ' + fmtM(ACUERDOS.capital.perSocio) + ' en capital (' + Math.round(d.capitalPaid/ACUERDOS.capital.perSocio*100) + '%). Verificar.');
+        }
+    });
+
+    // K3) Total capital global
+    let capitalTotal = 0;
+    SOCIOS_ALL.forEach(s => capitalTotal += cls[s].capitalPaid);
+    if (capitalTotal > ACUERDOS.capital.total) {
+        warnings.push('[Capital] Total capital pagado (' + fmt(capitalTotal) + ') excede meta global (' + fmtM(ACUERDOS.capital.total) + ').');
+    }
+
+    // ═══ CONSTRUCCIÓN ═══
+
+    SOCIOS_ALL.forEach(s => {
+        const d = cls[s];
+        // C1) Pagado excede cuota de construcción significativamente
+        if (d.constrPaid > d.constrQuota * 1.2) {
+            warnings.push('[Construcción] ' + s + ': pagado ' + fmt(d.constrPaid) + ' excede cuota ' + fmtM(d.constrQuota) + ' por >' + Math.round((d.constrPaid/d.constrQuota - 1)*100) + '%. Verificar si excedente debió ir a otra categoría.');
+        }
+        // C2) Construcción sin capital completo (la cascada debió llenar capital primero)
+        if (d.constrPaid > 0 && d.capitalPaid < ACUERDOS.capital.perSocio) {
+            warnings.push('[Construcción] ' + s + ': tiene ' + fmt(d.constrPaid) + ' en construcción pero capital incompleto (' + fmt(d.capitalPaid) + '/' + fmtM(ACUERDOS.capital.perSocio) + '). La cascada debió llenar capital primero.');
+        }
+    });
+
+    // ═══ MOBILIARIO ═══
+
+    // M1) MOB_PAGADO_FULL con depósitos MOB en cartola = posible doble conteo
+    MOB_PAGADO_FULL.forEach(s => {
+        if (cls[s].mobPaid > 0) {
+            warnings.push('[Mobiliario] ' + s + ' está en MOB_PAGADO_FULL (pagó $4M adelantado fuera de cartola) pero tiene ' + fmt(cls[s].mobPaid) + ' clasificado como MOB en cartolas. Posible doble conteo.');
+        }
+    });
+
+    // M2) Socios MOB con más de $4M pagado
+    SOCIOS_MOB.forEach(s => {
+        if (cls[s].mobPaid > ACUERDOS.mobiliario.perSocio * 1.05) {
+            warnings.push('[Mobiliario] ' + s + ': MOB pagado ' + fmt(cls[s].mobPaid) + ' excede meta ' + fmtM(ACUERDOS.mobiliario.perSocio) + '.');
+        }
+    });
+
+    // M3) MOB_PAGADO_FULL no debe estar en SOCIOS_MOB
+    MOB_PAGADO_FULL.forEach(s => {
+        if (SOCIOS_MOB.includes(s)) {
+            warnings.push('[Mobiliario] ' + s + ' está en MOB_PAGADO_FULL y también en SOCIOS_MOB. Debe estar solo en MOB_PAGADO_FULL.');
+        }
+    });
+
+    // M4) Verificar que MOB_PAGADO_FULL + SOCIOS_MOB = todos los socios
+    const allMobSocios = new Set([...SOCIOS_MOB, ...MOB_PAGADO_FULL]);
+    if (allMobSocios.size !== SOCIOS_ALL.length) {
+        const missing = SOCIOS_ALL.filter(s => !allMobSocios.has(s));
+        if (missing.length > 0) {
+            warnings.push('[Mobiliario] Socios sin clasificación MOB: ' + missing.join(', ') + '. Deben estar en SOCIOS_MOB o MOB_PAGADO_FULL.');
+        }
+    }
+
+    // M5) Socios no-MOB no deberían tener pagos MOB
+    MOB_PAGADO_FULL.forEach(s => {
+        // Ya cubierto en M1
+    });
+
+    // ═══ GGCC ═══
+
+    // GC1) Meses GGCC pagados solo desde cartolas verificadas
+    SOCIOS_ALL.forEach(s => {
+        const d = cls[s];
+        const ggccPaid = d.totals.ggcc;
+        // GC2) GGCC pagado excede esperado (pagó meses de más = adelantado, no es error pero avisar)
+        if (ggccPaid > ggccExpectedPerSocio * 1.1) {
+            warnings.push('[GGCC] ' + s + ': pagado ' + fmt(ggccPaid) + ' excede esperado ' + fmt(ggccExpectedPerSocio) + ' (' + ggccMesesCartola + ' meses). Posibles pagos adelantados.');
+        }
+        // GC3) Meses pagados vs meses con cartola
+        if (d.ggccMonthsPaid > ggccMesesCartola) {
+            warnings.push('[GGCC] ' + s + ': tiene ' + d.ggccMonthsPaid + ' meses GGCC pagados pero solo hay ' + ggccMesesCartola + ' meses con cartola.');
+        }
+    });
+
+    // GC4) GGCC antes de oct-2022 no debería existir
+    SOCIOS_ALL.forEach(s => {
+        const ggccMap = cls[s].ggccByMonth;
+        Object.keys(ggccMap).forEach(key => {
+            const [ky, km] = key.split('-').map(Number);
+            if (ky < 2022 || (ky === 2022 && km < 10)) {
+                warnings.push('[GGCC] ' + s + ': tiene GGCC en ' + MONTHS[km-1] + ' ' + ky + ' (' + fmt(ggccMap[key]) + ') pero GGCC empezó en oct-2022.');
+            }
+        });
+    });
+
+    // GC5) Total GGCC global cuadra
+    let ggccGlobal = 0;
+    SOCIOS_ALL.forEach(s => ggccGlobal += cls[s].totals.ggcc);
+    const ggccExpectedGlobal = ggccExpectedPerSocio * SOCIOS_ALL.length;
+    if (ggccGlobal > ggccExpectedGlobal * 1.05) {
+        warnings.push('[GGCC] Total GGCC recaudado (' + fmt(ggccGlobal) + ') excede esperado global (' + fmt(ggccExpectedGlobal) + ' = ' + ggccMesesCartola + ' meses × ' + SOCIOS_ALL.length + ' socios × ' + fmt(CUOTA_GGCC) + ').');
+    }
+
+    // ═══ BALANCE GENERAL ═══
+
+    // B1) Suma de categorías por socio = total depositado
+    SOCIOS_ALL.forEach(s => {
+        const t = cls[s].totals;
+        const catSum = t.inicial + t.construccion + t.mobiliario + t.ggcc + t.otros;
+        if (Math.abs(catSum - t.total) > 1) {
+            warnings.push('[Balance] ' + s + ': suma de categorías (' + fmt(catSum) + ') ≠ total depositado (' + fmt(t.total) + '). Diferencia: ' + fmt(Math.abs(catSum - t.total)) + '.');
+        }
+    });
+
+    // B2) Total de ALL_DEPOSITS vs suma de totals
+    const allDepTotal = ALL_DEPOSITS.reduce((a,d) => a + d.amt, 0);
+    let classifiedTotal = 0;
+    SOCIOS_ALL.forEach(s => classifiedTotal += cls[s].totals.total);
+    if (Math.abs(allDepTotal - classifiedTotal) > 1) {
+        warnings.push('[Balance] Total ALL_DEPOSITS (' + fmt(allDepTotal) + ') ≠ suma clasificada (' + fmt(classifiedTotal) + '). Hay ' + fmt(Math.abs(allDepTotal - classifiedTotal)) + ' sin clasificar.');
+    }
+
+    // B3) Depósitos con socio no reconocido
+    const socioSet = new Set(SOCIOS_ALL);
+    ALL_DEPOSITS.forEach(d => {
+        if (!socioSet.has(d.s)) {
+            warnings.push('[Balance] Depósito de "' + d.s + '" no es un socio reconocido (' + MONTHS[d.m-1] + ' ' + d.y + ', ' + fmt(d.amt) + ').');
+        }
+    });
+
+    return warnings;
+}
+
 
 // ==================== TABS ====================
 function switchSubTab(subId, btn) {
@@ -1235,9 +1484,9 @@ function renderResumen() {
     const capitalMeta = ACUERDOS.capital.total;            // $100M
     const constrMeta  = ACUERDOS.construccion.total;       // $76M
     const mobMeta     = ACUERDOS.mobiliario.total;         // $40M
-    // Dinámico: meses desde oct-2022 hasta mes actual
-    const ggccMeses   = (_currentYear - 2022) * 12 + _currentMonth - 10 + 1; // oct-2022 = mes 1
-    const ggccMeta    = CUOTA_GGCC * 10 * ggccMeses;
+    // GGCC esperados: solo meses con cartola verificada desde oct-2022
+    const ggccMeses   = getGGCCMesesFromCartolas();
+    const ggccMeta    = CUOTA_GGCC * SOCIOS_ALL.length * ggccMeses;
 
     const capitalFalta = Math.max(0, capitalMeta - capitalPagado);
     const constrFalta  = Math.max(0, constrMeta - constrPagado);
@@ -1276,9 +1525,18 @@ function renderResumen() {
 
     let html = '';
 
+    // ─── VALIDACIÓN DE INTEGRIDAD ───
+    const _warnings = validateDataIntegrity();
+    if (_warnings.length > 0) {
+        html += '<div style="background:#fff3e0; border:2px solid #e65100; border-radius:10px; padding:14px 18px; margin-bottom:20px;">';
+        html += '<div style="font-weight:700; color:#e65100; font-size:13px; margin-bottom:6px;">⚠ Alerta de Integridad de Datos (' + _warnings.length + ')</div>';
+        _warnings.forEach(w => { html += '<div style="font-size:11px; color:#795548; margin:3px 0; padding-left:12px; border-left:2px solid #ffcc02;">• ' + w + '</div>'; });
+        html += '</div>';
+    }
+
     // ─── FUENTE ───
     html += '<div style="background:#f5f5f5; border-radius:8px; padding:8px 14px; margin-bottom:20px; font-size:11px; color:#666; display:flex; align-items:center; gap:8px;">';
-    html += '<strong>Fuente:</strong> Todos los montos calculados exclusivamente desde cartolas Scotiabank verificadas (' + ALL_DEPOSITS.length + ' depósitos).</div>';
+    html += '<strong>Fuente:</strong> Todos los montos calculados exclusivamente desde cartolas Scotiabank verificadas (' + ALL_DEPOSITS.length + ' depósitos). Cobertura: jun-2020 → ' + LAST_CARTOLA_LABEL + '. GGCC esperados: ' + ggccMeses + ' meses con cartola (desde oct-2022).</div>';
 
     // ═══════════════════════════════════════════
     // SECCIÓN 1: APORTES COMPROMETIDOS
@@ -1857,7 +2115,13 @@ function renderGGCC() {
     }
     const year = parseInt(sel.value);
     const cls = classifyAllDeposits();
-    const maxMonth = (year === _currentYear) ? _currentMonth : 12;
+    // Meses con cartola verificada para este año
+    const _covered = getCartolaCoverage();
+    const _lc = getLastCartolaMonth();
+    const maxMonth = (year === _lc.y) ? _lc.m : (year < _lc.y ? 12 : 0);
+    // Set de meses cubiertos para este año (para detectar gaps)
+    const coveredMonths = new Set();
+    _covered.forEach(k => { const [y,m] = k.split('-').map(Number); if (y === year) coveredMonths.add(m); });
 
     let ggccTotal = 0, sociosAlDia = 0;
 
@@ -1873,16 +2137,19 @@ function renderGGCC() {
             data[s].paid += val;
         }
         ggccTotal += data[s].paid;
-        if (data[s].paid >= CUOTA_GGCC * maxMonth) sociosAlDia++;
     });
-    const esperado = CUOTA_GGCC * 10 * maxMonth;
+    // Meses GGCC esperados para este año = meses con cartola que estén en periodo GGCC (>=oct-2022)
+    let ggccMonthsThisYear = 0;
+    coveredMonths.forEach(m => { if (year > 2022 || (year === 2022 && m >= 10)) ggccMonthsThisYear++; });
+    SOCIOS_ALL.forEach(s => { if (data[s].paid >= CUOTA_GGCC * ggccMonthsThisYear) sociosAlDia++; });
+    const esperado = CUOTA_GGCC * SOCIOS_ALL.length * ggccMonthsThisYear;
     const saldo = ggccTotal - esperado;
     
     let html = '';
     html += '<div class="table-section">';
     html += '<div class="detail-header"><h3>Resumen Anual GGCC ' + year + ' — Estado por Socio</h3>';
-    html += '<span class="detail-badge" style="background:#e0f2f1; color:#00838f;">Cartolas ' + year + ' verificadas</span></div>';
-    html += '<p style="font-size:12px; color:#666; margin-bottom:16px;">GGCC = ' + fmt(CUOTA_GGCC) + '/mes × ' + SOCIOS_ALL.length + ' socios × ' + maxMonth + ' meses = ' + fmt(CUOTA_GGCC * SOCIOS_ALL.length * maxMonth) + ' esperado. De cada depósito solo se contabiliza la porción GGCC (' + fmt(CUOTA_GGCC) + '). La porción de mobiliario (' + fmt(CUOTA_MOB) + ') se muestra en Aportes de Capital. Fuente: cartolas Scotiabank.</p>';
+    html += '<span class="detail-badge" style="background:#e0f2f1; color:#00838f;">Cartolas ' + year + ': ' + coveredMonths.size + ' meses verificados</span></div>';
+    html += '<p style="font-size:12px; color:#666; margin-bottom:16px;">GGCC = ' + fmt(CUOTA_GGCC) + '/mes × ' + SOCIOS_ALL.length + ' socios × ' + ggccMonthsThisYear + ' meses = ' + fmt(esperado) + ' esperado. De cada depósito solo se contabiliza la porción GGCC (' + fmt(CUOTA_GGCC) + '). La porción de mobiliario (' + fmt(CUOTA_MOB) + ') se muestra en Aportes de Capital. Fuente: cartolas Scotiabank.</p>';
     
     // KPIs
     html += '<section class="kpis">';
@@ -1899,15 +2166,15 @@ function renderGGCC() {
     const monthTotals = new Array(12).fill(0);
     SOCIOS_ALL.forEach(s => {
         const d = data[s];
-        const esperadoS = CUOTA_GGCC * maxMonth;
+        const esperadoS = CUOTA_GGCC * ggccMonthsThisYear;
         const saldoS = d.paid - esperadoS;
         const isHL = (ggccHighlightSocio === s);
         html += '<tr id="ggcc-row-' + s + '" style="' + (isHL ? 'background:#b2ebf2; outline:2px solid #00838f; font-weight:700;' : '') + '"><td>' + (FULL_NAMES[s] || s) + '</td>';
         for (let m = 0; m < 12; m++) {
             const val = d.months[m];
             monthTotals[m] += val;
-            if (m + 1 > maxMonth) {
-                html += '<td style="background:#f5f5f5; color:#bbb; text-align:center;">—</td>'; // No data yet
+            if (!coveredMonths.has(m + 1)) {
+                html += '<td style="background:#f5f5f5; color:#bbb; text-align:center;">—</td>'; // Sin cartola
             } else if (val >= CUOTA_GGCC) {
                 html += '<td class="ggcc-paid">' + fmt(val) + '</td>';
             } else if (val > 0) {
@@ -2146,7 +2413,7 @@ function renderVistaSocio(socioOverride) {
 
     const t = data.totals;
     const deps = data.deposits;
-    const totalGGCCMonths = (_currentYear - 2022) * 12 + _currentMonth - 10 + 1;
+    const totalGGCCMonths = getGGCCMesesFromCartolas();
     const ggccExpected = CUOTA_GGCC * totalGGCCMonths;
     const isMobFull = MOB_PAGADO_FULL.includes(socio);
     const isMobSocio = SOCIOS_MOB.includes(socio);
@@ -2401,7 +2668,7 @@ function showSocioBitacora(socio) {
     if (!data) return;
     const deps = data.deposits;
     const t = data.totals;
-    const totalGGCCMonths = (_currentYear - 2022) * 12 + _currentMonth - 10 + 1;
+    const totalGGCCMonths = getGGCCMesesFromCartolas();
 
     // Header con resumen
     let html = '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(120px,1fr)); gap:8px; margin-bottom:16px;">';
