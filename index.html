@@ -1427,6 +1427,8 @@ function renderResumen() {
         capitalPagado += cls[s].totals.inicial;
         constrPagado  += cls[s].totals.construccion;
         mobPagado     += cls[s].totals.mobiliario;
+        // MOB_PAGADO_FULL ya pagaron $4M adelantado (fuera de cartola)
+        if (MOB_PAGADO_FULL.includes(s)) mobPagado += 4000000;
         ggccPagado    += cls[s].totals.ggcc;
         otrosPagado   += cls[s].totals.otros;
     });
@@ -1457,7 +1459,7 @@ function renderResumen() {
         const constrComp = d.constrQuota;
         const capOk   = d.capitalPaid >= 10000000;
         const cOk     = d.constrPaid >= constrComp;
-        const mOk     = d.mobPaid >= 4000000;
+        const mOk     = MOB_PAGADO_FULL.includes(s) || d.mobPaid >= 4000000;
         const gOk     = d.totals.ggcc >= ggccExpectedPerSocio;
         if (capOk && cOk && mOk && gOk) { sociosAlDia++; sociosAlDiaNames.push(s); }
     });
@@ -1468,7 +1470,7 @@ function renderResumen() {
     const constrPct = Math.min(100, Math.round(constrPagado / constrMeta * 100));
     const constrAlDia = SOCIOS_ALL.filter(s => cls[s].constrPaid >= cls[s].constrQuota).length;
     const mobPct = Math.min(100, Math.round(mobPagado / mobMeta * 100));
-    const mobAlDia = SOCIOS_ALL.filter(s => cls[s].mobPaid >= 4000000).length;
+    const mobAlDia = SOCIOS_ALL.filter(s => MOB_PAGADO_FULL.includes(s) || cls[s].mobPaid >= 4000000).length;
     const ggccPct = Math.min(100, Math.round(ggccPagado / ggccMeta * 100));
 
     const ggccAlDia = SOCIOS_ALL.filter(s => cls[s].totals.ggcc >= ggccExpectedPerSocio).length;
@@ -1579,7 +1581,7 @@ function renderResumen() {
         const capDebt   = Math.max(0, 10000000 - d.capitalPaid);
         const cComp     = d.constrQuota;
         const constrDbt = Math.max(0, cComp - d.constrPaid);
-        const mobDbt    = Math.max(0, 4000000 - d.mobPaid);
+        const mobDbt    = MOB_PAGADO_FULL.includes(s) ? 0 : Math.max(0, 4000000 - d.mobPaid);
         const ggccDbt   = Math.max(0, ggccExpectedPerSocio - d.totals.ggcc);
         const totalDebt = capDebt + constrDbt + mobDbt + ggccDbt;
         const isAlDia   = totalDebt === 0;
@@ -1589,7 +1591,7 @@ function renderResumen() {
         html += '<td>' + (FULL_NAMES[s] || s) + '</td>';
         html += '<td class="col-right" style="color:' + (capDebt > 0 ? '#c62828' : '#2e7d32') + ';">' + (capDebt > 0 ? fmt(capDebt) : '✓') + '</td>';
         html += '<td class="col-right" style="color:' + (constrDbt > 0 ? '#c62828' : '#2e7d32') + ';">' + (constrDbt > 0 ? fmt(constrDbt) : '✓') + '</td>';
-        html += '<td class="col-right" style="color:' + (mobDbt > 0 ? '#e65100' : '#2e7d32') + ';">' + (mobDbt > 0 ? fmt(mobDbt) : '✓') + '</td>';
+        html += '<td class="col-right" style="color:' + (mobDbt > 0 ? '#e65100' : '#2e7d32') + ';">' + (MOB_PAGADO_FULL.includes(s) ? '✓' : (mobDbt > 0 ? fmt(mobDbt) : '✓')) + '</td>';
         html += '<td class="col-right" style="color:' + (ggccDbt > 0 ? '#00838f' : '#2e7d32') + ';">' + (ggccDbt > 0 ? fmt(ggccDbt) : '✓') + '</td>';
         html += '<td class="col-right" style="color:' + (totalDebt > 0 ? '#c62828' : '#2e7d32') + '; font-weight:700;">' + (totalDebt > 0 ? fmt(totalDebt) : '$0') + '</td>';
         if (isAlDia) {
