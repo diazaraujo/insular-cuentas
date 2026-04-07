@@ -6,33 +6,34 @@
     <title>Insular SPA - Dashboard de Pagos</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1" integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ" crossorigin="anonymous"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; color: #1a1a2e; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f0eb; color: #2d2926; }
         .dashboard { max-width: 1400px; margin: 0 auto; padding: 20px; }
 
-        header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 24px 32px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
-        header h1 { font-size: 22px; font-weight: 700; }
-        header p { font-size: 13px; opacity: 0.7; margin-top: 4px; }
+        header { background: #2d2926; color: #f5f0eb; padding: 24px 32px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        header h1 { font-size: 22px; font-weight: 300; letter-spacing: 6px; text-transform: uppercase; }
+        header p { font-size: 12px; opacity: 0.6; margin-top: 4px; letter-spacing: 0.5px; }
         .header-right { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 
-        .upload-area { background: rgba(255,255,255,0.1); border: 2px dashed rgba(255,255,255,0.3); border-radius: 8px; padding: 16px 24px; cursor: pointer; transition: all 0.2s; text-align: center; min-width: 280px; }
-        .upload-area:hover, .upload-area.dragover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.6); }
-        .upload-area span { font-size: 13px; color: rgba(255,255,255,0.9); }
-        .upload-area small { display: block; font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+        .upload-area { background: rgba(245,240,235,0.08); border: 1.5px dashed rgba(245,240,235,0.25); border-radius: 8px; padding: 16px 24px; cursor: pointer; transition: all 0.2s; text-align: center; min-width: 280px; }
+        .upload-area:hover, .upload-area.dragover { background: rgba(245,240,235,0.15); border-color: rgba(245,240,235,0.5); }
+        .upload-area span { font-size: 13px; color: rgba(245,240,235,0.85); }
+        .upload-area small { display: block; font-size: 11px; color: rgba(245,240,235,0.45); margin-top: 4px; }
         #fileInput { display: none; }
-        .file-count { background: #0f3460; padding: 8px 16px; border-radius: 6px; font-size: 12px; }
-        .file-count strong { color: #e94560; }
+        .file-count { background: rgba(245,240,235,0.1); padding: 8px 16px; border-radius: 6px; font-size: 12px; color: #f5f0eb; }
+        .file-count strong { color: #c4a882; }
 
         /* Tabs */
-        .tab-bar { display: flex; gap: 4px; margin-bottom: 20px; background: white; border-radius: 10px; padding: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); flex-wrap: wrap; }
-        .tab-btn { padding: 10px 16px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; color: #666; transition: all 0.2s; white-space: nowrap; }
-        .tab-btn.active { background: #1a1a2e; color: white; }
-        .tab-btn:hover:not(.active) { background: #f0f2f5; }
+        .tab-bar { display: flex; gap: 4px; margin-bottom: 20px; background: #fff; border-radius: 10px; padding: 4px; box-shadow: 0 1px 4px rgba(45,41,38,0.06); flex-wrap: wrap; border: 1px solid #e7e0d8; }
+        .tab-btn { padding: 10px 16px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 500; color: #78716c; transition: all 0.2s; white-space: nowrap; letter-spacing: 0.3px; }
+        .tab-btn.active { background: #2d2926; color: #f5f0eb; }
+        .tab-btn:hover:not(.active) { background: #f5f0eb; }
         .tab-btn.hito { border-bottom: 3px solid transparent; }
-        .tab-btn.hito-capital.active { background: #1565c0; }
-        .tab-btn.hito-construccion.active { background: #7b1fa2; }
-        .tab-btn.hito-mobiliario.active { background: #e65100; }
-        .tab-btn.hito-2025.active { background: #00838f; }
+        .tab-btn.hito-capital.active { background: #5a7d9a; }
+        .tab-btn.hito-construccion.active { background: #8b7e74; }
+        .tab-btn.hito-mobiliario.active { background: #a68b6b; }
+        .tab-btn.hito-2025.active { background: #6b8f8b; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         .sub-tab-content { display: none; }
@@ -40,45 +41,45 @@
 
         /* KPIs */
         .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px; }
-        .kpi { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-        .kpi .label { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .kpi { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 1px 4px rgba(45,41,38,0.06); border: 1px solid #e7e0d8; }
+        .kpi .label { font-size: 11px; color: #8b7e74; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 500; }
         .kpi .value { font-size: 28px; font-weight: 700; }
         .kpi .sub { font-size: 12px; color: #888; margin-top: 4px; }
-        .kpi.green .value { color: #0a8754; }
-        .kpi.red .value { color: #d32f2f; }
-        .kpi.blue .value { color: #1565c0; }
-        .kpi.orange .value { color: #e65100; }
-        .kpi.purple .value { color: #7b1fa2; }
-        .kpi.teal .value { color: #00838f; }
+        .kpi.green .value { color: #5a7d5a; }
+        .kpi.red .value { color: #b05a5a; }
+        .kpi.blue .value { color: #5a7d9a; }
+        .kpi.orange .value { color: #a68b6b; }
+        .kpi.purple .value { color: #8b7e74; }
+        .kpi.teal .value { color: #6b8f8b; }
 
         /* Charts */
         .charts { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 20px; }
-        .chart-card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-        .chart-card h3 { font-size: 14px; color: #444; margin-bottom: 16px; }
+        .chart-card { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 1px 4px rgba(45,41,38,0.06); border: 1px solid #e7e0d8; }
+        .chart-card h3 { font-size: 14px; color: #5c554e; margin-bottom: 16px; font-weight: 500; }
         .chart-container { position: relative; height: 300px; }
 
         /* Tables */
-        .table-section { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 20px; }
-        .table-section h3 { font-size: 14px; color: #444; margin-bottom: 16px; }
+        .table-section { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 1px 4px rgba(45,41,38,0.06); margin-bottom: 20px; border: 1px solid #e7e0d8; }
+        .table-section h3 { font-size: 14px; color: #5c554e; margin-bottom: 16px; font-weight: 500; }
         .table-wrapper { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { background: #1a1a2e; color: white; padding: 10px 12px; text-align: center; font-weight: 600; position: sticky; top: 0; white-space: nowrap; }
+        th { background: #2d2926; color: #f5f0eb; padding: 10px 12px; text-align: center; font-weight: 500; position: sticky; top: 0; white-space: nowrap; letter-spacing: 0.3px; }
         th:first-child { text-align: left; }
         td { padding: 8px 12px; border-bottom: 1px solid #eee; text-align: right; white-space: nowrap; }
         td:first-child { text-align: left; font-weight: 600; }
         td:nth-child(2) { text-align: center; font-size: 11px; color: #666; }
-        tr:hover td { background: #f8f9ff; }
+        tr:hover td { background: #faf8f5; }
 
-        .paid { background: #e8f5e9 !important; color: #2e7d32; }
-        .partial { background: #fff8e1 !important; color: #f57f17; }
-        .unpaid { background: #ffebee !important; color: #c62828; }
+        .paid { background: #eceee5 !important; color: #5a7d5a; }
+        .partial { background: #f2eddf !important; color: #b09860; }
+        .unpaid { background: #f0e5e5 !important; color: #b05a5a; }
         .na { background: #f5f5f5 !important; color: #999; }
-        .covered { background: #e8f5e9 !important; color: #2e7d32; font-style: italic; }
+        .covered { background: #eceee5 !important; color: #5a7d5a; font-style: italic; }
 
-        .saldo-pos { color: #2e7d32; font-weight: 700; }
-        .saldo-neg { color: #c62828; font-weight: 700; }
+        .saldo-pos { color: #5a7d5a; font-weight: 700; }
+        .saldo-neg { color: #b05a5a; font-weight: 700; }
         .saldo-zero { color: #666; font-weight: 700; }
-        .total-row td { background: #e8eaf6 !important; font-weight: 700; border-top: 2px solid #1a1a2e; }
+        .total-row td { background: #f0ebe5 !important; font-weight: 700; border-top: 2px solid #2d2926; }
 
         .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; font-size: 12px; }
         .legend-item { display: flex; align-items: center; gap: 6px; }
@@ -86,12 +87,12 @@
 
         /* Hover tooltip for traceability — aparece a la derecha */
         .tt-wrap { position: relative; display: inline-block; cursor: help; border-bottom: 1px dashed currentColor; }
-        .tt-wrap .tt-box { visibility: hidden; opacity: 0; position: absolute; z-index: 999; top: 50%; left: calc(100% + 10px); transform: translateY(-50%); background: #1a1a2e; color: #e0e0e0; border-radius: 8px; padding: 10px 14px; font-size: 10px; line-height: 1.5; box-shadow: 0 4px 16px rgba(0,0,0,0.3); pointer-events: none; transition: opacity 0.15s, visibility 0.15s; min-width: 220px; max-width: 380px; white-space: normal; }
-        .tt-wrap .tt-box::after { content: ''; position: absolute; top: 50%; right: 100%; transform: translateY(-50%); border: 6px solid transparent; border-right-color: #1a1a2e; }
+        .tt-wrap .tt-box { visibility: hidden; opacity: 0; position: absolute; z-index: 999; top: 50%; left: calc(100% + 10px); transform: translateY(-50%); background: #2d2926; color: #e7e0d8; border-radius: 8px; padding: 10px 14px; font-size: 10px; line-height: 1.5; box-shadow: 0 4px 16px rgba(45,41,38,0.3); pointer-events: none; transition: opacity 0.15s, visibility 0.15s; min-width: 220px; max-width: 380px; white-space: normal; }
+        .tt-wrap .tt-box::after { content: ''; position: absolute; top: 50%; right: 100%; transform: translateY(-50%); border: 6px solid transparent; border-right-color: #2d2926; }
         .tt-wrap:hover .tt-box { visibility: visible; opacity: 1; pointer-events: auto; }
         /* Si no cabe a la derecha, forzar izquierda con clase .tt-left */
         .tt-wrap.tt-left .tt-box { left: auto; right: calc(100% + 10px); }
-        .tt-wrap.tt-left .tt-box::after { right: auto; left: 100%; border-right-color: transparent; border-left-color: #1a1a2e; }
+        .tt-wrap.tt-left .tt-box::after { right: auto; left: 100%; border-right-color: transparent; border-left-color: #2d2926; }
         .tt-box .tt-step { display: flex; gap: 6px; align-items: baseline; padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
         .tt-box .tt-step:last-child { border-bottom: none; }
         .tt-box .tt-label { color: #90caf9; font-weight: 700; min-width: 65px; font-size: 10px; }
@@ -100,91 +101,91 @@
         .tt-box .tt-header { color: #fff; font-weight: 700; font-size: 11px; margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.15); }
         .tt-box .tt-tipo { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 9px; font-weight: 700; margin-left: 6px; }
 
-        /* Month band colors — 12 subtle tones for visual tracking */
-        .month-band-0 { background: #f3e5f5 !important; } /* Jan - lavender */
-        .month-band-1 { background: #e8eaf6 !important; } /* Feb - indigo light */
-        .month-band-2 { background: #e0f7fa !important; } /* Mar - cyan light */
-        .month-band-3 { background: #e8f5e9 !important; } /* Apr - green light */
-        .month-band-4 { background: #fff8e1 !important; } /* May - amber light */
-        .month-band-5 { background: #fbe9e7 !important; } /* Jun - deep orange light */
-        .month-band-6 { background: #fce4ec !important; } /* Jul - pink light */
-        .month-band-7 { background: #ede7f6 !important; } /* Aug - deep purple light */
-        .month-band-8 { background: #e0f2f1 !important; } /* Sep - teal light */
-        .month-band-9 { background: #f1f8e9 !important; } /* Oct - light green */
-        .month-band-10 { background: #fff3e0 !important; } /* Nov - orange light */
-        .month-band-11 { background: #e3f2fd !important; } /* Dec - blue light */
-        .month-sep td { border-top: 2px solid #90a4ae !important; }
-        .month-label-row td { background: #263238 !important; color: #fff !important; font-weight: 700; font-size: 11px; padding: 4px 8px !important; letter-spacing: 0.5px; }
+        /* Month band colors — 12 warm earth tones for visual tracking */
+        .month-band-0 { background: #f0e8e0 !important; } /* Jan - warm sand */
+        .month-band-1 { background: #e8e4de !important; } /* Feb - stone */
+        .month-band-2 { background: #e5ece8 !important; } /* Mar - sage */
+        .month-band-3 { background: #eceee5 !important; } /* Apr - moss light */
+        .month-band-4 { background: #f2eddf !important; } /* May - wheat */
+        .month-band-5 { background: #f0e5dd !important; } /* Jun - clay light */
+        .month-band-6 { background: #ede0de !important; } /* Jul - rose earth */
+        .month-band-7 { background: #e8e3e8 !important; } /* Aug - mauve stone */
+        .month-band-8 { background: #e0eae8 !important; } /* Sep - seafoam */
+        .month-band-9 { background: #e8ece2 !important; } /* Oct - lichen */
+        .month-band-10 { background: #f0e8d8 !important; } /* Nov - honey */
+        .month-band-11 { background: #e2e6ec !important; } /* Dec - slate light */
+        .month-sep td { border-top: 2px solid #b0a89e !important; }
+        .month-label-row td { background: #3d3632 !important; color: #f5f0eb !important; font-weight: 600; font-size: 11px; padding: 4px 8px !important; letter-spacing: 1px; }
 
-        .info-snippet { background: #f8f9fa; border-left: 4px solid #90a4ae; border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 12px 0 16px 0; font-size: 12px; color: #455a64; line-height: 1.6; }
-        .info-snippet summary { cursor: pointer; font-weight: 700; color: #37474f; font-size: 13px; user-select: none; }
-        .info-snippet summary:hover { color: #00838f; }
-        .info-snippet .rule { margin: 6px 0; padding-left: 12px; border-left: 2px solid #cfd8dc; }
+        .info-snippet { background: #faf8f5; border-left: 4px solid #b0a89e; border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 12px 0 16px 0; font-size: 12px; color: #5c554e; line-height: 1.6; }
+        .info-snippet summary { cursor: pointer; font-weight: 600; color: #2d2926; font-size: 13px; user-select: none; }
+        .info-snippet summary:hover { color: #8b7e74; }
+        .info-snippet .rule { margin: 6px 0; padding-left: 12px; border-left: 2px solid #d4cdc5; }
         .info-snippet .tag { display: inline-block; padding: 1px 7px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 4px; }
-        .info-snippet .tag-a { background: #e0f2f1; color: #00838f; }
-        .info-snippet .tag-b { background: #fff3e0; color: #e65100; }
-        .info-snippet .tag-c { background: #ede7f6; color: #7b1fa2; }
-        .info-snippet .tag-cascade { background: #e3f2fd; color: #1565c0; }
+        .info-snippet .tag-a { background: #e8e4de; color: #6b8f8b; }
+        .info-snippet .tag-b { background: #f0e8d8; color: #a68b6b; }
+        .info-snippet .tag-c { background: #e8e3e8; color: #8b7e74; }
+        .info-snippet .tag-cascade { background: #e2e6ec; color: #5a7d9a; }
 
         .empty-state { text-align: center; padding: 60px 20px; color: #888; }
         .empty-state h2 { font-size: 20px; margin-bottom: 8px; color: #555; }
 
-        .notes { background: #fff3e0; border-radius: 10px; padding: 16px 20px; margin-bottom: 20px; font-size: 12px; color: #795548; }
+        .notes { background: #f5efe8; border-radius: 10px; padding: 16px 20px; margin-bottom: 20px; font-size: 12px; color: #5c554e; }
         .notes h4 { margin-bottom: 8px; }
         .notes ul { margin-left: 20px; }
         .notes li { margin-bottom: 4px; }
 
         /* Legal section */
-        .legal-section { background: white; border-radius: 14px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 24px; border: 1px solid #e8eaf6; }
-        .legal-section h3 { font-size: 15px; color: #1a1a2e; margin-bottom: 18px; padding-bottom: 10px; border-bottom: none; display: flex; align-items: center; gap: 10px; }
-        .legal-section h3::before { content: ''; display: inline-block; width: 4px; height: 20px; background: linear-gradient(180deg, #1565c0, #7b1fa2); border-radius: 2px; }
+        .legal-section { background: #fff; border-radius: 14px; padding: 28px; box-shadow: 0 1px 4px rgba(45,41,38,0.06); margin-bottom: 24px; border: 1px solid #e7e0d8; }
+        .legal-section h3 { font-size: 15px; color: #2d2926; margin-bottom: 18px; padding-bottom: 10px; border-bottom: none; display: flex; align-items: center; gap: 10px; font-weight: 500; }
+        .legal-section h3::before { content: ''; display: inline-block; width: 4px; height: 20px; background: linear-gradient(180deg, #8b7e74, #b0a89e); border-radius: 2px; }
         .legal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .legal-card { background: linear-gradient(135deg, #f8f9ff 0%, #fff 100%); border-radius: 12px; padding: 20px; border: 1px solid #e3e8f0; border-left: 4px solid #1565c0; transition: transform 0.15s, box-shadow 0.15s; }
-        .legal-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
-        .legal-card h4 { font-size: 13px; color: #1565c0; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
+        .legal-card { background: #faf8f5; border-radius: 12px; padding: 20px; border: 1px solid #e7e0d8; border-left: 4px solid #8b7e74; transition: transform 0.15s, box-shadow 0.15s; }
+        .legal-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(45,41,38,0.08); }
+        .legal-card h4 { font-size: 13px; color: #5c554e; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
         .legal-card p, .legal-card li { font-size: 12px; color: #555; line-height: 1.6; }
         .legal-card ul { margin-left: 16px; }
         .info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.04); font-size: 12px; align-items: center; }
         .info-row:last-child { border-bottom: none; }
-        .info-label { color: #78909c; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; }
-        .info-value { color: #1a1a2e; font-weight: 600; text-align: right; }
+        .info-label { color: #8b7e74; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; }
+        .info-value { color: #2d2926; font-weight: 600; text-align: right; }
 
         .doc-category { margin-bottom: 16px; }
-        .doc-category h4 { font-size: 13px; color: #1a1a2e; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .doc-category h4 { font-size: 13px; color: #2d2926; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
         .doc-category h4::before { content: ''; width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-        .doc-cat-sociedad h4::before { background: #1565c0; }
-        .doc-cat-propiedad h4::before { background: #2e7d32; }
-        .doc-cat-cbr h4::before { background: #e65100; }
+        .doc-cat-sociedad h4::before { background: #5a7d9a; }
+        .doc-cat-propiedad h4::before { background: #5a7d5a; }
+        .doc-cat-cbr h4::before { background: #a68b6b; }
         .doc-cat-otros h4::before { background: #666; }
-        .doc-cat-cartolas h4::before { background: #7b1fa2; }
+        .doc-cat-cartolas h4::before { background: #8b7e74; }
         .doc-item { font-size: 12px; color: #555; padding: 4px 0 4px 16px; border-left: 2px solid #eee; margin-left: 3px; line-height: 1.5; }
         .doc-item strong { color: #333; }
-        .doc-item a { color: #1565c0; text-decoration: none; border-bottom: 1px dashed #1565c0; transition: all 0.2s; }
-        .doc-item a:hover { color: #0d47a1; border-bottom-style: solid; }
+        .doc-item a { color: #5a7d9a; text-decoration: none; border-bottom: 1px dashed #5a7d9a; transition: all 0.2s; }
+        .doc-item a:hover { color: #3d5a70; border-bottom-style: solid; }
         .doc-item a strong { color: inherit; }
 
         .socios-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 12px; margin-top: 8px; border-radius: 10px; overflow: hidden; }
-        .socios-table th { background: linear-gradient(135deg, #1a1a2e, #16213e); color: white; padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-        .socios-table td { padding: 10px 12px; border-bottom: 1px solid #f0f2f5; }
-        .socios-table tr:hover td { background: linear-gradient(90deg, #f0f2ff, #fff); }
-        .socios-table .socio-avatar { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #1565c0, #7b1fa2); color: white; font-size: 11px; font-weight: 700; margin-right: 8px; flex-shrink: 0; vertical-align: middle; }
-        .socio-status { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #e8f5e9; color: #2e7d32; }
-        .socio-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #2e7d32; }
+        .socios-table th { background: #2d2926; color: #f5f0eb; padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        .socios-table td { padding: 10px 12px; border-bottom: 1px solid #e7e0d8; }
+        .socios-table tr:hover td { background: #faf8f5; }
+        .socios-table .socio-avatar { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: #2d2926; color: #f5f0eb; font-size: 11px; font-weight: 700; margin-right: 8px; flex-shrink: 0; vertical-align: middle; }
+        .socio-status { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #eceee5; color: #5a7d5a; }
+        .socio-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #5a7d5a; }
 
-        .reglamento-rule { padding: 14px 16px; background: linear-gradient(135deg, #fff8e1, #fff); border-radius: 10px; margin-bottom: 10px; font-size: 12px; display: flex; gap: 12px; align-items: flex-start; border: 1px solid #ffe082; transition: transform 0.15s; }
+        .reglamento-rule { padding: 14px 16px; background: #faf8f5; border-radius: 10px; margin-bottom: 10px; font-size: 12px; display: flex; gap: 12px; align-items: flex-start; border: 1px solid #e7e0d8; transition: transform 0.15s; }
         .reglamento-rule:hover { transform: translateX(4px); }
         .reglamento-rule .rule-icon { font-size: 18px; flex-shrink: 0; }
 
         .subdivision-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 12px; margin-top: 8px; border-radius: 8px; overflow: hidden; }
-        .subdivision-table th { background: linear-gradient(135deg, #2e7d32, #388e3c); color: white; padding: 8px 10px; text-align: left; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; }
+        .subdivision-table th { background: #5a7d5a; color: #fff; padding: 8px 10px; text-align: left; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; }
         .subdivision-table td { padding: 7px 10px; border-bottom: 1px solid #f0f0f0; }
-        .subdivision-table tr:hover td { background: #e8f5e9; }
+        .subdivision-table tr:hover td { background: #eceee5; }
 
         /* Timeline */
-        .timeline-section { background: white; border-radius: 10px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 20px; }
-        .timeline-section h3 { font-size: 16px; color: #1a1a2e; margin-bottom: 20px; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; }
+        .timeline-section { background: #fff; border-radius: 10px; padding: 24px; box-shadow: 0 1px 4px rgba(45,41,38,0.06); margin-bottom: 20px; border: 1px solid #e7e0d8; }
+        .timeline-section h3 { font-size: 16px; color: #2d2926; margin-bottom: 20px; border-bottom: 2px solid #e7e0d8; padding-bottom: 8px; font-weight: 500; }
         .timeline { position: relative; padding-left: 32px; }
-        .timeline::before { content: ''; position: absolute; left: 11px; top: 4px; bottom: 4px; width: 3px; background: linear-gradient(to bottom, #1a1a2e, #1565c0, #2e7d32, #e65100, #7b1fa2); border-radius: 2px; }
+        .timeline::before { content: ''; position: absolute; left: 11px; top: 4px; bottom: 4px; width: 3px; background: linear-gradient(to bottom, #2d2926, #5a7d9a, #5a7d5a, #a68b6b, #8b7e74); border-radius: 2px; }
         .tl-item { position: relative; margin-bottom: 20px; padding-bottom: 4px; cursor: pointer; }
         .tl-item:last-child { margin-bottom: 0; }
         .tl-item .tl-detail { display: none; }
@@ -192,32 +193,32 @@
         .tl-item:hover .tl-title { text-decoration: underline; }
         .tl-dot { position: absolute; left: -27px; top: 2px; width: 13px; height: 13px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 2px currentColor; }
         .tl-date { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
-        .tl-title { font-size: 13px; font-weight: 700; color: #1a1a2e; }
+        .tl-title { font-size: 13px; font-weight: 600; color: #2d2926; }
         .tl-desc { font-size: 12px; color: #666; margin-top: 2px; line-height: 1.5; }
         .tl-tag { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px; margin-top: 4px; }
-        .tl-docs { margin-top: 6px; padding: 6px 10px; background: #f8f9fa; border-radius: 6px; border-left: 3px solid #1565c0; }
-        .tl-docs a { display: inline-block; font-size: 11px; color: #1565c0; text-decoration: none; margin-right: 14px; line-height: 1.8; }
-        .tl-docs a:hover { text-decoration: underline; color: #0d47a1; }
+        .tl-docs { margin-top: 6px; padding: 6px 10px; background: #faf8f5; border-radius: 6px; border-left: 3px solid #8b7e74; }
+        .tl-docs a { display: inline-block; font-size: 11px; color: #5a7d9a; text-decoration: none; margin-right: 14px; line-height: 1.8; }
+        .tl-docs a:hover { text-decoration: underline; color: #3d5a70; }
         .tl-docs a::before { content: '📄 '; }
 
-        .tl-constitucion .tl-dot { color: #1a1a2e; background: #1a1a2e; }
-        .tl-constitucion .tl-date { color: #1a1a2e; }
-        .tl-constitucion .tl-tag { background: #e8eaf6; color: #1a1a2e; }
-        .tl-capital .tl-dot { color: #1565c0; background: #1565c0; }
-        .tl-capital .tl-date { color: #1565c0; }
-        .tl-capital .tl-tag { background: #e3f2fd; color: #1565c0; }
-        .tl-terreno .tl-dot { color: #2e7d32; background: #2e7d32; }
-        .tl-terreno .tl-date { color: #2e7d32; }
-        .tl-terreno .tl-tag { background: #e8f5e9; color: #2e7d32; }
-        .tl-mobiliario .tl-dot { color: #e65100; background: #e65100; }
-        .tl-mobiliario .tl-date { color: #e65100; }
-        .tl-mobiliario .tl-tag { background: #fff3e0; color: #e65100; }
-        .tl-construccion .tl-dot { color: #7b1fa2; background: #7b1fa2; }
-        .tl-construccion .tl-date { color: #7b1fa2; }
-        .tl-construccion .tl-tag { background: #f3e5f5; color: #7b1fa2; }
-        .tl-cambio .tl-dot { color: #f57f17; background: #f57f17; }
-        .tl-cambio .tl-date { color: #f57f17; }
-        .tl-cambio .tl-tag { background: #fff8e1; color: #f57f17; }
+        .tl-constitucion .tl-dot { color: #2d2926; background: #2d2926; }
+        .tl-constitucion .tl-date { color: #2d2926; }
+        .tl-constitucion .tl-tag { background: #e8e4de; color: #2d2926; }
+        .tl-capital .tl-dot { color: #5a7d9a; background: #5a7d9a; }
+        .tl-capital .tl-date { color: #5a7d9a; }
+        .tl-capital .tl-tag { background: #e2e6ec; color: #5a7d9a; }
+        .tl-terreno .tl-dot { color: #5a7d5a; background: #5a7d5a; }
+        .tl-terreno .tl-date { color: #5a7d5a; }
+        .tl-terreno .tl-tag { background: #eceee5; color: #5a7d5a; }
+        .tl-mobiliario .tl-dot { color: #a68b6b; background: #a68b6b; }
+        .tl-mobiliario .tl-date { color: #a68b6b; }
+        .tl-mobiliario .tl-tag { background: #f0e8d8; color: #a68b6b; }
+        .tl-construccion .tl-dot { color: #8b7e74; background: #8b7e74; }
+        .tl-construccion .tl-date { color: #8b7e74; }
+        .tl-construccion .tl-tag { background: #ede0de; color: #8b7e74; }
+        .tl-cambio .tl-dot { color: #b09860; background: #b09860; }
+        .tl-cambio .tl-date { color: #b09860; }
+        .tl-cambio .tl-tag { background: #f2eddf; color: #b09860; }
         .tl-proximo .tl-dot { color: #9e9e9e; background: white; border: 3px solid #9e9e9e !important; box-shadow: none !important; }
         .tl-proximo .tl-date { color: #9e9e9e; }
         .tl-proximo .tl-title { color: #9e9e9e; }
@@ -225,20 +226,20 @@
         .tl-proximo .tl-tag { background: #f5f5f5; color: #9e9e9e; }
 
         /* Progress bars */
-        .progress-bar { width: 100%; height: 24px; background: #f0f0f0; border-radius: 12px; overflow: hidden; position: relative; }
+        .progress-bar { width: 100%; height: 24px; background: #e7e0d8; border-radius: 12px; overflow: hidden; position: relative; }
         .progress-fill { height: 100%; border-radius: 12px; transition: width 0.6s ease; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; min-width: 40px; }
-        .progress-fill.complete { background: linear-gradient(90deg, #43a047, #66bb6a); }
-        .progress-fill.partial { background: linear-gradient(90deg, #ff9800, #ffb74d); }
-        .progress-fill.low { background: linear-gradient(90deg, #e53935, #ef5350); }
+        .progress-fill.complete { background: linear-gradient(90deg, #5a7d5a, #7a9a7a); }
+        .progress-fill.partial { background: linear-gradient(90deg, #a68b6b, #c4a882); }
+        .progress-fill.low { background: linear-gradient(90deg, #b05a5a, #c87a7a); }
 
         /* Resumen cards */
         .hito-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 24px; }
-        .hito-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-top: 4px solid; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
-        .hito-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
-        .hito-card.capital { border-top-color: #1565c0; }
-        .hito-card.construccion { border-top-color: #7b1fa2; }
-        .hito-card.mobiliario { border-top-color: #e65100; }
-        .hito-card.aportes2025 { border-top-color: #00838f; }
+        .hito-card { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 1px 4px rgba(45,41,38,0.06); border-top: 4px solid; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid #e7e0d8; border-top: 4px solid; }
+        .hito-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(45,41,38,0.1); }
+        .hito-card.capital { border-top-color: #5a7d9a; }
+        .hito-card.construccion { border-top-color: #8b7e74; }
+        .hito-card.mobiliario { border-top-color: #a68b6b; }
+        .hito-card.aportes2025 { border-top-color: #6b8f8b; }
         .hito-card h4 { font-size: 15px; margin-bottom: 4px; }
         .hito-card .hito-amount { font-size: 24px; font-weight: 700; margin: 8px 0; }
         .hito-card .hito-sub { font-size: 12px; color: #888; margin-bottom: 12px; }
@@ -252,21 +253,21 @@
         .hito-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; }
         .hito-table .col-right { text-align: right; }
         .hito-table .col-center { text-align: center; }
-        .hito-table tr:hover td { background: #f8f9ff; }
-        .hito-table .total-row td { background: #f0f0f5; font-weight: 700; border-top: 2px solid #1a1a2e; }
+        .hito-table tr:hover td { background: #faf8f5; }
+        .hito-table .total-row td { background: #f0ebe5; font-weight: 700; border-top: 2px solid #2d2926; }
 
         .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
-        .badge-green { background: #e8f5e9; color: #2e7d32; }
-        .badge-red { background: #ffebee; color: #c62828; }
-        .badge-orange { background: #fff3e0; color: #e65100; }
-        .badge-gold { background: #fff8e1; color: #f57f17; }
-        .badge-teal { background: #e0f2f1; color: #00695c; }
+        .badge-green { background: #eceee5; color: #5a7d5a; }
+        .badge-red { background: #f0e5e5; color: #b05a5a; }
+        .badge-orange { background: #f0e8d8; color: #a68b6b; }
+        .badge-gold { background: #f2eddf; color: #b09860; }
+        .badge-teal { background: #e0eae8; color: #5a7d6b; }
 
         .detail-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
         .detail-header h3 { font-size: 18px; margin: 0; border: 0; padding: 0; }
         .detail-header .detail-badge { font-size: 13px; padding: 6px 14px; border-radius: 20px; font-weight: 600; }
 
-        .placeholder-box { background: #f8f9fa; border: 2px dashed #ddd; border-radius: 12px; padding: 48px; text-align: center; color: #888; }
+        .placeholder-box { background: #faf8f5; border: 2px dashed #ddd; border-radius: 12px; padding: 48px; text-align: center; color: #888; }
         .placeholder-box h3 { font-size: 18px; color: #666; margin-bottom: 8px; }
 
         @media (max-width: 900px) {
@@ -276,40 +277,40 @@
             .legal-grid { grid-template-columns: 1fr; }
         }
         @media print {
-            body { background: white; }
+            body { background: white; color: #2d2926; }
             .upload-area, .file-count, .tab-bar { display: none; }
             .tab-content { display: block !important; }
             .chart-card, .table-section, .kpi, .legal-section, .hito-card { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
         }
 
         /* Casa */
-        .casa-section { background: white; border-radius: 10px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 20px; }
+        .casa-section { background: #fff; border-radius: 10px; padding: 24px; box-shadow: 0 1px 4px rgba(45,41,38,0.06); margin-bottom: 20px; border: 1px solid #e7e0d8; }
         .casa-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
         .casa-filter-btn { padding: 6px 14px; border: 1px solid #ddd; border-radius: 20px; background: white; cursor: pointer; font-size: 11px; font-weight: 600; color: #666; transition: all 0.2s; }
-        .casa-filter-btn.active { background: #1a1a2e; color: white; border-color: #1a1a2e; }
+        .casa-filter-btn.active { background: #2d2926; color: #f5f0eb; border-color: #2d2926; }
         .casa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
-        .casa-card { background: #f8f9ff; border-radius: 8px; padding: 14px; border-left: 4px solid #1a1a2e; display: flex; justify-content: space-between; align-items: center; }
+        .casa-card { background: #faf8f5; border-radius: 8px; padding: 14px; border-left: 4px solid #2d2926; display: flex; justify-content: space-between; align-items: center; }
         .casa-card.done { opacity: 0.6; border-left-color: #4caf50; }
         .casa-card h4 { font-size: 13px; margin-bottom: 4px; }
         .casa-card .casa-cat { font-size: 10px; color: #888; text-transform: uppercase; }
         .casa-card .casa-prices { font-size: 12px; text-align: right; }
         .casa-card .casa-presup { color: #666; }
-        .casa-card .casa-real { color: #1565c0; font-weight: 600; }
+        .casa-card .casa-real { color: #5a7d9a; font-weight: 600; }
         .casa-actions { display: flex; gap: 6px; margin-top: 6px; }
         .casa-actions button { padding: 3px 8px; border: none; border-radius: 4px; cursor: pointer; font-size: 10px; }
-        .casa-btn-done { background: #e8f5e9; color: #2e7d32; }
-        .casa-btn-del { background: #ffebee; color: #c62828; }
-        .casa-add-form { background: #f0f2f5; border-radius: 8px; padding: 16px; margin-bottom: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; align-items: end; }
+        .casa-btn-done { background: #eceee5; color: #5a7d5a; }
+        .casa-btn-del { background: #f0e5e5; color: #b05a5a; }
+        .casa-add-form { background: #f5f0eb; border-radius: 8px; padding: 16px; margin-bottom: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; align-items: end; }
         .casa-add-form input, .casa-add-form select { padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 12px; }
-        .casa-add-form button { padding: 8px 16px; background: #1a1a2e; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
+        .casa-add-form button { padding: 8px 16px; background: #2d2926; color: #f5f0eb; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
         .casa-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px; }
 
         /* GGCC Grid cells */
-        .ggcc-paid { background: #e8f5e9; color: #2e7d32; font-weight: 600; }
-        .ggcc-partial { background: #fff8e1; color: #f57f17; }
+        .ggcc-paid { background: #eceee5; color: #5a7d5a; font-weight: 600; }
+        .ggcc-partial { background: #f2eddf; color: #b09860; }
         .ggcc-none { color: #ccc; }
-        .ggcc-header-row th { background: #e65100; color: white; }
-        .mob-header-row th { background: #e65100; color: white; }
+        .ggcc-header-row th { background: #a68b6b; color: #fff; }
+        .mob-header-row th { background: #a68b6b; color: #fff; }
 
 
         /* Modal */
@@ -318,15 +319,22 @@
         .modal { background: white; border-radius: 12px; padding: 24px; max-width: 900px; width: 95%; max-height: 85vh; overflow-y: auto; }
         .modal h3 { margin-bottom: 16px; }
         .modal table { width: 100%; font-size: 12px; }
-        .modal th { background: #f0f0f0; color: #333; }
+        .modal th { background: #f0ebe5; color: #2d2926; }
     </style>
 </head>
 <body>
 <div class="dashboard">
     <header>
-        <div>
-            <h1>Insular S.p.A.</h1>
-            <p>RUT 77.152.855-4 | Sociedad de 10 socios | Propiedad en Ancud, Chiloé</p>
+        <div style="display:flex; align-items:center; gap:20px;">
+            <svg viewBox="0 0 120 60" width="80" height="40" style="flex-shrink:0;">
+                <ellipse cx="40" cy="30" rx="28" ry="22" fill="none" stroke="#c4a882" stroke-width="1.5" opacity="0.7" transform="rotate(-10 40 30)"/>
+                <ellipse cx="60" cy="28" rx="24" ry="20" fill="none" stroke="#b0a89e" stroke-width="1.5" opacity="0.6" transform="rotate(8 60 28)"/>
+                <ellipse cx="75" cy="32" rx="20" ry="18" fill="none" stroke="#8b7e74" stroke-width="1.5" opacity="0.5" transform="rotate(-5 75 32)"/>
+            </svg>
+            <div>
+                <h1>INSULAR</h1>
+                <p>S.p.A. | RUT 77.152.855-4 | 10 socios | Ancud, Chiloé</p>
+            </div>
         </div>
         <div class="header-right">
             <div class="upload-area" id="uploadArea">
@@ -367,7 +375,7 @@
     <div id="tab-sociedad" class="tab-content">
         <!-- Sub-tab navigation -->
         <div class="sub-tab-bar" style="display:flex; gap:4px; margin-bottom:20px; background:white; border-radius:10px; padding:4px; box-shadow:0 1px 3px rgba(0,0,0,0.08); flex-wrap:wrap;">
-            <button class="sub-tab-btn active" onclick="switchSubTab('sub-sociedad', this)" style="padding:8px 16px; border:none; background:#1a1a2e; color:white; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s;">Información</button>
+            <button class="sub-tab-btn active" onclick="switchSubTab('sub-sociedad', this)" style="padding:8px 16px; border:none; background:#2d2926; color:white; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s;">Información</button>
             <button class="sub-tab-btn" onclick="switchSubTab('sub-casa', this)" style="padding:8px 16px; border:none; background:transparent; color:#666; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s;">Casa</button>
             <button class="sub-tab-btn" onclick="switchSubTab('sub-historia', this)" style="padding:8px 16px; border:none; background:transparent; color:#666; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s;">Historia</button>
             <button class="sub-tab-btn" onclick="switchSubTab('sub-documentos', this)" style="padding:8px 16px; border:none; background:transparent; color:#666; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s;">Documentos</button>
@@ -377,7 +385,7 @@
         <div id="sub-sociedad" class="sub-tab-content" style="display:block;">
 
         <!-- Hero card -->
-        <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); border-radius: 14px; padding: 28px 32px; margin-bottom: 24px; color: white; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div style="background: linear-gradient(135deg, #2d2926 0%, #3d3632 60%, #4a433d 100%); border-radius: 14px; padding: 28px 32px; margin-bottom: 24px; color: white; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
             <div>
                 <div style="font-size: 22px; font-weight: 700; letter-spacing: -0.5px;">Insular S.p.A.</div>
                 <div style="font-size: 13px; opacity: 0.7; margin-top: 4px;">RUT 77.152.855-4 — Constituida 23 de abril de 2020</div>
@@ -413,8 +421,8 @@
                     <div class="info-row"><span class="info-label">Domicilio</span><span class="info-value">Santiago, Región Metropolitana</span></div>
                     <div class="info-row"><span class="info-label">Duración</span><span class="info-value">Indefinida</span></div>
                 </div>
-                <div class="legal-card" style="border-left-color: #7b1fa2;">
-                    <h4 style="color: #7b1fa2;">Capital y Estructura</h4>
+                <div class="legal-card" style="border-left-color: #8b7e74;">
+                    <h4 style="color: #8b7e74;">Capital y Estructura</h4>
                     <div class="info-row"><span class="info-label">Capital Total</span><span class="info-value">$100.000.000</span></div>
                     <div class="info-row"><span class="info-label">Acciones</span><span class="info-value">10 socios × 10%</span></div>
                     <div class="info-row"><span class="info-label">Capital enterado</span><span class="info-value">$10.000.000 c/u (100%)</span></div>
@@ -464,16 +472,16 @@
         <div class="legal-section">
             <h3>Propiedad — Terrenos en Ancud, Chiloé</h3>
             <div class="legal-grid">
-                <div class="legal-card" style="border-left-color: #2e7d32;">
-                    <h4 style="color: #2e7d32;">Ubicación</h4>
+                <div class="legal-card" style="border-left-color: #5a7d5a;">
+                    <h4 style="color: #5a7d5a;">Ubicación</h4>
                     <div class="info-row"><span class="info-label">Sector</span><span class="info-value">Rural de Nal / Chaicura</span></div>
                     <div class="info-row"><span class="info-label">Comuna</span><span class="info-value">Ancud</span></div>
                     <div class="info-row"><span class="info-label">Provincia</span><span class="info-value">Chiloé</span></div>
                     <div class="info-row"><span class="info-label">Región</span><span class="info-value">Los Lagos</span></div>
                     <div class="info-row"><span class="info-label">Compraventa</span><span class="info-value">01/02/2021 (Rep. 255-2021, Notaría de Ancud)</span></div>
                 </div>
-                <div class="legal-card" style="border-left-color: #2e7d32;">
-                    <h4 style="color: #2e7d32;">Subdivisión de Lotes</h4>
+                <div class="legal-card" style="border-left-color: #5a7d5a;">
+                    <h4 style="color: #5a7d5a;">Subdivisión de Lotes</h4>
                     <table class="subdivision-table">
                         <thead><tr><th>Lote</th><th>Superficie (Hás)</th><th>Servidumbre (Hás)</th></tr></thead>
                         <tbody>
@@ -484,14 +492,14 @@
                             <tr><td>A-6</td><td>0,50</td><td>—</td></tr>
                             <tr><td>A-7</td><td>0,96</td><td>—</td></tr>
                             <tr><td>A-8</td><td>4,57</td><td>—</td></tr>
-                            <tr style="font-weight:700; border-top:2px solid #2e7d32;"><td>Total</td><td>9,71</td><td>0,083</td></tr>
+                            <tr style="font-weight:700; border-top:2px solid #5a7d5a;"><td>Total</td><td>9,71</td><td>0,083</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
             <div style="margin-top:12px;">
-                <div class="legal-card" style="border-left-color: #2e7d32;">
-                    <h4 style="color: #2e7d32;">Inscripciones de Dominio (CBR Ancud)</h4>
+                <div class="legal-card" style="border-left-color: #5a7d5a;">
+                    <h4 style="color: #5a7d5a;">Inscripciones de Dominio (CBR Ancud)</h4>
                     <div class="info-row"><span class="info-label">Lote A-4</span><span class="info-value">Fs. 1215 Nº 963 (2021) — Dominio vigente a nombre de INSULAR SPA</span></div>
                     <div class="info-row"><span class="info-label">Lote A-5</span><span class="info-value">Fs. 1217 Nº 964 (2021) — Dominio vigente a nombre de INSULAR SPA</span></div>
                     <div class="info-row"><span class="info-label">Hipotecas Lote A-4</span><span class="info-value">Sin inscripciones vigentes (Folio 9153, Carátula 64516)</span></div>
@@ -748,8 +756,8 @@
                 <div class="doc-item"><a href="docs_insular/KMZ_Chaicura.kmz" target="_blank"><strong>KMZ Chaicura</strong></a> — Archivo Google Earth con ubicación del terreno.</div>
             </div>
 
-            <div class="doc-category" style="border-left: 4px solid #e65100;">
-                <h4 style="color:#e65100;">Construcción — Club House Chaicura</h4>
+            <div class="doc-category" style="border-left: 4px solid #a68b6b;">
+                <h4 style="color:#a68b6b;">Construcción — Club House Chaicura</h4>
                 <p style="font-size:11px; color:#888; margin-bottom:8px;">Arq. Maximiliano Aguayo M. (16.470.567-6), AQAA Ltda (77.712.084-0).</p>
                 <h5 style="margin:12px 0 6px; color:#555; font-size:13px;">Contratos y Honorarios</h5>
                 <div class="doc-item"><a href="docs_insular/construccion/Contrato_Arquitectura_AQAA_Oct2024.pdf" target="_blank"><strong>Contrato AQAA (09-oct-2024)</strong></a> — Etapa 3 y cierre. $6.250.000.</div>
@@ -785,8 +793,8 @@
     <!-- TAB: Vista por Socio -->
     <div id="tab-socio" class="tab-content">
         <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
-            <label style="font-size:14px; font-weight:600; color:#1a1a2e;">Seleccionar socio:</label>
-            <select id="socioSelector" onchange="renderVistaSocio()" style="padding:10px 20px; border-radius:8px; border:2px solid #1a1a2e; font-size:14px; font-weight:600; background:white; cursor:pointer; min-width:280px;"></select>
+            <label style="font-size:14px; font-weight:600; color:#2d2926;">Seleccionar socio:</label>
+            <select id="socioSelector" onchange="renderVistaSocio()" style="padding:10px 20px; border-radius:8px; border:2px solid #2d2926; font-size:14px; font-weight:600; background:white; cursor:pointer; min-width:280px;"></select>
         </div>
         <div id="socioViewContent"></div>
     </div>
@@ -801,7 +809,7 @@
     <div class="modal">
         <h3 id="modalTitle">Detalle de Depósitos</h3>
         <div id="modalBody"></div>
-        <button onclick="closeModal()" style="margin-top:16px; padding:8px 20px; background:#1a1a2e; color:white; border:none; border-radius:6px; cursor:pointer;">Cerrar</button>
+        <button onclick="closeModal()" style="margin-top:16px; padding:8px 20px; background:#2d2926; color:white; border:none; border-radius:6px; cursor:pointer;">Cerrar</button>
     </div>
 </div>
 <script>
@@ -1172,7 +1180,7 @@ const REGLAS_TIPO = [
         detectar: 'amt === 70000 || amt === 75000',
         asignacion: 'Todo a GGCC. $70k cubre 1 mes, $75k cubre 1 mes + $5k crédito al siguiente',
         ejemplos: ['$70.000 → 1 mes GGCC', '$75.000 → $70k GGCC + $5k crédito'],
-        color: '#00838f', bg: '#e0f2f1'
+        color: '#6b8f8b', bg: '#e0eae8'
     },
     {
         id: 'COMBO',
@@ -1181,7 +1189,7 @@ const REGLAS_TIPO = [
         detectar: 'amt >= 236665 && amt <= 236667',
         asignacion: '$70k → GGCC + $166.666 → MOB',
         ejemplos: ['$236.666 → $70k GGCC + $166.666 MOB'],
-        color: '#e65100', bg: '#fff3e0'
+        color: '#a68b6b', bg: '#f0e8d8'
     },
     {
         id: 'LLAMADO',
@@ -1190,7 +1198,7 @@ const REGLAS_TIPO = [
         detectar: 'Matchea monto y ventana de tiempo de un llamado',
         asignacion: 'Va directo a la categoría del llamado (capital, construcción, o mob)',
         ejemplos: ['$8M en sep-2024 → Construcción', '$3.5M en jul-2025 → Construcción', '$300k en 2026 → Construcción (cuota mensual)'],
-        color: '#7b1fa2', bg: '#ede7f6'
+        color: '#8b7e74', bg: '#e8e3e8'
     },
     {
         id: 'RESTO',
@@ -1277,7 +1285,7 @@ const CASCADA = [
         nombre: 'Capital Inicial',
         topePerSocio: 10000000,
         descripcion: 'Primer compromiso — constitución sociedad abril 2020',
-        color: '#1565c0'
+        color: '#5a7d9a'
     },
     {
         orden: 2,
@@ -1286,7 +1294,7 @@ const CASCADA = [
         topePerSocio: 4000000,
         descripcion: 'Solo socios MOB — hasta $4M por socio',
         condicion: 'Solo aplica a SOCIOS_MOB que no sean MOB_PAGADO_FULL',
-        color: '#e65100'
+        color: '#a68b6b'
     },
     {
         orden: 3,
@@ -1294,7 +1302,7 @@ const CASCADA = [
         nombre: 'Construcción',
         topePerSocio: null,
         descripcion: 'Todo el resto va a construcción (sin tope)',
-        color: '#7b1fa2'
+        color: '#8b7e74'
     }
 ];
 
@@ -1620,7 +1628,7 @@ function switchSubTab(subId, btn) {
     parent.querySelectorAll('.sub-tab-btn').forEach(b => { b.style.background = 'transparent'; b.style.color = '#666'; });
     const target = document.getElementById(subId);
     if (target) target.style.display = 'block';
-    btn.style.background = '#1a1a2e';
+    btn.style.background = '#2d2926';
     btn.style.color = 'white';
     if (subId === 'sub-casa') renderCasa();
 }
@@ -1663,8 +1671,8 @@ function buildConstruccionSection(cls) {
 
     let html = '<div class="table-section">';
     html += '<div class="detail-header">';
-    html += '<h3 style="color:#7b1fa2;">Aporte Construcción — Club House Chaicura</h3>';
-    html += '<span class="detail-badge" style="background:#f3e5f5; color:#7b1fa2;">' + totalPct + '% Completado</span></div>';
+    html += '<h3 style="color:#8b7e74;">Aporte Construcción — Club House Chaicura</h3>';
+    html += '<span class="detail-badge" style="background:#ede0de; color:#8b7e74;">' + totalPct + '% Completado</span></div>';
     html += '<p style="font-size:12px; color:#666; margin-bottom:16px;">Total construcción: ' + fmtM(ACUERDOS.construccion.perSocio) + '/socio × ' + SOCIOS_ALL.length + ' = ' + fmtM(ACUERDOS.construccion.total) + '. Club House ~440 m², Arq. Aguayo/AQAA. Fuente: cartolas (' + ALL_DEPOSITS.length + ' depósitos).</p>';
 
     // KPIs
@@ -1676,23 +1684,23 @@ function buildConstruccionSection(cls) {
     html += '</div>';
 
     // Table
-    html += '<div class="table-wrapper"><table class="hito-table"><thead style="background:#7b1fa2;"><tr>';
-    html += '<th style="background:#7b1fa2;">#</th><th style="background:#7b1fa2;">Socio</th>';
-    html += '<th style="background:#7b1fa2;" class="col-right">Comprometido</th>';
-    html += '<th style="background:#7b1fa2;" class="col-right">Pagado (Cartola)</th>';
-    html += '<th style="background:#7b1fa2;" class="col-right">Falta</th>';
-    html += '<th style="background:#7b1fa2;">Avance</th>';
-    html += '<th style="background:#7b1fa2;" class="col-center">Estado</th>';
+    html += '<div class="table-wrapper"><table class="hito-table"><thead style="background:#8b7e74;"><tr>';
+    html += '<th style="background:#8b7e74;">#</th><th style="background:#8b7e74;">Socio</th>';
+    html += '<th style="background:#8b7e74;" class="col-right">Comprometido</th>';
+    html += '<th style="background:#8b7e74;" class="col-right">Pagado (Cartola)</th>';
+    html += '<th style="background:#8b7e74;" class="col-right">Falta</th>';
+    html += '<th style="background:#8b7e74;">Avance</th>';
+    html += '<th style="background:#8b7e74;" class="col-center">Estado</th>';
     html += '</tr></thead><tbody>';
 
     rows.forEach(r => {
         const fillClass = r.pct >= 90 ? 'complete' : r.pct >= 50 ? 'partial' : 'low';
-        html += '<tr' + (r.completo ? ' style="background:#e8f5e9;"' : '') + '>';
+        html += '<tr' + (r.completo ? ' style="background:#eceee5;"' : '') + '>';
         html += '<td>' + (r.i + 1) + '</td>';
         html += '<td>' + (FULL_NAMES[r.s] || r.s) + '</td>';
         html += '<td class="col-right">' + fmt(r.meta) + '</td>';
         html += '<td class="col-right">' + fmt(r.pagado) + '</td>';
-        html += '<td class="col-right" style="color:' + (r.falta > 0 ? '#c62828' : '#2e7d32') + ';">' + fmt(r.falta) + '</td>';
+        html += '<td class="col-right" style="color:' + (r.falta > 0 ? '#b05a5a' : '#5a7d5a') + ';">' + fmt(r.falta) + '</td>';
         html += '<td><div class="progress-bar" style="height:18px;"><div class="progress-fill ' + fillClass + '" style="width:' + r.pct + '%;font-size:10px;">' + r.pct + '%</div></div></td>';
         if (r.completo) {
             html += '<td class="col-center"><span class="badge badge-green">Completo</span></td>';
@@ -1708,13 +1716,13 @@ function buildConstruccionSection(cls) {
     html += '</tbody><tfoot><tr class="total-row"><td colspan="2">TOTAL</td>';
     html += '<td class="col-right">' + fmt(totalMeta) + '</td>';
     html += '<td class="col-right">' + fmt(totalPagado) + '</td>';
-    html += '<td class="col-right" style="color:#c62828;">' + fmt(totalFalta) + '</td>';
+    html += '<td class="col-right" style="color:#b05a5a;">' + fmt(totalFalta) + '</td>';
     html += '<td><div class="progress-bar" style="height:18px;"><div class="progress-fill ' + totalFillClass + '" style="width:' + totalPct + '%;font-size:10px;">' + totalPct + '%</div></div></td>';
     html += '<td></td></tr></tfoot></table></div>';
 
-    html += '<div style="background:#e3f2fd; border-radius:8px; padding:8px 14px; margin-top:12px; font-size:11px; color:#1565c0;">Datos calculados desde classifyAllDeposits() — cada depósito se clasifica cronológicamente: GGCC → Cuota Mob → Capital → Construcción → Mobiliario → Otros.</div>';
+    html += '<div style="background:#e2e6ec; border-radius:8px; padding:8px 14px; margin-top:12px; font-size:11px; color:#5a7d9a;">Datos calculados desde classifyAllDeposits() — cada depósito se clasifica cronológicamente: GGCC → Cuota Mob → Capital → Construcción → Mobiliario → Otros.</div>';
 
-    html += '<div style="background:#f3e5f5; padding:12px 16px; border-radius:8px; margin-top:16px; font-size:12px; color:#7b1fa2; border-left:4px solid #7b1fa2;">';
+    html += '<div style="background:#ede0de; padding:12px 16px; border-radius:8px; margin-top:16px; font-size:12px; color:#8b7e74; border-left:4px solid #8b7e74;">';
     html += '<strong>Proyecto Club House Chaicura (440 m²):</strong> Arq. Maximiliano Aguayo / AQAA. Etapa 3 (Proyecto Licitación) contratada oct-2024 ($6.25M). Etapa 4 (Construcción física) pendiente. Especialistas: TROMÜ sanitario, René Avendaño cálculo, Gastón Arriagada mecánica de suelo.';
     html += '</div></div>';
 
@@ -1736,13 +1744,13 @@ function renderMetodologia() {
 
     // ═══ HEADER ═══
     h += '<div style="margin-bottom:32px;">';
-    h += '<h2 style="font-size:20px; color:#1a1a2e; margin-bottom:8px;">Metodología de Clasificación de Fondos</h2>';
+    h += '<h2 style="font-size:20px; color:#2d2926; margin-bottom:8px;">Metodología de Clasificación de Fondos</h2>';
     h += '<p style="font-size:13px; color:#666; line-height:1.6;">Este documento describe cómo cada depósito que ingresa a la cuenta Scotiabank de Insular S.p.A. se clasifica y asigna a las distintas categorías de compromiso. Toda la información proviene exclusivamente de las cartolas bancarias verificadas.</p>';
     h += '</div>';
 
     // ═══ DIAGRAMA 1: FLUJO PRINCIPAL ═══
     h += '<div style="background:white; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:24px;">';
-    h += '<h3 style="font-size:16px; color:#1a1a2e; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">1. Flujo de Clasificación de Depósitos</h3>';
+    h += '<h3 style="font-size:16px; color:#2d2926; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">1. Flujo de Clasificación de Depósitos</h3>';
 
     // SVG Flowchart
     h += '<div style="overflow-x:auto; padding:8px 0;">';
@@ -1755,7 +1763,7 @@ function renderMetodologia() {
     h += '</defs>';
 
     // Row 1: DEPÓSITO INGRESA
-    h += '<rect x="320" y="10" width="260" height="50" rx="25" fill="#1a1a2e" filter="url(#shadow)"/>';
+    h += '<rect x="320" y="10" width="260" height="50" rx="25" fill="#2d2926" filter="url(#shadow)"/>';
     h += '<text x="450" y="40" text-anchor="middle" fill="white" font-size="14" font-weight="700">Depósito ingresa a cartola</text>';
 
     // Arrow down
@@ -1767,20 +1775,20 @@ function renderMetodologia() {
 
     // 4 branches
     // Branch A: left
-    h += '<line x1="350" y1="134" x2="100" y2="180" stroke="#00838f" stroke-width="2" marker-end="url(#arrowhead)"/>';
+    h += '<line x1="350" y1="134" x2="100" y2="180" stroke="#6b8f8b" stroke-width="2" marker-end="url(#arrowhead)"/>';
     // Branch A2
     h += '<line x1="400" y1="134" x2="280" y2="180" stroke="#0097a7" stroke-width="2" marker-end="url(#arrowhead)"/>';
     // Branch B
-    h += '<line x1="500" y1="134" x2="520" y2="180" stroke="#e65100" stroke-width="2" marker-end="url(#arrowhead)"/>';
+    h += '<line x1="500" y1="134" x2="520" y2="180" stroke="#a68b6b" stroke-width="2" marker-end="url(#arrowhead)"/>';
     // Branch C
-    h += '<line x1="550" y1="134" x2="740" y2="180" stroke="#7b1fa2" stroke-width="2" marker-end="url(#arrowhead)"/>';
+    h += '<line x1="550" y1="134" x2="740" y2="180" stroke="#8b7e74" stroke-width="2" marker-end="url(#arrowhead)"/>';
 
     // ── TIPO A ──
-    h += '<rect x="10" y="180" width="180" height="70" rx="8" fill="#e0f2f1" stroke="#00838f" stroke-width="2" filter="url(#shadow)"/>';
-    h += '<text x="100" y="202" text-anchor="middle" fill="#00838f" font-size="12" font-weight="700">TIPO A</text>';
+    h += '<rect x="10" y="180" width="180" height="70" rx="8" fill="#e0eae8" stroke="#6b8f8b" stroke-width="2" filter="url(#shadow)"/>';
+    h += '<text x="100" y="202" text-anchor="middle" fill="#6b8f8b" font-size="12" font-weight="700">TIPO A</text>';
     h += '<text x="100" y="218" text-anchor="middle" fill="#455a64" font-size="10">Múltiplo de $70k</text>';
     h += '<text x="100" y="232" text-anchor="middle" fill="#455a64" font-size="10">(hasta $840k)</text>';
-    h += '<text x="100" y="246" text-anchor="middle" fill="#00838f" font-size="10" font-weight="600">→ TODO a GGCC</text>';
+    h += '<text x="100" y="246" text-anchor="middle" fill="#6b8f8b" font-size="10" font-weight="600">→ TODO a GGCC</text>';
 
     // ── TIPO A2 ──
     h += '<rect x="200" y="180" width="170" height="70" rx="8" fill="#e0f7fa" stroke="#0097a7" stroke-width="2" filter="url(#shadow)"/>';
@@ -1790,22 +1798,22 @@ function renderMetodologia() {
     h += '<text x="285" y="246" text-anchor="middle" fill="#0097a7" font-size="10" font-weight="600">→ $70k GGCC + resto</text>';
 
     // ── TIPO B ──
-    h += '<rect x="430" y="180" width="180" height="70" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="2" filter="url(#shadow)"/>';
-    h += '<text x="520" y="202" text-anchor="middle" fill="#e65100" font-size="12" font-weight="700">TIPO B</text>';
+    h += '<rect x="430" y="180" width="180" height="70" rx="8" fill="#f0e8d8" stroke="#a68b6b" stroke-width="2" filter="url(#shadow)"/>';
+    h += '<text x="520" y="202" text-anchor="middle" fill="#a68b6b" font-size="12" font-weight="700">TIPO B</text>';
     h += '<text x="520" y="218" text-anchor="middle" fill="#455a64" font-size="10">Exactamente $236.666</text>';
     h += '<text x="520" y="232" text-anchor="middle" fill="#455a64" font-size="10">(cuota combinada)</text>';
-    h += '<text x="520" y="246" text-anchor="middle" fill="#e65100" font-size="10" font-weight="600">→ $70k GGCC + $166k MOB</text>';
+    h += '<text x="520" y="246" text-anchor="middle" fill="#a68b6b" font-size="10" font-weight="600">→ $70k GGCC + $166k MOB</text>';
 
     // ── TIPO C ──
-    h += '<rect x="650" y="180" width="180" height="70" rx="8" fill="#ede7f6" stroke="#7b1fa2" stroke-width="2" filter="url(#shadow)"/>';
-    h += '<text x="740" y="202" text-anchor="middle" fill="#7b1fa2" font-size="12" font-weight="700">TIPO C</text>';
+    h += '<rect x="650" y="180" width="180" height="70" rx="8" fill="#e8e3e8" stroke="#8b7e74" stroke-width="2" filter="url(#shadow)"/>';
+    h += '<text x="740" y="202" text-anchor="middle" fill="#8b7e74" font-size="12" font-weight="700">TIPO C</text>';
     h += '<text x="740" y="218" text-anchor="middle" fill="#455a64" font-size="10">Cualquier otro monto</text>';
     h += '<text x="740" y="232" text-anchor="middle" fill="#455a64" font-size="10">(ej: $5M, $2M, $500k)</text>';
-    h += '<text x="740" y="246" text-anchor="middle" fill="#7b1fa2" font-size="10" font-weight="600">→ Cubre GGCC + cascada</text>';
+    h += '<text x="740" y="246" text-anchor="middle" fill="#8b7e74" font-size="10" font-weight="600">→ Cubre GGCC + cascada</text>';
 
     // PASADA 1 label
-    h += '<rect x="0" y="170" width="8" height="85" rx="4" fill="#00838f"/>';
-    h += '<text x="-8" y="218" text-anchor="end" fill="#00838f" font-size="10" font-weight="700" transform="rotate(-90,-8,218)">PASADA 1</text>';
+    h += '<rect x="0" y="170" width="8" height="85" rx="4" fill="#6b8f8b"/>';
+    h += '<text x="-8" y="218" text-anchor="end" fill="#6b8f8b" font-size="10" font-weight="700" transform="rotate(-90,-8,218)">PASADA 1</text>';
 
     // Arrows down from all types to cascade
     h += '<line x1="100" y1="250" x2="100" y2="290" stroke="#90a4ae" stroke-width="1.5" stroke-dasharray="4"/>';
@@ -1817,12 +1825,12 @@ function renderMetodologia() {
     h += '<line x1="740" y1="250" x2="740" y2="310" stroke="#90a4ae" stroke-width="1.5" stroke-dasharray="4"/>';
 
     // ═══ PASADA 2: CASCADA ═══
-    h += '<rect x="0" y="310" width="8" height="300" rx="4" fill="#1565c0"/>';
-    h += '<text x="-8" y="460" text-anchor="end" fill="#1565c0" font-size="10" font-weight="700" transform="rotate(-90,-8,460)">PASADA 2 — CASCADA</text>';
+    h += '<rect x="0" y="310" width="8" height="300" rx="4" fill="#5a7d9a"/>';
+    h += '<text x="-8" y="460" text-anchor="end" fill="#5a7d9a" font-size="10" font-weight="700" transform="rotate(-90,-8,460)">PASADA 2 — CASCADA</text>';
 
     // GGCC pendientes
-    h += '<rect x="30" y="315" width="840" height="42" rx="8" fill="#e0f2f1" stroke="#00838f" stroke-width="1.5"/>';
-    h += '<text x="450" y="333" text-anchor="middle" fill="#00838f" font-size="12" font-weight="700">Primero: cubrir GGCC pendientes ($70k/mes)</text>';
+    h += '<rect x="30" y="315" width="840" height="42" rx="8" fill="#e0eae8" stroke="#6b8f8b" stroke-width="1.5"/>';
+    h += '<text x="450" y="333" text-anchor="middle" fill="#6b8f8b" font-size="12" font-weight="700">Primero: cubrir GGCC pendientes ($70k/mes)</text>';
     h += '<text x="450" y="349" text-anchor="middle" fill="#666" font-size="10">Slots oct-2022 → ' + lastCLabel + ' (' + ggccMeses + ' meses). Si todos llenos, salta al paso siguiente.</text>';
 
     // Arrow
@@ -1832,7 +1840,7 @@ function renderMetodologia() {
     // Cascade boxes - generado desde CASCADA[] (data model)
     const cascW = 190, cascGap = 15, cascStartX = 30;
     const circled = ['①','②','③','④','⑤','⑥'];
-    const cascBgs = { '#1565c0':'#e3f2fd', '#7b1fa2':'#f3e5f5', '#e65100':'#fff3e0' };
+    const cascBgs = { '#5a7d9a':'#e2e6ec', '#8b7e74':'#ede0de', '#a68b6b':'#f0e8d8' };
     const cascItems = CASCADA.map((step, i) => ({
         label: circled[i] + ' ' + step.nombre,
         sub: step.sinTope ? 'Sin tope (bucket final)' : (step.categoria === 'mobiliario' ? 'Hasta $' + (step.topePerSocio/1e6) + 'M (' + SOCIOS_MOB.length + ' socios)' : 'Hasta $' + (step.topePerSocio/1e6) + 'M/socio'),
@@ -1853,7 +1861,7 @@ function renderMetodologia() {
     h += '<line x1="450" y1="440" x2="450" y2="470" stroke="#90a4ae" stroke-width="2" marker-end="url(#arrowhead)"/>';
 
     // RESULTADO
-    h += '<rect x="150" y="475" width="600" height="50" rx="10" fill="#1a1a2e" filter="url(#shadow)"/>';
+    h += '<rect x="150" y="475" width="600" height="50" rx="10" fill="#2d2926" filter="url(#shadow)"/>';
     h += '<text x="450" y="498" text-anchor="middle" fill="white" font-size="13" font-weight="700">Depósito 100% clasificado → GGCC + Capital + Construcción + MOB</text>';
     h += '<text x="450" y="515" text-anchor="middle" fill="#90a4ae" font-size="10">Cada peso queda asignado. No hay categoría "Otros".</text>';
 
@@ -1865,7 +1873,7 @@ function renderMetodologia() {
 
     // ═══ DIAGRAMA 2: MES VENCIDO ═══
     h += '<div style="background:white; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:24px;">';
-    h += '<h3 style="font-size:16px; color:#00838f; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">2. Mes Vencido — ¿Cómo funciona el GGCC?</h3>';
+    h += '<h3 style="font-size:16px; color:#6b8f8b; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">2. Mes Vencido — ¿Cómo funciona el GGCC?</h3>';
 
     h += '<div style="overflow-x:auto; padding:8px 0;">';
     h += '<svg viewBox="0 0 800 200" style="width:100%; max-width:800px; min-width:500px; display:block; margin:0 auto;" xmlns="http://www.w3.org/2000/svg">';
@@ -1876,8 +1884,8 @@ function renderMetodologia() {
     tMonths.forEach((m, i) => {
         const x = tX[i];
         const isCurrent = (i === 3); // Apr = current
-        h += '<rect x="' + (x-55) + '" y="20" width="110" height="36" rx="6" fill="' + (isCurrent ? '#fff3e0' : '#e0f2f1') + '" stroke="' + (isCurrent ? '#e65100' : '#00838f') + '" stroke-width="1.5"/>';
-        h += '<text x="' + x + '" y="43" text-anchor="middle" fill="' + (isCurrent ? '#e65100' : '#00838f') + '" font-size="13" font-weight="700">' + m + ' 2026</text>';
+        h += '<rect x="' + (x-55) + '" y="20" width="110" height="36" rx="6" fill="' + (isCurrent ? '#f0e8d8' : '#e0eae8') + '" stroke="' + (isCurrent ? '#a68b6b' : '#6b8f8b') + '" stroke-width="1.5"/>';
+        h += '<text x="' + x + '" y="43" text-anchor="middle" fill="' + (isCurrent ? '#a68b6b' : '#6b8f8b') + '" font-size="13" font-weight="700">' + m + ' 2026</text>';
         if (i < 3) h += '<line x1="' + (x+55) + '" y1="38" x2="' + tX[i+1]-55 + '" y2="38" stroke="#ccc" stroke-width="1.5" marker-end="url(#arrowhead)"/>';
     });
 
@@ -1887,19 +1895,19 @@ function renderMetodologia() {
     h += '<text x="640" y="80" text-anchor="middle" fill="#666" font-size="11">Cartola 31/03</text>';
 
     // Arrows showing what pays what
-    h += '<path d="M 280 85 C 280 115, 100 115, 100 130" stroke="#00838f" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>';
-    h += '<path d="M 460 85 C 460 110, 280 110, 280 130" stroke="#00838f" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>';
-    h += '<path d="M 640 85 C 640 110, 460 110, 460 130" stroke="#00838f" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>';
+    h += '<path d="M 280 85 C 280 115, 100 115, 100 130" stroke="#6b8f8b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>';
+    h += '<path d="M 460 85 C 460 110, 280 110, 280 130" stroke="#6b8f8b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>';
+    h += '<path d="M 640 85 C 640 110, 460 110, 460 130" stroke="#6b8f8b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>';
 
     // GGCC boxes
-    h += '<rect x="45" y="130" width="110" height="30" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>';
-    h += '<text x="100" y="150" text-anchor="middle" fill="#2e7d32" font-size="11" font-weight="600">GGCC Ene ✓</text>';
-    h += '<rect x="225" y="130" width="110" height="30" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>';
-    h += '<text x="280" y="150" text-anchor="middle" fill="#2e7d32" font-size="11" font-weight="600">GGCC Feb ✓</text>';
-    h += '<rect x="405" y="130" width="110" height="30" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>';
-    h += '<text x="460" y="150" text-anchor="middle" fill="#2e7d32" font-size="11" font-weight="600">GGCC Mar ✓</text>';
-    h += '<rect x="585" y="130" width="110" height="30" rx="6" fill="#ffebee" stroke="#c62828" stroke-width="1.5" stroke-dasharray="4"/>';
-    h += '<text x="640" y="150" text-anchor="middle" fill="#c62828" font-size="11" font-weight="600">GGCC Abr ?</text>';
+    h += '<rect x="45" y="130" width="110" height="30" rx="6" fill="#eceee5" stroke="#5a7d5a" stroke-width="1.5"/>';
+    h += '<text x="100" y="150" text-anchor="middle" fill="#5a7d5a" font-size="11" font-weight="600">GGCC Ene ✓</text>';
+    h += '<rect x="225" y="130" width="110" height="30" rx="6" fill="#eceee5" stroke="#5a7d5a" stroke-width="1.5"/>';
+    h += '<text x="280" y="150" text-anchor="middle" fill="#5a7d5a" font-size="11" font-weight="600">GGCC Feb ✓</text>';
+    h += '<rect x="405" y="130" width="110" height="30" rx="6" fill="#eceee5" stroke="#5a7d5a" stroke-width="1.5"/>';
+    h += '<text x="460" y="150" text-anchor="middle" fill="#5a7d5a" font-size="11" font-weight="600">GGCC Mar ✓</text>';
+    h += '<rect x="585" y="130" width="110" height="30" rx="6" fill="#f0e5e5" stroke="#b05a5a" stroke-width="1.5" stroke-dasharray="4"/>';
+    h += '<text x="640" y="150" text-anchor="middle" fill="#b05a5a" font-size="11" font-weight="600">GGCC Abr ?</text>';
 
     // Legend
     h += '<text x="400" y="185" text-anchor="middle" fill="#666" font-size="11">Los depósitos de un mes cubren el GGCC del mismo mes. Última cartola: ' + lastCLabel + ' → se esperan ' + ggccMeses + ' meses cubiertos.</text>';
@@ -1908,13 +1916,13 @@ function renderMetodologia() {
 
     // ═══ SECCIÓN 3: TABLA DE CONSTANTES ═══
     h += '<div style="background:white; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:24px;">';
-    h += '<h3 style="font-size:16px; color:#1a1a2e; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">3. Constantes y Parámetros del Sistema</h3>';
+    h += '<h3 style="font-size:16px; color:#2d2926; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">3. Constantes y Parámetros del Sistema</h3>';
 
     h += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:16px;">';
 
     // Card: Compromisos
-    h += '<div style="background:#f8f9fa; border-radius:8px; padding:16px; border-left:4px solid #1565c0;">';
-    h += '<div style="font-weight:700; color:#1565c0; margin-bottom:8px;">Compromisos por Socio</div>';
+    h += '<div style="background:#faf8f5; border-radius:8px; padding:16px; border-left:4px solid #5a7d9a;">';
+    h += '<div style="font-weight:700; color:#5a7d9a; margin-bottom:8px;">Compromisos por Socio</div>';
     h += '<div style="font-size:12px; color:#455a64; line-height:1.8;">';
     ['capital','construccion','mobiliario'].forEach(key => {
         const a = ACUERDOS[key];
@@ -1924,8 +1932,8 @@ function renderMetodologia() {
     h += '</div></div>';
 
     // Card: GGCC
-    h += '<div style="background:#f8f9fa; border-radius:8px; padding:16px; border-left:4px solid #00838f;">';
-    h += '<div style="font-weight:700; color:#00838f; margin-bottom:8px;">Gastos Comunes (GGCC)</div>';
+    h += '<div style="background:#faf8f5; border-radius:8px; padding:16px; border-left:4px solid #6b8f8b;">';
+    h += '<div style="font-weight:700; color:#6b8f8b; margin-bottom:8px;">Gastos Comunes (GGCC)</div>';
     h += '<div style="font-size:12px; color:#455a64; line-height:1.8;">';
     h += 'Cuota mensual: <strong>$' + fmt(GGCC_CONFIG.cuotaMensual) + '/socio</strong><br>';
     h += 'Vigente desde: <strong>' + MONTHS_SHORT[GGCC_CONFIG.inicioMonth-1] + ' ' + GGCC_CONFIG.inicioYear + '</strong><br>';
@@ -1936,8 +1944,8 @@ function renderMetodologia() {
     h += '</div></div>';
 
     // Card: Socios
-    h += '<div style="background:#f8f9fa; border-radius:8px; padding:16px; border-left:4px solid #e65100;">';
-    h += '<div style="font-weight:700; color:#e65100; margin-bottom:8px;">Grupos de Socios & Mobiliario</div>';
+    h += '<div style="background:#faf8f5; border-radius:8px; padding:16px; border-left:4px solid #a68b6b;">';
+    h += '<div style="font-weight:700; color:#a68b6b; margin-bottom:8px;">Grupos de Socios & Mobiliario</div>';
     h += '<div style="font-size:12px; color:#455a64; line-height:1.8;">';
     h += 'Total socios: <strong>' + SOCIOS_ALL.length + '</strong><br>';
     h += 'Socios MOB (cuota mensual): <strong>' + MOB_CONFIG.sociosMOB.length + '</strong> — ' + MOB_CONFIG.sociosMOB.join(', ') + '<br>';
@@ -1947,7 +1955,7 @@ function renderMetodologia() {
     h += '</div></div>';
 
     // Card: Cartolas
-    h += '<div style="background:#f8f9fa; border-radius:8px; padding:16px; border-left:4px solid #795548;">';
+    h += '<div style="background:#faf8f5; border-radius:8px; padding:16px; border-left:4px solid #795548;">';
     h += '<div style="font-weight:700; color:#795548; margin-bottom:8px;">Fuente de Datos</div>';
     h += '<div style="font-size:12px; color:#455a64; line-height:1.8;">';
     h += 'Origen: <strong>Cartolas Scotiabank</strong><br>';
@@ -1960,10 +1968,10 @@ function renderMetodologia() {
 
     // ═══ SECCIÓN 4: TIPOS DE DEPÓSITO CON EJEMPLOS ═══
     h += '<div style="background:white; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:24px;">';
-    h += '<h3 style="font-size:16px; color:#1a1a2e; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">4. Tipos de Depósito — Ejemplos Reales</h3>';
+    h += '<h3 style="font-size:16px; color:#2d2926; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">4. Tipos de Depósito — Ejemplos Reales</h3>';
 
     h += '<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:12px;">';
-    h += '<thead><tr style="background:#1a1a2e; color:white;">';
+    h += '<thead><tr style="background:#2d2926; color:white;">';
     h += '<th style="padding:10px 12px; text-align:left;">Tipo</th>';
     h += '<th style="padding:10px 12px; text-align:left;">Detección</th>';
     h += '<th style="padding:10px 12px; text-align:left;">Ejemplo</th>';
@@ -1989,20 +1997,20 @@ function renderMetodologia() {
 
     // ═══ SECCIÓN 5: REGLAS DE INTEGRIDAD ═══
     h += '<div style="background:white; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:24px;">';
-    h += '<h3 style="font-size:16px; color:#c62828; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">5. Validación de Integridad de Datos</h3>';
+    h += '<h3 style="font-size:16px; color:#b05a5a; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">5. Validación de Integridad de Datos</h3>';
     h += '<p style="font-size:12px; color:#666; margin-bottom:16px;">El sistema ejecuta 20 reglas automáticas cada vez que se carga el dashboard. Si alguna falla, aparece una alerta naranja en el Resumen.</p>';
 
     h += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:12px;">';
     const ruleGroups = [
         { title: 'General (5)', color: '#455a64', rules: ['Depósitos sin cartola asociada', 'Gaps en la secuencia de cartolas', 'Mismatch asignaciones vs total', 'Depósitos faltantes en el período', 'Cobertura cartolas vs calendario'] },
-        { title: 'Capital (3)', color: '#1565c0', rules: ['Excede meta >5%', 'Parcial <50%', 'Total global excede meta'] },
-        { title: 'Construcción (0)', color: '#7b1fa2', rules: ['Sin reglas — excedentes son normales (bucket final)'] },
-        { title: 'Mobiliario (4)', color: '#e65100', rules: ['MOB_FULL doble conteo', 'Excede meta MOB', 'Dual membership A/B', 'Socios sin clasificar'] },
-        { title: 'GGCC (4)', color: '#00838f', rules: ['Excede meses esperados', 'Meses > esperados', 'GGCC pre oct-2022', 'Total global GGCC'] },
+        { title: 'Capital (3)', color: '#5a7d9a', rules: ['Excede meta >5%', 'Parcial <50%', 'Total global excede meta'] },
+        { title: 'Construcción (0)', color: '#8b7e74', rules: ['Sin reglas — excedentes son normales (bucket final)'] },
+        { title: 'Mobiliario (4)', color: '#a68b6b', rules: ['MOB_FULL doble conteo', 'Excede meta MOB', 'Dual membership A/B', 'Socios sin clasificar'] },
+        { title: 'GGCC (4)', color: '#6b8f8b', rules: ['Excede meses esperados', 'Meses > esperados', 'GGCC pre oct-2022', 'Total global GGCC'] },
         { title: 'Balance (3)', color: '#795548', rules: ['Suma categorías ≠ total', 'ALL_DEPOSITS ≠ clasificados', 'Socios no reconocidos'] },
     ];
     ruleGroups.forEach(g => {
-        h += '<div style="background:#f8f9fa; border-radius:8px; padding:12px; border-left:3px solid ' + g.color + ';">';
+        h += '<div style="background:#faf8f5; border-radius:8px; padding:12px; border-left:3px solid ' + g.color + ';">';
         h += '<div style="font-weight:700; color:' + g.color + '; font-size:12px; margin-bottom:6px;">' + g.title + '</div>';
         h += '<div style="font-size:11px; color:#666; line-height:1.7;">';
         g.rules.forEach(r => h += '• ' + r + '<br>');
@@ -2012,7 +2020,7 @@ function renderMetodologia() {
 
     // ═══ SECCIÓN 6: MODELO DE DATOS (raw) ═══
     h += '<div style="background:white; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:24px;">';
-    h += '<h3 style="font-size:16px; color:#1a1a2e; margin-bottom:4px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">6. Modelo de Datos — Fuente de Verdad</h3>';
+    h += '<h3 style="font-size:16px; color:#2d2926; margin-bottom:4px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">6. Modelo de Datos — Fuente de Verdad</h3>';
     h += '<p style="font-size:12px; color:#666; margin-bottom:16px;">Las siguientes estructuras definen todas las reglas de clasificación. El motor de asignación las lee en tiempo real; este documento se genera desde ellas.</p>';
 
     // REGLAS_TIPO table
@@ -2049,13 +2057,13 @@ function renderMetodologia() {
 
     // GGCC_CONFIG + MOB_CONFIG as cards
     h += '<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">';
-    h += '<div style="background:#f8f9fa; border-radius:8px; padding:14px; border-left:4px solid #00838f;">';
-    h += '<div style="font-weight:700; color:#00838f; font-size:12px; margin-bottom:6px;">GGCC_CONFIG</div>';
+    h += '<div style="background:#faf8f5; border-radius:8px; padding:14px; border-left:4px solid #6b8f8b;">';
+    h += '<div style="font-weight:700; color:#6b8f8b; font-size:12px; margin-bottom:6px;">GGCC_CONFIG</div>';
     h += '<div style="font-size:11px; color:#455a64; line-height:1.7; font-family:monospace;">';
     Object.entries(GGCC_CONFIG).forEach(([k,v]) => { h += k + ': <strong>' + (typeof v === 'string' ? '"' + v.substring(0,50) + (v.length>50?'…':'') + '"' : v) + '</strong><br>'; });
     h += '</div></div>';
-    h += '<div style="background:#f8f9fa; border-radius:8px; padding:14px; border-left:4px solid #e65100;">';
-    h += '<div style="font-weight:700; color:#e65100; font-size:12px; margin-bottom:6px;">MOB_CONFIG</div>';
+    h += '<div style="background:#faf8f5; border-radius:8px; padding:14px; border-left:4px solid #a68b6b;">';
+    h += '<div style="font-weight:700; color:#a68b6b; font-size:12px; margin-bottom:6px;">MOB_CONFIG</div>';
     h += '<div style="font-size:11px; color:#455a64; line-height:1.7; font-family:monospace;">';
     Object.entries(MOB_CONFIG).forEach(([k,v]) => { h += k + ': <strong>' + (Array.isArray(v) ? '[' + v.join(', ') + ']' : (typeof v === 'string' ? '"' + v.substring(0,50) + (v.length>50?'…':'') + '"' : v)) + '</strong><br>'; });
     h += '</div></div>';
@@ -2136,8 +2144,8 @@ function renderResumen() {
     // ─── VALIDACIÓN DE INTEGRIDAD ───
     const _warnings = validateDataIntegrity();
     if (_warnings.length > 0) {
-        html += '<div style="background:#fff3e0; border:2px solid #e65100; border-radius:10px; padding:14px 18px; margin-bottom:20px;">';
-        html += '<div style="font-weight:700; color:#e65100; font-size:13px; margin-bottom:6px;">⚠ Alerta de Integridad de Datos (' + _warnings.length + ')</div>';
+        html += '<div style="background:#f0e8d8; border:2px solid #a68b6b; border-radius:10px; padding:14px 18px; margin-bottom:20px;">';
+        html += '<div style="font-weight:700; color:#a68b6b; font-size:13px; margin-bottom:6px;">⚠ Alerta de Integridad de Datos (' + _warnings.length + ')</div>';
         _warnings.forEach(w => { html += '<div style="font-size:11px; color:#795548; margin:3px 0; padding-left:12px; border-left:2px solid #ffcc02;">• ' + w + '</div>'; });
         html += '</div>';
     }
@@ -2167,7 +2175,7 @@ function renderResumen() {
     // SECCIÓN 1: APORTES COMPROMETIDOS
     // ═══════════════════════════════════════════
     html += '<div style="margin-bottom:32px;">';
-    html += '<h2 style="font-size:18px; color:#1a1a2e; margin-bottom:4px; border-bottom:2px solid #1a1a2e; padding-bottom:8px;">Aportes Comprometidos</h2>';
+    html += '<h2 style="font-size:18px; color:#2d2926; margin-bottom:4px; border-bottom:2px solid #2d2926; padding-bottom:8px;">Aportes Comprometidos</h2>';
     html += '<p style="font-size:12px; color:#888; margin:4px 0 16px;">Capital Inicial + Construcción + Mobiliario + GGCC (' + ggccMeses + ' meses)</p>';
 
     // 3 KPIs en fila
@@ -2182,7 +2190,7 @@ function renderResumen() {
 
     const kFill = capitalPct >= 90 ? 'complete' : capitalPct >= 50 ? 'partial' : 'low';
     html += '<div class="hito-card capital" onclick="switchTab(\'aportescapital\', document.querySelectorAll(\'.tab-btn\')[1])">';
-    html += '<h4 style="color:#1565c0;">Capital Inicial</h4><div class="hito-sub">' + fmtM(ACUERDOS.capital.perSocio) + '/socio — Constitución abr-2020</div>';
+    html += '<h4 style="color:#5a7d9a;">Capital Inicial</h4><div class="hito-sub">' + fmtM(ACUERDOS.capital.perSocio) + '/socio — Constitución abr-2020</div>';
     // Tooltips per-socio para hitos (generados desde cls)
     function hitoTT(cat, total, meta) {
         let h = '<span class="tt-box" style="min-width:240px;">';
@@ -2191,30 +2199,30 @@ function renderResumen() {
             const v = cls[s].totals[cat];
             const pct = Math.round(v / (meta/SOCIOS_ALL.length) * 100);
             const ok = pct >= 100;
-            h += '<div class="tt-step"><span class="tt-label">' + s + '</span><span class="tt-amt" style="color:' + (ok?'#4caf50':'#ff9800') + ';">$' + v.toLocaleString() + '</span><span class="tt-note">' + pct + '%</span></div>';
+            h += '<div class="tt-step"><span class="tt-label">' + s + '</span><span class="tt-amt" style="color:' + (ok?'#4caf50':'#a68b6b') + ';">$' + v.toLocaleString() + '</span><span class="tt-note">' + pct + '%</span></div>';
         });
         h += '</span>';
         return h;
     }
-    html += '<div class="hito-amount" style="color:#1565c0;">' + wtt(fmtM(capitalPagado) + ' / ' + fmtM(capitalMeta), hitoTT('inicial', capitalPagado, capitalMeta)) + '</div>';
+    html += '<div class="hito-amount" style="color:#5a7d9a;">' + wtt(fmtM(capitalPagado) + ' / ' + fmtM(capitalMeta), hitoTT('inicial', capitalPagado, capitalMeta)) + '</div>';
     html += '<div class="progress-bar"><div class="progress-fill ' + kFill + '" style="width:' + capitalPct + '%">' + capitalPct + '%</div></div>';
-    html += '<div class="hito-stats"><div><span class="stat-label">Al día:</span> <span class="stat-value" style="color:#2e7d32;">' + capitalAlDia + '/' + SOCIOS_ALL.length + '</span></div><div><span class="stat-label">Falta:</span> <span class="stat-value" style="color:' + (capitalFalta > 0 ? '#c62828' : '#2e7d32') + ';">' + fmtM(capitalFalta) + '</span></div></div>';
+    html += '<div class="hito-stats"><div><span class="stat-label">Al día:</span> <span class="stat-value" style="color:#5a7d5a;">' + capitalAlDia + '/' + SOCIOS_ALL.length + '</span></div><div><span class="stat-label">Falta:</span> <span class="stat-value" style="color:' + (capitalFalta > 0 ? '#b05a5a' : '#5a7d5a') + ';">' + fmtM(capitalFalta) + '</span></div></div>';
     html += '</div>';
 
     const cFillClass = constrPct >= 90 ? 'complete' : constrPct >= 50 ? 'partial' : 'low';
     html += '<div class="hito-card construccion" onclick="switchTab(\'aportescapital\', document.querySelectorAll(\'.tab-btn\')[1])">';
-    html += '<h4 style="color:#7b1fa2;">Construcción</h4><div class="hito-sub">' + fmtM(ACUERDOS.construccion.perSocio) + '/socio — $8M + $3.5M + $4M + $3.6M</div>';
-    html += '<div class="hito-amount" style="color:#7b1fa2;">' + wtt(fmtM(constrPagado) + ' / ' + fmtM(constrMeta), hitoTT('construccion', constrPagado, constrMeta)) + '</div>';
+    html += '<h4 style="color:#8b7e74;">Construcción</h4><div class="hito-sub">' + fmtM(ACUERDOS.construccion.perSocio) + '/socio — $8M + $3.5M + $4M + $3.6M</div>';
+    html += '<div class="hito-amount" style="color:#8b7e74;">' + wtt(fmtM(constrPagado) + ' / ' + fmtM(constrMeta), hitoTT('construccion', constrPagado, constrMeta)) + '</div>';
     html += '<div class="progress-bar"><div class="progress-fill ' + cFillClass + '" style="width:' + constrPct + '%">' + constrPct + '%</div></div>';
-    html += '<div class="hito-stats"><div><span class="stat-label">Al día:</span> <span class="stat-value" style="color:#2e7d32;">' + constrAlDia + '/' + SOCIOS_ALL.length + '</span></div><div><span class="stat-label">Falta:</span> <span class="stat-value" style="color:#c62828;">' + fmtM(constrFalta) + '</span></div></div>';
+    html += '<div class="hito-stats"><div><span class="stat-label">Al día:</span> <span class="stat-value" style="color:#5a7d5a;">' + constrAlDia + '/' + SOCIOS_ALL.length + '</span></div><div><span class="stat-label">Falta:</span> <span class="stat-value" style="color:#b05a5a;">' + fmtM(constrFalta) + '</span></div></div>';
     html += '</div>';
 
     const mFillClass = mobPct >= 90 ? 'complete' : mobPct >= 50 ? 'partial' : 'low';
     html += '<div class="hito-card mobiliario" onclick="switchTab(\'aportescapital\', document.querySelectorAll(\'.tab-btn\')[1])">';
-    html += '<h4 style="color:#e65100;">Mobiliario</h4><div class="hito-sub">' + fmtM(ACUERDOS.mobiliario.perSocio) + '/socio — ' + MOB_CUOTAS + ' cuotas desde feb-2025</div>';
-    html += '<div class="hito-amount" style="color:#e65100;">' + wtt(fmtM(mobPagado) + ' / ' + fmtM(mobMeta), hitoTT('mobiliario', mobPagado, mobMeta)) + '</div>';
+    html += '<h4 style="color:#a68b6b;">Mobiliario</h4><div class="hito-sub">' + fmtM(ACUERDOS.mobiliario.perSocio) + '/socio — ' + MOB_CUOTAS + ' cuotas desde feb-2025</div>';
+    html += '<div class="hito-amount" style="color:#a68b6b;">' + wtt(fmtM(mobPagado) + ' / ' + fmtM(mobMeta), hitoTT('mobiliario', mobPagado, mobMeta)) + '</div>';
     html += '<div class="progress-bar"><div class="progress-fill ' + mFillClass + '" style="width:' + mobPct + '%">' + mobPct + '%</div></div>';
-    html += '<div class="hito-stats"><div><span class="stat-label">Al día:</span> <span class="stat-value" style="color:#2e7d32;">' + mobAlDia + '/' + SOCIOS_ALL.length + '</span></div><div><span class="stat-label">Falta:</span> <span class="stat-value" style="color:#c62828;">' + fmtM(mobFalta) + '</span></div></div>';
+    html += '<div class="hito-stats"><div><span class="stat-label">Al día:</span> <span class="stat-value" style="color:#5a7d5a;">' + mobAlDia + '/' + SOCIOS_ALL.length + '</span></div><div><span class="stat-label">Falta:</span> <span class="stat-value" style="color:#b05a5a;">' + fmtM(mobFalta) + '</span></div></div>';
     html += '</div>';
     html += '</div>'; // hito-cards
     html += '</div>'; // sección aportes
@@ -2223,26 +2231,26 @@ function renderResumen() {
     // SECCIÓN 2: GASTOS COMUNES (GGCC)
     // ═══════════════════════════════════════════
     html += '<div id="ggccEstado" style="margin-bottom:32px;">';
-    html += '<h2 style="font-size:18px; color:#00838f; margin-bottom:4px; border-bottom:2px solid #00838f; padding-bottom:8px;">Gastos Comunes (GGCC)</h2>';
+    html += '<h2 style="font-size:18px; color:#6b8f8b; margin-bottom:4px; border-bottom:2px solid #6b8f8b; padding-bottom:8px;">Gastos Comunes (GGCC)</h2>';
     html += '<p style="font-size:12px; color:#888; margin:4px 0 16px;">$70.000/mes por socio desde octubre 2022 — ' + ggccMeses + ' meses acumulados</p>';
 
     // KPI GGCC
     html += '<section class="kpis" style="margin-bottom:16px;">';
-    html += '<div class="kpi" style="border-left:4px solid #00838f; background:#e0f2f1;"><div class="label">Total Esperado</div><div class="value" style="color:#00838f;">' + wtt(fmtM(ggccMeta), ttText('GGCC Esperado', ['Cuota: $' + fmt(CUOTA_GGCC) + '/mes/socio', 'Desde: Oct 2022', 'Hasta: ' + MONTHS[_currentMonth-2 < 0 ? 11 : _currentMonth-2] + ' ' + (_currentMonth-2 < 0 ? _currentYear-1 : _currentYear) + ' (mes vencido)', 'Meses: ' + ggccMeses, 'Socios: ' + SOCIOS_ALL.length, 'Fórmula: ' + ggccMeses + ' × $70k × 10 = $' + fmtM(ggccMeta)])) + '</div><div class="sub">' + ggccMeses + ' meses × ' + fmt(CUOTA_GGCC) + ' × ' + SOCIOS_ALL.length + ' socios</div></div>';
+    html += '<div class="kpi" style="border-left:4px solid #6b8f8b; background:#e0eae8;"><div class="label">Total Esperado</div><div class="value" style="color:#6b8f8b;">' + wtt(fmtM(ggccMeta), ttText('GGCC Esperado', ['Cuota: $' + fmt(CUOTA_GGCC) + '/mes/socio', 'Desde: Oct 2022', 'Hasta: ' + MONTHS[_currentMonth-2 < 0 ? 11 : _currentMonth-2] + ' ' + (_currentMonth-2 < 0 ? _currentYear-1 : _currentYear) + ' (mes vencido)', 'Meses: ' + ggccMeses, 'Socios: ' + SOCIOS_ALL.length, 'Fórmula: ' + ggccMeses + ' × $70k × 10 = $' + fmtM(ggccMeta)])) + '</div><div class="sub">' + ggccMeses + ' meses × ' + fmt(CUOTA_GGCC) + ' × ' + SOCIOS_ALL.length + ' socios</div></div>';
     // GGCC tooltip per-socio
     var ggccTTh = '<span class="tt-box" style="min-width:240px;"><div class="tt-header">GGCC Recaudado: ' + fmtM(ggccPagado) + '</div>';
     SOCIOS_ALL.forEach(s => { ggccTTh += '<div class="tt-step"><span class="tt-label">' + s + '</span><span class="tt-amt">$' + cls[s].totals.ggcc.toLocaleString() + '</span><span class="tt-note">' + cls[s].ggccMonthsPaid + '/' + ggccMeses + ' meses</span></div>'; });
     ggccTTh += '</span>';
-    html += '<div class="kpi" style="border-left:4px solid #00838f;"><div class="label">Recaudado GGCC</div><div class="value" style="color:#00838f;">' + wtt(fmtM(ggccPagado), ggccTTh) + '</div><div class="sub">' + Math.round(ggccPagado/ggccMeta*100) + '% del esperado</div></div>';
+    html += '<div class="kpi" style="border-left:4px solid #6b8f8b;"><div class="label">Recaudado GGCC</div><div class="value" style="color:#6b8f8b;">' + wtt(fmtM(ggccPagado), ggccTTh) + '</div><div class="sub">' + Math.round(ggccPagado/ggccMeta*100) + '% del esperado</div></div>';
     var ggccPendTT = ttText('GGCC Pendiente', SOCIOS_ALL.map(function(s) {
         var diff = cls[s].totals.ggcc - ggccExpectedPerSocio;
         return s + ': ' + (diff >= 0 ? 'Al día (+$' + diff.toLocaleString() + ')' : 'Debe $' + Math.abs(diff).toLocaleString() + ' (' + Math.round(Math.abs(diff)/CUOTA_GGCC) + ' meses)');
     }));
-    html += '<div class="kpi" style="border-left:4px solid ' + (ggccFalta > 0 ? '#c62828' : '#2e7d32') + ';"><div class="label">Pendiente GGCC</div><div class="value" style="color:' + (ggccFalta > 0 ? '#c62828' : '#2e7d32') + ';">' + wtt(fmtM(ggccFalta), ggccPendTT) + '</div><div class="sub">Al día: ' + ggccAlDia + '/' + SOCIOS_ALL.length + ' socios</div></div>';
+    html += '<div class="kpi" style="border-left:4px solid ' + (ggccFalta > 0 ? '#b05a5a' : '#5a7d5a') + ';"><div class="label">Pendiente GGCC</div><div class="value" style="color:' + (ggccFalta > 0 ? '#b05a5a' : '#5a7d5a') + ';">' + wtt(fmtM(ggccFalta), ggccPendTT) + '</div><div class="sub">Al día: ' + ggccAlDia + '/' + SOCIOS_ALL.length + ' socios</div></div>';
     html += '</section>';
 
     // Snippet GGCC resumen
-    html += '<details class="info-snippet" style="border-left-color:#00838f;">';
+    html += '<details class="info-snippet" style="border-left-color:#6b8f8b;">';
     html += '<summary>¿Cómo se calcula el estado GGCC?</summary>';
     html += '<div style="margin-top:8px;">';
     html += '<div class="rule"><strong>Meses esperados:</strong> Desde oct-2022 hasta el mes anterior al actual (mes vencido). Hoy en ' + MONTHS[_currentMonth-1] + ' ' + _currentYear + ' → se esperan ' + ggccMeses + ' meses (hasta ' + MONTHS[_currentMonth-2 < 0 ? 11 : _currentMonth-2] + ').</div>';
@@ -2252,7 +2260,7 @@ function renderResumen() {
     html += '</div></details>';
 
     // Tabla GGCC por socio
-    html += '<div class="table-section" style="border-left:4px solid #00838f;">';
+    html += '<div class="table-section" style="border-left:4px solid #6b8f8b;">';
     html += '<div class="table-wrapper"><table style="width:100%; border-collapse:collapse; font-size:13px;">';
     html += '<thead><tr><th style="text-align:left;">Socio</th><th style="text-align:center;">Meses pagados</th><th class="col-right">Pagado</th><th class="col-right">Esperado</th><th class="col-right">Diferencia</th><th style="text-align:center;">Estado</th></tr></thead><tbody>';
     SOCIOS_ALL.forEach(s => {
@@ -2260,12 +2268,12 @@ function renderResumen() {
         const gDiff = gPaid - ggccExpectedPerSocio;
         const mesesPagados = Math.round(gPaid / CUOTA_GGCC);
         const ok = gDiff >= 0;
-        html += '<tr style="background:' + (ok ? '#e8f5e9' : '#fff') + '; cursor:pointer;" onclick="ggccHighlightSocio=\'' + s + '\'; switchTab(\'ggcc\', document.querySelectorAll(\'.tab-btn\')[2])" title="Ver detalle GGCC de ' + s + '">';
-        html += '<td style="text-decoration:underline; color:#00838f;">' + (FULL_NAMES[s] || s) + '</td>';
+        html += '<tr style="background:' + (ok ? '#eceee5' : '#fff') + '; cursor:pointer;" onclick="ggccHighlightSocio=\'' + s + '\'; switchTab(\'ggcc\', document.querySelectorAll(\'.tab-btn\')[2])" title="Ver detalle GGCC de ' + s + '">';
+        html += '<td style="text-decoration:underline; color:#6b8f8b;">' + (FULL_NAMES[s] || s) + '</td>';
         html += '<td style="text-align:center;">' + mesesPagados + ' / ' + ggccMeses + '</td>';
         html += '<td class="col-right">' + wtt(fmt(gPaid), ttAgg(cls[s].deposits, 'ggcc')) + '</td>';
         html += '<td class="col-right">' + fmt(ggccExpectedPerSocio) + '</td>';
-        html += '<td class="col-right" style="color:' + (ok ? '#2e7d32' : '#c62828') + '; font-weight:600;">' + (gDiff >= 0 ? '+' : '') + fmt(gDiff) + '</td>';
+        html += '<td class="col-right" style="color:' + (ok ? '#5a7d5a' : '#b05a5a') + '; font-weight:600;">' + (gDiff >= 0 ? '+' : '') + fmt(gDiff) + '</td>';
         if (ok) {
             html += '<td style="text-align:center;"><span class="badge badge-green">Al día</span></td>';
         } else {
@@ -2280,8 +2288,8 @@ function renderResumen() {
     // SECCIÓN 3: ESTADO GENERAL POR SOCIO
     // ═══════════════════════════════════════════
     html += '<div style="margin-bottom:32px;">';
-    html += '<h2 style="font-size:18px; color:#1a1a2e; margin-bottom:4px; border-bottom:2px solid #1a1a2e; padding-bottom:8px;">Estado General por Socio</h2>';
-    html += '<p style="font-size:12px; color:#888; margin:4px 0 16px;">Deuda pendiente por categoría — incluye aportes + GGCC — Socios al día: ' + (sociosAlDia > 0 ? '<strong style="color:#2e7d32;">' + sociosAlDiaNames.join(', ') + '</strong>' : '<span style="color:#c62828;">Ninguno</span>') + '</p>';
+    html += '<h2 style="font-size:18px; color:#2d2926; margin-bottom:4px; border-bottom:2px solid #2d2926; padding-bottom:8px;">Estado General por Socio</h2>';
+    html += '<p style="font-size:12px; color:#888; margin:4px 0 16px;">Deuda pendiente por categoría — incluye aportes + GGCC — Socios al día: ' + (sociosAlDia > 0 ? '<strong style="color:#5a7d5a;">' + sociosAlDiaNames.join(', ') + '</strong>' : '<span style="color:#b05a5a;">Ninguno</span>') + '</p>';
 
     html += '<details class="info-snippet">';
     html += '<summary>¿Cómo se calcula la deuda por socio?</summary>';
@@ -2307,17 +2315,17 @@ function renderResumen() {
         const ggccDbt   = Math.max(0, ggccExpectedPerSocio - d.totals.ggcc);
         const totalDebt = capDebt + constrDbt + mobDbt + ggccDbt;
         const isAlDia   = totalDebt === 0;
-        const bgStyle   = isAlDia ? ' style="background:#e8f5e9;"' : '';
+        const bgStyle   = isAlDia ? ' style="background:#eceee5;"' : '';
 
         const totalAportado = d.totals.total;
-        html += '<tr' + bgStyle + ' style="cursor:pointer;' + (isAlDia ? ' background:#e8f5e9;' : '') + '" onclick="showSocioBitacora(\'' + s + '\')" title="Ver depósitos de ' + s + '">';
-        html += '<td style="color:#1565c0; text-decoration:underline;">' + (FULL_NAMES[s] || s) + '</td>';
+        html += '<tr' + bgStyle + ' style="cursor:pointer;' + (isAlDia ? ' background:#eceee5;' : '') + '" onclick="showSocioBitacora(\'' + s + '\')" title="Ver depósitos de ' + s + '">';
+        html += '<td style="color:#5a7d9a; text-decoration:underline;">' + (FULL_NAMES[s] || s) + '</td>';
         html += '<td class="col-right" style="font-weight:700;">' + wtt(fmt(totalAportado), ttText(s + ' — Total Aportado', ['Capital: $' + d.totals.inicial.toLocaleString(), 'Construcción: $' + d.totals.construccion.toLocaleString(), 'Mobiliario: $' + d.totals.mobiliario.toLocaleString(), 'GGCC: $' + d.totals.ggcc.toLocaleString(), d.deposits.length + ' depósitos en cartola'])) + '</td>';
-        html += '<td class="col-right" style="color:' + (capDebt > 0 ? '#c62828' : '#2e7d32') + ';">' + (capDebt > 0 ? wtt(fmt(capDebt), ttText('Capital — Deuda', ['Meta: $10.000.000', 'Pagado: $' + d.capitalPaid.toLocaleString(), 'Falta: $' + capDebt.toLocaleString()])) : wtt('✓', ttText('Capital', ['Pagado: $' + d.capitalPaid.toLocaleString(), 'Meta: $10.000.000', 'Completo']))) + '</td>';
-        html += '<td class="col-right" style="color:' + (constrDbt > 0 ? '#c62828' : '#2e7d32') + ';">' + (constrDbt > 0 ? wtt(fmt(constrDbt), ttText('Construcción — Deuda', ['Meta: $' + cComp.toLocaleString(), 'Pagado: $' + d.constrPaid.toLocaleString(), 'Falta: $' + constrDbt.toLocaleString()])) : wtt('✓', ttText('Construcción', ['Pagado: $' + d.constrPaid.toLocaleString(), 'Meta: $' + cComp.toLocaleString(), 'Completo' + (d.constrPaid > cComp ? ' (excede meta en $' + (d.constrPaid-cComp).toLocaleString() + ')' : '')]))) + '</td>';
-        html += '<td class="col-right" style="color:' + (mobDbt > 0 ? '#e65100' : '#2e7d32') + ';">' + (MOB_PAGADO_FULL.includes(s) ? wtt('✓', ttText('Mobiliario', ['Pagó $4M adelantado fuera de cartola', 'MOB_PAGADO_FULL'])) : (mobDbt > 0 ? wtt(fmt(mobDbt), ttText('Mobiliario — Deuda', ['Meta: $4.000.000', 'Pagado: $' + d.mobPaid.toLocaleString(), 'Falta: $' + mobDbt.toLocaleString()])) : wtt('✓', ttText('Mobiliario', ['Pagado: $' + d.mobPaid.toLocaleString(), 'Meta: $4.000.000', 'Completo'])))) + '</td>';
-        html += '<td class="col-right" style="color:' + (ggccDbt > 0 ? '#00838f' : '#2e7d32') + ';">' + (ggccDbt > 0 ? wtt(fmt(ggccDbt), ttText('GGCC — Deuda', ['Esperado: ' + ggccMeses + ' meses × $70k = $' + ggccExpectedPerSocio.toLocaleString(), 'Pagado: $' + d.totals.ggcc.toLocaleString() + ' (' + d.ggccMonthsPaid + ' meses)', 'Debe: ' + Math.round(ggccDbt/CUOTA_GGCC) + ' meses'])) : wtt('✓', ttText('GGCC', ['Pagado: $' + d.totals.ggcc.toLocaleString(), d.ggccMonthsPaid + '/' + ggccMeses + ' meses', 'Al día']))) + '</td>';
-        html += '<td class="col-right" style="color:' + (totalDebt > 0 ? '#c62828' : '#2e7d32') + '; font-weight:700;">' + (totalDebt > 0 ? wtt(fmt(totalDebt), ttDeuda(s, capDebt, constrDbt, mobDbt, ggccDbt)) : wtt('$0', ttText(s, ['Sin deuda en ninguna categoría']))) + '</td>';
+        html += '<td class="col-right" style="color:' + (capDebt > 0 ? '#b05a5a' : '#5a7d5a') + ';">' + (capDebt > 0 ? wtt(fmt(capDebt), ttText('Capital — Deuda', ['Meta: $10.000.000', 'Pagado: $' + d.capitalPaid.toLocaleString(), 'Falta: $' + capDebt.toLocaleString()])) : wtt('✓', ttText('Capital', ['Pagado: $' + d.capitalPaid.toLocaleString(), 'Meta: $10.000.000', 'Completo']))) + '</td>';
+        html += '<td class="col-right" style="color:' + (constrDbt > 0 ? '#b05a5a' : '#5a7d5a') + ';">' + (constrDbt > 0 ? wtt(fmt(constrDbt), ttText('Construcción — Deuda', ['Meta: $' + cComp.toLocaleString(), 'Pagado: $' + d.constrPaid.toLocaleString(), 'Falta: $' + constrDbt.toLocaleString()])) : wtt('✓', ttText('Construcción', ['Pagado: $' + d.constrPaid.toLocaleString(), 'Meta: $' + cComp.toLocaleString(), 'Completo' + (d.constrPaid > cComp ? ' (excede meta en $' + (d.constrPaid-cComp).toLocaleString() + ')' : '')]))) + '</td>';
+        html += '<td class="col-right" style="color:' + (mobDbt > 0 ? '#a68b6b' : '#5a7d5a') + ';">' + (MOB_PAGADO_FULL.includes(s) ? wtt('✓', ttText('Mobiliario', ['Pagó $4M adelantado fuera de cartola', 'MOB_PAGADO_FULL'])) : (mobDbt > 0 ? wtt(fmt(mobDbt), ttText('Mobiliario — Deuda', ['Meta: $4.000.000', 'Pagado: $' + d.mobPaid.toLocaleString(), 'Falta: $' + mobDbt.toLocaleString()])) : wtt('✓', ttText('Mobiliario', ['Pagado: $' + d.mobPaid.toLocaleString(), 'Meta: $4.000.000', 'Completo'])))) + '</td>';
+        html += '<td class="col-right" style="color:' + (ggccDbt > 0 ? '#6b8f8b' : '#5a7d5a') + ';">' + (ggccDbt > 0 ? wtt(fmt(ggccDbt), ttText('GGCC — Deuda', ['Esperado: ' + ggccMeses + ' meses × $70k = $' + ggccExpectedPerSocio.toLocaleString(), 'Pagado: $' + d.totals.ggcc.toLocaleString() + ' (' + d.ggccMonthsPaid + ' meses)', 'Debe: ' + Math.round(ggccDbt/CUOTA_GGCC) + ' meses'])) : wtt('✓', ttText('GGCC', ['Pagado: $' + d.totals.ggcc.toLocaleString(), d.ggccMonthsPaid + '/' + ggccMeses + ' meses', 'Al día']))) + '</td>';
+        html += '<td class="col-right" style="color:' + (totalDebt > 0 ? '#b05a5a' : '#5a7d5a') + '; font-weight:700;">' + (totalDebt > 0 ? wtt(fmt(totalDebt), ttDeuda(s, capDebt, constrDbt, mobDbt, ggccDbt)) : wtt('$0', ttText(s, ['Sin deuda en ninguna categoría']))) + '</td>';
         if (isAlDia) {
             html += '<td class="col-center"><span class="badge badge-green">Al día</span></td>';
         } else {
@@ -2354,10 +2362,10 @@ function renderResumen() {
         });
         const ctx2 = document.getElementById('resumenPieChart');
         const pendLabels = [], pendData = [], pendColors = [];
-        if (capitalFalta > 0) { pendLabels.push('Capital ('+fmtM(capitalFalta)+')'); pendData.push(capitalFalta/1e6); pendColors.push('#1565c0'); }
-        if (constrFalta > 0)  { pendLabels.push('Construcción ('+fmtM(constrFalta)+')'); pendData.push(constrFalta/1e6); pendColors.push('#7b1fa2'); }
-        if (mobFalta > 0)     { pendLabels.push('Mobiliario ('+fmtM(mobFalta)+')'); pendData.push(mobFalta/1e6); pendColors.push('#e65100'); }
-        if (ggccFalta > 0)    { pendLabels.push('GGCC ('+fmtM(ggccFalta)+')'); pendData.push(ggccFalta/1e6); pendColors.push('#00838f'); }
+        if (capitalFalta > 0) { pendLabels.push('Capital ('+fmtM(capitalFalta)+')'); pendData.push(capitalFalta/1e6); pendColors.push('#5a7d9a'); }
+        if (constrFalta > 0)  { pendLabels.push('Construcción ('+fmtM(constrFalta)+')'); pendData.push(constrFalta/1e6); pendColors.push('#8b7e74'); }
+        if (mobFalta > 0)     { pendLabels.push('Mobiliario ('+fmtM(mobFalta)+')'); pendData.push(mobFalta/1e6); pendColors.push('#a68b6b'); }
+        if (ggccFalta > 0)    { pendLabels.push('GGCC ('+fmtM(ggccFalta)+')'); pendData.push(ggccFalta/1e6); pendColors.push('#6b8f8b'); }
         if (ctx2 && pendData.length) new Chart(ctx2.getContext('2d'), {
             type: 'doughnut',
             data: { labels: pendLabels, datasets: [{ data: pendData, backgroundColor: pendColors, borderWidth:2, borderColor:'#fff' }] },
@@ -2369,18 +2377,18 @@ function renderResumen() {
 // ==================== APORTES DE CAPITAL ====================
 // Category colors
 const CAT_COLORS = {
-    inicial:      { bg: '#1565c0', light: '#e3f2fd', text: '#1565c0', label: 'Aporte Inicial' },
-    construccion: { bg: '#7b1fa2', light: '#f3e5f5', text: '#7b1fa2', label: 'Construcción' },
-    mobiliario:   { bg: '#e65100', light: '#fff3e0', text: '#e65100', label: 'Mobiliario' },
-    ggcc:         { bg: '#00838f', light: '#e0f2f1', text: '#00838f', label: 'GGCC' },
+    inicial:      { bg: '#5a7d9a', light: '#e2e6ec', text: '#5a7d9a', label: 'Aporte Inicial' },
+    construccion: { bg: '#8b7e74', light: '#ede0de', text: '#8b7e74', label: 'Construcción' },
+    mobiliario:   { bg: '#a68b6b', light: '#f0e8d8', text: '#a68b6b', label: 'Mobiliario' },
+    ggcc:         { bg: '#6b8f8b', light: '#e0eae8', text: '#6b8f8b', label: 'GGCC' },
     otros:        { bg: '#616161', light: '#f5f5f5', text: '#616161', label: 'Otros' }
 };
 const CAT_ORDER = ['inicial', 'construccion', 'mobiliario', 'ggcc', 'otros'];
 
 // ── Tooltip helpers para trazabilidad on-hover ──
-const _ttTipoColors = {A:'#00838f', A2:'#0097a7', B:'#e65100', C:'#7b1fa2', PRE:'#795548'};
+const _ttTipoColors = {A:'#6b8f8b', A2:'#0097a7', B:'#a68b6b', C:'#8b7e74', PRE:'#795548'};
 const _ttTipoLabels = {A:'GGCC', A2:'GGCC+', B:'Combo', C:'Cascada', PRE:'Pre-GGCC'};
-const _ttTipoBgs = {A:'#e0f2f1', A2:'#e0f7fa', B:'#fff3e0', C:'#ede7f6', PRE:'#efebe9'};
+const _ttTipoBgs = {A:'#e0eae8', A2:'#e0f7fa', B:'#f0e8d8', C:'#e8e3e8', PRE:'#efebe9'};
 
 // Tooltip para UN depósito individual (muestra detalle paso a paso)
 function ttDep(d) {
@@ -2665,18 +2673,18 @@ function renderAportesCapital() {
     // ===== HEADER + KPIs =====
     html += '<div class="table-section">';
     html += '<div class="detail-header"><h3>Aportes de Capital — Clasificación por Categoría</h3>';
-    html += '<span class="detail-badge" style="background:#e3f2fd; color:#1565c0;">' + ALL_DEPOSITS.length + ' depósitos verificados</span></div>';
+    html += '<span class="detail-badge" style="background:#e2e6ec; color:#5a7d9a;">' + ALL_DEPOSITS.length + ' depósitos verificados</span></div>';
     html += '<p style="font-size:12px; color:#666; margin-bottom:12px;">Cada depósito se clasifica automáticamente según el orden de compromisos. Haz clic en cualquier celda para ver detalle.</p>';
 
-    html += '<details class="info-snippet" style="border-left-color:#1565c0;">';
+    html += '<details class="info-snippet" style="border-left-color:#5a7d9a;">';
     html += '<summary>¿Cómo se asignan los montos a cada categoría?</summary>';
     html += '<div style="margin-top:8px;">';
     html += '<div class="rule"><strong>Clasificación:</strong> <span class="tag tag-a">$70k</span> → GGCC. <span class="tag tag-b">$236.666</span> → $70k GGCC + $166k MOB. <span class="tag tag-c">Llamados</span> → directo a la categoría. <strong>Resto</strong> → cascada Capital → MOB → Construcción.</div>';
     html += '<div class="rule"><strong>Paso 2 — Cascada (Pasada 2):</strong> Lo que queda del depósito se asigna en orden estricto:<br>';
-    html += '① <strong style="color:#1565c0;">Capital</strong> hasta $' + (ACUERDOS.capital.perSocio/1e6) + 'M/socio → ';
-    html += '② <strong style="color:#7b1fa2;">Construcción</strong> hasta $' + (ACUERDOS.construccion.perSocio/1e6) + 'M/socio → ';
-    html += '③ <strong style="color:#e65100;">Mobiliario</strong> hasta $' + (ACUERDOS.mobiliario.perSocio/1e6) + 'M (solo ' + SOCIOS_MOB.length + ' socios) → ';
-    html += '④ <strong style="color:#7b1fa2;">Construcción</strong> (sin tope, absorbe todo excedente).</div>';
+    html += '① <strong style="color:#5a7d9a;">Capital</strong> hasta $' + (ACUERDOS.capital.perSocio/1e6) + 'M/socio → ';
+    html += '② <strong style="color:#8b7e74;">Construcción</strong> hasta $' + (ACUERDOS.construccion.perSocio/1e6) + 'M/socio → ';
+    html += '③ <strong style="color:#a68b6b;">Mobiliario</strong> hasta $' + (ACUERDOS.mobiliario.perSocio/1e6) + 'M (solo ' + SOCIOS_MOB.length + ' socios) → ';
+    html += '④ <strong style="color:#8b7e74;">Construcción</strong> (sin tope, absorbe todo excedente).</div>';
     html += '<div class="rule"><strong>Construcción como bucket final:</strong> Todo excedente que sobra de la cascada va a Construcción. Es normal que algunos socios excedan la meta de $' + (ACUERDOS.construccion.perSocio/1e6) + 'M.</div>';
     html += '<div class="rule"><strong>MOB_PAGADO_FULL (' + MOB_PAGADO_FULL.join(', ') + '):</strong> Estos socios pagaron $4M de mobiliario por adelantado, fuera de cartola. Sus depósitos no asignan a MOB.</div>';
     html += '</div></details>';
@@ -2741,8 +2749,8 @@ function renderAportesCapital() {
         SOCIOS_ALL.forEach(s => CAT_ORDER.forEach(c => yearCats[c] += yearData[s][c]));
 
         html += '<div class="table-section">';
-        html += '<div class="detail-header"><h3 style="color:#1565c0;">Aportes ' + year + '</h3>';
-        html += '<span class="detail-badge" style="background:#e3f2fd; color:#1565c0;">' + fmt(yearTotal) + '</span></div>';
+        html += '<div class="detail-header"><h3 style="color:#5a7d9a;">Aportes ' + year + '</h3>';
+        html += '<span class="detail-badge" style="background:#e2e6ec; color:#5a7d9a;">' + fmt(yearTotal) + '</span></div>';
 
         // Mini category KPIs for the year
         const activeCats = CAT_ORDER.filter(c => yearCats[c] > 0);
@@ -2759,19 +2767,19 @@ function renderAportesCapital() {
 
         // Socio × Category table
         html += '<div class="table-wrapper"><table><thead><tr>';
-        html += '<th style="background:#1565c0;">Socio</th>';
+        html += '<th style="background:#5a7d9a;">Socio</th>';
         CAT_ORDER.forEach(c => {
             if (yearCats[c] > 0 || c === 'inicial' || c === 'construccion' || c === 'mobiliario') {
                 html += '<th style="background:' + CAT_COLORS[c].bg + ';">' + CAT_COLORS[c].label + '</th>';
             }
         });
-        html += '<th style="background:#0d47a1;">Total Año</th>';
+        html += '<th style="background:#3d5a70;">Total Año</th>';
         html += '</tr></thead><tbody>';
 
         SOCIOS_ALL.forEach(s => {
             const sd = yearData[s];
             const sDeps = classified[s].deposits.filter(d => d.y === year);
-            html += '<tr style="cursor:pointer;" onclick="showSocioBitacora(\'' + s + '\')" title="Ver depósitos de ' + s + '"><td style="color:#1565c0; text-decoration:underline;">' + (FULL_NAMES[s] || s) + '</td>';
+            html += '<tr style="cursor:pointer;" onclick="showSocioBitacora(\'' + s + '\')" title="Ver depósitos de ' + s + '"><td style="color:#5a7d9a; text-decoration:underline;">' + (FULL_NAMES[s] || s) + '</td>';
             CAT_ORDER.forEach(c => {
                 if (yearCats[c] > 0 || c === 'inicial' || c === 'construccion' || c === 'mobiliario') {
                     const val = sd[c];
@@ -2782,7 +2790,7 @@ function renderAportesCapital() {
                     }
                 }
             });
-            html += '<td style="text-align:right; font-weight:700; background:#e8eaf6;">' + fmt(sd.total) + '</td>';
+            html += '<td style="text-align:right; font-weight:700; background:#e8e4de;">' + fmt(sd.total) + '</td>';
             html += '</tr>';
         });
 
@@ -2816,16 +2824,16 @@ function renderAportesCapital() {
     html += '<h3>Resumen Acumulado — Total por Socio y Categoría</h3>';
     html += '<p style="font-size:12px; color:#666; margin-bottom:12px;">Desde la primera cartola (jun-2020) hasta hoy. Incluye cumplimiento de cada compromiso.</p>';
     html += '<div class="table-wrapper"><table><thead><tr>';
-    html += '<th style="background:#0d47a1;">Socio</th>';
+    html += '<th style="background:#3d5a70;">Socio</th>';
     CAT_ORDER.forEach(c => html += '<th style="background:' + CAT_COLORS[c].bg + ';">' + CAT_COLORS[c].label + '</th>');
-    html += '<th style="background:#0d47a1;">Total</th>';
-    html += '<th style="background:#0d47a1;">% del Total</th>';
+    html += '<th style="background:#3d5a70;">Total</th>';
+    html += '<th style="background:#3d5a70;">% del Total</th>';
     html += '</tr></thead><tbody>';
 
     SOCIOS_ALL.forEach(s => {
         const t = classified[s].totals;
         const pct = grandTotal > 0 ? (t.total / grandTotal * 100).toFixed(1) : '0.0';
-        html += '<tr style="cursor:pointer;" onclick="showSocioBitacora(\'' + s + '\')" title="Ver depósitos de ' + s + '"><td style="color:#1565c0; text-decoration:underline;">' + (FULL_NAMES[s] || s) + '</td>';
+        html += '<tr style="cursor:pointer;" onclick="showSocioBitacora(\'' + s + '\')" title="Ver depósitos de ' + s + '"><td style="color:#5a7d9a; text-decoration:underline;">' + (FULL_NAMES[s] || s) + '</td>';
         CAT_ORDER.forEach(c => {
             const val = t[c];
             if (val > 0) {
@@ -2835,7 +2843,7 @@ function renderAportesCapital() {
             }
         });
         html += '<td style="text-align:right; font-weight:700;">' + fmt(t.total) + '</td>';
-        html += '<td style="text-align:right;"><span style="color:' + (t.total >= grandTotal/SOCIOS_ALL.length ? '#2e7d32' : '#e65100') + '; font-weight:600;">' + pct + '%</span></td>';
+        html += '<td style="text-align:right;"><span style="color:' + (t.total >= grandTotal/SOCIOS_ALL.length ? '#5a7d5a' : '#a68b6b') + '; font-weight:600;">' + pct + '%</span></td>';
         html += '</tr>';
     });
 
@@ -2849,7 +2857,7 @@ function renderAportesCapital() {
     // Cumplimiento per socio
     html += '</div><div class="table-section">';
     html += '<h3>Cumplimiento de Compromisos por Socio</h3>';
-    html += '<details class="info-snippet" style="border-left-color:#0d47a1;">';
+    html += '<details class="info-snippet" style="border-left-color:#3d5a70;">';
     html += '<summary>¿Cómo se calcula el cumplimiento?</summary>';
     html += '<div style="margin-top:8px;">';
     html += '<div class="rule"><strong>Pagado vs Meta:</strong> Cada barra muestra cuánto ha pagado el socio en esa categoría vs su compromiso. El % puede superar 100% en Construcción (bucket final de la cascada).</div>';
@@ -2857,12 +2865,12 @@ function renderAportesCapital() {
     html += '<div class="rule"><strong>No incluye GGCC:</strong> Esta tabla solo muestra compromisos de capital (aportes one-time). El estado de GGCC se ve en el tab de Gastos Comunes o en el Resumen.</div>';
     html += '</div></details>';
     html += '<div class="table-wrapper"><table><thead><tr>';
-    html += '<th style="background:#0d47a1;">Socio</th>';
-    html += '<th style="background:#1565c0;">Capital<br><small>Meta ' + fmtM(ACUERDOS.capital.perSocio) + '</small></th>';
-    html += '<th style="background:#7b1fa2;">Construcción<br><small>Meta ' + fmtM(ACUERDOS.construccion.perSocio) + '</small></th>';
-    html += '<th style="background:#e65100;">Mobiliario<br><small>Meta ' + fmtM(ACUERDOS.mobiliario.perSocio) + '</small></th>';
-    html += '<th style="background:#0d47a1;">Deuda Pendiente</th>';
-    html += '<th style="background:#0d47a1;">Estado</th>';
+    html += '<th style="background:#3d5a70;">Socio</th>';
+    html += '<th style="background:#5a7d9a;">Capital<br><small>Meta ' + fmtM(ACUERDOS.capital.perSocio) + '</small></th>';
+    html += '<th style="background:#8b7e74;">Construcción<br><small>Meta ' + fmtM(ACUERDOS.construccion.perSocio) + '</small></th>';
+    html += '<th style="background:#a68b6b;">Mobiliario<br><small>Meta ' + fmtM(ACUERDOS.mobiliario.perSocio) + '</small></th>';
+    html += '<th style="background:#3d5a70;">Deuda Pendiente</th>';
+    html += '<th style="background:#3d5a70;">Estado</th>';
     html += '</tr></thead><tbody>';
 
     let totalDeuda = 0;
@@ -2879,20 +2887,20 @@ function renderAportesCapital() {
         totalDeuda += deuda;
         const isAlDia = deuda === 0;
 
-        html += '<tr style="cursor:pointer;' + (isAlDia ? ' background:#e8f5e9;' : '') + '" onclick="showSocioBitacora(\'' + s + '\')" title="Ver depósitos de ' + s + '">';
-        html += '<td style="color:#1565c0; text-decoration:underline;">' + (FULL_NAMES[s] || s) + '</td>';
+        html += '<tr style="cursor:pointer;' + (isAlDia ? ' background:#eceee5;' : '') + '" onclick="showSocioBitacora(\'' + s + '\')" title="Ver depósitos de ' + s + '">';
+        html += '<td style="color:#5a7d9a; text-decoration:underline;">' + (FULL_NAMES[s] || s) + '</td>';
 
         // Capital
         const capPct = Math.min(100, c.capitalPaid / capMeta * 100);
         html += '<td style="text-align:center;">';
-        if (capPct >= 100) html += '<span style="color:#2e7d32; font-weight:700;">✓ ' + fmtM(capMeta) + '</span>';
+        if (capPct >= 100) html += '<span style="color:#5a7d5a; font-weight:700;">✓ ' + fmtM(capMeta) + '</span>';
         else html += '<div class="progress-bar" style="height:18px;"><div class="progress-fill ' + (capPct >= 50 ? 'partial' : 'low') + '" style="width:' + capPct + '%;font-size:10px;">' + capPct.toFixed(0) + '%</div></div>';
         html += '</td>';
 
         // Construcción
         const conPct = Math.min(100, c.constrPaid / conMeta * 100);
         html += '<td style="text-align:center;">';
-        if (conPct >= 100) html += '<span style="color:#2e7d32; font-weight:700;">✓ ' + fmt(conMeta) + '</span>';
+        if (conPct >= 100) html += '<span style="color:#5a7d5a; font-weight:700;">✓ ' + fmt(conMeta) + '</span>';
         else if (c.constrPaid > 0) html += '<div class="progress-bar" style="height:18px;"><div class="progress-fill ' + (conPct >= 50 ? 'partial' : 'low') + '" style="width:' + conPct + '%;font-size:10px;">' + conPct.toFixed(0) + '%</div></div><small style="color:#888;">' + fmt(c.constrPaid) + ' / ' + fmt(conMeta) + '</small>';
         else html += '<span class="badge badge-red">Pendiente</span>';
         html += '</td>';
@@ -2900,14 +2908,14 @@ function renderAportesCapital() {
         // Mobiliario
         const mobPct = Math.min(100, c.mobPaid / mobMeta * 100);
         html += '<td style="text-align:center;">';
-        if (isMobAdelantado) html += '<span style="color:#2e7d32; font-weight:700;">✓ Pagado adelantado</span>';
-        else if (mobPct >= 100) html += '<span style="color:#2e7d32; font-weight:700;">✓ ' + fmtM(mobMeta) + '</span>';
+        if (isMobAdelantado) html += '<span style="color:#5a7d5a; font-weight:700;">✓ Pagado adelantado</span>';
+        else if (mobPct >= 100) html += '<span style="color:#5a7d5a; font-weight:700;">✓ ' + fmtM(mobMeta) + '</span>';
         else if (c.mobPaid > 0) html += '<div class="progress-bar" style="height:18px;"><div class="progress-fill ' + (mobPct >= 50 ? 'partial' : 'low') + '" style="width:' + mobPct + '%;font-size:10px;">' + mobPct.toFixed(0) + '%</div></div><small style="color:#888;">' + fmt(c.mobPaid) + ' / ' + fmtM(mobMeta) + '</small>';
         else html += '<span class="badge badge-red">Pendiente</span>';
         html += '</td>';
 
         // Deuda
-        html += '<td style="text-align:right; font-weight:700; color:' + (deuda > 0 ? '#c62828' : '#2e7d32') + ';">' + (deuda > 0 ? fmt(deuda) : '$0') + '</td>';
+        html += '<td style="text-align:right; font-weight:700; color:' + (deuda > 0 ? '#b05a5a' : '#5a7d5a') + ';">' + (deuda > 0 ? fmt(deuda) : '$0') + '</td>';
 
         // Estado
         if (isAlDia) html += '<td class="col-center"><span class="badge badge-green">100% Al día</span></td>';
@@ -2919,10 +2927,10 @@ function renderAportesCapital() {
     });
 
     html += '<tr class="total-row"><td>TOTAL</td><td></td><td></td><td></td>';
-    html += '<td style="text-align:right; color:#c62828;">' + fmt(totalDeuda) + '</td><td></td></tr>';
+    html += '<td style="text-align:right; color:#b05a5a;">' + fmt(totalDeuda) + '</td><td></td></tr>';
     html += '</tbody></table></div>';
 
-    html += '<div style="background:#e3f2fd; padding:12px 16px; border-radius:8px; margin-top:16px; font-size:12px; color:#1565c0; border-left:4px solid #1565c0;">';
+    html += '<div style="background:#e2e6ec; padding:12px 16px; border-radius:8px; margin-top:16px; font-size:12px; color:#5a7d9a; border-left:4px solid #5a7d9a;">';
     html += '<strong>Lógica de clasificación:</strong> De cada depósito se descuenta primero GGCC (' + fmt(CUOTA_GGCC) + '/mes, desde oct-2022), luego cuota Mob (' + fmt(CUOTA_MOB) + '/mes desde feb-2025 para ' + SOCIOS_MOB.length + ' socios). El remanente llena: Capital (hasta ' + fmtM(ACUERDOS.capital.perSocio) + ') → Construcción (hasta ' + fmtM(ACUERDOS.construccion.perSocio) + ') → MOB → Construcción. Fuente: cartolas Scotiabank verificadas.';
     html += '</div></div>';
 
@@ -2981,7 +2989,7 @@ function renderGGCC() {
     let html = '';
     html += '<div class="table-section">';
     html += '<div class="detail-header"><h3>Resumen Anual GGCC ' + year + ' — Estado por Socio</h3>';
-    html += '<span class="detail-badge" style="background:#e0f2f1; color:#00838f;">Cartolas ' + year + ': ' + coveredMonths.size + ' meses verificados</span></div>';
+    html += '<span class="detail-badge" style="background:#e0eae8; color:#6b8f8b;">Cartolas ' + year + ': ' + coveredMonths.size + ' meses verificados</span></div>';
     html += '<p style="font-size:12px; color:#666; margin-bottom:16px;">GGCC = ' + fmt(CUOTA_GGCC) + '/mes × ' + SOCIOS_ALL.length + ' socios × ' + ggccMonthsThisYear + ' meses = ' + fmt(esperado) + ' esperado. De cada depósito solo se contabiliza la porción GGCC (' + fmt(CUOTA_GGCC) + '). La porción de mobiliario (' + fmt(CUOTA_MOB) + ') se muestra en Aportes de Capital. Fuente: cartolas Scotiabank.</p>';
     
     // KPIs
@@ -2995,11 +3003,11 @@ function renderGGCC() {
     html += '</section>';
 
     // Snippet GGCC detalle
-    html += '<details class="info-snippet" style="border-left-color:#00838f;">';
+    html += '<details class="info-snippet" style="border-left-color:#6b8f8b;">';
     html += '<summary>¿Cómo leer esta tabla?</summary>';
     html += '<div style="margin-top:8px;">';
-    html += '<div class="rule"><strong>Grilla mensual:</strong> Cada celda muestra cuánto GGCC pagó ese socio en ese mes. <span style="background:#e8f5e9; padding:1px 4px; border-radius:3px;">Verde</span> = cuota completa ($' + (CUOTA_GGCC/1000) + 'k). <span style="background:#fff8e1; padding:1px 4px; border-radius:3px;">Amarillo</span> = parcial. <span style="color:#bbb;">—</span> = sin pago o mes no aplica.</div>';
-    html += '<div class="rule"><strong>Celdas <span style="background:#fff3e0; padding:1px 4px; border-radius:3px;">⏳</span>:</strong> Mes donde se esperaba GGCC pero no hay cartola disponible aún.</div>';
+    html += '<div class="rule"><strong>Grilla mensual:</strong> Cada celda muestra cuánto GGCC pagó ese socio en ese mes. <span style="background:#eceee5; padding:1px 4px; border-radius:3px;">Verde</span> = cuota completa ($' + (CUOTA_GGCC/1000) + 'k). <span style="background:#f2eddf; padding:1px 4px; border-radius:3px;">Amarillo</span> = parcial. <span style="color:#bbb;">—</span> = sin pago o mes no aplica.</div>';
+    html += '<div class="rule"><strong>Celdas <span style="background:#f0e8d8; padding:1px 4px; border-radius:3px;">⏳</span>:</strong> Mes donde se esperaba GGCC pero no hay cartola disponible aún.</div>';
     html += '<div class="rule"><strong>Tipos de depósito GGCC:</strong><br>';
     html += '<span class="tag tag-a">GGCC</span> $70.000 → 1 mes GGCC.<br>';
     html += '<span class="tag tag-b">COMBO</span> $236.666 → $70k GGCC + $166.666 MOB.<br>';
@@ -3011,7 +3019,7 @@ function renderGGCC() {
     // Monthly grid — with month-colored headers
     html += '<div class="table-wrapper"><table><thead><tr><th>Socio</th>';
     for (let m = 0; m < 12; m++) html += '<th class="month-band-' + m + '" style="color:#333; font-weight:700;">' + MONTHS[m] + '</th>';
-    html += '<th style="background:#e65100;">Pagado</th><th>Esperado</th><th>Saldo</th></tr></thead><tbody>';
+    html += '<th style="background:#a68b6b;">Pagado</th><th>Esperado</th><th>Saldo</th></tr></thead><tbody>';
     
     const monthTotals = new Array(12).fill(0);
     SOCIOS_ALL.forEach(s => {
@@ -3021,7 +3029,7 @@ function renderGGCC() {
         const isHL = (ggccHighlightSocio === s);
         // Depósitos de este socio/año para tooltips
         const sDeps = cls[s].deposits.filter(dep => dep.y === year);
-        html += '<tr id="ggcc-row-' + s + '" style="' + (isHL ? 'background:#b2ebf2; outline:2px solid #00838f; font-weight:700;' : '') + '"><td>' + (FULL_NAMES[s] || s) + '</td>';
+        html += '<tr id="ggcc-row-' + s + '" style="' + (isHL ? 'background:#b2ebf2; outline:2px solid #6b8f8b; font-weight:700;' : '') + '"><td>' + (FULL_NAMES[s] || s) + '</td>';
         for (let m = 0; m < 12; m++) {
             const val = d.months[m];
             monthTotals[m] += val;
@@ -3038,7 +3046,7 @@ function renderGGCC() {
             if (!coveredMonths.has(m + 1) && !mesEsperado) {
                 html += '<td class="month-band-' + m + '" style="color:#bbb; text-align:center;">\u2014</td>';
             } else if (!coveredMonths.has(m + 1) && mesEsperado) {
-                html += '<td style="background:#fff3e0; color:#e65100; text-align:center; font-size:10px;" title="Sin cartola para ' + MONTHS[m] + ' ' + year + '">\u23f3</td>';
+                html += '<td style="background:#f0e8d8; color:#a68b6b; text-align:center; font-size:10px;" title="Sin cartola para ' + MONTHS[m] + ' ' + year + '">\u23f3</td>';
             } else if (val >= CUOTA_GGCC) {
                 html += '<td class="ggcc-paid">' + (cellTT ? wtt(fmt(val), cellTT) : fmt(val)) + '</td>';
             } else if (val > 0) {
@@ -3061,16 +3069,16 @@ function renderGGCC() {
     html += '<td>' + fmt(ggccTotal) + '</td><td>' + fmt(esperado) + '</td><td class="' + (saldo >= 0 ? 'saldo-pos' : 'saldo-neg') + '">' + fmt(saldo) + '</td></tr>';
     html += '</tbody></table></div>';
     
-    html += '<div class="legend"><div class="legend-item"><div class="legend-color" style="background:#e8f5e9"></div> $70.000 GGCC cubierto</div><div class="legend-item"><div class="legend-color" style="background:#fff8e1"></div> GGCC parcial</div></div>';
-    html += '<div style="background:#fff3e0; border-radius:8px; padding:12px 16px; margin-top:16px; font-size:12px; color:#795548;">';
+    html += '<div class="legend"><div class="legend-item"><div class="legend-color" style="background:#eceee5"></div> $70.000 GGCC cubierto</div><div class="legend-item"><div class="legend-color" style="background:#f2eddf"></div> GGCC parcial</div></div>';
+    html += '<div style="background:#f0e8d8; border-radius:8px; padding:12px 16px; margin-top:16px; font-size:12px; color:#795548;">';
     html += '<strong>Nota:</strong> Cada celda muestra solo la porción GGCC ($70.000). Si un socio deposita $236.666, aquí aparecen $70.000 (verde) y los $166.666 restantes se contabilizan como cuota de mobiliario en el tab correspondiente.</div>';
     html += '</div>';
     
     // Desglose section
     html += '<div class="table-section">';
     html += '<div class="detail-header"><h3>Desglose ' + year + ' — GGCC + Mobiliario + Otros Aportes</h3>';
-    html += '<span class="detail-badge" style="background:#e0f2f1; color:#00838f;">Cartola verificada</span></div>';
-    html += '<details class="info-snippet" style="border-left-color:#00838f;">';
+    html += '<span class="detail-badge" style="background:#e0eae8; color:#6b8f8b;">Cartola verificada</span></div>';
+    html += '<details class="info-snippet" style="border-left-color:#6b8f8b;">';
     html += '<summary>¿Cómo se desglosa cada depósito?</summary>';
     html += '<div style="margin-top:8px;">';
     html += '<div class="rule"><strong>Misma lógica del Resumen:</strong> Cada depósito pasa por las 2 pasadas (GGCC primero, luego cascada). Los números aquí son 100% consistentes con los del tab Resumen y Aportes de Capital.</div>';
@@ -3103,7 +3111,7 @@ function renderGGCC() {
     
     // Per-socio breakdown table
     html += '<div class="table-wrapper"><table><thead><tr>';
-    html += '<th>Socio</th><th>Total Depositado</th><th style="background:#2e7d32;">GGCC<br>$70k/mes</th><th style="background:#e65100;">MOB</th><th style="background:#1565c0;">Capital</th><th style="background:#7b1fa2;">Construcción</th>';
+    html += '<th>Socio</th><th>Total Depositado</th><th style="background:#5a7d5a;">GGCC<br>$70k/mes</th><th style="background:#a68b6b;">MOB</th><th style="background:#5a7d9a;">Capital</th><th style="background:#8b7e74;">Construcción</th>';
     html += '</tr></thead><tbody>';
     SOCIOS_ALL.forEach(s => {
         const sDeps = yearDeps.filter(d => d.s === s);
@@ -3114,10 +3122,10 @@ function renderGGCC() {
         let sCap = 0, sConstr = 0;
         cls[s].deposits.filter(d => d.y === year).forEach(d => { sCap += d.alloc.inicial; sConstr += d.alloc.construccion; });
         html += '<tr><td>' + (FULL_NAMES[s] || s) + '</td><td style="font-weight:700;">' + fmt(sTot) + '</td>';
-        html += '<td style="color:#2e7d32;">' + fmt(sGGCC) + '</td>';
-        html += '<td style="color:#e65100;">' + fmt(sMob) + '</td>';
-        html += '<td style="color:#1565c0;">' + fmt(sCap) + '</td>';
-        html += '<td style="color:#7b1fa2;">' + fmt(sConstr) + '</td></tr>';
+        html += '<td style="color:#5a7d5a;">' + fmt(sGGCC) + '</td>';
+        html += '<td style="color:#a68b6b;">' + fmt(sMob) + '</td>';
+        html += '<td style="color:#5a7d9a;">' + fmt(sCap) + '</td>';
+        html += '<td style="color:#8b7e74;">' + fmt(sConstr) + '</td></tr>';
     });
     html += '</tbody></table></div></div>';
     
@@ -3196,12 +3204,12 @@ function renderCasa() {
     
     let html = '<div class="casa-section"><h3 style="font-size:16px; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">Club House Chaicura — Equipamiento (47 items)</h3>';
 
-    html += '<details class="info-snippet" style="border-left-color:#7b1fa2;">';
+    html += '<details class="info-snippet" style="border-left-color:#8b7e74;">';
     html += '<summary>¿Qué es esta sección?</summary>';
     html += '<div style="margin-top:8px;">';
     html += '<div class="rule"><strong>Equipamiento Club House:</strong> Lista de items necesarios para equipar el Club House de 440 m² en Chaicura, Ancud. Cada item tiene presupuesto estimado y gasto real.</div>';
     html += '<div class="rule"><strong>Categorías:</strong> Cocina, Baño, Dormitorios, Living/Comedor, Exterior, Equipos, Otros. Se puede filtrar por categoría.</div>';
-    html += '<div class="rule"><strong>Estado:</strong> <span style="background:#e8f5e9; padding:1px 4px; border-radius:3px;">Completado</span> = ya comprado/instalado. <span style="background:#fff8e1; padding:1px 4px; border-radius:3px;">Pendiente</span> = por comprar. La diferencia (Presupuesto − Gasto Real) muestra ahorro o sobrecosto.</div>';
+    html += '<div class="rule"><strong>Estado:</strong> <span style="background:#eceee5; padding:1px 4px; border-radius:3px;">Completado</span> = ya comprado/instalado. <span style="background:#f2eddf; padding:1px 4px; border-radius:3px;">Pendiente</span> = por comprar. La diferencia (Presupuesto − Gasto Real) muestra ahorro o sobrecosto.</div>';
     html += '<div class="rule"><strong>Relación con Aportes:</strong> Los aportes de Construcción del tab Aportes de Capital financian este equipamiento. El presupuesto total de equipamiento es parte del compromiso de $' + (ACUERDOS.construccion.perSocio/1e6) + 'M/socio.</div>';
     html += '</div></details>';
 
@@ -3243,7 +3251,7 @@ function renderCasa() {
     
     // Export/Import
     html += '<div style="margin-top:20px; display:flex; gap:10px;">';
-    html += '<button onclick="exportCasa()" style="padding:8px 16px; background:#1a1a2e; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px;">Exportar JSON</button>';
+    html += '<button onclick="exportCasa()" style="padding:8px 16px; background:#2d2926; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px;">Exportar JSON</button>';
     html += '<button onclick="document.getElementById(\'casaImport\').click()" style="padding:8px 16px; background:#e0e0e0; color:#333; border:none; border-radius:6px; cursor:pointer; font-size:12px;">Importar JSON</button>';
     html += '<input type="file" id="casaImport" accept=".json" style="display:none" onchange="importCasa(event)">';
     html += '</div>';
@@ -3311,17 +3319,17 @@ function renderVistaSocio(socioOverride) {
     let html = '';
 
     // Snippet detalle socio
-    html += '<details class="info-snippet" style="border-left-color:#1a1a2e;">';
+    html += '<details class="info-snippet" style="border-left-color:#2d2926;">';
     html += '<summary>¿Cómo leer la ficha del socio?</summary>';
     html += '<div style="margin-top:8px;">';
     html += '<div class="rule"><strong>4 KPIs:</strong> Cada tarjeta muestra pagado vs meta para Capital ($' + (ACUERDOS.capital.perSocio/1e6) + 'M), Construcción ($' + (ACUERDOS.construccion.perSocio/1e6) + 'M), Mobiliario ($' + (ACUERDOS.mobiliario.perSocio/1e6) + 'M) y GGCC (' + totalGGCCMonths + ' meses × $' + (CUOTA_GGCC/1000) + 'k). La barra de progreso muestra el % de avance.</div>';
-    html += '<div class="rule"><strong>Timeline GGCC:</strong> Cada cuadro = 1 mes. <span style="background:#e8f5e9; padding:1px 4px; border-radius:3px;">Verde</span> = pagado, <span style="background:#fff8e1; padding:1px 4px; border-radius:3px;">Amarillo</span> = parcial, <span style="background:#ffebee; padding:1px 4px; border-radius:3px;">Rojo</span> = sin pago.</div>';
+    html += '<div class="rule"><strong>Timeline GGCC:</strong> Cada cuadro = 1 mes. <span style="background:#eceee5; padding:1px 4px; border-radius:3px;">Verde</span> = pagado, <span style="background:#f2eddf; padding:1px 4px; border-radius:3px;">Amarillo</span> = parcial, <span style="background:#f0e5e5; padding:1px 4px; border-radius:3px;">Rojo</span> = sin pago.</div>';
     html += '<div class="rule"><strong>Bitácora de depósitos:</strong> Cada fila es un depósito real de la cartola. Las columnas muestran cómo se asignó: cuánto fue a GGCC, cuánto a Capital, etc. Los colores identifican la categoría principal.</div>';
     html += '<div class="rule"><strong>Clasificación:</strong> Los montos de cada depósito se asignan por la lógica de 2 pasadas + cascada (ver snippet del Resumen para detalle completo).</div>';
     html += '</div></details>';
 
     // ── HERO CARD ──
-    html += '<div style="background:linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); border-radius:14px; padding:24px 28px; margin-bottom:20px; color:white;">';
+    html += '<div style="background:linear-gradient(135deg, #2d2926 0%, #3d3632 60%, #4a433d 100%); border-radius:14px; padding:24px 28px; margin-bottom:20px; color:white;">';
     html += '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">';
     html += '<div>';
     html += '<div style="font-size:22px; font-weight:700;">' + (FULL_NAMES[socio] || socio) + '</div>';
@@ -3335,10 +3343,10 @@ function renderVistaSocio(socioOverride) {
     // ── 4 KPI CARDS ──
     html += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:12px; margin-bottom:20px;">';
     const kpis = [
-        { label:'Capital Inicial', paid:data.capitalPaid, target:10000000, color:'#1565c0', debt:capDebt },
-        { label:'Construcción', paid:data.constrPaid, target:data.constrQuota, color:'#7b1fa2', debt:constrDebt },
-        { label:'Mobiliario', paid: isMobFull ? 4000000 : data.mobPaid, target:4000000, color:'#e65100', debt:mobDebt, note: isMobFull ? 'Pagado adelantado' : (isMobSocio ? '' : 'No aplica') },
-        { label:'GGCC', paid:t.ggcc, target:ggccExpected, color:'#00838f', debt:ggccDebt, sub: data.ggccMonthsPaid + '/' + totalGGCCMonths + ' meses' }
+        { label:'Capital Inicial', paid:data.capitalPaid, target:10000000, color:'#5a7d9a', debt:capDebt },
+        { label:'Construcción', paid:data.constrPaid, target:data.constrQuota, color:'#8b7e74', debt:constrDebt },
+        { label:'Mobiliario', paid: isMobFull ? 4000000 : data.mobPaid, target:4000000, color:'#a68b6b', debt:mobDebt, note: isMobFull ? 'Pagado adelantado' : (isMobSocio ? '' : 'No aplica') },
+        { label:'GGCC', paid:t.ggcc, target:ggccExpected, color:'#6b8f8b', debt:ggccDebt, sub: data.ggccMonthsPaid + '/' + totalGGCCMonths + ' meses' }
     ];
     kpis.forEach(k => {
         const pct = Math.min(100, Math.round(k.paid / k.target * 100));
@@ -3348,21 +3356,21 @@ function renderVistaSocio(socioOverride) {
         html += '<div style="font-size:20px; font-weight:700; color:' + k.color + ';">' + fmt(k.paid) + '</div>';
         html += '<div style="font-size:11px; color:#888; margin:4px 0;">de ' + fmt(k.target) + (k.sub ? ' — ' + k.sub : '') + '</div>';
         html += '<div class="progress-bar" style="margin:6px 0;"><div class="progress-fill ' + fillClass + '" style="width:' + pct + '%">' + pct + '%</div></div>';
-        if (k.debt > 0) html += '<div style="font-size:11px; color:#c62828; font-weight:600;">Pendiente: ' + fmt(k.debt) + '</div>';
-        else if (k.note) html += '<div style="font-size:11px; color:#2e7d32; font-weight:600;">' + k.note + '</div>';
-        else html += '<div style="font-size:11px; color:#2e7d32; font-weight:600;">✓ Completo</div>';
+        if (k.debt > 0) html += '<div style="font-size:11px; color:#b05a5a; font-weight:600;">Pendiente: ' + fmt(k.debt) + '</div>';
+        else if (k.note) html += '<div style="font-size:11px; color:#5a7d5a; font-weight:600;">' + k.note + '</div>';
+        else html += '<div style="font-size:11px; color:#5a7d5a; font-weight:600;">✓ Completo</div>';
         html += '</div>';
     });
     html += '</div>';
 
     // ── COMPOSICIÓN GRÁFICA (stacked bar) ──
     html += '<div style="background:white; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08); margin-bottom:20px;">';
-    html += '<h3 style="font-size:14px; color:#1a1a2e; margin-bottom:10px;">Composición de Aportes</h3>';
+    html += '<h3 style="font-size:14px; color:#2d2926; margin-bottom:10px;">Composición de Aportes</h3>';
     const cats = [
-        {key:'ggcc', label:'GGCC', color:'#00838f', val:t.ggcc},
-        {key:'inicial', label:'Capital', color:'#1565c0', val:t.inicial},
-        {key:'construccion', label:'Construcción', color:'#7b1fa2', val:t.construccion},
-        {key:'mobiliario', label:'MOB', color:'#e65100', val:t.mobiliario}
+        {key:'ggcc', label:'GGCC', color:'#6b8f8b', val:t.ggcc},
+        {key:'inicial', label:'Capital', color:'#5a7d9a', val:t.inicial},
+        {key:'construccion', label:'Construcción', color:'#8b7e74', val:t.construccion},
+        {key:'mobiliario', label:'MOB', color:'#a68b6b', val:t.mobiliario}
     ];
     if (t.otros > 0) cats.push({key:'otros', label:'Otros', color:'#616161', val:t.otros});
     html += '<div style="display:flex; height:28px; border-radius:6px; overflow:hidden; box-shadow:0 1px 2px rgba(0,0,0,0.1); margin-bottom:8px;">';
@@ -3379,7 +3387,7 @@ function renderVistaSocio(socioOverride) {
 
     // ── GGCC TIMELINE (meses) ──
     html += '<div style="background:white; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08); margin-bottom:20px;">';
-    html += '<h3 style="font-size:14px; color:#00838f; margin-bottom:10px;">GGCC — Meses Pagados (' + data.ggccMonthsPaid + '/' + totalGGCCMonths + ')</h3>';
+    html += '<h3 style="font-size:14px; color:#6b8f8b; margin-bottom:10px;">GGCC — Meses Pagados (' + data.ggccMonthsPaid + '/' + totalGGCCMonths + ')</h3>';
     html += '<div style="display:flex; flex-wrap:wrap; gap:3px;">';
     const ggccMonths = data.ggccByMonth;
     let gy = 2022, gm = 10;
@@ -3388,7 +3396,7 @@ function renderVistaSocio(socioOverride) {
         const paid = ggccMonths[mk] || 0;
         const full = paid >= CUOTA_GGCC;
         const partial = paid > 0 && !full;
-        const bg = full ? '#00838f' : (partial ? '#b2dfdb' : '#f0f0f0');
+        const bg = full ? '#6b8f8b' : (partial ? '#b2dfdb' : '#f0f0f0');
         const txt = full ? 'white' : '#666';
         const mLabel = ['E','F','M','A','M','J','J','A','S','O','N','D'][gm-1];
         const yearLabel = gm === 1 || i === 0 ? '<div style="font-size:8px; color:#aaa; text-align:center;">' + gy + '</div>' : '';
@@ -3400,7 +3408,7 @@ function renderVistaSocio(socioOverride) {
     }
     html += '</div>';
     html += '<div style="display:flex; gap:12px; margin-top:8px; font-size:10px; color:#888;">';
-    html += '<div style="display:flex; align-items:center; gap:3px;"><div style="width:10px; height:10px; border-radius:2px; background:#00838f;"></div>Pagado</div>';
+    html += '<div style="display:flex; align-items:center; gap:3px;"><div style="width:10px; height:10px; border-radius:2px; background:#6b8f8b;"></div>Pagado</div>';
     html += '<div style="display:flex; align-items:center; gap:3px;"><div style="width:10px; height:10px; border-radius:2px; background:#b2dfdb;"></div>Parcial</div>';
     html += '<div style="display:flex; align-items:center; gap:3px;"><div style="width:10px; height:10px; border-radius:2px; background:#f0f0f0;"></div>Pendiente</div>';
     html += '</div></div>';
@@ -3408,7 +3416,7 @@ function renderVistaSocio(socioOverride) {
     // ── MOB TIMELINE (si aplica) ──
     if (isMobSocio || isMobFull) {
         html += '<div style="background:white; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08); margin-bottom:20px;">';
-        html += '<h3 style="font-size:14px; color:#e65100; margin-bottom:10px;">Mobiliario' + (isMobFull ? ' — ✓ Pagado adelantado' : '') + '</h3>';
+        html += '<h3 style="font-size:14px; color:#a68b6b; margin-bottom:10px;">Mobiliario' + (isMobFull ? ' — ✓ Pagado adelantado' : '') + '</h3>';
         if (!isMobFull) {
             const mobMonthsPaid = Object.values(data.deposits.reduce((acc, d) => {
                 // Count mob cuotas from alloc
@@ -3420,7 +3428,7 @@ function renderVistaSocio(socioOverride) {
             let my = 2025, mm = 2;
             for (let i = 0; i < 24; i++) {
                 const full = i < mobPaidMonths;
-                const bg = full ? '#e65100' : '#f0f0f0';
+                const bg = full ? '#a68b6b' : '#f0f0f0';
                 const txt = full ? 'white' : '#666';
                 const mLabel = ['E','F','M','A','M','J','J','A','S','O','N','D'][mm-1];
                 const yearLabel = mm === 1 || i === 0 ? '<div style="font-size:8px; color:#aaa; text-align:center;">' + my + '</div>' : '';
@@ -3439,14 +3447,14 @@ function renderVistaSocio(socioOverride) {
     // ── RESUMEN POR AÑO ──
     const years = [...new Set(deps.map(d => d.y))].sort();
     html += '<div style="background:white; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08); margin-bottom:20px;">';
-    html += '<h3 style="font-size:14px; color:#1a1a2e; margin-bottom:10px;">Resumen por Año</h3>';
+    html += '<h3 style="font-size:14px; color:#2d2926; margin-bottom:10px;">Resumen por Año</h3>';
     html += '<div style="overflow-x:auto;"><table style="width:100%; font-size:12px; border-collapse:collapse;">';
-    html += '<thead><tr style="background:#1a1a2e; color:white;">';
+    html += '<thead><tr style="background:#2d2926; color:white;">';
     html += '<th style="padding:8px; text-align:left;">Año</th><th style="padding:8px; text-align:center;">Depósitos</th>';
     html += '<th style="padding:8px; text-align:right; color:#00bcd4;">GGCC</th>';
     html += '<th style="padding:8px; text-align:right; color:#90caf9;">Capital</th>';
     html += '<th style="padding:8px; text-align:right; color:#e040fb;">Constr.</th>';
-    html += '<th style="padding:8px; text-align:right; color:#ff9800;">MOB</th>';
+    html += '<th style="padding:8px; text-align:right; color:#a68b6b;">MOB</th>';
     html += '<th style="padding:8px; text-align:right;">Total</th>';
     html += '</tr></thead><tbody>';
     let totalGgcc=0, totalCap=0, totalConstr=0, totalMob=0, totalAll=0, totalCount=0;
@@ -3461,25 +3469,25 @@ function renderVistaSocio(socioOverride) {
         html += '<tr style="border-bottom:1px solid #eee;">';
         html += '<td style="padding:7px 8px; font-weight:600;">' + yr + '</td>';
         html += '<td style="padding:7px 8px; text-align:center;">' + yrDeps.length + '</td>';
-        html += '<td style="padding:7px 8px; text-align:right; color:#00838f;">' + (yrGgcc > 0 ? fmt(yrGgcc) : '—') + '</td>';
-        html += '<td style="padding:7px 8px; text-align:right; color:#1565c0;">' + (yrCap > 0 ? fmt(yrCap) : '—') + '</td>';
-        html += '<td style="padding:7px 8px; text-align:right; color:#7b1fa2;">' + (yrConstr > 0 ? fmt(yrConstr) : '—') + '</td>';
-        html += '<td style="padding:7px 8px; text-align:right; color:#e65100;">' + (yrMob > 0 ? fmt(yrMob) : '—') + '</td>';
+        html += '<td style="padding:7px 8px; text-align:right; color:#6b8f8b;">' + (yrGgcc > 0 ? fmt(yrGgcc) : '—') + '</td>';
+        html += '<td style="padding:7px 8px; text-align:right; color:#5a7d9a;">' + (yrCap > 0 ? fmt(yrCap) : '—') + '</td>';
+        html += '<td style="padding:7px 8px; text-align:right; color:#8b7e74;">' + (yrConstr > 0 ? fmt(yrConstr) : '—') + '</td>';
+        html += '<td style="padding:7px 8px; text-align:right; color:#a68b6b;">' + (yrMob > 0 ? fmt(yrMob) : '—') + '</td>';
         html += '<td style="padding:7px 8px; text-align:right; font-weight:600;">' + fmt(yrTotal) + '</td>';
         html += '</tr>';
     });
-    html += '<tr style="background:#1a1a2e; color:white; font-weight:700;">';
+    html += '<tr style="background:#2d2926; color:white; font-weight:700;">';
     html += '<td style="padding:8px;">TOTAL</td><td style="padding:8px; text-align:center;">' + totalCount + '</td>';
     html += '<td style="padding:8px; text-align:right; color:#00bcd4;">' + fmt(totalGgcc) + '</td>';
     html += '<td style="padding:8px; text-align:right; color:#90caf9;">' + fmt(totalCap) + '</td>';
     html += '<td style="padding:8px; text-align:right; color:#e040fb;">' + fmt(totalConstr) + '</td>';
-    html += '<td style="padding:8px; text-align:right; color:#ff9800;">' + fmt(totalMob) + '</td>';
+    html += '<td style="padding:8px; text-align:right; color:#a68b6b;">' + fmt(totalMob) + '</td>';
     html += '<td style="padding:8px; text-align:right;">' + fmt(totalAll) + '</td>';
     html += '</tr></tbody></table></div></div>';
 
     // ── BITÁCORA COMPLETA ──
     html += '<div style="background:white; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08); margin-bottom:20px;">';
-    html += '<h3 style="font-size:14px; color:#1a1a2e; margin-bottom:10px;">Bitácora de Depósitos (' + deps.length + ')</h3>';
+    html += '<h3 style="font-size:14px; color:#2d2926; margin-bottom:10px;">Bitácora de Depósitos (' + deps.length + ')</h3>';
     html += '<details class="info-snippet" style="margin-top:0;">';
     html += '<summary>¿Cómo leer la bitácora?</summary>';
     html += '<div style="margin-top:8px;">';
@@ -3488,20 +3496,20 @@ function renderVistaSocio(socioOverride) {
     html += '<div class="rule"><strong>Acumulados:</strong> Los totales al pie muestran cuánto ha ido a cada categoría sumando todos los depósitos.</div>';
     html += '</div></details>';
     html += '<div style="overflow-x:auto;"><table style="width:100%; font-size:11px; border-collapse:collapse;">';
-    html += '<thead><tr style="background:#1a1a2e; color:white;">';
+    html += '<thead><tr style="background:#2d2926; color:white;">';
     html += '<th style="padding:6px 8px; text-align:left;">#</th>';
     html += '<th style="padding:6px 8px; text-align:left;">Fecha</th>';
     html += '<th style="padding:6px 8px; text-align:right;">Monto</th>';
     html += '<th style="padding:6px 8px; text-align:right; color:#00bcd4;">GGCC</th>';
     html += '<th style="padding:6px 8px; text-align:right; color:#90caf9;">Capital</th>';
     html += '<th style="padding:6px 8px; text-align:right; color:#e040fb;">Constr.</th>';
-    html += '<th style="padding:6px 8px; text-align:right; color:#ff9800;">MOB</th>';
+    html += '<th style="padding:6px 8px; text-align:right; color:#a68b6b;">MOB</th>';
     html += '<th style="padding:6px 8px; text-align:left;">Tipo</th>';
     html += '<th style="padding:6px 8px; text-align:left;">Descripción</th>';
     html += '<th style="padding:6px 8px; text-align:left;">Cartola</th>';
     html += '</tr></thead><tbody>';
 
-    const _tipoColors = {GGCC:'#00838f', COMBO:'#e65100', LLAMADO:'#7b1fa2', RESTO:'#616161'};
+    const _tipoColors = {GGCC:'#6b8f8b', COMBO:'#a68b6b', LLAMADO:'#8b7e74', RESTO:'#616161'};
     const _tipoLabels = {GGCC:'GGCC', COMBO:'GGCC+MOB', LLAMADO:'Llamado', RESTO:'Cascada'};
     let runGGCC=0, runCap=0, runConstr=0, runMob=0;
     let _prevMK = '';
@@ -3533,23 +3541,23 @@ function renderVistaSocio(socioOverride) {
         html += '<td style="padding:5px 8px; color:#aaa;">' + (i+1) + (hasDetalle ? ' \u25b8' : '') + '</td>';
         html += '<td style="padding:5px 8px; white-space:nowrap;">' + String(d.d).padStart(2,'0') + '/' + String(d.m).padStart(2,'0') + '/' + d.y + '</td>';
         html += '<td style="padding:5px 8px; text-align:right; font-weight:600;">' + wtt('$' + d.amt.toLocaleString(), ttDep(d)) + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#00838f; font-weight:' + (a.ggcc > 0 ? '600' : '400') + ';">' + (a.ggcc > 0 ? wtt('$'+a.ggcc.toLocaleString(), ttDepCat(d,'ggcc')) : '\u2014') + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#1565c0; font-weight:' + (a.inicial > 0 ? '600' : '400') + ';">' + (a.inicial > 0 ? wtt('$'+a.inicial.toLocaleString(), ttDepCat(d,'inicial')) : '\u2014') + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#7b1fa2; font-weight:' + (a.construccion > 0 ? '600' : '400') + ';">' + (a.construccion > 0 ? wtt('$'+a.construccion.toLocaleString(), ttDepCat(d,'construccion')) : '\u2014') + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#e65100; font-weight:' + (a.mobiliario > 0 ? '600' : '400') + ';">' + (a.mobiliario > 0 ? wtt('$'+a.mobiliario.toLocaleString(), ttDepCat(d,'mobiliario')) : '\u2014') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#6b8f8b; font-weight:' + (a.ggcc > 0 ? '600' : '400') + ';">' + (a.ggcc > 0 ? wtt('$'+a.ggcc.toLocaleString(), ttDepCat(d,'ggcc')) : '\u2014') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#5a7d9a; font-weight:' + (a.inicial > 0 ? '600' : '400') + ';">' + (a.inicial > 0 ? wtt('$'+a.inicial.toLocaleString(), ttDepCat(d,'inicial')) : '\u2014') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#8b7e74; font-weight:' + (a.construccion > 0 ? '600' : '400') + ';">' + (a.construccion > 0 ? wtt('$'+a.construccion.toLocaleString(), ttDepCat(d,'construccion')) : '\u2014') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#a68b6b; font-weight:' + (a.mobiliario > 0 ? '600' : '400') + ';">' + (a.mobiliario > 0 ? wtt('$'+a.mobiliario.toLocaleString(), ttDepCat(d,'mobiliario')) : '\u2014') + '</td>';
         html += '<td style="padding:5px 8px;"><span style="background:' + tColor + '20; color:' + tColor + '; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:600;">' + tLabel + '</span></td>';
         html += '<td style="padding:5px 8px; font-size:10px; color:#666; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + (d.desc||'').replace(/"/g,'&quot;') + '">' + (d.desc||'') + '</td>';
         html += '<td style="padding:5px 8px; font-size:9px; color:#aaa; white-space:nowrap;">' + (d.file||'') + '</td>';
         html += '</tr>';
     });
 
-    html += '<tr style="background:#1a1a2e; color:white; font-weight:700;">';
+    html += '<tr style="background:#2d2926; color:white; font-weight:700;">';
     html += '<td colspan="2" style="padding:6px 8px;">TOTAL (' + deps.length + ')</td>';
     html += '<td style="padding:6px 8px; text-align:right;">$' + t.total.toLocaleString() + '</td>';
     html += '<td style="padding:6px 8px; text-align:right; color:#00bcd4;">' + wtt('$' + runGGCC.toLocaleString(), ttAgg(deps,'ggcc')) + '</td>';
     html += '<td style="padding:6px 8px; text-align:right; color:#90caf9;">' + wtt('$' + runCap.toLocaleString(), ttAgg(deps,'inicial')) + '</td>';
     html += '<td style="padding:6px 8px; text-align:right; color:#e040fb;">' + wtt('$' + runConstr.toLocaleString(), ttAgg(deps,'construccion')) + '</td>';
-    html += '<td style="padding:6px 8px; text-align:right; color:#ff9800;">' + wtt('$' + runMob.toLocaleString(), ttAgg(deps,'mobiliario')) + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#a68b6b;">' + wtt('$' + runMob.toLocaleString(), ttAgg(deps,'mobiliario')) + '</td>';
     html += '<td colspan="3"></td>';
     html += '</tr></tbody></table></div></div>';
 
@@ -3586,13 +3594,13 @@ function showSocioBitacora(socio) {
     // Header con resumen
     let html = '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(120px,1fr)); gap:8px; margin-bottom:16px;">';
     const cats = [
-        {k:'ggcc', label:'GGCC', color:'#00838f', val: data.ggccMonthsPaid + '/' + totalGGCCMonths + ' meses'},
-        {k:'inicial', label:'Capital', color:'#1565c0', val: fmt(t.inicial) + ' / ' + fmtM(ACUERDOS.capital.perSocio)},
-        {k:'mobiliario', label:'MOB', color:'#e65100', val: fmt(t.mobiliario) + ' / ' + fmtM(ACUERDOS.mobiliario.perSocio)},
-        {k:'construccion', label:'Construcción', color:'#7b1fa2', val: fmt(t.construccion) + ' / ' + fmtM(ACUERDOS.construccion.perSocio)}
+        {k:'ggcc', label:'GGCC', color:'#6b8f8b', val: data.ggccMonthsPaid + '/' + totalGGCCMonths + ' meses'},
+        {k:'inicial', label:'Capital', color:'#5a7d9a', val: fmt(t.inicial) + ' / ' + fmtM(ACUERDOS.capital.perSocio)},
+        {k:'mobiliario', label:'MOB', color:'#a68b6b', val: fmt(t.mobiliario) + ' / ' + fmtM(ACUERDOS.mobiliario.perSocio)},
+        {k:'construccion', label:'Construcción', color:'#8b7e74', val: fmt(t.construccion) + ' / ' + fmtM(ACUERDOS.construccion.perSocio)}
     ];
     cats.forEach(c => {
-        html += '<div style="background:#f8f9fa; border-left:3px solid ' + c.color + '; padding:8px 10px; border-radius:4px;">';
+        html += '<div style="background:#faf8f5; border-left:3px solid ' + c.color + '; padding:8px 10px; border-radius:4px;">';
         html += '<div style="font-size:10px; color:#888; text-transform:uppercase;">' + c.label + '</div>';
         html += '<div style="font-size:13px; font-weight:700; color:' + c.color + ';">' + c.val + '</div>';
         html += '</div>';
@@ -3601,19 +3609,19 @@ function showSocioBitacora(socio) {
 
     // Tabla de depósitos
     html += '<div style="overflow-x:auto;"><table style="width:100%; font-size:11px; border-collapse:collapse;">';
-    html += '<thead><tr style="background:#1a1a2e; color:white;">';
+    html += '<thead><tr style="background:#2d2926; color:white;">';
     html += '<th style="padding:6px 8px; text-align:left;">#</th>';
     html += '<th style="padding:6px 8px; text-align:left;">Fecha</th>';
     html += '<th style="padding:6px 8px; text-align:right;">Monto</th>';
     html += '<th style="padding:6px 8px; text-align:right; color:#00bcd4;">GGCC</th>';
     html += '<th style="padding:6px 8px; text-align:right; color:#90caf9;">Capital</th>';
     html += '<th style="padding:6px 8px; text-align:right; color:#e040fb;">Constr.</th>';
-    html += '<th style="padding:6px 8px; text-align:right; color:#ff9800;">MOB</th>';
+    html += '<th style="padding:6px 8px; text-align:right; color:#a68b6b;">MOB</th>';
     html += '<th style="padding:6px 8px; text-align:left;">Tipo</th>';
     html += '<th style="padding:6px 8px; text-align:left;">Descripción</th>';
     html += '</tr></thead><tbody>';
 
-    const tipoColors = {GGCC:'#00838f', COMBO:'#e65100', LLAMADO:'#7b1fa2', RESTO:'#616161'};
+    const tipoColors = {GGCC:'#6b8f8b', COMBO:'#a68b6b', LLAMADO:'#8b7e74', RESTO:'#616161'};
     const tipoLabels = {GGCC:'GGCC', COMBO:'GGCC+MOB', LLAMADO:'Llamado', RESTO:'Cascada'};
 
     let runGGCC=0, runCap=0, runConstr=0, runMob=0;
@@ -3647,23 +3655,23 @@ function showSocioBitacora(socio) {
         html += '<td style="padding:5px 8px; color:#aaa;">' + (i+1) + (hasDetalle ? ' \u25b8' : '') + '</td>';
         html += '<td style="padding:5px 8px; white-space:nowrap;">' + String(d.d).padStart(2,'0') + '/' + String(d.m).padStart(2,'0') + '/' + d.y + '</td>';
         html += '<td style="padding:5px 8px; text-align:right; font-weight:600;">' + wtt('$' + d.amt.toLocaleString(), ttDep(d)) + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#00838f; font-weight:' + (a.ggcc > 0 ? '600' : '400') + ';">' + (a.ggcc > 0 ? wtt('$'+a.ggcc.toLocaleString(), ttDepCat(d,'ggcc')) : '\u2014') + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#1565c0; font-weight:' + (a.inicial > 0 ? '600' : '400') + ';">' + (a.inicial > 0 ? wtt('$'+a.inicial.toLocaleString(), ttDepCat(d,'inicial')) : '\u2014') + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#7b1fa2; font-weight:' + (a.construccion > 0 ? '600' : '400') + ';">' + (a.construccion > 0 ? wtt('$'+a.construccion.toLocaleString(), ttDepCat(d,'construccion')) : '\u2014') + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#e65100; font-weight:' + (a.mobiliario > 0 ? '600' : '400') + ';">' + (a.mobiliario > 0 ? wtt('$'+a.mobiliario.toLocaleString(), ttDepCat(d,'mobiliario')) : '\u2014') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#6b8f8b; font-weight:' + (a.ggcc > 0 ? '600' : '400') + ';">' + (a.ggcc > 0 ? wtt('$'+a.ggcc.toLocaleString(), ttDepCat(d,'ggcc')) : '\u2014') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#5a7d9a; font-weight:' + (a.inicial > 0 ? '600' : '400') + ';">' + (a.inicial > 0 ? wtt('$'+a.inicial.toLocaleString(), ttDepCat(d,'inicial')) : '\u2014') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#8b7e74; font-weight:' + (a.construccion > 0 ? '600' : '400') + ';">' + (a.construccion > 0 ? wtt('$'+a.construccion.toLocaleString(), ttDepCat(d,'construccion')) : '\u2014') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#a68b6b; font-weight:' + (a.mobiliario > 0 ? '600' : '400') + ';">' + (a.mobiliario > 0 ? wtt('$'+a.mobiliario.toLocaleString(), ttDepCat(d,'mobiliario')) : '\u2014') + '</td>';
         html += '<td style="padding:5px 8px;"><span style="background:' + tColor + '20; color:' + tColor + '; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:600;">' + tLabel + '</span></td>';
         html += '<td style="padding:5px 8px; font-size:10px; color:#666; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + (d.desc||'').replace(/"/g,'&quot;') + '">' + (d.desc||'') + '</td>';
         html += '</tr>';
     });
 
     // Total row
-    html += '<tr style="background:#1a1a2e; color:white; font-weight:700;">';
+    html += '<tr style="background:#2d2926; color:white; font-weight:700;">';
     html += '<td colspan="2" style="padding:6px 8px;">TOTAL (' + deps.length + ' depósitos)</td>';
     html += '<td style="padding:6px 8px; text-align:right;">$' + t.total.toLocaleString() + '</td>';
     html += '<td style="padding:6px 8px; text-align:right; color:#00bcd4;">' + wtt('$' + runGGCC.toLocaleString(), ttAgg(deps,'ggcc')) + '</td>';
     html += '<td style="padding:6px 8px; text-align:right; color:#90caf9;">' + wtt('$' + runCap.toLocaleString(), ttAgg(deps,'inicial')) + '</td>';
     html += '<td style="padding:6px 8px; text-align:right; color:#e040fb;">' + wtt('$' + runConstr.toLocaleString(), ttAgg(deps,'construccion')) + '</td>';
-    html += '<td style="padding:6px 8px; text-align:right; color:#ff9800;">' + wtt('$' + runMob.toLocaleString(), ttAgg(deps,'mobiliario')) + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#a68b6b;">' + wtt('$' + runMob.toLocaleString(), ttAgg(deps,'mobiliario')) + '</td>';
     html += '<td colspan="2"></td>';
     html += '</tr></tbody></table></div>';
 
@@ -3799,24 +3807,24 @@ function renderCartolaControl() {
     let html = '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:8px;">';
     html += '<p style="font-size:12px; color:#666; margin:0;">Cuenta Scotiabank 977009065 — Generado automáticamente desde depósitos cargados</p>';
     html += '<div style="display:flex; gap:12px; font-size:11px; color:#888;">';
-    html += '<span style="display:flex; align-items:center; gap:4px;"><span style="width:12px; height:12px; border-radius:3px; background:#43a047; display:inline-block;"></span> Disponible</span>';
-    html += '<span style="display:flex; align-items:center; gap:4px;"><span style="width:12px; height:12px; border-radius:3px; background:#e53935; display:inline-block;"></span> Falta pedir</span>';
+    html += '<span style="display:flex; align-items:center; gap:4px;"><span style="width:12px; height:12px; border-radius:3px; background:#5a7d5a; display:inline-block;"></span> Disponible</span>';
+    html += '<span style="display:flex; align-items:center; gap:4px;"><span style="width:12px; height:12px; border-radius:3px; background:#b05a5a; display:inline-block;"></span> Falta pedir</span>';
     html += '<span style="display:flex; align-items:center; gap:4px;"><span style="width:12px; height:12px; border-radius:3px; background:#e0e0e0; display:inline-block;"></span> No aplica / Futuro</span>';
     html += '</div></div>';
 
     html += '<div class="table-wrapper">';
     html += '<table style="width:100%; border-collapse:separate; border-spacing:3px; font-size:11px; table-layout:fixed;">';
     html += '<thead><tr>';
-    html += '<th style="background:#1a1a2e; color:white; padding:8px 6px; border-radius:6px; text-align:center; font-size:10px; font-weight:600; width:50px;">AÑO</th>';
+    html += '<th style="background:#2d2926; color:white; padding:8px 6px; border-radius:6px; text-align:center; font-size:10px; font-weight:600; width:50px;">AÑO</th>';
     mLabels.forEach(l => {
-        html += '<th style="background:#1a1a2e; color:white; padding:8px 2px; border-radius:6px; text-align:center; font-size:10px; font-weight:600;">' + l + '</th>';
+        html += '<th style="background:#2d2926; color:white; padding:8px 2px; border-radius:6px; text-align:center; font-size:10px; font-weight:600;">' + l + '</th>';
     });
-    html += '<th style="background:#1a1a2e; color:white; padding:8px 6px; border-radius:6px; text-align:center; font-size:10px; font-weight:600; width:50px;">✓</th>';
+    html += '<th style="background:#2d2926; color:white; padding:8px 6px; border-radius:6px; text-align:center; font-size:10px; font-weight:600; width:50px;">✓</th>';
     html += '</tr></thead><tbody>';
 
     for (let y = START_Y; y <= currentY; y++) {
         let yearOk = 0, yearTotal = 0;
-        html += '<tr><td style="font-weight:700; color:#1a1a2e; text-align:center; padding:6px;">' + y + '</td>';
+        html += '<tr><td style="font-weight:700; color:#2d2926; text-align:center; padding:6px;">' + y + '</td>';
         for (let m = 1; m <= 12; m++) {
             const ec = ymToEC(y, m);
             const isBefore = ec < 1; // before Jun 2020
@@ -3830,15 +3838,15 @@ function renderCartolaControl() {
                 if (has) {
                     disponibles++;
                     yearOk++;
-                    html += '<td style="background:#e8f5e9; border-radius:4px; text-align:center; color:#43a047; font-weight:700;" title="EC#' + ec + ' — ' + mNames[m-1] + ' ' + y + '">✓</td>';
+                    html += '<td style="background:#eceee5; border-radius:4px; text-align:center; color:#5a7d5a; font-weight:700;" title="EC#' + ec + ' — ' + mNames[m-1] + ' ' + y + '">✓</td>';
                 } else {
                     faltantes++;
                     faltantesList.push({ y, m, ec, label: mNames[m-1] + ' ' + y + ' (#' + ec + ')' });
-                    html += '<td style="background:#ffebee; border-radius:4px; text-align:center; color:#e53935; font-weight:700;" title="FALTA — EC#' + ec + ' — ' + mNames[m-1] + ' ' + y + '">✗</td>';
+                    html += '<td style="background:#f0e5e5; border-radius:4px; text-align:center; color:#b05a5a; font-weight:700;" title="FALTA — EC#' + ec + ' — ' + mNames[m-1] + ' ' + y + '">✗</td>';
                 }
             }
         }
-        const color = yearTotal === 0 ? '#bbb' : yearOk === yearTotal ? '#43a047' : yearOk >= yearTotal * 0.8 ? '#ff9800' : '#e53935';
+        const color = yearTotal === 0 ? '#bbb' : yearOk === yearTotal ? '#5a7d5a' : yearOk >= yearTotal * 0.8 ? '#a68b6b' : '#b05a5a';
         html += '<td style="text-align:center; font-weight:700; color:' + color + '; font-size:11px;">' + yearOk + '/' + yearTotal + '</td>';
         html += '</tr>';
     }
@@ -3846,17 +3854,17 @@ function renderCartolaControl() {
 
     // Summary cards
     html += '<div style="display:flex; gap:16px; margin-top:16px; flex-wrap:wrap;">';
-    html += '<div style="flex:1; min-width:200px; background:linear-gradient(135deg,#e8f5e9,#fff); padding:16px 20px; border-radius:12px; border:1px solid #c8e6c9; text-align:center;">';
-    html += '<div style="font-size:28px; font-weight:700; color:#2e7d32;">' + disponibles + '</div>';
+    html += '<div style="flex:1; min-width:200px; background:linear-gradient(135deg,#eceee5,#fff); padding:16px 20px; border-radius:12px; border:1px solid #c8e6c9; text-align:center;">';
+    html += '<div style="font-size:28px; font-weight:700; color:#5a7d5a;">' + disponibles + '</div>';
     html += '<div style="font-size:11px; color:#666; text-transform:uppercase; letter-spacing:0.5px;">Cartolas disponibles</div></div>';
 
-    html += '<div style="flex:1; min-width:200px; background:linear-gradient(135deg,' + (faltantes > 0 ? '#ffebee' : '#e8f5e9') + ',#fff); padding:16px 20px; border-radius:12px; border:1px solid ' + (faltantes > 0 ? '#ffcdd2' : '#c8e6c9') + '; text-align:center;">';
-    html += '<div style="font-size:28px; font-weight:700; color:' + (faltantes > 0 ? '#c62828' : '#2e7d32') + ';">' + faltantes + '</div>';
+    html += '<div style="flex:1; min-width:200px; background:linear-gradient(135deg,' + (faltantes > 0 ? '#f0e5e5' : '#eceee5') + ',#fff); padding:16px 20px; border-radius:12px; border:1px solid ' + (faltantes > 0 ? '#ffcdd2' : '#c8e6c9') + '; text-align:center;">';
+    html += '<div style="font-size:28px; font-weight:700; color:' + (faltantes > 0 ? '#b05a5a' : '#5a7d5a') + ';">' + faltantes + '</div>';
     html += '<div style="font-size:11px; color:#666; text-transform:uppercase; letter-spacing:0.5px;">Cartolas faltantes</div></div>';
 
     if (faltantes > 0) {
-        html += '<div style="flex:2; min-width:280px; background:linear-gradient(135deg,#fff3e0,#fff); padding:16px 20px; border-radius:12px; border:1px solid #ffe0b2;">';
-        html += '<div style="font-size:12px; font-weight:600; color:#e65100; margin-bottom:6px;">Pedir a Víctor Zamora (Victor.Zamora@scotiabank.cl)</div>';
+        html += '<div style="flex:2; min-width:280px; background:linear-gradient(135deg,#f0e8d8,#fff); padding:16px 20px; border-radius:12px; border:1px solid #ffe0b2;">';
+        html += '<div style="font-size:12px; font-weight:600; color:#a68b6b; margin-bottom:6px;">Pedir a Víctor Zamora (Victor.Zamora@scotiabank.cl)</div>';
         html += '<div style="font-size:11px; color:#666;">' + faltantesList.map(f => f.label).join(', ') + '</div>';
         html += '</div>';
     }
