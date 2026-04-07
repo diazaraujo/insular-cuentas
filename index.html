@@ -1941,6 +1941,7 @@ function renderDeudas() {
     const totalDeuda = DEUDAS_SOCIOS.antonio.total + DEUDAS_SOCIOS.cristian.total;
     let h = '';
 
+    h += '<div style="background:#6b8f8b; color:white; padding:6px 14px; border-radius:6px; font-size:11px; margin-bottom:12px; text-align:right;">Dashboard v3.2 — Actualizado 7 abril 2026</div>';
     h += '<div style="margin-bottom:32px;">';
     h += '<h2 style="font-size:18px; color:#5c554e; border-bottom:2px solid #d4cdc5; padding-bottom:8px; margin-bottom:4px;">Deudas de Insular SPA con Socios</h2>';
     h += '<p style="color:#8b7e74; font-size:12px; margin:4px 0 16px;">Gastos personales realizados por socios para la construcción del Club House. Insular debe reembolsar estos montos.</p>';
@@ -2056,6 +2057,7 @@ function renderMetodologia() {
     let h = '';
 
     // ═══ HEADER ═══
+    h += '<div style="background:#6b8f8b; color:white; padding:6px 14px; border-radius:6px; font-size:11px; margin-bottom:12px; text-align:right;">Dashboard v3.2 — Actualizado 7 abril 2026</div>';
     h += '<div style="margin-bottom:20px;">';
     h += '<h2 style="font-size:18px; color:#5c554e; margin-bottom:4px; border-bottom:2px solid #d4cdc5; padding-bottom:8px;">Metodología de Clasificación de Fondos</h2>';
     h += '<p style="font-size:13px; color:#666; line-height:1.6;">Este documento describe cómo cada depósito que ingresa a la cuenta Scotiabank de Insular S.p.A. se clasifica y asigna a las distintas categorías de compromiso. Toda la información proviene exclusivamente de las cartolas bancarias verificadas.</p>';
@@ -2441,6 +2443,8 @@ function renderResumen() {
     const recaudadoPct = Math.round(totalRecaudado / totalComprometido * 100);
 
     let html = '';
+
+    html += '<div style="background:#6b8f8b; color:white; padding:6px 14px; border-radius:6px; font-size:11px; margin-bottom:12px; text-align:right;">Dashboard v3.2 — Actualizado 7 abril 2026</div>';
 
     // ─── VALIDACIÓN DE INTEGRIDAD ───
     const _warnings = validateDataIntegrity();
@@ -3743,6 +3747,8 @@ function renderVistaSocio(socioOverride) {
     const isAlDia = totalDebt === 0;
 
     let html = '';
+
+    html += '<div style="background:#6b8f8b; color:white; padding:6px 14px; border-radius:6px; font-size:11px; margin-bottom:12px; text-align:right;">Dashboard v3.2 — Actualizado 7 abril 2026</div>';
 
     // Snippet detalle socio
     html += '<details class="info-snippet" style="border-left-color:#5c554e;">';
