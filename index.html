@@ -1980,7 +1980,8 @@ function renderDeudas() {
         const netaSocio = getDeudaNeta(socio);
         const abonadoSocio = (socio.abonos || []).reduce((sum, a) => sum + a.monto, 0);
 
-        h += '<h3 style="font-size:14px; color:#5c554e; margin:24px 0 12px; padding-bottom:6px;">' + socio.nombre + ' — Deuda bruta: ' + fmt(socio.total) + (abonadoSocio > 0 ? ' · Saldo pendiente: <span style="color:#b05a5a;">' + fmt(netaSocio) + '</span>' : '') + '</h3>';
+        h += '<div class="table-section" style="border-left:4px solid #8b7e74;">';
+        h += '<h3 style="font-size:14px; color:#5c554e; margin-bottom:16px; font-weight:500;">' + socio.nombre + ' — Deuda bruta: ' + fmt(socio.total) + (abonadoSocio > 0 ? ' · Saldo pendiente: <span style="color:#b05a5a;">' + fmt(netaSocio) + '</span>' : '') + '</h3>';
 
         socio.viajes.forEach(viaje => {
             const subtotal = viaje.gastos.reduce((s, g) => s + g.monto, 0);
@@ -2038,6 +2039,7 @@ function renderDeudas() {
             h += '<div style="font-size:13px; font-weight:700; color:#b05a5a; margin-top:8px;">Saldo pendiente: ' + fmt(netaSocio) + '</div>';
             h += '</div>';
         }
+        h += '</div>'; // close table-section
     });
 
     el.innerHTML = h;
@@ -2064,7 +2066,8 @@ function renderMetodologia() {
     h += '</div>';
 
     // ═══ DIAGRAMA 1: FLUJO PRINCIPAL ═══
-    h += '<h3 style="font-size:14px; color:#5c554e; margin-bottom:12px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">1. Flujo de Clasificación de Depósitos</h3>';
+    h += '<div class=\"chart-card\">';
+    h += '<h3 style=\"font-size:14px; color:#5c554e; margin-bottom:16px; font-weight:500;\">1. Flujo de Clasificación de Depósitos</h3>';
 
     // SVG Flowchart
     h += '<div style="overflow-x:auto; padding:8px 0;">';
@@ -2183,10 +2186,13 @@ function renderMetodologia() {
     h += '<text x="450" y="555" text-anchor="middle" fill="#999" font-size="11" font-style="italic">Las líneas punteadas indican que el remanente del depósito pasa al siguiente paso.</text>';
     h += '<text x="450" y="572" text-anchor="middle" fill="#999" font-size="11" font-style="italic">*TIPO B: si MOB está lleno, el excedente va a GGCC antes de entrar a cascada.</text>';
 
+    h += '</div>';
     h += '</svg></div>';
+    h += '</div>';
 
     // ═══ DIAGRAMA 2: MES VENCIDO ═══
-    h += '<h3 style="font-size:14px; color:#6b8f8b; margin-bottom:12px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">2. Mes Vencido — ¿Cómo funciona el GGCC?</h3>';
+    h += '<div class=\"chart-card\">';
+    h += '<h3 style=\"font-size:14px; color:#6b8f8b; margin-bottom:16px; font-weight:500;\">2. Mes Vencido — ¿Cómo funciona el GGCC?</h3>';
 
     h += '<div style="overflow-x:auto; padding:8px 0;">';
     h += '<svg viewBox="0 0 800 200" style="width:100%; max-width:800px; min-width:500px; display:block; margin:0 auto;" xmlns="http://www.w3.org/2000/svg">';
@@ -2224,11 +2230,14 @@ function renderMetodologia() {
 
     // Legend
     h += '<text x="400" y="185" text-anchor="middle" fill="#666" font-size="11">Los depósitos de un mes cubren el GGCC del mismo mes. Última cartola: ' + lastCLabel + ' → se esperan ' + ggccMeses + ' meses cubiertos.</text>';
+    h += '</div>';
 
     h += '</svg></div>';
+    h += '</div>';
 
     // ═══ SECCIÓN 3: TABLA DE CONSTANTES ═══
-    h += '<h3 style="font-size:14px; color:#5c554e; margin-bottom:12px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">3. Constantes y Parámetros del Sistema</h3>';
+    h += '<div class=\"table-section\">';
+    h += '<h3 style=\"font-size:14px; color:#5c554e; margin-bottom:16px; font-weight:500;\">3. Constantes y Parámetros del Sistema</h3>';
 
     h += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:16px;">';
 
@@ -2276,9 +2285,11 @@ function renderMetodologia() {
     h += '</div></div>';
 
     h += '</div>';
+    h += '</div>';
 
     // ═══ SECCIÓN 4: TIPOS DE DEPÓSITO CON EJEMPLOS ═══
-    h += '<h3 style="font-size:14px; color:#5c554e; margin-bottom:12px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">4. Tipos de Depósito — Ejemplos Reales</h3>';
+    h += '<div class=\"table-section\">';
+    h += '<h3 style=\"font-size:14px; color:#5c554e; margin-bottom:16px; font-weight:500;\">4. Tipos de Depósito — Ejemplos Reales</h3>';
 
     h += '<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:12px;">';
     h += '<thead><tr style="background:#f0ebe5; color:#5c554e;">';
@@ -2304,9 +2315,11 @@ function renderMetodologia() {
         });
     });
     h += '</tbody></table></div>';
+    h += '</div>';
 
     // ═══ SECCIÓN 5: REGLAS DE INTEGRIDAD ═══
-    h += '<h3 style="font-size:14px; color:#b05a5a; margin-bottom:12px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">5. Validación de Integridad de Datos</h3>';
+    h += '<div class=\"table-section\">';
+    h += '<h3 style=\"font-size:14px; color:#b05a5a; margin-bottom:16px; font-weight:500;\">5. Validación de Integridad de Datos</h3>';
     h += '<p style="font-size:12px; color:#666; margin-bottom:16px;">El sistema ejecuta 20 reglas automáticas cada vez que se carga el dashboard. Si alguna falla, aparece una alerta naranja en el Resumen.</p>';
 
     h += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:12px;">';
@@ -2325,9 +2338,11 @@ function renderMetodologia() {
         h += '</div></div>';
     });
     h += '</div>';
+    h += '</div>';
 
     // ═══ SECCIÓN 6: MODELO DE DATOS (raw) ═══
-    h += '<h3 style="font-size:14px; color:#5c554e; margin-bottom:12px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">6. Modelo de Datos — Fuente de Verdad</h3>';
+    h += '<div class=\"table-section\">';
+    h += '<h3 style=\"font-size:14px; color:#5c554e; margin-bottom:16px; font-weight:500;\">6. Modelo de Datos — Fuente de Verdad</h3>';
     h += '<p style="font-size:12px; color:#666; margin-bottom:16px;">Las siguientes estructuras definen todas las reglas de clasificación. El motor de asignación las lee en tiempo real; este documento se genera desde ellas.</p>';
 
     // REGLAS_TIPO table
@@ -2374,6 +2389,8 @@ function renderMetodologia() {
     h += '<div style="font-size:11px; color:#5c554e; line-height:1.7; font-family:monospace;">';
     Object.entries(MOB_CONFIG).forEach(([k,v]) => { h += k + ': <strong>' + (Array.isArray(v) ? '[' + v.join(', ') + ']' : (typeof v === 'string' ? '"' + v.substring(0,50) + (v.length>50?'…':'') + '"' : v)) + '</strong><br>'; });
     h += '</div></div>';
+    h += '</div>';
+    h += '</div>';
     h += '</div>';
 
     // Footer
@@ -3791,7 +3808,8 @@ function renderVistaSocio(socioOverride) {
     html += '</section>';
 
     // ── COMPOSICIÓN GRÁFICA (stacked bar) ──
-    html += '<h3 style="font-size:14px; color:#5c554e; margin:24px 0 12px; padding-bottom:6px;">Composición de Aportes</h3>';
+    html += '<div class="chart-card">';
+    html += '<h3 style="font-size: 14px; color: #5c554e; margin-bottom: 16px; font-weight: 500;">Composición de Aportes</h3>';
     const cats = [
         {key:'ggcc', label:'GGCC', color:'#6b8f8b', val:t.ggcc},
         {key:'inicial', label:'Capital', color:'#5a7d9a', val:t.inicial},
@@ -3810,9 +3828,11 @@ function renderVistaSocio(socioOverride) {
         html += '<div style="display:flex; align-items:center; gap:4px; font-size:11px;"><div style="width:10px; height:10px; border-radius:2px; background:' + c.color + ';"></div>' + c.label + ': ' + fmt(c.val) + ' (' + (t.total > 0 ? (c.val/t.total*100).toFixed(1) : 0) + '%)</div>';
     });
     html += '</div>';
+    html += '</div>';
 
     // ── GGCC TIMELINE (meses) ──
-    html += '<h3 style="font-size:14px; color:#6b8f8b; margin:24px 0 12px; padding-bottom:6px;">GGCC — Meses Pagados (' + data.ggccMonthsPaid + '/' + totalGGCCMonths + ')</h3>';
+    html += '<div class="table-section" style="border-left:4px solid #6b8f8b;">';
+    html += '<h3 style="font-size: 14px; color: #5c554e; margin-bottom: 16px; font-weight: 500;">GGCC — Meses Pagados (' + data.ggccMonthsPaid + '/' + totalGGCCMonths + ')</h3>';
     html += '<div style="margin-bottom:20px;">';
     html += '<div style="display:flex; flex-wrap:wrap; gap:3px;">';
     const ggccMonths = data.ggccByMonth;
@@ -3838,10 +3858,12 @@ function renderVistaSocio(socioOverride) {
     html += '<div style="display:flex; align-items:center; gap:3px;"><div style="width:10px; height:10px; border-radius:2px; background:#a8c8c5;"></div>Parcial</div>';
     html += '<div style="display:flex; align-items:center; gap:3px;"><div style="width:10px; height:10px; border-radius:2px; background:#f0f0f0;"></div>Pendiente</div>';
     html += '</div></div>';
+    html += '</div>';
 
     // ── MOB TIMELINE (si aplica) ──
     if (isMobSocio || isMobFull) {
-        html += '<h3 style="font-size:14px; color:#a68b6b; margin:24px 0 12px; padding-bottom:6px;">Mobiliario' + (isMobFull ? ' — ✓ Pagado adelantado' : '') + '</h3>';
+        html += '<div class="table-section" style="border-left:4px solid #a68b6b;">';
+        html += '<h3 style="font-size: 14px; color: #5c554e; margin-bottom: 16px; font-weight: 500;">Mobiliario' + (isMobFull ? ' — ✓ Pagado adelantado' : '') + '</h3>';
         html += '<div style="margin-bottom:20px;">';
         if (!isMobFull) {
             const mobMonthsPaid = Object.values(data.deposits.reduce((acc, d) => {
@@ -3868,11 +3890,13 @@ function renderVistaSocio(socioOverride) {
             html += '<div style="font-size:11px; color:#888; margin-top:6px;">' + mobPaidMonths + '/' + MOB_CUOTAS + ' cuotas cubiertas — ' + fmt(data.mobPaid) + ' de ' + fmtM(ACUERDOS.mobiliario.perSocio) + '</div>';
         }
         html += '</div>';
+        html += '</div>';
     }
 
     // ── RESUMEN POR AÑO ──
     const years = [...new Set(deps.map(d => d.y))].sort();
-    html += '<h3 style="font-size:14px; color:#5c554e; margin:24px 0 12px; padding-bottom:6px;">Resumen por Año</h3>';
+    html += '<div class="table-section">';
+    html += '<h3 style="font-size: 14px; color: #5c554e; margin-bottom: 16px; font-weight: 500;">Resumen por Año</h3>';
     html += '<div style="margin-bottom:20px;">';
     html += '<div style="overflow-x:auto;"><table style="width:100%; font-size:12px; border-collapse:collapse;">';
     html += '<thead><tr style="background:#f0ebe5; color:#5c554e;">';
@@ -3910,9 +3934,11 @@ function renderVistaSocio(socioOverride) {
     html += '<td style="padding:8px; text-align:right; color:#a68b6b;">' + fmt(totalMob) + '</td>';
     html += '<td style="padding:8px; text-align:right;">' + fmt(totalAll) + '</td>';
     html += '</tr></tbody></table></div></div>';
+    html += '</div>';
 
     // ── BITÁCORA COMPLETA ──
-    html += '<h3 style="font-size:14px; color:#5c554e; margin:24px 0 12px; padding-bottom:6px;">Bitácora de Depósitos (' + deps.length + ')</h3>';
+    html += '<div class="table-section">';
+    html += '<h3 style="font-size: 14px; color: #5c554e; margin-bottom: 16px; font-weight: 500;">Bitácora de Depósitos (' + deps.length + ')</h3>';
     html += '<div style="margin-bottom:20px;">';
     html += '<details class="info-snippet" style="margin-top:0;">';
     html += '<summary>¿Cómo leer la bitácora?</summary>';
@@ -3986,6 +4012,7 @@ function renderVistaSocio(socioOverride) {
     html += '<td style="padding:6px 8px; text-align:right; color:#a68b6b;">' + wtt('$' + runMob.toLocaleString(), ttAgg(deps,'mobiliario')) + '</td>';
     html += '<td colspan="3"></td>';
     html += '</tr></tbody></table></div></div>';
+    html += '</div>';
 
     document.getElementById('socioViewContent').innerHTML = html;
 }
