@@ -2593,6 +2593,21 @@ function classifyAllDeposits() {
                     item.alloc.mobiliario += mobTake; mobPaid += mobTake; item.remaining -= mobTake;
                     item.detalle.push({ paso: 'R2-MOB', regla: 'COMBO', monto: mobTake, nota: '$' + mobTake.toLocaleString() + ' → MOB' });
                 }
+                // Si queda remanente (MOB ya lleno), rellenar GGCC antes de cascada
+                if (item.remaining > 0) {
+                    const ggccBefore = item.alloc.ggcc;
+                    for (const mk of ggccAllMonths) {
+                        if (item.remaining <= 0) break;
+                        const already = ggccByMonth[mk] || 0;
+                        if (already >= CUOTA_GGCC) continue;
+                        const take = Math.min(item.remaining, CUOTA_GGCC - already);
+                        if (take > 0) { item.alloc.ggcc += take; ggccByMonth[mk] = already + take; item.remaining -= take; }
+                    }
+                    const ggccExtra = item.alloc.ggcc - ggccBefore;
+                    if (ggccExtra > 0) {
+                        item.detalle.push({ paso: 'R2-GGCC+', regla: 'COMBO', monto: ggccExtra, nota: 'MOB lleno → $' + ggccExtra.toLocaleString() + ' extra → GGCC' });
+                    }
+                }
             }
             // ── REGLA 3: Matchea llamado de capital ──
             else if (llamado) {
