@@ -1976,8 +1976,7 @@ function renderDeudas() {
         const netaSocio = getDeudaNeta(socio);
         const abonadoSocio = (socio.abonos || []).reduce((sum, a) => sum + a.monto, 0);
 
-        h += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
-        h += '<h3 style="font-size:14px; color:#5c554e; margin:0 0 16px; padding-bottom:8px; border-bottom:2px solid #e7e0d8;">' + socio.nombre + ' — Deuda bruta: ' + fmt(socio.total) + (abonadoSocio > 0 ? ' · Saldo pendiente: <span style="color:#b05a5a;">' + fmt(netaSocio) + '</span>' : '') + '</h3>';
+        h += '<h3 style="font-size:14px; color:#5c554e; margin:24px 0 12px; padding-bottom:6px;">' + socio.nombre + ' — Deuda bruta: ' + fmt(socio.total) + (abonadoSocio > 0 ? ' · Saldo pendiente: <span style="color:#b05a5a;">' + fmt(netaSocio) + '</span>' : '') + '</h3>';
 
         socio.viajes.forEach(viaje => {
             const subtotal = viaje.gastos.reduce((s, g) => s + g.monto, 0);
@@ -2035,8 +2034,6 @@ function renderDeudas() {
             h += '<div style="font-size:13px; font-weight:700; color:#b05a5a; margin-top:8px;">Saldo pendiente: ' + fmt(netaSocio) + '</div>';
             h += '</div>';
         }
-
-        h += '</div>'; // close white card
     });
 
     el.innerHTML = h;
@@ -2062,7 +2059,6 @@ function renderMetodologia() {
     h += '</div>';
 
     // ═══ DIAGRAMA 1: FLUJO PRINCIPAL ═══
-    h += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
     h += '<h3 style="font-size:14px; color:#5c554e; margin-bottom:12px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">1. Flujo de Clasificación de Depósitos</h3>';
 
     // SVG Flowchart
@@ -2182,10 +2178,9 @@ function renderMetodologia() {
     h += '<text x="450" y="555" text-anchor="middle" fill="#999" font-size="11" font-style="italic">Las líneas punteadas indican que el remanente del depósito pasa al siguiente paso.</text>';
     h += '<text x="450" y="572" text-anchor="middle" fill="#999" font-size="11" font-style="italic">*TIPO B: si MOB está lleno, el excedente va a GGCC antes de entrar a cascada.</text>';
 
-    h += '</svg></div></div>';
+    h += '</svg></div>';
 
     // ═══ DIAGRAMA 2: MES VENCIDO ═══
-    h += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
     h += '<h3 style="font-size:14px; color:#6b8f8b; margin-bottom:12px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">2. Mes Vencido — ¿Cómo funciona el GGCC?</h3>';
 
     h += '<div style="overflow-x:auto; padding:8px 0;">';
@@ -2225,10 +2220,9 @@ function renderMetodologia() {
     // Legend
     h += '<text x="400" y="185" text-anchor="middle" fill="#666" font-size="11">Los depósitos de un mes cubren el GGCC del mismo mes. Última cartola: ' + lastCLabel + ' → se esperan ' + ggccMeses + ' meses cubiertos.</text>';
 
-    h += '</svg></div></div>';
+    h += '</svg></div>';
 
     // ═══ SECCIÓN 3: TABLA DE CONSTANTES ═══
-    h += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
     h += '<h3 style="font-size:14px; color:#5c554e; margin-bottom:12px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">3. Constantes y Parámetros del Sistema</h3>';
 
     h += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:16px;">';
@@ -2276,10 +2270,9 @@ function renderMetodologia() {
     h += 'Última cartola: <strong>' + lastCLabel + '</strong>';
     h += '</div></div>';
 
-    h += '</div></div>'; // grid + section
+    h += '</div>';
 
     // ═══ SECCIÓN 4: TIPOS DE DEPÓSITO CON EJEMPLOS ═══
-    h += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
     h += '<h3 style="font-size:14px; color:#5c554e; margin-bottom:12px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">4. Tipos de Depósito — Ejemplos Reales</h3>';
 
     h += '<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:12px;">';
@@ -2305,10 +2298,9 @@ function renderMetodologia() {
             rowIdx++;
         });
     });
-    h += '</tbody></table></div></div>';
+    h += '</tbody></table></div>';
 
     // ═══ SECCIÓN 5: REGLAS DE INTEGRIDAD ═══
-    h += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
     h += '<h3 style="font-size:14px; color:#b05a5a; margin-bottom:12px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">5. Validación de Integridad de Datos</h3>';
     h += '<p style="font-size:12px; color:#666; margin-bottom:16px;">El sistema ejecuta 20 reglas automáticas cada vez que se carga el dashboard. Si alguna falla, aparece una alerta naranja en el Resumen.</p>';
 
@@ -2327,10 +2319,9 @@ function renderMetodologia() {
         g.rules.forEach(r => h += '• ' + r + '<br>');
         h += '</div></div>';
     });
-    h += '</div></div>';
+    h += '</div>';
 
     // ═══ SECCIÓN 6: MODELO DE DATOS (raw) ═══
-    h += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
     h += '<h3 style="font-size:14px; color:#5c554e; margin-bottom:12px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">6. Modelo de Datos — Fuente de Verdad</h3>';
     h += '<p style="font-size:12px; color:#666; margin-bottom:16px;">Las siguientes estructuras definen todas las reglas de clasificación. El motor de asignación las lee en tiempo real; este documento se genera desde ellas.</p>';
 
@@ -2379,8 +2370,6 @@ function renderMetodologia() {
     Object.entries(MOB_CONFIG).forEach(([k,v]) => { h += k + ': <strong>' + (Array.isArray(v) ? '[' + v.join(', ') + ']' : (typeof v === 'string' ? '"' + v.substring(0,50) + (v.length>50?'…':'') + '"' : v)) + '</strong><br>'; });
     h += '</div></div>';
     h += '</div>';
-
-    h += '</div>'; // section 6
 
     // Footer
     h += '<div style="text-align:center; padding:16px; color:#aaa; font-size:11px;">';
@@ -3762,17 +3751,12 @@ function renderVistaSocio(socioOverride) {
     html += '<div class="rule"><strong>Clasificación:</strong> Los montos de cada depósito se asignan por la lógica de 2 pasadas + cascada (ver snippet del Resumen para detalle completo).</div>';
     html += '</div></details>';
 
-    // ── HERO CARD ──
-    html += '<div style="background:linear-gradient(135deg, #5c554e 0%, #6b635b 60%, #7a726a 100%); border-radius:14px; padding:24px 28px; margin-bottom:20px; color:white;">';
-    html += '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">';
-    html += '<div>';
-    html += '<div style="font-size:22px; font-weight:700;">' + (FULL_NAMES[socio] || socio) + '</div>';
-    html += '<div style="font-size:13px; opacity:0.7; margin-top:4px;">' + deps.length + ' depósitos verificados — Total aportado: ' + fmt(t.total) + '</div>';
-    html += '</div>';
-    html += '<div style="background:' + (isAlDia ? 'rgba(76,175,80,0.3)' : 'rgba(244,67,54,0.3)') + '; padding:10px 20px; border-radius:10px; text-align:center;">';
-    html += '<div style="font-size:11px; text-transform:uppercase; opacity:0.8;">' + (isAlDia ? 'Estado' : 'Deuda Total') + '</div>';
-    html += '<div style="font-size:20px; font-weight:700;">' + (isAlDia ? '✓ Al día' : fmt(totalDebt)) + '</div>';
-    html += '</div></div></div>';
+    // ── HEADER SECTION ──
+    html += '<h2 style="font-size:18px; color:#5c554e; border-bottom:2px solid #d4cdc5; padding-bottom:8px; margin-bottom:4px;">';
+    html += (FULL_NAMES[socio] || socio);
+    if (!isAlDia) html += ' <span style="background:rgba(244,67,54,0.15); color:#c62828; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:600; margin-left:12px;">Deuda: ' + fmt(totalDebt) + '</span>';
+    html += '</h2>';
+    html += '<p style="font-size:12px; color:#888; margin:4px 0 16px;">' + deps.length + ' depósitos verificados — Total aportado: ' + fmt(t.total) + '</p>';
 
     // ── 4 KPI CARDS ──
     html += '<section class="kpis">';
@@ -3798,8 +3782,7 @@ function renderVistaSocio(socioOverride) {
     html += '</section>';
 
     // ── COMPOSICIÓN GRÁFICA (stacked bar) ──
-    html += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
-    html += '<h3 style="font-size:14px; color:#5c554e; margin-bottom:10px;">Composición de Aportes</h3>';
+    html += '<h3 style="font-size:14px; color:#5c554e; margin:24px 0 12px; padding-bottom:6px;">Composición de Aportes</h3>';
     const cats = [
         {key:'ggcc', label:'GGCC', color:'#6b8f8b', val:t.ggcc},
         {key:'inicial', label:'Capital', color:'#5a7d9a', val:t.inicial},
@@ -3817,11 +3800,11 @@ function renderVistaSocio(socioOverride) {
     cats.forEach(c => {
         html += '<div style="display:flex; align-items:center; gap:4px; font-size:11px;"><div style="width:10px; height:10px; border-radius:2px; background:' + c.color + ';"></div>' + c.label + ': ' + fmt(c.val) + ' (' + (t.total > 0 ? (c.val/t.total*100).toFixed(1) : 0) + '%)</div>';
     });
-    html += '</div></div>';
+    html += '</div>';
 
     // ── GGCC TIMELINE (meses) ──
-    html += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
-    html += '<h3 style="font-size:14px; color:#6b8f8b; margin-bottom:10px;">GGCC — Meses Pagados (' + data.ggccMonthsPaid + '/' + totalGGCCMonths + ')</h3>';
+    html += '<h3 style="font-size:14px; color:#6b8f8b; margin:24px 0 12px; padding-bottom:6px;">GGCC — Meses Pagados (' + data.ggccMonthsPaid + '/' + totalGGCCMonths + ')</h3>';
+    html += '<div style="margin-bottom:20px;">';
     html += '<div style="display:flex; flex-wrap:wrap; gap:3px;">';
     const ggccMonths = data.ggccByMonth;
     let gy = 2022, gm = 10;
@@ -3849,8 +3832,8 @@ function renderVistaSocio(socioOverride) {
 
     // ── MOB TIMELINE (si aplica) ──
     if (isMobSocio || isMobFull) {
-        html += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
-        html += '<h3 style="font-size:14px; color:#a68b6b; margin-bottom:10px;">Mobiliario' + (isMobFull ? ' — ✓ Pagado adelantado' : '') + '</h3>';
+        html += '<h3 style="font-size:14px; color:#a68b6b; margin:24px 0 12px; padding-bottom:6px;">Mobiliario' + (isMobFull ? ' — ✓ Pagado adelantado' : '') + '</h3>';
+        html += '<div style="margin-bottom:20px;">';
         if (!isMobFull) {
             const mobMonthsPaid = Object.values(data.deposits.reduce((acc, d) => {
                 // Count mob cuotas from alloc
@@ -3880,8 +3863,8 @@ function renderVistaSocio(socioOverride) {
 
     // ── RESUMEN POR AÑO ──
     const years = [...new Set(deps.map(d => d.y))].sort();
-    html += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
-    html += '<h3 style="font-size:14px; color:#5c554e; margin-bottom:10px;">Resumen por Año</h3>';
+    html += '<h3 style="font-size:14px; color:#5c554e; margin:24px 0 12px; padding-bottom:6px;">Resumen por Año</h3>';
+    html += '<div style="margin-bottom:20px;">';
     html += '<div style="overflow-x:auto;"><table style="width:100%; font-size:12px; border-collapse:collapse;">';
     html += '<thead><tr style="background:#f0ebe5; color:#5c554e;">';
     html += '<th style="padding:8px; text-align:left;">Año</th><th style="padding:8px; text-align:center;">Depósitos</th>';
@@ -3920,8 +3903,8 @@ function renderVistaSocio(socioOverride) {
     html += '</tr></tbody></table></div></div>';
 
     // ── BITÁCORA COMPLETA ──
-    html += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
-    html += '<h3 style="font-size:14px; color:#5c554e; margin-bottom:10px;">Bitácora de Depósitos (' + deps.length + ')</h3>';
+    html += '<h3 style="font-size:14px; color:#5c554e; margin:24px 0 12px; padding-bottom:6px;">Bitácora de Depósitos (' + deps.length + ')</h3>';
+    html += '<div style="margin-bottom:20px;">';
     html += '<details class="info-snippet" style="margin-top:0;">';
     html += '<summary>¿Cómo leer la bitácora?</summary>';
     html += '<div style="margin-top:8px;">';
