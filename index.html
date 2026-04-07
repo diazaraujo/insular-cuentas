@@ -61,12 +61,12 @@
         /* Tables */
         .table-section { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 1px 4px rgba(45,41,38,0.06); margin-bottom: 20px; border: 1px solid #e7e0d8; }
         .table-section h3 { font-size: 14px; color: #5c554e; margin-bottom: 16px; font-weight: 500; }
-        .table-wrapper { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { background: #2d2926; color: #f5f0eb; padding: 10px 12px; text-align: center; font-weight: 500; position: sticky; top: 0; white-space: nowrap; letter-spacing: 0.3px; }
-        th:first-child { text-align: left; }
-        td { padding: 8px 12px; border-bottom: 1px solid #eee; text-align: right; white-space: nowrap; }
-        td:first-child { text-align: left; font-weight: 600; }
+        .table-wrapper { overflow-x: auto; max-width: 100%; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: auto; }
+        th { background: #2d2926; color: #f5f0eb; padding: 10px 8px; text-align: center; font-weight: 500; position: sticky; top: 0; white-space: nowrap; letter-spacing: 0.3px; }
+        th:first-child { text-align: left; white-space: normal; }
+        td { padding: 8px 8px; border-bottom: 1px solid #eee; text-align: right; white-space: nowrap; }
+        td:first-child { text-align: left; font-weight: 600; white-space: normal; word-break: break-word; min-width: 140px; }
         td:nth-child(2) { text-align: center; font-size: 11px; color: #666; }
         tr:hover td { background: #faf8f5; }
 
@@ -248,9 +248,10 @@
         .hito-card .stat-value { font-weight: 700; }
 
         /* Hito detail table */
-        .hito-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .hito-table th { padding: 10px 12px; text-align: left; font-weight: 600; font-size: 12px; }
-        .hito-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; }
+        .hito-table { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: auto; }
+        .hito-table th { padding: 8px 6px; text-align: left; font-weight: 600; font-size: 11px; white-space: normal; }
+        .hito-table td { padding: 8px 6px; border-bottom: 1px solid #f0f0f0; }
+        .hito-table td:first-child { white-space: normal; word-break: break-word; min-width: 130px; }
         .hito-table .col-right { text-align: right; }
         .hito-table .col-center { text-align: center; }
         .hito-table tr:hover td { background: #faf8f5; }
