@@ -96,8 +96,8 @@
         .tt-wrap.tt-left .tt-box::after { right: auto; left: 100%; border-right-color: transparent; border-left-color: #2d2926; }
         .tt-box .tt-step { display: flex; gap: 6px; align-items: baseline; padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
         .tt-box .tt-step:last-child { border-bottom: none; }
-        .tt-box .tt-label { color: #90caf9; font-weight: 700; min-width: 65px; font-size: 10px; }
-        .tt-box .tt-amt { color: #4caf50; font-weight: 600; min-width: 70px; text-align: right; }
+        .tt-box .tt-label { color: #5a7d9a; font-weight: 700; min-width: 65px; font-size: 10px; }
+        .tt-box .tt-amt { color: #5a7d5a; font-weight: 600; min-width: 70px; text-align: right; }
         .tt-box .tt-note { color: #aaa; font-size: 9px; }
         .tt-box .tt-header { color: #fff; font-weight: 700; font-size: 11px; margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.15); }
         .tt-box .tt-tipo { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 9px; font-weight: 700; margin-left: 6px; }
@@ -291,10 +291,10 @@
         .casa-section { background: #fff; border-radius: 10px; padding: 24px; box-shadow: 0 1px 4px rgba(45,41,38,0.06); margin-bottom: 20px; border: 1px solid #e7e0d8; }
         .casa-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
         .casa-filter-btn { padding: 6px 14px; border: 1px solid #ddd; border-radius: 20px; background: white; cursor: pointer; font-size: 11px; font-weight: 600; color: #666; transition: all 0.2s; }
-        .casa-filter-btn.active { background: #2d2926; color: #f5f0eb; border-color: #2d2926; }
+        .casa-filter-btn.active { background: #5c554e; color: #f5f0eb; border-color: #5c554e; }
         .casa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
-        .casa-card { background: #faf8f5; border-radius: 8px; padding: 14px; border-left: 4px solid #2d2926; display: flex; justify-content: space-between; align-items: center; }
-        .casa-card.done { opacity: 0.6; border-left-color: #4caf50; }
+        .casa-card { background: #faf8f5; border-radius: 8px; padding: 14px; border-left: 4px solid #5c554e; display: flex; justify-content: space-between; align-items: center; }
+        .casa-card.done { opacity: 0.6; border-left-color: #5a7d5a; }
         .casa-card h4 { font-size: 13px; margin-bottom: 4px; }
         .casa-card .casa-cat { font-size: 10px; color: #888; text-transform: uppercase; }
         .casa-card .casa-prices { font-size: 12px; text-align: right; }
@@ -306,7 +306,7 @@
         .casa-btn-del { background: #f0e5e5; color: #b05a5a; }
         .casa-add-form { background: #f5f0eb; border-radius: 8px; padding: 16px; margin-bottom: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; align-items: end; }
         .casa-add-form input, .casa-add-form select { padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 12px; }
-        .casa-add-form button { padding: 8px 16px; background: #2d2926; color: #f5f0eb; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
+        .casa-add-form button { padding: 8px 16px; background: #5c554e; color: #f5f0eb; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
         .casa-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px; }
 
         /* GGCC Grid cells */
@@ -446,7 +446,7 @@
                         const card = document.createElement('div');
                         card.style.cssText = 'background:white; border-radius:8px; padding:14px 16px; border-left:4px solid ' + color + '; box-shadow:0 1px 3px rgba(0,0,0,0.08);';
                         card.innerHTML = '<div style="font-size:11px; text-transform:uppercase; color:' + color + '; font-weight:700; letter-spacing:0.5px; margin-bottom:4px;">' + (catLabels[ll.categoria] || ll.categoria) + '</div>'
-                            + '<div style="font-size:14px; font-weight:700; color:#2d2d2d; margin-bottom:6px;">' + ll.nombre + '</div>'
+                            + '<div style="font-size:14px; font-weight:700; color:#5c554e; margin-bottom:6px;">' + ll.nombre + '</div>'
                             + '<div style="display:flex; justify-content:space-between; font-size:12px; color:#666; margin-bottom:3px;"><span>Por socio</span><span style="font-weight:600;">$' + ll.montoPerSocio.toLocaleString() + '</span></div>'
                             + '<div style="display:flex; justify-content:space-between; font-size:12px; color:#666; margin-bottom:3px;"><span>Total (×10)</span><span style="font-weight:600;">$' + total.toLocaleString() + '</span></div>'
                             + '<div style="font-size:11px; color:#999; margin-top:6px; border-top:1px solid #f0f0f0; padding-top:6px;">' + ll.descripcion + '</div>';
@@ -456,7 +456,7 @@
                     const totalCard = document.createElement('div');
                     totalCard.style.cssText = 'background:#f8f7f5; border-radius:8px; padding:14px 16px; border-left:4px solid #5c554e; box-shadow:0 1px 3px rgba(0,0,0,0.08); display:flex; flex-direction:column; justify-content:center;';
                     totalCard.innerHTML = '<div style="font-size:11px; text-transform:uppercase; color:#5c554e; font-weight:700; letter-spacing:0.5px; margin-bottom:4px;">Compromiso Total</div>'
-                        + '<div style="font-size:22px; font-weight:700; color:#2d2d2d;">$' + totalGeneral.toLocaleString() + '</div>'
+                        + '<div style="font-size:22px; font-weight:700; color:#5c554e;">$' + totalGeneral.toLocaleString() + '</div>'
                         + '<div style="font-size:12px; color:#666; margin-top:4px;">$' + (totalGeneral/10).toLocaleString() + ' por socio</div>';
                     container.appendChild(totalCard);
                 })();
@@ -2008,15 +2008,15 @@ function renderDeudas() {
 
         // ── ABONOS (pagos realizados por Insular al socio) ──
         if (socio.abonos && socio.abonos.length > 0) {
-            h += '<div style="background:#eceee5; border-radius:8px; padding:12px 14px; margin:4px 0 0; border:1px solid #b5c8b5;">';
+            h += '<div style="background:#eceee5; border-radius:8px; padding:12px 14px; margin:4px 0 0; border:1px solid #8bb08b;">';
             h += '<div style="font-size:12px; font-weight:700; color:#5a7d5a; margin-bottom:8px;">Abonos realizados por Insular</div>';
             h += '<table style="width:100%; table-layout:fixed; border-collapse:collapse;">';
             h += '<colgroup><col style="width:15%"><col style="width:55%"><col style="width:15%"><col style="width:15%"></colgroup>';
             h += '<thead><tr>';
-            h += '<th style="background:#d4e0d4; color:#3d6b3d; padding:6px; text-align:left; font-size:11px;">Fecha</th>';
-            h += '<th style="background:#d4e0d4; color:#3d6b3d; padding:6px; text-align:left; font-size:11px;">Concepto</th>';
-            h += '<th style="background:#d4e0d4; color:#3d6b3d; padding:6px; text-align:center; font-size:11px;">Origen</th>';
-            h += '<th style="background:#d4e0d4; color:#3d6b3d; padding:6px; text-align:right; font-size:11px;">Monto</th>';
+            h += '<th style="background:#dce5dc; color:#5a7d5a; padding:6px; text-align:left; font-size:11px;">Fecha</th>';
+            h += '<th style="background:#dce5dc; color:#5a7d5a; padding:6px; text-align:left; font-size:11px;">Concepto</th>';
+            h += '<th style="background:#dce5dc; color:#5a7d5a; padding:6px; text-align:center; font-size:11px;">Origen</th>';
+            h += '<th style="background:#dce5dc; color:#5a7d5a; padding:6px; text-align:right; font-size:11px;">Monto</th>';
             h += '</tr></thead><tbody>';
             socio.abonos.forEach((ab, i) => {
                 h += '<tr style="background:' + (i % 2 === 0 ? '#eceee5' : '#f2f4ee') + ';">';
@@ -2026,9 +2026,9 @@ function renderDeudas() {
                 h += '<td style="padding:5px 6px; font-size:11px; text-align:right; font-weight:600; color:#5a7d5a;">-' + fmt(ab.monto) + '</td>';
                 h += '</tr>';
             });
-            h += '<tr style="background:#d4e0d4; font-weight:700;">';
-            h += '<td colspan="3" style="padding:6px; font-size:11px; color:#3d6b3d;">Total abonado</td>';
-            h += '<td style="padding:6px; font-size:11px; text-align:right; color:#3d6b3d;">-' + fmt(abonadoSocio) + '</td>';
+            h += '<tr style="background:#dce5dc; font-weight:700;">';
+            h += '<td colspan="3" style="padding:6px; font-size:11px; color:#5a7d5a;">Total abonado</td>';
+            h += '<td style="padding:6px; font-size:11px; text-align:right; color:#5a7d5a;">-' + fmt(abonadoSocio) + '</td>';
             h += '</tr>';
             h += '</tbody></table>';
             h += '<div style="font-size:13px; font-weight:700; color:#b05a5a; margin-top:8px;">Saldo pendiente: ' + fmt(netaSocio) + '</div>';
@@ -2080,7 +2080,7 @@ function renderMetodologia() {
 
     // Row 2: DETECCIÓN DE TIPO
     h += '<rect x="300" y="90" width="300" height="44" rx="8" fill="#f5f5f5" stroke="#90a4ae" stroke-width="1.5"/>';
-    h += '<text x="450" y="117" text-anchor="middle" fill="#455a64" font-size="13" font-weight="600">¿Qué tipo de depósito es?</text>';
+    h += '<text x="450" y="117" text-anchor="middle" fill="#5c554e" font-size="13" font-weight="600">¿Qué tipo de depósito es?</text>';
 
     // 4 branches
     // Branch A: left
@@ -2095,29 +2095,29 @@ function renderMetodologia() {
     // ── TIPO A ──
     h += '<rect x="10" y="180" width="180" height="70" rx="8" fill="#e0eae8" stroke="#6b8f8b" stroke-width="2" filter="url(#shadow)"/>';
     h += '<text x="100" y="202" text-anchor="middle" fill="#6b8f8b" font-size="12" font-weight="700">TIPO A</text>';
-    h += '<text x="100" y="218" text-anchor="middle" fill="#455a64" font-size="10">Múltiplo de $70k</text>';
-    h += '<text x="100" y="232" text-anchor="middle" fill="#455a64" font-size="10">(hasta $840k)</text>';
+    h += '<text x="100" y="218" text-anchor="middle" fill="#5c554e" font-size="10">Múltiplo de $70k</text>';
+    h += '<text x="100" y="232" text-anchor="middle" fill="#5c554e" font-size="10">(hasta $840k)</text>';
     h += '<text x="100" y="246" text-anchor="middle" fill="#6b8f8b" font-size="10" font-weight="600">→ TODO a GGCC</text>';
 
     // ── TIPO A2 ──
     h += '<rect x="200" y="180" width="170" height="70" rx="8" fill="#e2e6ec" stroke="#5a7d9a" stroke-width="2" filter="url(#shadow)"/>';
     h += '<text x="285" y="202" text-anchor="middle" fill="#5a7d9a" font-size="12" font-weight="700">TIPO A2</text>';
-    h += '<text x="285" y="218" text-anchor="middle" fill="#455a64" font-size="10">$70k–$140k</text>';
-    h += '<text x="285" y="232" text-anchor="middle" fill="#455a64" font-size="10">(no múltiplo, ej: $75k)</text>';
+    h += '<text x="285" y="218" text-anchor="middle" fill="#5c554e" font-size="10">$70k–$140k</text>';
+    h += '<text x="285" y="232" text-anchor="middle" fill="#5c554e" font-size="10">(no múltiplo, ej: $75k)</text>';
     h += '<text x="285" y="246" text-anchor="middle" fill="#5a7d9a" font-size="10" font-weight="600">→ $70k GGCC + resto</text>';
 
     // ── TIPO B ──
     h += '<rect x="430" y="180" width="180" height="70" rx="8" fill="#f0e8d8" stroke="#a68b6b" stroke-width="2" filter="url(#shadow)"/>';
     h += '<text x="520" y="202" text-anchor="middle" fill="#a68b6b" font-size="12" font-weight="700">TIPO B</text>';
-    h += '<text x="520" y="218" text-anchor="middle" fill="#455a64" font-size="10">Exactamente $236.666</text>';
-    h += '<text x="520" y="232" text-anchor="middle" fill="#455a64" font-size="10">(cuota combinada)</text>';
+    h += '<text x="520" y="218" text-anchor="middle" fill="#5c554e" font-size="10">Exactamente $236.666</text>';
+    h += '<text x="520" y="232" text-anchor="middle" fill="#5c554e" font-size="10">(cuota combinada)</text>';
     h += '<text x="520" y="246" text-anchor="middle" fill="#a68b6b" font-size="10" font-weight="600">→ $70k GGCC + $166k MOB*</text>';
 
     // ── TIPO C ──
     h += '<rect x="650" y="180" width="180" height="70" rx="8" fill="#e8e3e8" stroke="#8b7e74" stroke-width="2" filter="url(#shadow)"/>';
     h += '<text x="740" y="202" text-anchor="middle" fill="#8b7e74" font-size="12" font-weight="700">TIPO C</text>';
-    h += '<text x="740" y="218" text-anchor="middle" fill="#455a64" font-size="10">Cualquier otro monto</text>';
-    h += '<text x="740" y="232" text-anchor="middle" fill="#455a64" font-size="10">(ej: $5M, $2M, $500k)</text>';
+    h += '<text x="740" y="218" text-anchor="middle" fill="#5c554e" font-size="10">Cualquier otro monto</text>';
+    h += '<text x="740" y="232" text-anchor="middle" fill="#5c554e" font-size="10">(ej: $5M, $2M, $500k)</text>';
     h += '<text x="740" y="246" text-anchor="middle" fill="#8b7e74" font-size="10" font-weight="600">→ Cubre GGCC + cascada</text>';
 
     // PASADA 1 label
@@ -2230,7 +2230,7 @@ function renderMetodologia() {
     // Card: Compromisos
     h += '<div style="background:#faf8f5; border-radius:8px; padding:16px; border-left:4px solid #5a7d9a;">';
     h += '<div style="font-weight:700; color:#5a7d9a; margin-bottom:8px;">Compromisos por Socio</div>';
-    h += '<div style="font-size:12px; color:#455a64; line-height:1.8;">';
+    h += '<div style="font-size:12px; color:#5c554e; line-height:1.8;">';
     ['capital','construccion','mobiliario'].forEach(key => {
         const a = ACUERDOS[key];
         h += key.charAt(0).toUpperCase() + key.slice(1).replace('inicial','') + ': <strong>$' + (a.perSocio/1e6) + 'M</strong> — ' + a.descripcion + '<br>';
@@ -2241,7 +2241,7 @@ function renderMetodologia() {
     // Card: GGCC
     h += '<div style="background:#faf8f5; border-radius:8px; padding:16px; border-left:4px solid #6b8f8b;">';
     h += '<div style="font-weight:700; color:#6b8f8b; margin-bottom:8px;">Gastos Comunes (GGCC)</div>';
-    h += '<div style="font-size:12px; color:#455a64; line-height:1.8;">';
+    h += '<div style="font-size:12px; color:#5c554e; line-height:1.8;">';
     h += 'Cuota mensual: <strong>$' + fmt(GGCC_CONFIG.cuotaMensual) + '/socio</strong><br>';
     h += 'Vigente desde: <strong>' + MONTHS_SHORT[GGCC_CONFIG.inicioMonth-1] + ' ' + GGCC_CONFIG.inicioYear + '</strong><br>';
     h += 'Mes vencido: <strong>Sí</strong> — ' + GGCC_CONFIG.mesVencidoExplicacion.substring(0, 60) + '…<br>';
@@ -2253,7 +2253,7 @@ function renderMetodologia() {
     // Card: Socios
     h += '<div style="background:#faf8f5; border-radius:8px; padding:16px; border-left:4px solid #a68b6b;">';
     h += '<div style="font-weight:700; color:#a68b6b; margin-bottom:8px;">Grupos de Socios & Mobiliario</div>';
-    h += '<div style="font-size:12px; color:#455a64; line-height:1.8;">';
+    h += '<div style="font-size:12px; color:#5c554e; line-height:1.8;">';
     h += 'Total socios: <strong>' + SOCIOS_ALL.length + '</strong><br>';
     h += 'Socios MOB: <strong>' + MOB_CONFIG.sociosMOB.length + ' de ' + SOCIOS_ALL.length + '</strong> (todos pagan por cartola)<br>';
     h += 'Cuota MOB: <strong>$' + fmt(MOB_CONFIG.cuotaMensual) + '/mes</strong> × ' + MOB_CONFIG.totalCuotas + ' cuotas (' + MONTHS_SHORT[MOB_CONFIG.inicioMonth-1] + '-' + MOB_CONFIG.inicioYear + ' → ' + MONTHS_SHORT[MOB_CONFIG.finMonth-1] + '-' + MOB_CONFIG.finYear + ')<br>';
@@ -2263,7 +2263,7 @@ function renderMetodologia() {
     // Card: Cartolas
     h += '<div style="background:#faf8f5; border-radius:8px; padding:16px; border-left:4px solid #8b7e74;">';
     h += '<div style="font-weight:700; color:#8b7e74; margin-bottom:8px;">Fuente de Datos</div>';
-    h += '<div style="font-size:12px; color:#455a64; line-height:1.8;">';
+    h += '<div style="font-size:12px; color:#5c554e; line-height:1.8;">';
     h += 'Origen: <strong>Cartolas Scotiabank</strong><br>';
     h += 'Total depósitos: <strong>' + ALL_DEPOSITS.length + '</strong><br>';
     h += 'Período: <strong>Jun 2020 — ' + lastCLabel + '</strong><br>';
@@ -2291,8 +2291,8 @@ function renderMetodologia() {
             h += '<tr style="background:' + (rowIdx%2===0 ? '#fff' : '#fafafa') + ';">';
             h += '<td style="padding:8px 12px;"><span style="display:inline-block; padding:2px 10px; border-radius:4px; background:' + regla.bg + '; color:' + regla.color + '; font-weight:700; font-size:11px;">TIPO ' + regla.id + '</span></td>';
             h += '<td style="padding:8px 12px; color:#666;">' + regla.detectar + '</td>';
-            h += '<td style="padding:8px 12px; font-weight:600; color:#455a64;">' + ej + '</td>';
-            h += '<td style="padding:8px 12px; color:#455a64;">' + regla.asignacion + '</td>';
+            h += '<td style="padding:8px 12px; font-weight:600; color:#5c554e;">' + ej + '</td>';
+            h += '<td style="padding:8px 12px; color:#5c554e;">' + regla.asignacion + '</td>';
             h += '<td style="padding:8px 12px; text-align:center; font-weight:600; color:' + regla.color + ';">' + regla.pasada + '</td>';
             h += '</tr>';
             rowIdx++;
@@ -2306,7 +2306,7 @@ function renderMetodologia() {
 
     h += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:12px;">';
     const ruleGroups = [
-        { title: 'General (5)', color: '#455a64', rules: ['Depósitos sin cartola asociada', 'Gaps en la secuencia de cartolas', 'Mismatch asignaciones vs total', 'Depósitos faltantes en el período', 'Cobertura cartolas vs calendario'] },
+        { title: 'General (5)', color: '#5c554e', rules: ['Depósitos sin cartola asociada', 'Gaps en la secuencia de cartolas', 'Mismatch asignaciones vs total', 'Depósitos faltantes en el período', 'Cobertura cartolas vs calendario'] },
         { title: 'Capital (3)', color: '#5a7d9a', rules: ['Excede meta >5%', 'Parcial <50%', 'Total global excede meta'] },
         { title: 'Construcción (0)', color: '#8b7e74', rules: ['Sin reglas — excedentes son normales (bucket final)'] },
         { title: 'GGCC (4)', color: '#6b8f8b', rules: ['Excede meses esperados', 'Meses > esperados', 'GGCC pre oct-2022', 'Total global GGCC'] },
@@ -2327,7 +2327,7 @@ function renderMetodologia() {
 
     // REGLAS_TIPO table
     h += '<div style="margin-bottom:20px;">';
-    h += '<div style="font-weight:700; font-size:13px; color:#455a64; margin-bottom:8px;">REGLAS_TIPO (' + REGLAS_TIPO.length + ' reglas)</div>';
+    h += '<div style="font-weight:700; font-size:13px; color:#5c554e; margin-bottom:8px;">REGLAS_TIPO (' + REGLAS_TIPO.length + ' reglas)</div>';
     h += '<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:11px;">';
     h += '<thead><tr style="background:#f5f5f5;"><th style="padding:6px 10px; text-align:left;">ID</th><th style="padding:6px 10px; text-align:left;">Nombre</th><th style="padding:6px 10px; text-align:left;">Pasada</th><th style="padding:6px 10px; text-align:left;">Detección</th><th style="padding:6px 10px; text-align:left;">Asignación</th></tr></thead><tbody>';
     REGLAS_TIPO.forEach((r, i) => {
@@ -2336,14 +2336,14 @@ function renderMetodologia() {
         h += '<td style="padding:6px 10px;">' + r.nombre + '</td>';
         h += '<td style="padding:6px 10px; text-align:center;">' + r.pasada + '</td>';
         h += '<td style="padding:6px 10px; color:#666; font-family:monospace; font-size:10px;">' + r.detectar + '</td>';
-        h += '<td style="padding:6px 10px; color:#455a64;">' + r.asignacion + '</td>';
+        h += '<td style="padding:6px 10px; color:#5c554e;">' + r.asignacion + '</td>';
         h += '</tr>';
     });
     h += '</tbody></table></div></div>';
 
     // CASCADA table
     h += '<div style="margin-bottom:20px;">';
-    h += '<div style="font-weight:700; font-size:13px; color:#455a64; margin-bottom:8px;">CASCADA (' + CASCADA.length + ' pasos)</div>';
+    h += '<div style="font-weight:700; font-size:13px; color:#5c554e; margin-bottom:8px;">CASCADA (' + CASCADA.length + ' pasos)</div>';
     h += '<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:11px;">';
     h += '<thead><tr style="background:#f5f5f5;"><th style="padding:6px 10px;">#</th><th style="padding:6px 10px; text-align:left;">Nombre</th><th style="padding:6px 10px; text-align:left;">Categoría</th><th style="padding:6px 10px; text-align:right;">Tope/socio</th><th style="padding:6px 10px; text-align:left;">Descripción</th></tr></thead><tbody>';
     CASCADA.forEach((c, i) => {
@@ -2361,12 +2361,12 @@ function renderMetodologia() {
     h += '<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">';
     h += '<div style="background:#faf8f5; border-radius:8px; padding:14px; border-left:4px solid #6b8f8b;">';
     h += '<div style="font-weight:700; color:#6b8f8b; font-size:12px; margin-bottom:6px;">GGCC_CONFIG</div>';
-    h += '<div style="font-size:11px; color:#455a64; line-height:1.7; font-family:monospace;">';
+    h += '<div style="font-size:11px; color:#5c554e; line-height:1.7; font-family:monospace;">';
     Object.entries(GGCC_CONFIG).forEach(([k,v]) => { h += k + ': <strong>' + (typeof v === 'string' ? '"' + v.substring(0,50) + (v.length>50?'…':'') + '"' : v) + '</strong><br>'; });
     h += '</div></div>';
     h += '<div style="background:#faf8f5; border-radius:8px; padding:14px; border-left:4px solid #a68b6b;">';
     h += '<div style="font-weight:700; color:#a68b6b; font-size:12px; margin-bottom:6px;">MOB_CONFIG</div>';
-    h += '<div style="font-size:11px; color:#455a64; line-height:1.7; font-family:monospace;">';
+    h += '<div style="font-size:11px; color:#5c554e; line-height:1.7; font-family:monospace;">';
     Object.entries(MOB_CONFIG).forEach(([k,v]) => { h += k + ': <strong>' + (Array.isArray(v) ? '[' + v.join(', ') + ']' : (typeof v === 'string' ? '"' + v.substring(0,50) + (v.length>50?'…':'') + '"' : v)) + '</strong><br>'; });
     h += '</div></div>';
     h += '</div>';
@@ -2444,10 +2444,10 @@ function renderResumen() {
     if (_warnings.length > 0) {
         html += '<div style="background:#f0e8d8; border:2px solid #a68b6b; border-radius:10px; padding:14px 18px; margin-bottom:20px;">';
         html += '<div style="font-weight:700; color:#a68b6b; font-size:13px; margin-bottom:6px;">⚠ Alerta de Integridad de Datos (' + _warnings.length + ')</div>';
-        _warnings.forEach(w => { html += '<div style="font-size:11px; color:#8b7e74; margin:3px 0; padding-left:12px; border-left:2px solid #ffcc02;">• ' + w + '</div>'; });
+        _warnings.forEach(w => { html += '<div style="font-size:11px; color:#8b7e74; margin:3px 0; padding-left:12px; border-left:2px solid #a68b6b;">• ' + w + '</div>'; });
         html += '</div>';
     } else {
-        html += '<div style="background:#eceee5; border:2px solid #4caf50; border-radius:10px; padding:14px 18px; margin-bottom:20px;">';
+        html += '<div style="background:#eceee5; border:2px solid #5a7d5a; border-radius:10px; padding:14px 18px; margin-bottom:20px;">';
         html += '<div style="font-weight:700; color:#5a7d5a; font-size:13px;">✓ Integridad de Datos OK — ' + ALL_DEPOSITS.length + ' depósitos verificados, $0 diferencia, todos los pesos asignados</div>';
         html += '</div>';
     }
@@ -2502,7 +2502,7 @@ function renderResumen() {
             const v = cls[s].totals[cat];
             const pct = Math.round(v / (meta/SOCIOS_ALL.length) * 100);
             const ok = pct >= 100;
-            h += '<div class="tt-step"><span class="tt-label">' + s + '</span><span class="tt-amt" style="color:' + (ok?'#4caf50':'#a68b6b') + ';">$' + v.toLocaleString() + '</span><span class="tt-note">' + pct + '%</span></div>';
+            h += '<div class="tt-step"><span class="tt-label">' + s + '</span><span class="tt-amt" style="color:' + (ok?'#5a7d5a':'#a68b6b') + ';">$' + v.toLocaleString() + '</span><span class="tt-note">' + pct + '%</span></div>';
         });
         h += '</span>';
         return h;
@@ -2665,8 +2665,8 @@ function renderResumen() {
             data: {
                 labels: ['Capital Inicial', 'Construcción', 'Mobiliario', 'GGCC'],
                 datasets: [
-                    { label: 'Recaudado', data: [capitalPagado/1e6, constrPagado/1e6, mobPagado/1e6, ggccPagado/1e6], backgroundColor: '#4caf50aa', borderColor: '#4caf50', borderWidth: 1 },
-                    { label: 'Falta', data: [capitalFalta/1e6, constrFalta/1e6, mobFalta/1e6, ggccFalta/1e6], backgroundColor: '#ef5350aa', borderColor: '#ef5350', borderWidth: 1 }
+                    { label: 'Recaudado', data: [capitalPagado/1e6, constrPagado/1e6, mobPagado/1e6, ggccPagado/1e6], backgroundColor: '#5a7d5aaa', borderColor: '#5a7d5a', borderWidth: 1 },
+                    { label: 'Falta', data: [capitalFalta/1e6, constrFalta/1e6, mobFalta/1e6, ggccFalta/1e6], backgroundColor: '#b05a5aaa', borderColor: '#b05a5a', borderWidth: 1 }
                 ]
             },
             options: { responsive:true, maintainAspectRatio:false, plugins:{tooltip:{callbacks:{label:c=>c.dataset.label+': $'+c.raw.toFixed(1)+'M'}}}, scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>'$'+v+'M'}}} }
@@ -2780,11 +2780,11 @@ function ttText(title, lines) {
 function ttDeuda(s, capDebt, constrDbt, mobDbt, ggccDbt) {
     let h = '<span class="tt-box" style="min-width:200px;">';
     h += '<div class="tt-header">Deuda de ' + s + '</div>';
-    if (capDebt > 0) h += '<div class="tt-step"><span class="tt-label" style="color:#90caf9;">Capital</span><span class="tt-amt" style="color:#ff5252;">$' + capDebt.toLocaleString() + '</span></div>';
-    if (constrDbt > 0) h += '<div class="tt-step"><span class="tt-label" style="color:#ce93d8;">Construcción</span><span class="tt-amt" style="color:#ff5252;">$' + constrDbt.toLocaleString() + '</span></div>';
-    if (mobDbt > 0) h += '<div class="tt-step"><span class="tt-label" style="color:#e7c08a;">Mobiliario</span><span class="tt-amt" style="color:#ff5252;">$' + mobDbt.toLocaleString() + '</span></div>';
-    if (ggccDbt > 0) h += '<div class="tt-step"><span class="tt-label" style="color:#4dd0e1;">GGCC</span><span class="tt-amt" style="color:#ff5252;">$' + ggccDbt.toLocaleString() + '</span><span class="tt-note">' + Math.round(ggccDbt/CUOTA_GGCC) + ' meses</span></div>';
-    if (capDebt + constrDbt + mobDbt + ggccDbt === 0) h += '<div style="color:#4caf50; font-weight:600; padding:4px 0;">Sin deuda</div>';
+    if (capDebt > 0) h += '<div class="tt-step"><span class="tt-label" style="color:#5a7d9a;">Capital</span><span class="tt-amt" style="color:#b05a5a;">$' + capDebt.toLocaleString() + '</span></div>';
+    if (constrDbt > 0) h += '<div class="tt-step"><span class="tt-label" style="color:#8b7e74;">Construcción</span><span class="tt-amt" style="color:#b05a5a;">$' + constrDbt.toLocaleString() + '</span></div>';
+    if (mobDbt > 0) h += '<div class="tt-step"><span class="tt-label" style="color:#a68b6b;">Mobiliario</span><span class="tt-amt" style="color:#b05a5a;">$' + mobDbt.toLocaleString() + '</span></div>';
+    if (ggccDbt > 0) h += '<div class="tt-step"><span class="tt-label" style="color:#6b8f8b;">GGCC</span><span class="tt-amt" style="color:#b05a5a;">$' + ggccDbt.toLocaleString() + '</span><span class="tt-note">' + Math.round(ggccDbt/CUOTA_GGCC) + ' meses</span></div>';
+    if (capDebt + constrDbt + mobDbt + ggccDbt === 0) h += '<div style="color:#5a7d5a; font-weight:600; padding:4px 0;">Sin deuda</div>';
     h += '</span>';
     return h;
 }
@@ -3452,7 +3452,7 @@ function renderGGCC() {
         const isHL = (ggccHighlightSocio === s);
         // Depósitos de este socio/año para tooltips
         const sDeps = cls[s].deposits.filter(dep => dep.y === year);
-        html += '<tr id="ggcc-row-' + s + '" style="' + (isHL ? 'background:#b2ebf2; outline:2px solid #6b8f8b; font-weight:700;' : '') + '"><td>' + (FULL_NAMES[s] || s) + '</td>';
+        html += '<tr id="ggcc-row-' + s + '" style="' + (isHL ? 'background:#e0eae8; outline:2px solid #6b8f8b; font-weight:700;' : '') + '"><td>' + (FULL_NAMES[s] || s) + '</td>';
         for (let m = 0; m < 12; m++) {
             const val = d.months[m];
             monthTotals[m] += val;
@@ -3625,7 +3625,7 @@ function renderCasa() {
     const totalReal = casaItems.reduce((a,i) => a + (i.real||0), 0);
     const totalDone = casaItems.filter(i => i.done).length;
     
-    let html = '<div class="casa-section"><h3 style="font-size:16px; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">Club House Chaicura — Equipamiento (47 items)</h3>';
+    let html = '<div class="casa-section"><h3 style="font-size:16px; margin-bottom:16px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">Club House Chaicura — Equipamiento (47 items)</h3>';
 
     html += '<details class="info-snippet" style="border-left-color:#8b7e74;">';
     html += '<summary>¿Qué es esta sección?</summary>';
@@ -3675,7 +3675,7 @@ function renderCasa() {
     // Export/Import
     html += '<div style="margin-top:20px; display:flex; gap:10px;">';
     html += '<button onclick="exportCasa()" style="padding:8px 16px; background:#5c554e; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px;">Exportar JSON</button>';
-    html += '<button onclick="document.getElementById(\'casaImport\').click()" style="padding:8px 16px; background:#e0e0e0; color:#333; border:none; border-radius:6px; cursor:pointer; font-size:12px;">Importar JSON</button>';
+    html += '<button onclick="document.getElementById(\'casaImport\').click()" style="padding:8px 16px; background:#e7e0d8; color:#333; border:none; border-radius:6px; cursor:pointer; font-size:12px;">Importar JSON</button>';
     html += '<input type="file" id="casaImport" accept=".json" style="display:none" onchange="importCasa(event)">';
     html += '</div>';
     
@@ -3754,7 +3754,7 @@ function renderVistaSocio(socioOverride) {
     // ── HEADER SECTION ──
     html += '<h2 style="font-size:18px; color:#5c554e; border-bottom:2px solid #d4cdc5; padding-bottom:8px; margin-bottom:4px;">';
     html += (FULL_NAMES[socio] || socio);
-    if (!isAlDia) html += ' <span style="background:rgba(244,67,54,0.15); color:#c62828; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:600; margin-left:12px;">Deuda: ' + fmt(totalDebt) + '</span>';
+    if (!isAlDia) html += ' <span style="background:rgba(176,90,90,0.15); color:#b05a5a; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:600; margin-left:12px;">Deuda: ' + fmt(totalDebt) + '</span>';
     html += '</h2>';
     html += '<p style="font-size:12px; color:#888; margin:4px 0 16px;">' + deps.length + ' depósitos verificados — Total aportado: ' + fmt(t.total) + '</p>';
 
@@ -3813,7 +3813,7 @@ function renderVistaSocio(socioOverride) {
         const paid = ggccMonths[mk] || 0;
         const full = paid >= CUOTA_GGCC;
         const partial = paid > 0 && !full;
-        const bg = full ? '#6b8f8b' : (partial ? '#b2dfdb' : '#f0f0f0');
+        const bg = full ? '#6b8f8b' : (partial ? '#a8c8c5' : '#f0f0f0');
         const txt = full ? 'white' : '#666';
         const mLabel = ['E','F','M','A','M','J','J','A','S','O','N','D'][gm-1];
         const yearLabel = gm === 1 || i === 0 ? '<div style="font-size:8px; color:#aaa; text-align:center;">' + gy + '</div>' : '';
@@ -3826,7 +3826,7 @@ function renderVistaSocio(socioOverride) {
     html += '</div>';
     html += '<div style="display:flex; gap:12px; margin-top:8px; font-size:10px; color:#888;">';
     html += '<div style="display:flex; align-items:center; gap:3px;"><div style="width:10px; height:10px; border-radius:2px; background:#6b8f8b;"></div>Pagado</div>';
-    html += '<div style="display:flex; align-items:center; gap:3px;"><div style="width:10px; height:10px; border-radius:2px; background:#b2dfdb;"></div>Parcial</div>';
+    html += '<div style="display:flex; align-items:center; gap:3px;"><div style="width:10px; height:10px; border-radius:2px; background:#a8c8c5;"></div>Parcial</div>';
     html += '<div style="display:flex; align-items:center; gap:3px;"><div style="width:10px; height:10px; border-radius:2px; background:#f0f0f0;"></div>Pendiente</div>';
     html += '</div></div>';
 
@@ -4055,7 +4055,7 @@ function showSocioBitacora(socio) {
         if (c.extra) html += '<div style="font-size:10px; color:#666;">' + c.extra + '</div>';
         // Progress bar
         if (c.meta > 0) {
-            html += '<div style="background:#e0e0e0; border-radius:3px; height:6px; margin-top:4px; overflow:hidden;">';
+            html += '<div style="background:#e7e0d8; border-radius:3px; height:6px; margin-top:4px; overflow:hidden;">';
             html += '<div style="background:' + c.color + '; height:100%; width:' + pct + '%; border-radius:3px;"></div></div>';
             html += '<div style="font-size:9px; color:' + (ok ? '#5a7d5a' : '#b05a5a') + '; margin-top:2px;">' + pct + '% ' + (ok ? '✓ Completo' : '— Falta ' + fmt(c.meta - c.paid)) + '</div>';
         }
@@ -4083,7 +4083,7 @@ function showSocioBitacora(socio) {
         // Line connector
         if (!isLast) html += '<div style="position:absolute; top:11px; left:50%; right:-50%; height:2px; background:' + (done ? h.color : '#ccc') + '; z-index:0;"></div>';
         // Circle
-        html += '<div style="width:22px; height:22px; border-radius:50%; background:' + (done ? h.color : '#e0e0e0') + '; color:white; display:inline-flex; align-items:center; justify-content:center; font-size:11px; position:relative; z-index:1; border:2px solid ' + (done ? h.color : '#ccc') + ';">' + (done ? '✓' : (hi+1)) + '</div>';
+        html += '<div style="width:22px; height:22px; border-radius:50%; background:' + (done ? h.color : '#e7e0d8') + '; color:white; display:inline-flex; align-items:center; justify-content:center; font-size:11px; position:relative; z-index:1; border:2px solid ' + (done ? h.color : '#ccc') + ';">' + (done ? '✓' : (hi+1)) + '</div>';
         html += '<div style="font-size:10px; font-weight:600; color:' + (done ? h.color : '#aaa') + '; margin-top:3px;">' + h.label + '</div>';
         if (done) html += '<div style="font-size:9px; color:#888;">' + h.data.fecha + '</div>';
         else html += '<div style="font-size:9px; color:#b05a5a;">Pendiente</div>';
@@ -4161,7 +4161,7 @@ function showSocioBitacora(socio) {
 
         // Detalle expandible (si existe)
         if (hasDetalle) {
-            html += '<tr id="' + rowId + '" style="display:none;"><td colspan="9" style="padding:4px 8px 8px 30px; background:#fafafa; border-bottom:1px solid #e0e0e0;">';
+            html += '<tr id="' + rowId + '" style="display:none;"><td colspan="9" style="padding:4px 8px 8px 30px; background:#fafafa; border-bottom:1px solid #e7e0d8;">';
             html += '<div style="font-size:10px; color:#666;">';
             d.detalle.forEach(dd => {
                 html += '<div style="margin:2px 0; padding-left:8px; border-left:2px solid ' + (tipoColors[dd.regla] || '#ccc') + ';">';
@@ -4207,8 +4207,8 @@ function showSocioBitacora(socio) {
         const deudaData = deudaKey ? DEUDAS_SOCIOS[deudaKey] : null;
         const abonadoBit = deudaData ? (deudaData.abonos || []).reduce((s, a) => s + a.monto, 0) : 0;
 
-        html += '<div style="background:#fdf6e3; border:1px solid #f0d080; border-radius:8px; padding:12px 14px; margin:16px 0 10px;">';
-        html += '<div style="font-size:12px; font-weight:700; color:#8b6914; margin-bottom:8px;">Crédito por Deuda de Insular (gastos personales en construcción)</div>';
+        html += '<div style="background:#f5efe8; border:1px solid #a68b6b; border-radius:8px; padding:12px 14px; margin:16px 0 10px;">';
+        html += '<div style="font-size:12px; font-weight:700; color:#a68b6b; margin-bottom:8px;">Crédito por Deuda de Insular (gastos personales en construcción)</div>';
         if (deudaData) {
             html += '<div style="font-size:11px; color:#5c554e; margin-bottom:6px;">Deuda bruta: $' + deudaData.total.toLocaleString() + (abonadoBit > 0 ? ' · Abonado: $' + abonadoBit.toLocaleString() + ' · <strong>Crédito neto: $' + data.creditoTotal.toLocaleString() + '</strong>' : '') + '</div>';
             // Show abonos in bitácora
@@ -4238,7 +4238,7 @@ function showSocioBitacora(socio) {
         html += '\u2713 Balance OK \u2014 $' + t.total.toLocaleString() + ' depositados = $' + allocTotal.toLocaleString() + ' asignados (' + deps.length + ' dep\u00f3sitos, $0 diferencia)';
         html += '</div>';
     } else {
-        html += '<div style="background:#ffebee; border-radius:6px; padding:8px 12px; margin-top:10px; font-size:11px; color:#b71c1c; font-weight:600;">';
+        html += '<div style="background:#f0e5e5; border-radius:6px; padding:8px 12px; margin-top:10px; font-size:11px; color:#b05a5a; font-weight:600;">';
         html += '\u26a0 ALERTA: depositado $' + t.total.toLocaleString() + ' pero asignado $' + allocTotal.toLocaleString() + ' (diferencia: $' + diff.toLocaleString() + ')';
         html += '</div>';
     }
@@ -4377,7 +4377,7 @@ function renderCartolaControl() {
     html += '<div style="display:flex; gap:12px; font-size:11px; color:#888;">';
     html += '<span style="display:flex; align-items:center; gap:4px;"><span style="width:12px; height:12px; border-radius:3px; background:#5a7d5a; display:inline-block;"></span> Disponible</span>';
     html += '<span style="display:flex; align-items:center; gap:4px;"><span style="width:12px; height:12px; border-radius:3px; background:#b05a5a; display:inline-block;"></span> Falta pedir</span>';
-    html += '<span style="display:flex; align-items:center; gap:4px;"><span style="width:12px; height:12px; border-radius:3px; background:#e0e0e0; display:inline-block;"></span> No aplica / Futuro</span>';
+    html += '<span style="display:flex; align-items:center; gap:4px;"><span style="width:12px; height:12px; border-radius:3px; background:#e7e0d8; display:inline-block;"></span> No aplica / Futuro</span>';
     html += '</div></div>';
 
     html += '<div class="table-wrapper">';
@@ -4422,16 +4422,16 @@ function renderCartolaControl() {
 
     // Summary cards
     html += '<div style="display:flex; gap:16px; margin-top:16px; flex-wrap:wrap;">';
-    html += '<div style="flex:1; min-width:200px; background:linear-gradient(135deg,#eceee5,#fff); padding:16px 20px; border-radius:12px; border:1px solid #d4e0d4; text-align:center;">';
+    html += '<div style="flex:1; min-width:200px; background:linear-gradient(135deg,#eceee5,#fff); padding:16px 20px; border-radius:12px; border:1px solid #dce5dc; text-align:center;">';
     html += '<div style="font-size:28px; font-weight:700; color:#5a7d5a;">' + disponibles + '</div>';
     html += '<div style="font-size:11px; color:#666; text-transform:uppercase; letter-spacing:0.5px;">Cartolas disponibles</div></div>';
 
-    html += '<div style="flex:1; min-width:200px; background:linear-gradient(135deg,' + (faltantes > 0 ? '#f0e5e5' : '#eceee5') + ',#fff); padding:16px 20px; border-radius:12px; border:1px solid ' + (faltantes > 0 ? '#ffcdd2' : '#d4e0d4') + '; text-align:center;">';
+    html += '<div style="flex:1; min-width:200px; background:linear-gradient(135deg,' + (faltantes > 0 ? '#f0e5e5' : '#eceee5') + ',#fff); padding:16px 20px; border-radius:12px; border:1px solid ' + (faltantes > 0 ? '#e0c5c5' : '#dce5dc') + '; text-align:center;">';
     html += '<div style="font-size:28px; font-weight:700; color:' + (faltantes > 0 ? '#b05a5a' : '#5a7d5a') + ';">' + faltantes + '</div>';
     html += '<div style="font-size:11px; color:#666; text-transform:uppercase; letter-spacing:0.5px;">Cartolas faltantes</div></div>';
 
     if (faltantes > 0) {
-        html += '<div style="flex:2; min-width:280px; background:linear-gradient(135deg,#f0e8d8,#fff); padding:16px 20px; border-radius:12px; border:1px solid #ffe0b2;">';
+        html += '<div style="flex:2; min-width:280px; background:linear-gradient(135deg,#f0e8d8,#fff); padding:16px 20px; border-radius:12px; border:1px solid #d4cdc5;">';
         html += '<div style="font-size:12px; font-weight:600; color:#a68b6b; margin-bottom:6px;">Pedir a Víctor Zamora (Victor.Zamora@scotiabank.cl)</div>';
         html += '<div style="font-size:11px; color:#666;">' + faltantesList.map(f => f.label).join(', ') + '</div>';
         html += '</div>';
