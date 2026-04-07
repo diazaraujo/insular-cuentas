@@ -121,8 +121,7 @@
         .info-snippet summary:hover { color: #00838f; }
         .info-snippet .rule { margin: 6px 0; padding-left: 12px; border-left: 2px solid #cfd8dc; }
         .info-snippet .tag { display: inline-block; padding: 1px 7px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 4px; }
-        .info-snippet .tag-a { background: #e8f5e9; color: #2e7d32; }
-        .info-snippet .tag-a2 { background: #e0f7fa; color: #00838f; }
+        .info-snippet .tag-a { background: #e0f2f1; color: #00838f; }
         .info-snippet .tag-b { background: #fff3e0; color: #e65100; }
         .info-snippet .tag-c { background: #ede7f6; color: #7b1fa2; }
         .info-snippet .tag-cascade { background: #e3f2fd; color: #1565c0; }
@@ -1163,91 +1162,138 @@ const ACUERDOS = {
     }
 };
 
-// ── REGLAS_TIPO: detección del tipo de depósito (Pasada 1) ──
-// Cada regla define: id, nombre, cómo detectarlo, qué se extrae, y la prioridad.
-// El motor las evalúa en orden (primera que calza gana).
+// ── REGLAS_TIPO: detección del tipo de depósito ──
+// Nueva lógica simplificada: 4 reglas claras sin "pasadas"
 const REGLAS_TIPO = [
     {
-        id: 'A',
-        nombre: 'GGCC Explícito',
-        descripcion: 'Múltiplo exacto de $70k (hasta $840k) — todo a GGCC',
-        pasada: 1,
-        detectar: 'amt % CUOTA_GGCC === 0 && amt <= CUOTA_GGCC * 12 && amt > 0',
-        asignacion: 'Todo el monto llena slots GGCC secuenciales',
-        ejemplos: ['$70.000 → 1 mes GGCC', '$140.000 → 2 meses', '$350.000 → 5 meses', '$840.000 → 12 meses'],
+        id: 'GGCC',
+        nombre: 'GGCC',
+        descripcion: 'Depósito de $70.000 o $75.000 — todo a GGCC ($5k extra queda como crédito)',
+        detectar: 'amt === 70000 || amt === 75000',
+        asignacion: 'Todo a GGCC. $70k cubre 1 mes, $75k cubre 1 mes + $5k crédito al siguiente',
+        ejemplos: ['$70.000 → 1 mes GGCC', '$75.000 → $70k GGCC + $5k crédito'],
         color: '#00838f', bg: '#e0f2f1'
     },
     {
-        id: 'A2',
-        nombre: 'GGCC + Extra',
-        descripcion: 'Entre $70k y $140k, no múltiplo exacto — $70k a GGCC + resto a cascada',
-        pasada: 1,
-        detectar: 'amt >= CUOTA_GGCC && amt < CUOTA_GGCC * 2 && amt % CUOTA_GGCC !== 0',
-        asignacion: '$70k llenan 1 slot GGCC, remanente entra a cascada',
-        ejemplos: ['$75.000 → $70k GGCC + $5k cascada', '$100.000 → $70k GGCC + $30k cascada'],
-        color: '#0097a7', bg: '#e0f7fa'
-    },
-    {
-        id: 'B',
-        nombre: 'Cuota Combinada',
-        descripcion: 'Exactamente $236.666 — cuota mensual GGCC + Mobiliario',
-        pasada: 1,
+        id: 'COMBO',
+        nombre: 'GGCC + MOB',
+        descripcion: 'Depósito de ~$236.666 — $70k a GGCC + $166.666 a Mobiliario',
         detectar: 'amt >= 236665 && amt <= 236667',
-        asignacion: '$70k → 1 slot GGCC + $166.666 → 1 slot MOB',
+        asignacion: '$70k → GGCC + $166.666 → MOB',
         ejemplos: ['$236.666 → $70k GGCC + $166.666 MOB'],
         color: '#e65100', bg: '#fff3e0'
     },
     {
-        id: 'C',
-        nombre: 'Cascada General',
-        descripcion: 'Cualquier otro monto — primero cubre GGCC pendientes, luego cascada',
-        pasada: 2,
-        detectar: 'No calza con A, A2 ni B',
-        asignacion: 'Cubre GGCC pendientes → Capital → Construcción → MOB → Construcción (sin tope)',
-        ejemplos: ['$5.000.000 → GGCC pendiente + Capital + Construcción', '$2.000.000 → todo a Construcción si resto lleno'],
+        id: 'LLAMADO',
+        nombre: 'Llamado de Capital',
+        descripcion: 'Monto que calza con un llamado de capital (por monto exacto y fecha cercana)',
+        detectar: 'Matchea monto y ventana de tiempo de un llamado',
+        asignacion: 'Va directo a la categoría del llamado (capital, construcción, o mob)',
+        ejemplos: ['$8M en sep-2024 → Construcción', '$3.5M en jul-2025 → Construcción', '$300k en 2026 → Construcción (cuota mensual)'],
         color: '#7b1fa2', bg: '#ede7f6'
+    },
+    {
+        id: 'RESTO',
+        nombre: 'Cascada',
+        descripcion: 'Monto que no calza con GGCC — se asigna por cascada: Capital → MOB → Construcción',
+        detectar: 'No calza con GGCC, COMBO ni LLAMADO',
+        asignacion: 'Capital (si falta) → Mobiliario (si falta) → Construcción',
+        ejemplos: ['$5M → Capital hasta completar $10M, resto a Construcción'],
+        color: '#616161', bg: '#f5f5f5'
     }
 ];
 
-// ── CASCADA: orden estricto de asignación del remanente ──
-// Después de extraer GGCC (y MOB para Tipo B), lo que queda se asigna
-// en ESTE ORDEN. Cada paso tiene un tope por socio.
+// ── LLAMADOS_CAPITAL: solicitudes de aporte con fechas y montos ──
+// Cada llamado define el monto exacto pedido, la ventana de tiempo esperada,
+// la categoría destino, y montos que matchean (incluye cuotas parciales).
+const LLAMADOS_CAPITAL = [
+    {
+        id: 'CAP_INICIAL',
+        nombre: 'Capital Inicial',
+        categoria: 'inicial',
+        montoPerSocio: 10000000,
+        ventana: { desde: {y:2020, m:1}, hasta: {y:2022, m:9} },
+        montosMatch: null, // No matchea por monto — es la cascada default
+        descripcion: 'Constitución sociedad abr-2020'
+    },
+    {
+        id: 'CONSTR_1',
+        nombre: '1er Llamado Construcción',
+        categoria: 'construccion',
+        montoPerSocio: 8000000,
+        ventana: { desde: {y:2024, m:8}, hasta: {y:2024, m:12} },
+        montosMatch: null, // Montos variados, no matchea por monto exacto
+        descripcion: 'Sep 2024 — primera estimación construcción'
+    },
+    {
+        id: 'CONSTR_2',
+        nombre: '2do Llamado Construcción',
+        categoria: 'construccion',
+        montoPerSocio: 3500000,
+        ventana: { desde: {y:2025, m:6}, hasta: {y:2025, m:9} },
+        montosMatch: [3500000, 3250000], // Antonio depositó $3.25M (el resto por cónyuge)
+        tolerancia: 0,
+        descripcion: 'Jul 2025 — segundo llamado'
+    },
+    {
+        id: 'CONSTR_3',
+        nombre: '3er Llamado Construcción',
+        categoria: 'construccion',
+        montoPerSocio: 4000000,
+        ventana: { desde: {y:2025, m:12}, hasta: {y:2026, m:2} },
+        montosMatch: [4000000],
+        tolerancia: 0,
+        descripcion: 'Ene 2026 — cuota extraordinaria'
+    },
+    {
+        id: 'CONSTR_4',
+        nombre: '4to Llamado (cuotas $300k)',
+        categoria: 'construccion',
+        montoPerSocio: 3600000,
+        ventana: { desde: {y:2026, m:1}, hasta: {y:2026, m:12} },
+        montosMatch: [300000],
+        tolerancia: 0,
+        descripcion: '2026 — 12 cuotas mensuales de $300k'
+    },
+    {
+        id: 'MOB',
+        nombre: 'Mobiliario (24 cuotas)',
+        categoria: 'mobiliario',
+        montoPerSocio: 4000000,
+        ventana: { desde: {y:2025, m:1}, hasta: {y:2027, m:1} },
+        montosMatch: [166666, 166667], // Cuota MOB sola (raro, pero posible)
+        tolerancia: 0,
+        descripcion: 'Feb 2025 — 24 cuotas $166.666'
+    }
+];
+
+// ── CASCADA: orden de asignación para montos no identificados ──
+// Si un depósito no calza con GGCC ni con un llamado específico,
+// se asigna en este orden hasta agotar.
 const CASCADA = [
     {
         orden: 1,
         categoria: 'inicial',
         nombre: 'Capital Inicial',
         topePerSocio: 10000000,
-        sinTope: false,
         descripcion: 'Primer compromiso — constitución sociedad abril 2020',
         color: '#1565c0'
     },
     {
         orden: 2,
-        categoria: 'construccion',
-        nombre: 'Construcción',
-        topePerSocio: 19100000,
-        sinTope: false,
-        descripcion: 'Club House Chaicura — hasta $19.1M por socio',
-        color: '#7b1fa2'
-    },
-    {
-        orden: 3,
         categoria: 'mobiliario',
         nombre: 'Mobiliario',
         topePerSocio: 4000000,
-        sinTope: false,
         descripcion: 'Solo socios MOB — hasta $4M por socio',
         condicion: 'Solo aplica a SOCIOS_MOB que no sean MOB_PAGADO_FULL',
         color: '#e65100'
     },
     {
-        orden: 4,
+        orden: 3,
         categoria: 'construccion',
-        nombre: 'Construcción (excedente)',
+        nombre: 'Construcción',
         topePerSocio: null,
-        sinTope: true,
-        descripcion: 'Bucket final — todo lo que sobra, sin tope. Excedentes son normales.',
+        descripcion: 'Todo el resto va a construcción (sin tope)',
         color: '#7b1fa2'
     }
 ];
@@ -2106,16 +2152,14 @@ function renderResumen() {
     html += '<div style="margin-top:8px;">';
     html += '<p style="margin:0 0 8px;">Cada depósito de cartola se clasifica automáticamente en <strong>2 pasadas</strong>:</p>';
     html += '<div class="rule"><strong>Pasada 1 — Depósitos explícitos (prioridad):</strong><br>';
-    html += '<span class="tag tag-a">TIPO A</span> Múltiplo exacto de $70.000 (hasta $840.000) → todo a GGCC. Ej: $70k = 1 mes, $140k = 2 meses, $350k = 5 meses.<br>';
-    html += '<span class="tag tag-a2">TIPO A2</span> Entre $70.000 y $140.000 pero no múltiplo exacto → $70k a GGCC + resto a cascada. Ej: $75.000 = $70k GGCC + $5k extra.<br>';
-    html += '<span class="tag tag-b">TIPO B</span> Exactamente $236.666 → $70.000 a GGCC + $166.666 a Mobiliario (cuota combinada mensual).</div>';
-    html += '<div class="rule"><strong>Pasada 2 — Resto + cascada:</strong><br>';
-    html += '<span class="tag tag-c">TIPO C</span> Cualquier otro monto → primero cubre GGCC pendientes, luego entra en la <strong>cascada de asignación</strong>.</div>';
-    html += '<div class="rule"><strong>Cascada de asignación (orden estricto):</strong><br>';
+    html += '<span class="tag tag-a">GGCC</span> Depósito de $70.000 → va íntegro a Gastos Comunes (1 mes).<br>';
+    html += '<span class="tag tag-b">COMBO</span> Depósito de $236.666 → $70k a GGCC + $166.666 a Mobiliario.</div>';
+    html += '<div class="rule"><strong>Llamados de capital:</strong><br>';
+    html += '<span class="tag tag-c">LLAMADO</span> Depósitos que calzan en monto y fecha con un llamado de capital van directo a esa categoría (construcción, mob, etc.).</div>';
+    html += '<div class="rule"><strong>Cascada (todo lo demás):</strong><br>';
     html += '<span class="tag tag-cascade">1.</span> Capital Inicial — hasta $10M/socio<br>';
-    html += '<span class="tag tag-cascade">2.</span> Construcción — hasta $19,1M/socio<br>';
-    html += '<span class="tag tag-cascade">3.</span> Mobiliario — hasta $4M/socio (solo socios MOB: ' + SOCIOS_MOB.length + ' de ' + SOCIOS_ALL.length + ')<br>';
-    html += '<span class="tag tag-cascade">4.</span> Construcción (excedente) — todo lo que sobra va aquí, sin tope.</div>';
+    html += '<span class="tag tag-cascade">2.</span> Mobiliario — hasta $4M/socio (solo socios MOB: ' + SOCIOS_MOB.length + ' de ' + SOCIOS_ALL.length + ')<br>';
+    html += '<span class="tag tag-cascade">3.</span> Construcción — todo lo que sobra (sin tope).</div>';
     html += '<div class="rule"><strong>Mes vencido (GGCC):</strong> El GGCC de un mes se paga en el mes siguiente. Ej: GGCC de enero se paga en febrero. Los depósitos de la cartola del 31/03 cubren hasta el GGCC de marzo. Se esperan ' + ggccMeses + ' meses de obligación.</div>';
     html += '</div></details>';
 
@@ -2444,24 +2488,11 @@ document.addEventListener('mouseover', function(e) {
 function classifyAllDeposits() {
     const result = {};
 
-    // ── Tope GGCC desde GGCC_CONFIG + última cartola ──
+    // ── Tope GGCC desde última cartola ──
     const _lc = getLastCartolaMonth();
     let GGCC_END_M = _lc.m, GGCC_END_Y = _lc.y;
 
-    // ── Detectores de tipo (derivados de REGLAS_TIPO) ──
-    const isGGCCOnly = (amt) => amt % CUOTA_GGCC === 0 && amt <= CUOTA_GGCC * GGCC_CONFIG.maxMesesPorDeposito && amt > 0;
-    const isGGCCplusMOB = (amt) => amt >= 236665 && amt <= 236667;
-    const isGGCCplusExtra = (amt) => amt >= CUOTA_GGCC && amt < CUOTA_GGCC * 2 && !isGGCCOnly(amt) && !isGGCCplusMOB(amt);
-
-    function detectTipo(amt, afterGGCC) {
-        if (!afterGGCC) return { id: 'PRE', regla: null };
-        if (isGGCCOnly(amt))      return { id: 'A',  regla: REGLAS_TIPO[0] };
-        if (isGGCCplusExtra(amt)) return { id: 'A2', regla: REGLAS_TIPO[1] };
-        if (isGGCCplusMOB(amt))   return { id: 'B',  regla: REGLAS_TIPO[2] };
-        return { id: 'C', regla: REGLAS_TIPO[3] };
-    }
-
-    // ── Generar slots GGCC desde GGCC_CONFIG ──
+    // ── Generar slots GGCC ──
     const ggccAllMonths = [];
     { let gy = GGCC_CONFIG.inicioYear, gm = GGCC_CONFIG.inicioMonth;
       while (gy < GGCC_END_Y || (gy === GGCC_END_Y && gm <= GGCC_END_M)) {
@@ -2469,45 +2500,39 @@ function classifyAllDeposits() {
           gm++; if (gm > 12) { gm = 1; gy++; }
       }
     }
-    // ── Generar slots MOB desde MOB_CONFIG ──
-    const mobAllMonths = [];
-    { let my = MOB_CONFIG.inicioYear, mm = MOB_CONFIG.inicioMonth;
-      while (my < MOB_CONFIG.finYear || (my === MOB_CONFIG.finYear && mm <= MOB_CONFIG.finMonth)) {
-          mobAllMonths.push(my + '-' + mm);
-          mm++; if (mm > 12) { mm = 1; my++; }
-      }
+
+    // ── Helper: llenar 1 slot GGCC (primer mes pendiente) ──
+    function fillOneGGCC(item, ggccByMonth) {
+        for (const mk of ggccAllMonths) {
+            if (item.remaining <= 0) break;
+            const already = ggccByMonth[mk] || 0;
+            if (already >= CUOTA_GGCC) continue;
+            const take = Math.min(item.remaining, CUOTA_GGCC - already);
+            if (take > 0) { item.alloc.ggcc += take; ggccByMonth[mk] = already + take; item.remaining -= take; }
+            return take;
+        }
+        return 0;
     }
 
-    // ── Helper: llenar slots GGCC ──
-    function fillGGCC(item, ggccByMonth, maxGGCC) {
-        const ggccBefore = item.alloc.ggcc;
-        for (const mk of ggccAllMonths) {
-            if (item.remaining <= 0 || (maxGGCC && item.alloc.ggcc >= maxGGCC)) break;
-            const already = ggccByMonth[mk] || 0;
-            const take = Math.min(item.remaining, Math.max(0, CUOTA_GGCC - already));
-            if (take > 0) { item.alloc.ggcc += take; ggccByMonth[mk] = already + take; item.remaining -= take; }
+    // ── Helper: detectar si matchea un llamado de capital ──
+    function matchLlamado(dep) {
+        for (const ll of LLAMADOS_CAPITAL) {
+            if (!ll.montosMatch) continue; // no matchea por monto
+            const dDate = dep.y * 100 + dep.m;
+            const llDesde = ll.ventana.desde.y * 100 + ll.ventana.desde.m;
+            const llHasta = ll.ventana.hasta.y * 100 + ll.ventana.hasta.m;
+            if (dDate < llDesde || dDate > llHasta) continue;
+            if (ll.montosMatch.includes(dep.amt)) return ll;
         }
-        return item.alloc.ggcc - ggccBefore;
-    }
-    // ── Helper: llenar slots MOB ──
-    function fillMOB(item, mobCuotaByMonth, mobPaidRef) {
-        let filled = 0;
-        for (const mk of mobAllMonths) {
-            if (item.remaining <= 0 || mobPaidRef.v >= MOB_CONFIG.cuotaMensual * MOB_CONFIG.totalCuotas) break;
-            const already = mobCuotaByMonth[mk] || 0;
-            let take = Math.min(item.remaining, Math.max(0, MOB_CONFIG.cuotaMensual - already));
-            take = Math.min(take, MOB_CONFIG.cuotaMensual * MOB_CONFIG.totalCuotas - mobPaidRef.v);
-            if (take > 0) { item.alloc.mobiliario += take; mobCuotaByMonth[mk] = already + take; mobPaidRef.v += take; item.remaining -= take; filled += take; }
-        }
-        return filled;
+        return null;
     }
 
     SOCIOS_ALL.forEach(s => {
         const constrQuota = ACUERDOS.construccion.perSocio;
-        let capitalPaid = 0, constrPaid = 0;
-        const mobPaidRef = { v: 0 }; // ref para pasar a helpers
-        const ggccByMonth = {}, mobCuotaByMonth = {};
+        let capitalPaid = 0, constrPaid = 0, mobPaid = 0;
+        const ggccByMonth = {};
         const isMobSocio = MOB_CONFIG.sociosMOB.includes(s) && !MOB_CONFIG.sociosPagadoFull.includes(s);
+        const mobTope = MOB_CONFIG.cuotaMensual * MOB_CONFIG.totalCuotas; // $4M
 
         const deps = ALL_DEPOSITS.filter(d => d.s === s)
             .map(d => ({...d}))
@@ -2517,73 +2542,95 @@ function classifyAllDeposits() {
             ...dep,
             alloc: { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, otros: 0 },
             remaining: dep.amt,
-            regla: null,    // ← TRAZABILIDAD: regla aplicada
-            detalle: []     // ← TRAZABILIDAD: paso a paso de asignación
+            regla: null,
+            detalle: []
         }));
 
         // ══════════════════════════════════════════════════════════
-        // PASADA 1: Depósitos explícitos (TIPO A, A2, B)
-        //   Prioridad para llenar GGCC antes que la cascada
-        //   Fuente: REGLAS_TIPO[0..2]
+        // REGLA 1: $70.000 → todo a GGCC
+        // REGLA 2: $236.666 → $70k GGCC + $166.666 MOB
+        // REGLA 3: Matchea llamado de capital → va a esa categoría
+        // REGLA 4: Resto → cascada Capital → MOB → Construcción
         // ══════════════════════════════════════════════════════════
         items.forEach(item => {
-            const afterGGCC = item.y > GGCC_CONFIG.inicioYear || (item.y === GGCC_CONFIG.inicioYear && item.m >= GGCC_CONFIG.inicioMonth);
-            const tipo = detectTipo(item.amt, afterGGCC);
-            item.regla = tipo.id;
+            const amt = item.amt;
+            const isGGCC = (amt === 70000);
+            const isGGCC75 = (amt === 75000);
+            const isCombo = (amt >= 236665 && amt <= 236667);
+            const llamado = !isGGCC && !isGGCC75 && !isCombo ? matchLlamado(item) : null;
 
-            if (tipo.id === 'A') {
-                const filled = fillGGCC(item, ggccByMonth, null);
-                item.detalle.push({ paso: 'P1-GGCC', regla: 'A', monto: filled, nota: '$' + item.amt.toLocaleString() + ' → ' + (filled/CUOTA_GGCC) + ' meses GGCC' });
-            } else if (tipo.id === 'A2') {
-                const filled = fillGGCC(item, ggccByMonth, CUOTA_GGCC);
-                item.detalle.push({ paso: 'P1-GGCC', regla: 'A2', monto: filled, nota: '$' + CUOTA_GGCC.toLocaleString() + ' GGCC + $' + item.remaining.toLocaleString() + ' a cascada' });
-            } else if (tipo.id === 'B') {
-                const filled = fillGGCC(item, ggccByMonth, CUOTA_GGCC);
-                item.detalle.push({ paso: 'P1-GGCC', regla: 'B', monto: filled, nota: '$' + CUOTA_GGCC.toLocaleString() + ' GGCC' });
-                if (item.remaining > 0 && isMobSocio) {
-                    const mobFilled = fillMOB(item, mobCuotaByMonth, mobPaidRef);
-                    if (mobFilled > 0) item.detalle.push({ paso: 'P1-MOB', regla: 'B', monto: mobFilled, nota: '$' + mobFilled.toLocaleString() + ' MOB' });
+            // ── REGLA 1: GGCC puro ($70k) ──
+            if (isGGCC) {
+                item.regla = 'GGCC';
+                const filled = fillOneGGCC(item, ggccByMonth);
+                item.detalle.push({ paso: 'R1-GGCC', regla: 'GGCC', monto: filled, nota: '$70k → 1 mes GGCC' });
+            }
+            // ── REGLA 1b: $75k → todo a GGCC (crédito para meses siguientes) ──
+            else if (isGGCC75) {
+                item.regla = 'GGCC';
+                // Llenar slots GGCC con los $75k completos (cubre 1 mes + $5k crédito al siguiente)
+                for (const mk of ggccAllMonths) {
+                    if (item.remaining <= 0) break;
+                    const already = ggccByMonth[mk] || 0;
+                    if (already >= CUOTA_GGCC) continue;
+                    const take = Math.min(item.remaining, CUOTA_GGCC - already);
+                    if (take > 0) { item.alloc.ggcc += take; ggccByMonth[mk] = already + take; item.remaining -= take; }
+                }
+                item.detalle.push({ paso: 'R1-GGCC', regla: 'GGCC', monto: item.alloc.ggcc, nota: '$75k → GGCC (crédito $5k)' });
+            }
+            // ── REGLA 2: COMBO GGCC + MOB ──
+            else if (isCombo) {
+                item.regla = 'COMBO';
+                const filled = fillOneGGCC(item, ggccByMonth);
+                item.detalle.push({ paso: 'R2-GGCC', regla: 'COMBO', monto: filled, nota: '$70k → GGCC' });
+                // MOB portion
+                if (item.remaining > 0 && isMobSocio && mobPaid < mobTope) {
+                    const mobTake = Math.min(item.remaining, CUOTA_MOB, mobTope - mobPaid);
+                    item.alloc.mobiliario += mobTake; mobPaid += mobTake; item.remaining -= mobTake;
+                    item.detalle.push({ paso: 'R2-MOB', regla: 'COMBO', monto: mobTake, nota: '$' + mobTake.toLocaleString() + ' → MOB' });
                 }
             }
-        });
-
-        // ══════════════════════════════════════════════════════════
-        // PASADA 2: GGCC restante (TIPO C) + CASCADA para TODOS
-        //   Fuente: REGLAS_TIPO[3] + CASCADA[]
-        // ══════════════════════════════════════════════════════════
-        items.forEach(item => {
-            const afterGGCC = item.y > GGCC_CONFIG.inicioYear || (item.y === GGCC_CONFIG.inicioYear && item.m >= GGCC_CONFIG.inicioMonth);
-            const isTipoC = item.regla === 'C' || item.regla === 'PRE';
-
-            // TIPO C: llenar GGCC pendientes
-            if (isTipoC && afterGGCC && item.remaining > 0) {
-                const filled = fillGGCC(item, ggccByMonth, null);
-                if (filled > 0) item.detalle.push({ paso: 'P2-GGCC', regla: 'C', monto: filled, nota: 'Cubrió GGCC pendientes: $' + filled.toLocaleString() });
-            }
-
-            // CASCADA (orden desde CASCADA[])
-            // Paso 1: Capital
-            if (capitalPaid < CASCADA[0].topePerSocio && item.remaining > 0) {
-                const t = Math.min(item.remaining, CASCADA[0].topePerSocio - capitalPaid);
-                item.alloc.inicial += t; capitalPaid += t; item.remaining -= t;
-                if (t > 0) item.detalle.push({ paso: 'P2-CASCADA', regla: 'CASCADA-1', monto: t, nota: CASCADA[0].nombre + ': $' + t.toLocaleString() });
-            }
-            // Paso 2: Construcción (con tope)
-            if (constrPaid < CASCADA[1].topePerSocio && item.remaining > 0) {
-                const t = Math.min(item.remaining, CASCADA[1].topePerSocio - constrPaid);
-                item.alloc.construccion += t; constrPaid += t; item.remaining -= t;
-                if (t > 0) item.detalle.push({ paso: 'P2-CASCADA', regla: 'CASCADA-2', monto: t, nota: CASCADA[1].nombre + ': $' + t.toLocaleString() });
-            }
-            // Paso 3: MOB (si aplica)
-            if (item.remaining > 0 && isMobSocio && mobPaidRef.v < CASCADA[2].topePerSocio) {
-                const mobFilled = fillMOB(item, mobCuotaByMonth, mobPaidRef);
-                if (mobFilled > 0) item.detalle.push({ paso: 'P2-CASCADA', regla: 'CASCADA-3', monto: mobFilled, nota: CASCADA[2].nombre + ': $' + mobFilled.toLocaleString() });
-            }
-            // Paso 4: Construcción (excedente, sin tope)
-            if (item.remaining > 0) {
+            // ── REGLA 3: Matchea llamado de capital ──
+            else if (llamado) {
+                item.regla = 'LLAMADO';
+                const cat = llamado.categoria;
                 const t = item.remaining;
-                item.alloc.construccion += t; constrPaid += t; item.remaining = 0;
-                if (t > 0) item.detalle.push({ paso: 'P2-CASCADA', regla: 'CASCADA-4', monto: t, nota: CASCADA[3].nombre + ': $' + t.toLocaleString() });
+                item.alloc[cat] += t;
+                if (cat === 'inicial') capitalPaid += t;
+                else if (cat === 'construccion') constrPaid += t;
+                else if (cat === 'mobiliario') mobPaid += t;
+                item.remaining = 0;
+                item.detalle.push({ paso: 'R3-LLAMADO', regla: llamado.id, monto: t, nota: llamado.nombre + ': $' + t.toLocaleString() });
+            }
+            // ── REGLA 4: Cascada → Capital → MOB → Construcción ──
+            else {
+                item.regla = 'RESTO';
+            }
+
+            // ── Cascada para remanente (REGLA 4 + sobrantes de reglas 1-3) ──
+            if (item.remaining > 0) {
+                // Paso 1: Capital (si falta)
+                if (capitalPaid < CASCADA[0].topePerSocio) {
+                    const t = Math.min(item.remaining, CASCADA[0].topePerSocio - capitalPaid);
+                    if (t > 0) {
+                        item.alloc.inicial += t; capitalPaid += t; item.remaining -= t;
+                        item.detalle.push({ paso: 'R4-CAPITAL', regla: 'CASCADA', monto: t, nota: 'Capital: $' + t.toLocaleString() });
+                    }
+                }
+                // Paso 2: MOB (si aplica y falta)
+                if (item.remaining > 0 && isMobSocio && mobPaid < mobTope) {
+                    const t = Math.min(item.remaining, mobTope - mobPaid);
+                    if (t > 0) {
+                        item.alloc.mobiliario += t; mobPaid += t; item.remaining -= t;
+                        item.detalle.push({ paso: 'R4-MOB', regla: 'CASCADA', monto: t, nota: 'Mobiliario: $' + t.toLocaleString() });
+                    }
+                }
+                // Paso 3: Construcción (todo el resto)
+                if (item.remaining > 0) {
+                    const t = item.remaining;
+                    item.alloc.construccion += t; constrPaid += t; item.remaining = 0;
+                    item.detalle.push({ paso: 'R4-CONSTR', regla: 'CASCADA', monto: t, nota: 'Construcción: $' + t.toLocaleString() });
+                }
             }
         });
 
@@ -2599,7 +2646,7 @@ function classifyAllDeposits() {
         // Count GGCC months fully paid
         const ggccMonthsPaid = Object.values(ggccByMonth).filter(v => v >= CUOTA_GGCC).length;
         const ggccMonthsPartial = Object.keys(ggccByMonth).length - ggccMonthsPaid;
-        result[s] = { deposits: classified, totals, capitalPaid, constrPaid, mobPaid: mobPaidRef.v, constrQuota, ggccByMonth, ggccMonthsPaid, ggccMonthsPartial };
+        result[s] = { deposits: classified, totals, capitalPaid, constrPaid, mobPaid, constrQuota, ggccByMonth, ggccMonthsPaid, ggccMonthsPartial };
     });
     return result;
 }
@@ -2624,7 +2671,7 @@ function renderAportesCapital() {
     html += '<details class="info-snippet" style="border-left-color:#1565c0;">';
     html += '<summary>¿Cómo se asignan los montos a cada categoría?</summary>';
     html += '<div style="margin-top:8px;">';
-    html += '<div class="rule"><strong>Paso 1 — GGCC (Pasada 1):</strong> De cada depósito se extraen primero los GGCC. <span class="tag tag-a">$70k</span> y <span class="tag tag-a2">$75k</span> van directo a GGCC. <span class="tag tag-b">$236.666</span> se divide en $70k GGCC + $166k MOB.</div>';
+    html += '<div class="rule"><strong>Clasificación:</strong> <span class="tag tag-a">$70k</span> → GGCC. <span class="tag tag-b">$236.666</span> → $70k GGCC + $166k MOB. <span class="tag tag-c">Llamados</span> → directo a la categoría. <strong>Resto</strong> → cascada Capital → MOB → Construcción.</div>';
     html += '<div class="rule"><strong>Paso 2 — Cascada (Pasada 2):</strong> Lo que queda del depósito se asigna en orden estricto:<br>';
     html += '① <strong style="color:#1565c0;">Capital</strong> hasta $' + (ACUERDOS.capital.perSocio/1e6) + 'M/socio → ';
     html += '② <strong style="color:#7b1fa2;">Construcción</strong> hasta $' + (ACUERDOS.construccion.perSocio/1e6) + 'M/socio → ';
@@ -2954,10 +3001,9 @@ function renderGGCC() {
     html += '<div class="rule"><strong>Grilla mensual:</strong> Cada celda muestra cuánto GGCC pagó ese socio en ese mes. <span style="background:#e8f5e9; padding:1px 4px; border-radius:3px;">Verde</span> = cuota completa ($' + (CUOTA_GGCC/1000) + 'k). <span style="background:#fff8e1; padding:1px 4px; border-radius:3px;">Amarillo</span> = parcial. <span style="color:#bbb;">—</span> = sin pago o mes no aplica.</div>';
     html += '<div class="rule"><strong>Celdas <span style="background:#fff3e0; padding:1px 4px; border-radius:3px;">⏳</span>:</strong> Mes donde se esperaba GGCC pero no hay cartola disponible aún.</div>';
     html += '<div class="rule"><strong>Tipos de depósito GGCC:</strong><br>';
-    html += '<span class="tag tag-a">TIPO A</span> Múltiplo de $70k → se asigna completo a GGCC (ej: $350k = 5 meses de golpe).<br>';
-    html += '<span class="tag tag-a2">TIPO A2</span> Monto cercano a $70k (ej: $75k) → $70k a GGCC + $5k a cascada.<br>';
-    html += '<span class="tag tag-b">TIPO B</span> $236.666 → $70k GGCC + $166.666 Mobiliario.<br>';
-    html += '<span class="tag tag-c">TIPO C</span> Otros montos → cubren GGCC pendientes primero, luego cascada.</div>';
+    html += '<span class="tag tag-a">GGCC</span> $70.000 → 1 mes GGCC.<br>';
+    html += '<span class="tag tag-b">COMBO</span> $236.666 → $70k GGCC + $166.666 MOB.<br>';
+    html += 'Otros depósitos no aportan a GGCC (van a capital, construcción o mob por cascada).</div>';
     html += '<div class="rule"><strong>Mes vencido:</strong> GGCC se paga en el mes siguiente. Los depósitos de marzo (cartola 31/03) cubren hasta el GGCC de marzo. Se esperan ' + ggccMonthsThisYear + ' meses para ' + year + '.</div>';
     html += '<div class="rule"><strong>Saldo:</strong> Pagado − Esperado. Positivo = adelantado, negativo = debe meses, cero = al día.</div>';
     html += '</div></details>';
@@ -3438,7 +3484,7 @@ function renderVistaSocio(socioOverride) {
     html += '<summary>¿Cómo leer la bitácora?</summary>';
     html += '<div style="margin-top:8px;">';
     html += '<div class="rule"><strong>Cada fila</strong> = un depósito real en la cartola Scotiabank. El monto total se descompone en las columnas de asignación (GGCC, Capital, Constr., MOB).</div>';
-    html += '<div class="rule"><strong>Columna "Tipo":</strong> <span class="tag tag-a">A</span> = múltiplo de $70k (todo GGCC). <span class="tag tag-a2">A2</span> = $70k + extra (ej: $75k). <span class="tag tag-b">B</span> = $236.666 (GGCC + MOB). <span class="tag tag-c">C</span> = otro monto (cascada).</div>';
+    html += '<div class="rule"><strong>Columna "Tipo":</strong> <span class="tag tag-a">GGCC</span> = $70k (todo GGCC). <span class="tag tag-b">COMBO</span> = $236.666 (GGCC + MOB). <span class="tag tag-c">LLAMADO</span> = calza con llamado de capital. <strong>Cascada</strong> = resto (Capital → MOB → Construcción).</div>';
     html += '<div class="rule"><strong>Acumulados:</strong> Los totales al pie muestran cuánto ha ido a cada categoría sumando todos los depósitos.</div>';
     html += '</div></details>';
     html += '<div style="overflow-x:auto;"><table style="width:100%; font-size:11px; border-collapse:collapse;">';
@@ -3455,8 +3501,8 @@ function renderVistaSocio(socioOverride) {
     html += '<th style="padding:6px 8px; text-align:left;">Cartola</th>';
     html += '</tr></thead><tbody>';
 
-    const _tipoColors = {A:'#00838f', A2:'#0097a7', B:'#e65100', C:'#7b1fa2', PRE:'#795548'};
-    const _tipoLabels = {A:'GGCC', A2:'GGCC+', B:'Combo', C:'Cascada', PRE:'Pre-GGCC'};
+    const _tipoColors = {GGCC:'#00838f', COMBO:'#e65100', LLAMADO:'#7b1fa2', RESTO:'#616161'};
+    const _tipoLabels = {GGCC:'GGCC', COMBO:'GGCC+MOB', LLAMADO:'Llamado', RESTO:'Cascada'};
     let runGGCC=0, runCap=0, runConstr=0, runMob=0;
     let _prevMK = '';
     deps.forEach((d, i) => {
@@ -3567,8 +3613,8 @@ function showSocioBitacora(socio) {
     html += '<th style="padding:6px 8px; text-align:left;">Descripción</th>';
     html += '</tr></thead><tbody>';
 
-    const tipoColors = {A:'#00838f', A2:'#0097a7', B:'#e65100', C:'#7b1fa2', PRE:'#795548'};
-    const tipoLabels = {A:'GGCC', A2:'GGCC+', B:'Combo', C:'Cascada', PRE:'Pre-GGCC'};
+    const tipoColors = {GGCC:'#00838f', COMBO:'#e65100', LLAMADO:'#7b1fa2', RESTO:'#616161'};
+    const tipoLabels = {GGCC:'GGCC', COMBO:'GGCC+MOB', LLAMADO:'Llamado', RESTO:'Cascada'};
 
     let runGGCC=0, runCap=0, runConstr=0, runMob=0;
     let prevMonthKey = '';
