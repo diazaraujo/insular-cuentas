@@ -166,8 +166,10 @@
         .doc-item a strong { color: inherit; }
 
         .socios-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 12px; margin-top: 8px; border-radius: 10px; overflow: hidden; }
-        .socios-table th { background: #5c554e; color: #f5f0eb; padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-        .socios-table td { padding: 10px 12px; border-bottom: 1px solid #e7e0d8; }
+        .socios-table th { background: #5c554e; color: #f5f0eb; padding: 10px 12px; text-align: center; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        .socios-table th:nth-child(2) { text-align: left; }
+        .socios-table td { padding: 10px 12px; border-bottom: 1px solid #e7e0d8; text-align: center; vertical-align: middle; }
+        .socios-table td:nth-child(2) { text-align: left; }
         .socios-table tr:hover td { background: #faf8f5; }
         .socios-table .socio-avatar { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: #5c554e; color: #f5f0eb; font-size: 11px; font-weight: 700; margin-right: 8px; flex-shrink: 0; vertical-align: middle; }
         .socio-status { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #eceee5; color: #5a7d5a; }
@@ -421,14 +423,44 @@
                     <div class="info-row"><span class="info-label">Duración</span><span class="info-value">Indefinida</span></div>
                 </div>
                 <div class="legal-card" style="border-left-color: #8b7e74;">
-                    <h4 style="color: #8b7e74;">Capital y Estructura</h4>
+                    <h4 style="color: #8b7e74;">Estructura</h4>
                     <div class="info-row"><span class="info-label">Capital Total</span><span class="info-value">$100.000.000</span></div>
                     <div class="info-row"><span class="info-label">Acciones</span><span class="info-value">10 socios × 10%</span></div>
-                    <div class="info-row"><span class="info-label">Capital enterado</span><span class="info-value">$10.000.000 c/u (100%)</span></div>
                     <div class="info-row"><span class="info-label">Cuenta bancaria</span><span class="info-value">Scotiabank 000977009065</span></div>
                     <div class="info-row"><span class="info-label">GGCC mensual</span><span class="info-value">$70.000 (desde oct-2022)</span></div>
-                    <div class="info-row"><span class="info-label">Cuota mob.</span><span class="info-value">$4M en 24 cuotas (~$166.333/mes)</span></div>
                 </div>
+            </div>
+            <div style="margin-top:20px;">
+                <h4 style="color:#5a7d9a; margin-bottom:12px; font-size:15px;">Aportes de Capital</h4>
+                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:12px;" id="aportesCapitalSociedad"></div>
+                <script>
+                (function(){
+                    const container = document.getElementById('aportesCapitalSociedad');
+                    const colors = { inicial:'#5a7d9a', construccion:'#8b7e74', mobiliario:'#a68b6b' };
+                    const catLabels = { inicial:'Capital Inicial', construccion:'Construcción', mobiliario:'Mobiliario' };
+                    let totalGeneral = 0;
+                    LLAMADOS_CAPITAL.forEach(function(ll){
+                        const total = ll.montoPerSocio * 10;
+                        totalGeneral += total;
+                        const color = colors[ll.categoria] || '#666';
+                        const card = document.createElement('div');
+                        card.style.cssText = 'background:white; border-radius:8px; padding:14px 16px; border-left:4px solid ' + color + '; box-shadow:0 1px 3px rgba(0,0,0,0.08);';
+                        card.innerHTML = '<div style="font-size:11px; text-transform:uppercase; color:' + color + '; font-weight:700; letter-spacing:0.5px; margin-bottom:4px;">' + (catLabels[ll.categoria] || ll.categoria) + '</div>'
+                            + '<div style="font-size:14px; font-weight:700; color:#2d2d2d; margin-bottom:6px;">' + ll.nombre + '</div>'
+                            + '<div style="display:flex; justify-content:space-between; font-size:12px; color:#666; margin-bottom:3px;"><span>Por socio</span><span style="font-weight:600;">$' + ll.montoPerSocio.toLocaleString() + '</span></div>'
+                            + '<div style="display:flex; justify-content:space-between; font-size:12px; color:#666; margin-bottom:3px;"><span>Total (×10)</span><span style="font-weight:600;">$' + total.toLocaleString() + '</span></div>'
+                            + '<div style="font-size:11px; color:#999; margin-top:6px; border-top:1px solid #f0f0f0; padding-top:6px;">' + ll.descripcion + '</div>';
+                        container.appendChild(card);
+                    });
+                    // Total card
+                    const totalCard = document.createElement('div');
+                    totalCard.style.cssText = 'background:#f8f7f5; border-radius:8px; padding:14px 16px; border-left:4px solid #5c554e; box-shadow:0 1px 3px rgba(0,0,0,0.08); display:flex; flex-direction:column; justify-content:center;';
+                    totalCard.innerHTML = '<div style="font-size:11px; text-transform:uppercase; color:#5c554e; font-weight:700; letter-spacing:0.5px; margin-bottom:4px;">Compromiso Total</div>'
+                        + '<div style="font-size:22px; font-weight:700; color:#2d2d2d;">$' + totalGeneral.toLocaleString() + '</div>'
+                        + '<div style="font-size:12px; color:#666; margin-top:4px;">$' + (totalGeneral/10).toLocaleString() + ' por socio</div>';
+                    container.appendChild(totalCard);
+                })();
+                </script>
             </div>
         </div>
 
@@ -879,8 +911,8 @@
     <!-- TAB: Vista por Socio -->
     <div id="tab-socio" class="tab-content">
         <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
-            <label style="font-size:14px; font-weight:600; color:#2d2926;">Seleccionar socio:</label>
-            <select id="socioSelector" onchange="renderVistaSocio()" style="padding:10px 20px; border-radius:8px; border:2px solid #2d2926; font-size:14px; font-weight:600; background:white; cursor:pointer; min-width:280px;"></select>
+            <label style="font-size:14px; font-weight:600; color:#5c554e;">Seleccionar socio:</label>
+            <select id="socioSelector" onchange="renderVistaSocio()" style="padding:10px 20px; border-radius:8px; border:2px solid #5c554e; font-size:14px; font-weight:600; background:white; cursor:pointer; min-width:280px;"></select>
         </div>
         <div id="socioViewContent"></div>
     </div>
@@ -1294,10 +1326,10 @@ const REGLAS_TIPO = [
     {
         id: 'RESTO',
         nombre: 'Cascada',
-        descripcion: 'Monto que no calza con reglas anteriores — se asigna por cascada: Capital → MOB → Construcción → GGCC crédito → Saldo a Favor',
+        descripcion: 'Monto que no calza con reglas anteriores — se asigna por cascada: Capital → MOB → Construcción → GGCC crédito → Saldo a Favor de Socios',
         detectar: 'No calza con GGCC, COMBO ni LLAMADO',
-        asignacion: 'Capital (si falta) → Mobiliario (si falta) → Construcción → GGCC → Saldo a Favor',
-        ejemplos: ['$5M → Capital hasta completar $10M, resto a Construcción', 'Excedente sobre tope → Saldo a Favor'],
+        asignacion: 'Capital (si falta) → Mobiliario (si falta) → Construcción → GGCC → Saldo a Favor de Socios',
+        ejemplos: ['$5M → Capital hasta completar $10M, resto a Construcción', 'Excedente sobre tope → Saldo a Favor de Socios'],
         color: '#616161', bg: '#f5f5f5'
     }
 ];
@@ -1930,8 +1962,8 @@ function renderDeudas() {
     h += '<div style="font-size:12px; color:#d4cdc5; margin-bottom:4px;">Total Deuda Insular</div>';
     h += '<div style="font-size:22px; font-weight:700; color:#fff;">' + fmt(totalDeuda) + '</div>';
     if (totalAbonado > 0) {
-        h += '<div style="font-size:11px; color:#a0d4a0; margin-top:4px;">Abonado: ' + fmt(totalAbonado) + '</div>';
-        h += '<div style="font-size:13px; font-weight:700; color:#ffb74d; margin-top:2px;">Saldo pendiente: ' + fmt(totalNeta) + '</div>';
+        h += '<div style="font-size:11px; color:#a0c4a0; margin-top:4px;">Abonado: ' + fmt(totalAbonado) + '</div>';
+        h += '<div style="font-size:13px; font-weight:700; color:#e7c08a; margin-top:2px;">Saldo pendiente: ' + fmt(totalNeta) + '</div>';
     }
     h += '<div style="font-size:11px; color:#a68b6b; margin-top:4px;">2 socios</div>';
     h += '</div>';
@@ -1973,27 +2005,27 @@ function renderDeudas() {
 
         // ── ABONOS (pagos realizados por Insular al socio) ──
         if (socio.abonos && socio.abonos.length > 0) {
-            h += '<div style="background:#e8f5e9; border-radius:8px; padding:12px 14px; margin:12px 0 24px; border:1px solid #a5d6a7;">';
-            h += '<div style="font-size:12px; font-weight:700; color:#2e7d32; margin-bottom:8px;">Abonos realizados por Insular</div>';
+            h += '<div style="background:#eceee5; border-radius:8px; padding:12px 14px; margin:12px 0 24px; border:1px solid #b5c8b5;">';
+            h += '<div style="font-size:12px; font-weight:700; color:#5a7d5a; margin-bottom:8px;">Abonos realizados por Insular</div>';
             h += '<table style="width:100%; table-layout:fixed;">';
             h += '<colgroup><col style="width:15%"><col style="width:55%"><col style="width:15%"><col style="width:15%"></colgroup>';
             h += '<thead><tr>';
-            h += '<th style="background:#c8e6c9; color:#1b5e20; padding:6px; text-align:left; font-size:11px;">Fecha</th>';
-            h += '<th style="background:#c8e6c9; color:#1b5e20; padding:6px; text-align:left; font-size:11px;">Concepto</th>';
-            h += '<th style="background:#c8e6c9; color:#1b5e20; padding:6px; text-align:center; font-size:11px;">Origen</th>';
-            h += '<th style="background:#c8e6c9; color:#1b5e20; padding:6px; text-align:right; font-size:11px;">Monto</th>';
+            h += '<th style="background:#d4e0d4; color:#3d6b3d; padding:6px; text-align:left; font-size:11px;">Fecha</th>';
+            h += '<th style="background:#d4e0d4; color:#3d6b3d; padding:6px; text-align:left; font-size:11px;">Concepto</th>';
+            h += '<th style="background:#d4e0d4; color:#3d6b3d; padding:6px; text-align:center; font-size:11px;">Origen</th>';
+            h += '<th style="background:#d4e0d4; color:#3d6b3d; padding:6px; text-align:right; font-size:11px;">Monto</th>';
             h += '</tr></thead><tbody>';
             socio.abonos.forEach((ab, i) => {
-                h += '<tr style="background:' + (i % 2 === 0 ? '#e8f5e9' : '#f1f8e9') + ';">';
+                h += '<tr style="background:' + (i % 2 === 0 ? '#eceee5' : '#f2f4ee') + ';">';
                 h += '<td style="padding:5px 6px; font-size:11px;">' + ab.fecha + '</td>';
                 h += '<td style="padding:5px 6px; font-size:11px;">' + ab.concepto + '</td>';
-                h += '<td style="padding:5px 6px; font-size:10px; text-align:center; color:#2e7d32;">' + ab.origen + '</td>';
-                h += '<td style="padding:5px 6px; font-size:11px; text-align:right; font-weight:600; color:#2e7d32;">-' + fmt(ab.monto) + '</td>';
+                h += '<td style="padding:5px 6px; font-size:10px; text-align:center; color:#5a7d5a;">' + ab.origen + '</td>';
+                h += '<td style="padding:5px 6px; font-size:11px; text-align:right; font-weight:600; color:#5a7d5a;">-' + fmt(ab.monto) + '</td>';
                 h += '</tr>';
             });
-            h += '<tr style="background:#c8e6c9; font-weight:700;">';
-            h += '<td colspan="3" style="padding:6px; font-size:11px; color:#1b5e20;">Total abonado</td>';
-            h += '<td style="padding:6px; font-size:11px; text-align:right; color:#1b5e20;">-' + fmt(abonadoSocio) + '</td>';
+            h += '<tr style="background:#d4e0d4; font-weight:700;">';
+            h += '<td colspan="3" style="padding:6px; font-size:11px; color:#3d6b3d;">Total abonado</td>';
+            h += '<td style="padding:6px; font-size:11px; text-align:right; color:#3d6b3d;">-' + fmt(abonadoSocio) + '</td>';
             h += '</tr>';
             h += '</tbody></table>';
             h += '<div style="font-size:13px; font-weight:700; color:#b05a5a; margin-top:8px;">Saldo pendiente: ' + fmt(netaSocio) + '</div>';
@@ -2019,13 +2051,13 @@ function renderMetodologia() {
 
     // ═══ HEADER ═══
     h += '<div style="margin-bottom:32px;">';
-    h += '<h2 style="font-size:20px; color:#2d2926; margin-bottom:8px;">Metodología de Clasificación de Fondos</h2>';
+    h += '<h2 style="font-size:20px; color:#5c554e; margin-bottom:8px;">Metodología de Clasificación de Fondos</h2>';
     h += '<p style="font-size:13px; color:#666; line-height:1.6;">Este documento describe cómo cada depósito que ingresa a la cuenta Scotiabank de Insular S.p.A. se clasifica y asigna a las distintas categorías de compromiso. Toda la información proviene exclusivamente de las cartolas bancarias verificadas.</p>';
     h += '</div>';
 
     // ═══ DIAGRAMA 1: FLUJO PRINCIPAL ═══
-    h += '<div style="background:white; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:24px;">';
-    h += '<h3 style="font-size:16px; color:#2d2926; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">1. Flujo de Clasificación de Depósitos</h3>';
+    h += '<div style="background:white; border-radius:12px; padding:24px; border:1px solid #e7e0d8; margin-bottom:24px;">';
+    h += '<h3 style="font-size:16px; color:#5c554e; margin-bottom:16px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">1. Flujo de Clasificación de Depósitos</h3>';
 
     // SVG Flowchart
     h += '<div style="overflow-x:auto; padding:8px 0;">';
@@ -2038,7 +2070,7 @@ function renderMetodologia() {
     h += '</defs>';
 
     // Row 1: DEPÓSITO INGRESA
-    h += '<rect x="320" y="10" width="260" height="50" rx="25" fill="#2d2926" filter="url(#shadow)"/>';
+    h += '<rect x="320" y="10" width="260" height="50" rx="25" fill="#5c554e" filter="url(#shadow)"/>';
     h += '<text x="450" y="40" text-anchor="middle" fill="white" font-size="14" font-weight="700">Depósito ingresa a cartola</text>';
 
     // Arrow down
@@ -2052,7 +2084,7 @@ function renderMetodologia() {
     // Branch A: left
     h += '<line x1="350" y1="134" x2="100" y2="180" stroke="#6b8f8b" stroke-width="2" marker-end="url(#arrowhead)"/>';
     // Branch A2
-    h += '<line x1="400" y1="134" x2="280" y2="180" stroke="#0097a7" stroke-width="2" marker-end="url(#arrowhead)"/>';
+    h += '<line x1="400" y1="134" x2="280" y2="180" stroke="#5a7d9a" stroke-width="2" marker-end="url(#arrowhead)"/>';
     // Branch B
     h += '<line x1="500" y1="134" x2="520" y2="180" stroke="#a68b6b" stroke-width="2" marker-end="url(#arrowhead)"/>';
     // Branch C
@@ -2066,11 +2098,11 @@ function renderMetodologia() {
     h += '<text x="100" y="246" text-anchor="middle" fill="#6b8f8b" font-size="10" font-weight="600">→ TODO a GGCC</text>';
 
     // ── TIPO A2 ──
-    h += '<rect x="200" y="180" width="170" height="70" rx="8" fill="#e0f7fa" stroke="#0097a7" stroke-width="2" filter="url(#shadow)"/>';
-    h += '<text x="285" y="202" text-anchor="middle" fill="#0097a7" font-size="12" font-weight="700">TIPO A2</text>';
+    h += '<rect x="200" y="180" width="170" height="70" rx="8" fill="#e2e6ec" stroke="#5a7d9a" stroke-width="2" filter="url(#shadow)"/>';
+    h += '<text x="285" y="202" text-anchor="middle" fill="#5a7d9a" font-size="12" font-weight="700">TIPO A2</text>';
     h += '<text x="285" y="218" text-anchor="middle" fill="#455a64" font-size="10">$70k–$140k</text>';
     h += '<text x="285" y="232" text-anchor="middle" fill="#455a64" font-size="10">(no múltiplo, ej: $75k)</text>';
-    h += '<text x="285" y="246" text-anchor="middle" fill="#0097a7" font-size="10" font-weight="600">→ $70k GGCC + resto</text>';
+    h += '<text x="285" y="246" text-anchor="middle" fill="#5a7d9a" font-size="10" font-weight="600">→ $70k GGCC + resto</text>';
 
     // ── TIPO B ──
     h += '<rect x="430" y="180" width="180" height="70" rx="8" fill="#f0e8d8" stroke="#a68b6b" stroke-width="2" filter="url(#shadow)"/>';
@@ -2136,9 +2168,9 @@ function renderMetodologia() {
     h += '<line x1="450" y1="440" x2="450" y2="470" stroke="#90a4ae" stroke-width="2" marker-end="url(#arrowhead)"/>';
 
     // RESULTADO
-    h += '<rect x="150" y="475" width="600" height="50" rx="10" fill="#2d2926" filter="url(#shadow)"/>';
-    h += '<text x="450" y="498" text-anchor="middle" fill="white" font-size="13" font-weight="700">Depósito 100% clasificado → GGCC + Capital + MOB + Construcción + Saldo a Favor</text>';
-    h += '<text x="450" y="515" text-anchor="middle" fill="#90a4ae" font-size="10">Cada peso queda asignado. Excedentes quedan como Saldo a Favor del socio.</text>';
+    h += '<rect x="150" y="475" width="600" height="50" rx="10" fill="#5c554e" filter="url(#shadow)"/>';
+    h += '<text x="450" y="498" text-anchor="middle" fill="white" font-size="13" font-weight="700">Depósito 100% clasificado → GGCC + Capital + MOB + Construcción + Saldo a Favor de Socios</text>';
+    h += '<text x="450" y="515" text-anchor="middle" fill="#90a4ae" font-size="10">Cada peso queda asignado. Excedentes quedan como Saldo a Favor de Socios.</text>';
 
     // Legend at bottom
     h += '<text x="450" y="555" text-anchor="middle" fill="#999" font-size="11" font-style="italic">Las líneas punteadas indican que el remanente del depósito pasa al siguiente paso.</text>';
@@ -2147,8 +2179,8 @@ function renderMetodologia() {
     h += '</svg></div></div>';
 
     // ═══ DIAGRAMA 2: MES VENCIDO ═══
-    h += '<div style="background:white; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:24px;">';
-    h += '<h3 style="font-size:16px; color:#6b8f8b; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">2. Mes Vencido — ¿Cómo funciona el GGCC?</h3>';
+    h += '<div style="background:white; border-radius:12px; padding:24px; border:1px solid #e7e0d8; margin-bottom:24px;">';
+    h += '<h3 style="font-size:16px; color:#6b8f8b; margin-bottom:16px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">2. Mes Vencido — ¿Cómo funciona el GGCC?</h3>';
 
     h += '<div style="overflow-x:auto; padding:8px 0;">';
     h += '<svg viewBox="0 0 800 200" style="width:100%; max-width:800px; min-width:500px; display:block; margin:0 auto;" xmlns="http://www.w3.org/2000/svg">';
@@ -2190,8 +2222,8 @@ function renderMetodologia() {
     h += '</svg></div></div>';
 
     // ═══ SECCIÓN 3: TABLA DE CONSTANTES ═══
-    h += '<div style="background:white; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:24px;">';
-    h += '<h3 style="font-size:16px; color:#2d2926; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">3. Constantes y Parámetros del Sistema</h3>';
+    h += '<div style="background:white; border-radius:12px; padding:24px; border:1px solid #e7e0d8; margin-bottom:24px;">';
+    h += '<h3 style="font-size:16px; color:#5c554e; margin-bottom:16px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">3. Constantes y Parámetros del Sistema</h3>';
 
     h += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:16px;">';
 
@@ -2229,8 +2261,8 @@ function renderMetodologia() {
     h += '</div></div>';
 
     // Card: Cartolas
-    h += '<div style="background:#faf8f5; border-radius:8px; padding:16px; border-left:4px solid #795548;">';
-    h += '<div style="font-weight:700; color:#795548; margin-bottom:8px;">Fuente de Datos</div>';
+    h += '<div style="background:#faf8f5; border-radius:8px; padding:16px; border-left:4px solid #8b7e74;">';
+    h += '<div style="font-weight:700; color:#8b7e74; margin-bottom:8px;">Fuente de Datos</div>';
     h += '<div style="font-size:12px; color:#455a64; line-height:1.8;">';
     h += 'Origen: <strong>Cartolas Scotiabank</strong><br>';
     h += 'Total depósitos: <strong>' + ALL_DEPOSITS.length + '</strong><br>';
@@ -2241,8 +2273,8 @@ function renderMetodologia() {
     h += '</div></div>'; // grid + section
 
     // ═══ SECCIÓN 4: TIPOS DE DEPÓSITO CON EJEMPLOS ═══
-    h += '<div style="background:white; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:24px;">';
-    h += '<h3 style="font-size:16px; color:#2d2926; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">4. Tipos de Depósito — Ejemplos Reales</h3>';
+    h += '<div style="background:white; border-radius:12px; padding:24px; border:1px solid #e7e0d8; margin-bottom:24px;">';
+    h += '<h3 style="font-size:16px; color:#5c554e; margin-bottom:16px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">4. Tipos de Depósito — Ejemplos Reales</h3>';
 
     h += '<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:12px;">';
     h += '<thead><tr style="background:#f0ebe5; color:#5c554e;">';
@@ -2270,8 +2302,8 @@ function renderMetodologia() {
     h += '</tbody></table></div></div>';
 
     // ═══ SECCIÓN 5: REGLAS DE INTEGRIDAD ═══
-    h += '<div style="background:white; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:24px;">';
-    h += '<h3 style="font-size:16px; color:#b05a5a; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">5. Validación de Integridad de Datos</h3>';
+    h += '<div style="background:white; border-radius:12px; padding:24px; border:1px solid #e7e0d8; margin-bottom:24px;">';
+    h += '<h3 style="font-size:16px; color:#b05a5a; margin-bottom:16px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">5. Validación de Integridad de Datos</h3>';
     h += '<p style="font-size:12px; color:#666; margin-bottom:16px;">El sistema ejecuta 20 reglas automáticas cada vez que se carga el dashboard. Si alguna falla, aparece una alerta naranja en el Resumen.</p>';
 
     h += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:12px;">';
@@ -2280,7 +2312,7 @@ function renderMetodologia() {
         { title: 'Capital (3)', color: '#5a7d9a', rules: ['Excede meta >5%', 'Parcial <50%', 'Total global excede meta'] },
         { title: 'Construcción (0)', color: '#8b7e74', rules: ['Sin reglas — excedentes son normales (bucket final)'] },
         { title: 'GGCC (4)', color: '#6b8f8b', rules: ['Excede meses esperados', 'Meses > esperados', 'GGCC pre oct-2022', 'Total global GGCC'] },
-        { title: 'Balance (3)', color: '#795548', rules: ['Suma categorías ≠ total', 'ALL_DEPOSITS ≠ clasificados', 'Socios no reconocidos'] },
+        { title: 'Balance (3)', color: '#8b7e74', rules: ['Suma categorías ≠ total', 'ALL_DEPOSITS ≠ clasificados', 'Socios no reconocidos'] },
     ];
     ruleGroups.forEach(g => {
         h += '<div style="background:#faf8f5; border-radius:8px; padding:12px; border-left:3px solid ' + g.color + ';">';
@@ -2292,8 +2324,8 @@ function renderMetodologia() {
     h += '</div></div>';
 
     // ═══ SECCIÓN 6: MODELO DE DATOS (raw) ═══
-    h += '<div style="background:white; border-radius:12px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.06); margin-bottom:24px;">';
-    h += '<h3 style="font-size:16px; color:#2d2926; margin-bottom:4px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">6. Modelo de Datos — Fuente de Verdad</h3>';
+    h += '<div style="background:white; border-radius:12px; padding:24px; border:1px solid #e7e0d8; margin-bottom:24px;">';
+    h += '<h3 style="font-size:16px; color:#5c554e; margin-bottom:4px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">6. Modelo de Datos — Fuente de Verdad</h3>';
     h += '<p style="font-size:12px; color:#666; margin-bottom:16px;">Las siguientes estructuras definen todas las reglas de clasificación. El motor de asignación las lee en tiempo real; este documento se genera desde ellas.</p>';
 
     // REGLAS_TIPO table
@@ -2417,11 +2449,11 @@ function renderResumen() {
     if (_warnings.length > 0) {
         html += '<div style="background:#f0e8d8; border:2px solid #a68b6b; border-radius:10px; padding:14px 18px; margin-bottom:20px;">';
         html += '<div style="font-weight:700; color:#a68b6b; font-size:13px; margin-bottom:6px;">⚠ Alerta de Integridad de Datos (' + _warnings.length + ')</div>';
-        _warnings.forEach(w => { html += '<div style="font-size:11px; color:#795548; margin:3px 0; padding-left:12px; border-left:2px solid #ffcc02;">• ' + w + '</div>'; });
+        _warnings.forEach(w => { html += '<div style="font-size:11px; color:#8b7e74; margin:3px 0; padding-left:12px; border-left:2px solid #ffcc02;">• ' + w + '</div>'; });
         html += '</div>';
     } else {
-        html += '<div style="background:#e8f5e9; border:2px solid #4caf50; border-radius:10px; padding:14px 18px; margin-bottom:20px;">';
-        html += '<div style="font-weight:700; color:#2e7d32; font-size:13px;">✓ Integridad de Datos OK — ' + ALL_DEPOSITS.length + ' depósitos verificados, $0 diferencia, todos los pesos asignados</div>';
+        html += '<div style="background:#eceee5; border:2px solid #4caf50; border-radius:10px; padding:14px 18px; margin-bottom:20px;">';
+        html += '<div style="font-weight:700; color:#5a7d5a; font-size:13px;">✓ Integridad de Datos OK — ' + ALL_DEPOSITS.length + ' depósitos verificados, $0 diferencia, todos los pesos asignados</div>';
         html += '</div>';
     }
 
@@ -2443,7 +2475,7 @@ function renderResumen() {
     html += '<span class="tag tag-cascade">1.</span> Capital Inicial — hasta $10M/socio<br>';
     html += '<span class="tag tag-cascade">2.</span> Mobiliario — hasta $4M/socio (los ' + SOCIOS_MOB.length + ' socios pagan por cartola)<br>';
     html += '<span class="tag tag-cascade">3.</span> Construcción — hasta tope por socio<br>';
-    html += '<span class="tag tag-cascade">4.</span> GGCC crédito → Saldo a Favor (excedentes).</div>';
+    html += '<span class="tag tag-cascade">4.</span> GGCC crédito → Saldo a Favor de Socios (excedentes).</div>';
     html += '<div class="rule"><strong>Mes vencido (GGCC):</strong> El GGCC de un mes se paga en el mes siguiente. Ej: GGCC de enero se paga en febrero. Los depósitos de la cartola del 31/03 cubren hasta el GGCC de marzo. Se esperan ' + ggccMeses + ' meses de obligación.</div>';
     html += '</div></details>';
 
@@ -2451,7 +2483,7 @@ function renderResumen() {
     // SECCIÓN 1: APORTES COMPROMETIDOS
     // ═══════════════════════════════════════════
     html += '<div style="margin-bottom:32px;">';
-    html += '<h2 style="font-size:18px; color:#2d2926; margin-bottom:4px; border-bottom:2px solid #d4cdc5; padding-bottom:8px;">Aportes Comprometidos</h2>';
+    html += '<h2 style="font-size:18px; color:#5c554e; margin-bottom:4px; border-bottom:2px solid #d4cdc5; padding-bottom:8px;">Aportes Comprometidos</h2>';
     html += '<p style="font-size:12px; color:#888; margin:4px 0 16px;">Capital Inicial + Construcción + Mobiliario + GGCC (' + ggccMeses + ' meses)</p>';
 
     // 3 KPIs en fila
@@ -2565,7 +2597,7 @@ function renderResumen() {
     // SECCIÓN 3: ESTADO GENERAL POR SOCIO
     // ═══════════════════════════════════════════
     html += '<div style="margin-bottom:32px;">';
-    html += '<h2 style="font-size:18px; color:#2d2926; margin-bottom:4px; border-bottom:2px solid #d4cdc5; padding-bottom:8px;">Estado General por Socio</h2>';
+    html += '<h2 style="font-size:18px; color:#5c554e; margin-bottom:4px; border-bottom:2px solid #d4cdc5; padding-bottom:8px;">Estado General por Socio</h2>';
     html += '<p style="font-size:12px; color:#888; margin:4px 0 16px;">Deuda pendiente por categoría — incluye aportes + GGCC — Socios al día: ' + (sociosAlDia > 0 ? '<strong style="color:#5a7d5a;">' + sociosAlDiaNames.join(', ') + '</strong>' : '<span style="color:#b05a5a;">Ninguno</span>') + '</p>';
 
     html += '<details class="info-snippet">';
@@ -2665,14 +2697,14 @@ const CAT_COLORS = {
     construccion: { bg: '#8b7e74', light: '#ede0de', text: '#8b7e74', label: 'Construcción' },
     mobiliario:   { bg: '#a68b6b', light: '#f0e8d8', text: '#a68b6b', label: 'Mobiliario' },
     ggcc:         { bg: '#6b8f8b', light: '#e0eae8', text: '#6b8f8b', label: 'GGCC' },
-    saldo_favor:  { bg: '#5a7d5a', light: '#eceee5', text: '#5a7d5a', label: 'Saldo a Favor' }
+    saldo_favor:  { bg: '#5a7d5a', light: '#eceee5', text: '#5a7d5a', label: 'Saldo a Favor de Socios' }
 };
 const CAT_ORDER = ['inicial', 'construccion', 'mobiliario', 'ggcc', 'saldo_favor'];
 
 // ── Tooltip helpers para trazabilidad on-hover ──
-const _ttTipoColors = {A:'#6b8f8b', A2:'#0097a7', B:'#a68b6b', C:'#8b7e74', PRE:'#795548'};
+const _ttTipoColors = {A:'#6b8f8b', A2:'#5a7d9a', B:'#a68b6b', C:'#8b7e74', PRE:'#8b7e74'};
 const _ttTipoLabels = {A:'GGCC', A2:'GGCC+', B:'Combo', C:'Cascada', PRE:'Pre-GGCC'};
-const _ttTipoBgs = {A:'#e0eae8', A2:'#e0f7fa', B:'#f0e8d8', C:'#e8e3e8', PRE:'#efebe9'};
+const _ttTipoBgs = {A:'#e0eae8', A2:'#e2e6ec', B:'#f0e8d8', C:'#e8e3e8', PRE:'#efebe9'};
 
 // Tooltip para UN depósito individual (muestra detalle paso a paso)
 function ttDep(d) {
@@ -2755,7 +2787,7 @@ function ttDeuda(s, capDebt, constrDbt, mobDbt, ggccDbt) {
     h += '<div class="tt-header">Deuda de ' + s + '</div>';
     if (capDebt > 0) h += '<div class="tt-step"><span class="tt-label" style="color:#90caf9;">Capital</span><span class="tt-amt" style="color:#ff5252;">$' + capDebt.toLocaleString() + '</span></div>';
     if (constrDbt > 0) h += '<div class="tt-step"><span class="tt-label" style="color:#ce93d8;">Construcción</span><span class="tt-amt" style="color:#ff5252;">$' + constrDbt.toLocaleString() + '</span></div>';
-    if (mobDbt > 0) h += '<div class="tt-step"><span class="tt-label" style="color:#ffb74d;">Mobiliario</span><span class="tt-amt" style="color:#ff5252;">$' + mobDbt.toLocaleString() + '</span></div>';
+    if (mobDbt > 0) h += '<div class="tt-step"><span class="tt-label" style="color:#e7c08a;">Mobiliario</span><span class="tt-amt" style="color:#ff5252;">$' + mobDbt.toLocaleString() + '</span></div>';
     if (ggccDbt > 0) h += '<div class="tt-step"><span class="tt-label" style="color:#4dd0e1;">GGCC</span><span class="tt-amt" style="color:#ff5252;">$' + ggccDbt.toLocaleString() + '</span><span class="tt-note">' + Math.round(ggccDbt/CUOTA_GGCC) + ' meses</span></div>';
     if (capDebt + constrDbt + mobDbt + ggccDbt === 0) h += '<div style="color:#4caf50; font-weight:600; padding:4px 0;">Sin deuda</div>';
     h += '</span>';
@@ -2964,7 +2996,7 @@ function classifyAllDeposits() {
                     // Si aún queda remanente (todos los slots GGCC llenos), va a saldo a favor
                     if (item.remaining > 0) {
                         item.alloc.saldo_favor += item.remaining;
-                        item.detalle.push({ paso: 'R4-SALDO', regla: 'CASCADA', monto: item.remaining, nota: 'Saldo a favor: $' + item.remaining.toLocaleString() });
+                        item.detalle.push({ paso: 'R4-SALDO', regla: 'CASCADA', monto: item.remaining, nota: 'Saldo a favor de socios: $' + item.remaining.toLocaleString() });
                         item.remaining = 0;
                     }
                 }
@@ -3104,7 +3136,7 @@ function renderAportesCapital() {
     html += '<div class="kpi orange"><div class="label">Mobiliario</div><div class="value">' + wtt(fmt(globalCats.mobiliario), kpiTT('mobiliario')) + '</div><div class="sub">de $40M comprometido</div></div>';
     html += '<div class="kpi teal"><div class="label">GGCC</div><div class="value">' + wtt(fmt(globalCats.ggcc), kpiTT('ggcc')) + '</div><div class="sub">Gastos comunes mensuales</div></div>';
     if (globalCats.saldo_favor > 0) {
-        html += '<div class="kpi" style="border-left:4px solid #5a7d5a;"><div class="label">Saldo a Favor</div><div class="value" style="color:#5a7d5a;">' + wtt(fmt(globalCats.saldo_favor), kpiTT('saldo_favor')) + '</div><div class="sub">Fondos que exceden todos los compromisos</div></div>';
+        html += '<div class="kpi" style="border-left:4px solid #5a7d5a;"><div class="label">Saldo a Favor de Socios</div><div class="value" style="color:#5a7d5a;">' + wtt(fmt(globalCats.saldo_favor), kpiTT('saldo_favor')) + '</div><div class="sub">Fondos que exceden todos los compromisos</div></div>';
     }
     html += '</section>';
 
@@ -3337,8 +3369,9 @@ function renderAportesCapital() {
 
 // ==================== GGCC (Cartolas) ====================
 function getYearsWithData() {
+    const ggccStartYear = GGCC_CONFIG.inicioYear; // 2022
     const years = new Set();
-    ALL_DEPOSITS.forEach(d => years.add(d.y));
+    ALL_DEPOSITS.forEach(d => { if (d.y >= ggccStartYear) years.add(d.y); });
     return Array.from(years).sort();
 }
 
@@ -3465,7 +3498,7 @@ function renderGGCC() {
     html += '</tbody></table></div>';
     
     html += '<div class="legend"><div class="legend-item"><div class="legend-color" style="background:#eceee5"></div> $70.000 GGCC cubierto</div><div class="legend-item"><div class="legend-color" style="background:#f2eddf"></div> GGCC parcial</div></div>';
-    html += '<div style="background:#f0e8d8; border-radius:8px; padding:12px 16px; margin-top:16px; font-size:12px; color:#795548;">';
+    html += '<div style="background:#f0e8d8; border-radius:8px; padding:12px 16px; margin-top:16px; font-size:12px; color:#8b7e74;">';
     html += '<strong>Nota:</strong> Cada celda muestra solo la porción GGCC ($70.000). Si un socio deposita $236.666, aquí aparecen $70.000 (verde) y los $166.666 restantes se contabilizan como cuota de mobiliario en el tab correspondiente.</div>';
     html += '</div>';
     
@@ -3479,7 +3512,7 @@ function renderGGCC() {
     html += '<div class="rule"><strong>Misma lógica del Resumen:</strong> Cada depósito pasa por las 2 pasadas (GGCC primero, luego cascada). Los números aquí son 100% consistentes con los del tab Resumen y Aportes de Capital.</div>';
     html += '<div class="rule"><strong>GGCC (' + fmt(CUOTA_GGCC) + '/mes):</strong> La columna verde muestra lo que cada depósito aportó a gastos comunes.</div>';
     html += '<div class="rule"><strong>MOB (' + fmt(CUOTA_MOB) + '/mes):</strong> Los ' + SOCIOS_MOB.length + ' socios pagan MOB por cartola. Los $236.666 se dividen en $70k GGCC + $166.666 MOB. Si MOB está lleno, excedente va a GGCC.</div>';
-    html += '<div class="rule"><strong>Capital / Construcción:</strong> El remanente se asigna por cascada: Capital ($' + (ACUERDOS.capital.perSocio/1e6) + 'M) → MOB ($4M) → Construcción → GGCC crédito → Saldo a Favor.</div>';
+    html += '<div class="rule"><strong>Capital / Construcción:</strong> El remanente se asigna por cascada: Capital ($' + (ACUERDOS.capital.perSocio/1e6) + 'M) → MOB ($4M) → Construcción → GGCC crédito → Saldo a Favor de Socios.</div>';
     html += '</div></details>';
     
     // Year totals from classifyAllDeposits
@@ -3714,7 +3747,7 @@ function renderVistaSocio(socioOverride) {
     let html = '';
 
     // Snippet detalle socio
-    html += '<details class="info-snippet" style="border-left-color:#2d2926;">';
+    html += '<details class="info-snippet" style="border-left-color:#5c554e;">';
     html += '<summary>¿Cómo leer la ficha del socio?</summary>';
     html += '<div style="margin-top:8px;">';
     html += '<div class="rule"><strong>4 KPIs:</strong> Cada tarjeta muestra pagado vs meta para Capital ($' + (ACUERDOS.capital.perSocio/1e6) + 'M), Construcción ($' + (ACUERDOS.construccion.perSocio/1e6) + 'M), Mobiliario ($' + (ACUERDOS.mobiliario.perSocio/1e6) + 'M) y GGCC (' + totalGGCCMonths + ' meses × $' + (CUOTA_GGCC/1000) + 'k). La barra de progreso muestra el % de avance.</div>';
@@ -3724,7 +3757,7 @@ function renderVistaSocio(socioOverride) {
     html += '</div></details>';
 
     // ── HERO CARD ──
-    html += '<div style="background:linear-gradient(135deg, #2d2926 0%, #3d3632 60%, #4a433d 100%); border-radius:14px; padding:24px 28px; margin-bottom:20px; color:white;">';
+    html += '<div style="background:linear-gradient(135deg, #5c554e 0%, #6b635b 60%, #7a726a 100%); border-radius:14px; padding:24px 28px; margin-bottom:20px; color:white;">';
     html += '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">';
     html += '<div>';
     html += '<div style="font-size:22px; font-weight:700;">' + (FULL_NAMES[socio] || socio) + '</div>';
@@ -3736,7 +3769,7 @@ function renderVistaSocio(socioOverride) {
     html += '</div></div></div>';
 
     // ── 4 KPI CARDS ──
-    html += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:12px; margin-bottom:20px;">';
+    html += '<section class="kpis">';
     const kpis = [
         { label:'Capital Inicial', paid:data.capitalPaid, target:10000000, color:'#5a7d9a', debt:capDebt },
         { label:'Construcción', paid:data.constrPaid, target:data.constrQuota, color:'#8b7e74', debt:constrDebt },
@@ -3746,28 +3779,28 @@ function renderVistaSocio(socioOverride) {
     kpis.forEach(k => {
         const pct = Math.min(100, Math.round(k.paid / k.target * 100));
         const fillClass = pct >= 100 ? 'complete' : pct >= 60 ? 'partial' : 'low';
-        html += '<div style="background:white; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08); border-left:4px solid ' + k.color + ';">';
-        html += '<div style="font-size:11px; color:#888; text-transform:uppercase; margin-bottom:6px;">' + k.label + '</div>';
-        html += '<div style="font-size:20px; font-weight:700; color:' + k.color + ';">' + fmt(k.paid) + '</div>';
-        html += '<div style="font-size:11px; color:#888; margin:4px 0;">de ' + fmt(k.target) + (k.sub ? ' — ' + k.sub : '') + '</div>';
+        html += '<div class="kpi" style="border-left:4px solid ' + k.color + ';">';
+        html += '<div class="label">' + k.label + '</div>';
+        html += '<div class="value" style="color:' + k.color + ';">' + fmt(k.paid) + '</div>';
+        html += '<div class="sub" style="margin:4px 0;">de ' + fmt(k.target) + (k.sub ? ' — ' + k.sub : '') + '</div>';
         html += '<div class="progress-bar" style="margin:6px 0;"><div class="progress-fill ' + fillClass + '" style="width:' + pct + '%">' + pct + '%</div></div>';
         if (k.debt > 0) html += '<div style="font-size:11px; color:#b05a5a; font-weight:600;">Pendiente: ' + fmt(k.debt) + '</div>';
         else if (k.note) html += '<div style="font-size:11px; color:#5a7d5a; font-weight:600;">' + k.note + '</div>';
         else html += '<div style="font-size:11px; color:#5a7d5a; font-weight:600;">✓ Completo</div>';
         html += '</div>';
     });
-    html += '</div>';
+    html += '</section>';
 
     // ── COMPOSICIÓN GRÁFICA (stacked bar) ──
-    html += '<div style="background:white; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08); margin-bottom:20px;">';
-    html += '<h3 style="font-size:14px; color:#2d2926; margin-bottom:10px;">Composición de Aportes</h3>';
+    html += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
+    html += '<h3 style="font-size:14px; color:#5c554e; margin-bottom:10px;">Composición de Aportes</h3>';
     const cats = [
         {key:'ggcc', label:'GGCC', color:'#6b8f8b', val:t.ggcc},
         {key:'inicial', label:'Capital', color:'#5a7d9a', val:t.inicial},
         {key:'construccion', label:'Construcción', color:'#8b7e74', val:t.construccion},
         {key:'mobiliario', label:'MOB', color:'#a68b6b', val:t.mobiliario}
     ];
-    if (t.saldo_favor > 0) cats.push({key:'saldo_favor', label:'Saldo a Favor', color:'#5a7d5a', val:t.saldo_favor});
+    if (t.saldo_favor > 0) cats.push({key:'saldo_favor', label:'Saldo a Favor de Socios', color:'#5a7d5a', val:t.saldo_favor});
     html += '<div style="display:flex; height:28px; border-radius:6px; overflow:hidden; box-shadow:0 1px 2px rgba(0,0,0,0.1); margin-bottom:8px;">';
     cats.forEach(c => {
         const pct = t.total > 0 ? (c.val / t.total * 100) : 0;
@@ -3781,7 +3814,7 @@ function renderVistaSocio(socioOverride) {
     html += '</div></div>';
 
     // ── GGCC TIMELINE (meses) ──
-    html += '<div style="background:white; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08); margin-bottom:20px;">';
+    html += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
     html += '<h3 style="font-size:14px; color:#6b8f8b; margin-bottom:10px;">GGCC — Meses Pagados (' + data.ggccMonthsPaid + '/' + totalGGCCMonths + ')</h3>';
     html += '<div style="display:flex; flex-wrap:wrap; gap:3px;">';
     const ggccMonths = data.ggccByMonth;
@@ -3810,7 +3843,7 @@ function renderVistaSocio(socioOverride) {
 
     // ── MOB TIMELINE (si aplica) ──
     if (isMobSocio || isMobFull) {
-        html += '<div style="background:white; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08); margin-bottom:20px;">';
+        html += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
         html += '<h3 style="font-size:14px; color:#a68b6b; margin-bottom:10px;">Mobiliario' + (isMobFull ? ' — ✓ Pagado adelantado' : '') + '</h3>';
         if (!isMobFull) {
             const mobMonthsPaid = Object.values(data.deposits.reduce((acc, d) => {
@@ -3841,14 +3874,14 @@ function renderVistaSocio(socioOverride) {
 
     // ── RESUMEN POR AÑO ──
     const years = [...new Set(deps.map(d => d.y))].sort();
-    html += '<div style="background:white; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08); margin-bottom:20px;">';
-    html += '<h3 style="font-size:14px; color:#2d2926; margin-bottom:10px;">Resumen por Año</h3>';
+    html += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
+    html += '<h3 style="font-size:14px; color:#5c554e; margin-bottom:10px;">Resumen por Año</h3>';
     html += '<div style="overflow-x:auto;"><table style="width:100%; font-size:12px; border-collapse:collapse;">';
     html += '<thead><tr style="background:#f0ebe5; color:#5c554e;">';
     html += '<th style="padding:8px; text-align:left;">Año</th><th style="padding:8px; text-align:center;">Depósitos</th>';
-    html += '<th style="padding:8px; text-align:right; color:#00bcd4;">GGCC</th>';
-    html += '<th style="padding:8px; text-align:right; color:#90caf9;">Capital</th>';
-    html += '<th style="padding:8px; text-align:right; color:#e040fb;">Constr.</th>';
+    html += '<th style="padding:8px; text-align:right; color:#6b8f8b;">GGCC</th>';
+    html += '<th style="padding:8px; text-align:right; color:#5a7d9a;">Capital</th>';
+    html += '<th style="padding:8px; text-align:right; color:#8b7e74;">Constr.</th>';
     html += '<th style="padding:8px; text-align:right; color:#a68b6b;">MOB</th>';
     html += '<th style="padding:8px; text-align:right;">Total</th>';
     html += '</tr></thead><tbody>';
@@ -3873,16 +3906,16 @@ function renderVistaSocio(socioOverride) {
     });
     html += '<tr style="background:#f0ebe5; color:#5c554e; font-weight:700; border-top:2px solid #d4cdc5;">';
     html += '<td style="padding:8px;">TOTAL</td><td style="padding:8px; text-align:center;">' + totalCount + '</td>';
-    html += '<td style="padding:8px; text-align:right; color:#00bcd4;">' + fmt(totalGgcc) + '</td>';
-    html += '<td style="padding:8px; text-align:right; color:#90caf9;">' + fmt(totalCap) + '</td>';
-    html += '<td style="padding:8px; text-align:right; color:#e040fb;">' + fmt(totalConstr) + '</td>';
+    html += '<td style="padding:8px; text-align:right; color:#6b8f8b;">' + fmt(totalGgcc) + '</td>';
+    html += '<td style="padding:8px; text-align:right; color:#5a7d9a;">' + fmt(totalCap) + '</td>';
+    html += '<td style="padding:8px; text-align:right; color:#8b7e74;">' + fmt(totalConstr) + '</td>';
     html += '<td style="padding:8px; text-align:right; color:#a68b6b;">' + fmt(totalMob) + '</td>';
     html += '<td style="padding:8px; text-align:right;">' + fmt(totalAll) + '</td>';
     html += '</tr></tbody></table></div></div>';
 
     // ── BITÁCORA COMPLETA ──
-    html += '<div style="background:white; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08); margin-bottom:20px;">';
-    html += '<h3 style="font-size:14px; color:#2d2926; margin-bottom:10px;">Bitácora de Depósitos (' + deps.length + ')</h3>';
+    html += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
+    html += '<h3 style="font-size:14px; color:#5c554e; margin-bottom:10px;">Bitácora de Depósitos (' + deps.length + ')</h3>';
     html += '<details class="info-snippet" style="margin-top:0;">';
     html += '<summary>¿Cómo leer la bitácora?</summary>';
     html += '<div style="margin-top:8px;">';
@@ -3895,9 +3928,9 @@ function renderVistaSocio(socioOverride) {
     html += '<th style="padding:6px 8px; text-align:left;">#</th>';
     html += '<th style="padding:6px 8px; text-align:left;">Fecha</th>';
     html += '<th style="padding:6px 8px; text-align:right;">Monto</th>';
-    html += '<th style="padding:6px 8px; text-align:right; color:#00bcd4;">GGCC</th>';
-    html += '<th style="padding:6px 8px; text-align:right; color:#90caf9;">Capital</th>';
-    html += '<th style="padding:6px 8px; text-align:right; color:#e040fb;">Constr.</th>';
+    html += '<th style="padding:6px 8px; text-align:right; color:#6b8f8b;">GGCC</th>';
+    html += '<th style="padding:6px 8px; text-align:right; color:#5a7d9a;">Capital</th>';
+    html += '<th style="padding:6px 8px; text-align:right; color:#8b7e74;">Constr.</th>';
     html += '<th style="padding:6px 8px; text-align:right; color:#a68b6b;">MOB</th>';
     html += '<th style="padding:6px 8px; text-align:left;">Tipo</th>';
     html += '<th style="padding:6px 8px; text-align:left;">Descripción</th>';
@@ -3949,9 +3982,9 @@ function renderVistaSocio(socioOverride) {
     html += '<tr style="background:#f0ebe5; color:#5c554e; font-weight:700; border-top:2px solid #d4cdc5;">';
     html += '<td colspan="2" style="padding:6px 8px;">TOTAL (' + deps.length + ')</td>';
     html += '<td style="padding:6px 8px; text-align:right;">$' + t.total.toLocaleString() + '</td>';
-    html += '<td style="padding:6px 8px; text-align:right; color:#00bcd4;">' + wtt('$' + runGGCC.toLocaleString(), ttAgg(deps,'ggcc')) + '</td>';
-    html += '<td style="padding:6px 8px; text-align:right; color:#90caf9;">' + wtt('$' + runCap.toLocaleString(), ttAgg(deps,'inicial')) + '</td>';
-    html += '<td style="padding:6px 8px; text-align:right; color:#e040fb;">' + wtt('$' + runConstr.toLocaleString(), ttAgg(deps,'construccion')) + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#6b8f8b;">' + wtt('$' + runGGCC.toLocaleString(), ttAgg(deps,'ggcc')) + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#5a7d9a;">' + wtt('$' + runCap.toLocaleString(), ttAgg(deps,'inicial')) + '</td>';
+    html += '<td style="padding:6px 8px; text-align:right; color:#8b7e74;">' + wtt('$' + runConstr.toLocaleString(), ttAgg(deps,'construccion')) + '</td>';
     html += '<td style="padding:6px 8px; text-align:right; color:#a68b6b;">' + wtt('$' + runMob.toLocaleString(), ttAgg(deps,'mobiliario')) + '</td>';
     html += '<td colspan="3"></td>';
     html += '</tr></tbody></table></div></div>';
@@ -4020,7 +4053,7 @@ function showSocioBitacora(socio) {
         {k:'constr', label:'Construcción', color:'#8b7e74', paid:t.construccion, meta:META_CONSTR, unit:'$'},
         {k:'ggcc', label:'GGCC', color:'#6b8f8b', paid:t.ggcc, meta:ggccExpected, unit:'$', extra: data.ggccMonthsPaid + '/' + totalGGCCMonths + ' meses'}
     ];
-    if (t.saldo_favor > 0) kpis.push({k:'saldo', label:'Saldo a Favor', color:'#5a7d5a', paid:t.saldo_favor, meta:0, unit:'$'});
+    if (t.saldo_favor > 0) kpis.push({k:'saldo', label:'Saldo a Favor de Socios', color:'#5a7d5a', paid:t.saldo_favor, meta:0, unit:'$'});
 
     html += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:8px; margin-bottom:16px;">';
     kpis.forEach(c => {
@@ -4191,7 +4224,7 @@ function showSocioBitacora(socio) {
             html += '<div style="font-size:11px; color:#5c554e; margin-bottom:6px;">Deuda bruta: $' + deudaData.total.toLocaleString() + (abonadoBit > 0 ? ' · Abonado: $' + abonadoBit.toLocaleString() + ' · <strong>Crédito neto: $' + data.creditoTotal.toLocaleString() + '</strong>' : '') + '</div>';
             // Show abonos in bitácora
             if (deudaData.abonos && deudaData.abonos.length > 0) {
-                html += '<div style="font-size:10px; color:#2e7d32; margin-bottom:6px;">';
+                html += '<div style="font-size:10px; color:#5a7d5a; margin-bottom:6px;">';
                 deudaData.abonos.forEach(ab => {
                     html += '<div>' + ab.fecha + ' — ' + ab.concepto + ': -$' + ab.monto.toLocaleString() + '</div>';
                 });
@@ -4204,7 +4237,7 @@ function showSocioBitacora(socio) {
         if (ca.mobiliario > 0) html += '<div style="background:#a68b6b20; padding:4px 8px; border-radius:4px; font-size:10px;"><strong style="color:#a68b6b;">MOB:</strong> $' + ca.mobiliario.toLocaleString() + '</div>';
         if (ca.construccion > 0) html += '<div style="background:#8b7e7420; padding:4px 8px; border-radius:4px; font-size:10px;"><strong style="color:#8b7e74;">Construcción:</strong> $' + ca.construccion.toLocaleString() + '</div>';
         if (ca.ggcc > 0) html += '<div style="background:#6b8f8b20; padding:4px 8px; border-radius:4px; font-size:10px;"><strong style="color:#6b8f8b;">GGCC:</strong> $' + ca.ggcc.toLocaleString() + '</div>';
-        if (ca.saldo_favor > 0) html += '<div style="background:#5a7d5a20; padding:4px 8px; border-radius:4px; font-size:10px;"><strong style="color:#5a7d5a;">Saldo a favor:</strong> $' + ca.saldo_favor.toLocaleString() + '</div>';
+        if (ca.saldo_favor > 0) html += '<div style="background:#5a7d5a20; padding:4px 8px; border-radius:4px; font-size:10px;"><strong style="color:#5a7d5a;">Saldo a favor de socios:</strong> $' + ca.saldo_favor.toLocaleString() + '</div>';
         html += '</div></div>';
     }
 
@@ -4212,7 +4245,7 @@ function showSocioBitacora(socio) {
     const allocTotal = t.inicial + t.construccion + t.mobiliario + t.ggcc + t.saldo_favor;
     const diff = Math.abs(allocTotal - t.total);
     if (diff <= 1) {
-        html += '<div style="background:#e8f5e9; border-radius:6px; padding:8px 12px; margin-top:10px; font-size:11px; color:#2e7d32; font-weight:600;">';
+        html += '<div style="background:#eceee5; border-radius:6px; padding:8px 12px; margin-top:10px; font-size:11px; color:#5a7d5a; font-weight:600;">';
         html += '\u2713 Balance OK \u2014 $' + t.total.toLocaleString() + ' depositados = $' + allocTotal.toLocaleString() + ' asignados (' + deps.length + ' dep\u00f3sitos, $0 diferencia)';
         html += '</div>';
     } else {
@@ -4400,11 +4433,11 @@ function renderCartolaControl() {
 
     // Summary cards
     html += '<div style="display:flex; gap:16px; margin-top:16px; flex-wrap:wrap;">';
-    html += '<div style="flex:1; min-width:200px; background:linear-gradient(135deg,#eceee5,#fff); padding:16px 20px; border-radius:12px; border:1px solid #c8e6c9; text-align:center;">';
+    html += '<div style="flex:1; min-width:200px; background:linear-gradient(135deg,#eceee5,#fff); padding:16px 20px; border-radius:12px; border:1px solid #d4e0d4; text-align:center;">';
     html += '<div style="font-size:28px; font-weight:700; color:#5a7d5a;">' + disponibles + '</div>';
     html += '<div style="font-size:11px; color:#666; text-transform:uppercase; letter-spacing:0.5px;">Cartolas disponibles</div></div>';
 
-    html += '<div style="flex:1; min-width:200px; background:linear-gradient(135deg,' + (faltantes > 0 ? '#f0e5e5' : '#eceee5') + ',#fff); padding:16px 20px; border-radius:12px; border:1px solid ' + (faltantes > 0 ? '#ffcdd2' : '#c8e6c9') + '; text-align:center;">';
+    html += '<div style="flex:1; min-width:200px; background:linear-gradient(135deg,' + (faltantes > 0 ? '#f0e5e5' : '#eceee5') + ',#fff); padding:16px 20px; border-radius:12px; border:1px solid ' + (faltantes > 0 ? '#ffcdd2' : '#d4e0d4') + '; text-align:center;">';
     html += '<div style="font-size:28px; font-weight:700; color:' + (faltantes > 0 ? '#b05a5a' : '#5a7d5a') + ';">' + faltantes + '</div>';
     html += '<div style="font-size:11px; color:#666; text-transform:uppercase; letter-spacing:0.5px;">Cartolas faltantes</div></div>';
 
