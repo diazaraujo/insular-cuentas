@@ -28,7 +28,7 @@
         /* Tabs */
         .tab-bar { display: flex; gap: 4px; margin-bottom: 20px; background: #fff; border-radius: 10px; padding: 4px; box-shadow: 0 1px 4px rgba(45,41,38,0.06); flex-wrap: wrap; border: 1px solid #e7e0d8; }
         .tab-btn { padding: 10px 16px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 500; color: #78716c; transition: all 0.2s; white-space: nowrap; letter-spacing: 0.3px; }
-        .tab-btn.active { background: #2d2926; color: #f5f0eb; }
+        .tab-btn.active { background: #5c554e; color: #f5f0eb; }
         .tab-btn:hover:not(.active) { background: #f5f0eb; }
         .tab-btn.hito { border-bottom: 3px solid transparent; }
         .tab-btn.hito-capital.active { background: #5a7d9a; }
@@ -60,14 +60,14 @@
         .chart-container { position: relative; height: 300px; }
 
         /* Tables */
-        .table-section { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 1px 4px rgba(45,41,38,0.06); margin-bottom: 20px; border: 1px solid #e7e0d8; }
+        .table-section { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 4px rgba(45,41,38,0.06); margin-bottom: 20px; border: 1px solid #e7e0d8; }
         .table-section h3 { font-size: 14px; color: #5c554e; margin-bottom: 16px; font-weight: 500; }
-        .table-wrapper { overflow-x: auto; max-width: 100%; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: auto; }
-        th { background: #2d2926; color: #f5f0eb; padding: 10px 8px; text-align: center; font-weight: 500; position: sticky; top: 0; white-space: nowrap; letter-spacing: 0.3px; }
-        th:first-child { text-align: left; white-space: normal; }
-        td { padding: 8px 8px; border-bottom: 1px solid #eee; text-align: right; white-space: nowrap; }
-        td:first-child { text-align: left; font-weight: 600; white-space: normal; word-break: break-word; min-width: 140px; }
+        .table-wrapper { max-width: 100%; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
+        th { background: #f0ebe5; color: #5c554e; padding: 10px 6px; text-align: center; font-weight: 600; position: sticky; top: 0; letter-spacing: 0.3px; font-size: 11px; border-bottom: 2px solid #d4cdc5; white-space: normal; }
+        th:first-child { text-align: left; }
+        td { padding: 8px 6px; border-bottom: 1px solid #eee; text-align: right; overflow: hidden; text-overflow: ellipsis; }
+        td:first-child { text-align: left; font-weight: 600; }
         td:nth-child(2) { text-align: center; font-size: 11px; color: #666; }
         tr:hover td { background: #faf8f5; }
 
@@ -80,7 +80,7 @@
         .saldo-pos { color: #5a7d5a; font-weight: 700; }
         .saldo-neg { color: #b05a5a; font-weight: 700; }
         .saldo-zero { color: #666; font-weight: 700; }
-        .total-row td { background: #f0ebe5 !important; font-weight: 700; border-top: 2px solid #2d2926; }
+        .total-row td { background: #f0ebe5 !important; font-weight: 700; border-top: 2px solid #d4cdc5; }
 
         .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; font-size: 12px; }
         .legend-item { display: flex; align-items: center; gap: 6px; }
@@ -116,7 +116,7 @@
         .month-band-10 { background: #f0e8d8 !important; } /* Nov - honey */
         .month-band-11 { background: #e2e6ec !important; } /* Dec - slate light */
         .month-sep td { border-top: 2px solid #b0a89e !important; }
-        .month-label-row td { background: #3d3632 !important; color: #f5f0eb !important; font-weight: 600; font-size: 11px; padding: 4px 8px !important; letter-spacing: 1px; }
+        .month-label-row td { background: #e7e0d8 !important; color: #5c554e !important; font-weight: 600; font-size: 11px; padding: 4px 8px !important; letter-spacing: 1px; }
 
         .info-snippet { background: #faf8f5; border-left: 4px solid #b0a89e; border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 12px 0 16px 0; font-size: 12px; color: #5c554e; line-height: 1.6; }
         .info-snippet summary { cursor: pointer; font-weight: 600; color: #2d2926; font-size: 13px; user-select: none; }
@@ -249,14 +249,14 @@
         .hito-card .stat-value { font-weight: 700; }
 
         /* Hito detail table */
-        .hito-table { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: auto; }
-        .hito-table th { padding: 8px 6px; text-align: left; font-weight: 600; font-size: 11px; white-space: normal; }
-        .hito-table td { padding: 8px 6px; border-bottom: 1px solid #f0f0f0; }
-        .hito-table td:first-child { white-space: normal; word-break: break-word; min-width: 130px; }
+        .hito-table { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
+        .hito-table th { padding: 8px 6px; text-align: left; font-weight: 600; font-size: 11px; white-space: normal; background: #f0ebe5; color: #5c554e; border-bottom: 2px solid #d4cdc5; }
+        .hito-table td { padding: 8px 6px; border-bottom: 1px solid #f0f0f0; overflow: hidden; text-overflow: ellipsis; }
+        .hito-table td:first-child { overflow: visible; }
         .hito-table .col-right { text-align: right; }
         .hito-table .col-center { text-align: center; }
         .hito-table tr:hover td { background: #faf8f5; }
-        .hito-table .total-row td { background: #f0ebe5; font-weight: 700; border-top: 2px solid #2d2926; }
+        .hito-table .total-row td { background: #f0ebe5; font-weight: 700; border-top: 2px solid #d4cdc5; }
 
         .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
         .badge-green { background: #eceee5; color: #5a7d5a; }
@@ -373,7 +373,7 @@
     <div id="tab-sociedad" class="tab-content">
         <!-- Sub-tab navigation -->
         <div class="sub-tab-bar" style="display:flex; gap:4px; margin-bottom:20px; background:white; border-radius:10px; padding:4px; box-shadow:0 1px 3px rgba(0,0,0,0.08); flex-wrap:wrap;">
-            <button class="sub-tab-btn active" onclick="switchSubTab('sub-sociedad', this)" style="padding:8px 16px; border:none; background:#2d2926; color:white; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s;">Información</button>
+            <button class="sub-tab-btn active" onclick="switchSubTab('sub-sociedad', this)" style="padding:8px 16px; border:none; background:#5c554e; color:white; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s;">Información</button>
             <button class="sub-tab-btn" onclick="switchSubTab('sub-casa', this)" style="padding:8px 16px; border:none; background:transparent; color:#666; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s;">Casa</button>
             <button class="sub-tab-btn" onclick="switchSubTab('sub-historia', this)" style="padding:8px 16px; border:none; background:transparent; color:#666; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s;">Historia</button>
             <button class="sub-tab-btn" onclick="switchSubTab('sub-documentos', this)" style="padding:8px 16px; border:none; background:transparent; color:#666; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s;">Documentos</button>
@@ -807,7 +807,7 @@
     <div class="modal">
         <h3 id="modalTitle">Detalle de Depósitos</h3>
         <div id="modalBody"></div>
-        <button onclick="closeModal()" style="margin-top:16px; padding:8px 20px; background:#2d2926; color:white; border:none; border-radius:6px; cursor:pointer;">Cerrar</button>
+        <button onclick="closeModal()" style="margin-top:16px; padding:8px 20px; background:#5c554e; color:white; border:none; border-radius:6px; cursor:pointer;">Cerrar</button>
     </div>
 </div>
 <script>
@@ -1629,7 +1629,7 @@ function switchSubTab(subId, btn) {
     parent.querySelectorAll('.sub-tab-btn').forEach(b => { b.style.background = 'transparent'; b.style.color = '#666'; });
     const target = document.getElementById(subId);
     if (target) target.style.display = 'block';
-    btn.style.background = '#2d2926';
+    btn.style.background = '#5c554e';
     btn.style.color = 'white';
     if (subId === 'sub-casa') renderCasa();
 }
@@ -1971,7 +1971,7 @@ function renderMetodologia() {
     h += '<h3 style="font-size:16px; color:#2d2926; margin-bottom:16px; border-bottom:2px solid #e0e0e0; padding-bottom:8px;">4. Tipos de Depósito — Ejemplos Reales</h3>';
 
     h += '<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:12px;">';
-    h += '<thead><tr style="background:#2d2926; color:white;">';
+    h += '<thead><tr style="background:#f0ebe5; color:#5c554e;">';
     h += '<th style="padding:10px 12px; text-align:left;">Tipo</th>';
     h += '<th style="padding:10px 12px; text-align:left;">Detección</th>';
     h += '<th style="padding:10px 12px; text-align:left;">Ejemplo</th>';
@@ -2178,7 +2178,7 @@ function renderResumen() {
     // SECCIÓN 1: APORTES COMPROMETIDOS
     // ═══════════════════════════════════════════
     html += '<div style="margin-bottom:32px;">';
-    html += '<h2 style="font-size:18px; color:#2d2926; margin-bottom:4px; border-bottom:2px solid #2d2926; padding-bottom:8px;">Aportes Comprometidos</h2>';
+    html += '<h2 style="font-size:18px; color:#2d2926; margin-bottom:4px; border-bottom:2px solid #d4cdc5; padding-bottom:8px;">Aportes Comprometidos</h2>';
     html += '<p style="font-size:12px; color:#888; margin:4px 0 16px;">Capital Inicial + Construcción + Mobiliario + GGCC (' + ggccMeses + ' meses)</p>';
 
     // 3 KPIs en fila
@@ -2264,7 +2264,8 @@ function renderResumen() {
 
     // Tabla GGCC por socio
     html += '<div class="table-section" style="border-left:4px solid #6b8f8b;">';
-    html += '<div class="table-wrapper"><table style="width:100%; border-collapse:collapse; font-size:13px;">';
+    html += '<table style="width:100%; table-layout:fixed;">';
+    html += '<colgroup><col style="width:28%"><col style="width:12%"><col style="width:15%"><col style="width:15%"><col style="width:15%"><col style="width:15%"></colgroup>';
     html += '<thead><tr><th style="text-align:left;">Socio</th><th style="text-align:center;">Meses pagados</th><th class="col-right">Pagado</th><th class="col-right">Esperado</th><th class="col-right">Diferencia</th><th style="text-align:center;">Estado</th></tr></thead><tbody>';
     SOCIOS_ALL.forEach(s => {
         const gPaid = cls[s].totals.ggcc;
@@ -2284,14 +2285,14 @@ function renderResumen() {
         }
         html += '</tr>';
     });
-    html += '</tbody></table></div></div>';
+    html += '</tbody></table></div>';
     html += '</div>'; // sección GGCC
 
     // ═══════════════════════════════════════════
     // SECCIÓN 3: ESTADO GENERAL POR SOCIO
     // ═══════════════════════════════════════════
     html += '<div style="margin-bottom:32px;">';
-    html += '<h2 style="font-size:18px; color:#2d2926; margin-bottom:4px; border-bottom:2px solid #2d2926; padding-bottom:8px;">Estado General por Socio</h2>';
+    html += '<h2 style="font-size:18px; color:#2d2926; margin-bottom:4px; border-bottom:2px solid #d4cdc5; padding-bottom:8px;">Estado General por Socio</h2>';
     html += '<p style="font-size:12px; color:#888; margin:4px 0 16px;">Deuda pendiente por categoría — incluye aportes + GGCC — Socios al día: ' + (sociosAlDia > 0 ? '<strong style="color:#5a7d5a;">' + sociosAlDiaNames.join(', ') + '</strong>' : '<span style="color:#b05a5a;">Ninguno</span>') + '</p>';
 
     html += '<details class="info-snippet">';
@@ -2305,8 +2306,10 @@ function renderResumen() {
     html += '</div></details>';
 
     html += '<div class="table-section">';
-    html += '<div class="table-wrapper"><table class="hito-table"><thead><tr>';
-    html += '<th>Socio</th><th class="col-right">Total Aportado</th><th class="col-right">Capital<br><small>(' + fmtM(ACUERDOS.capital.perSocio) + ')</small></th><th class="col-right">Construcción<br><small>(' + fmtM(ACUERDOS.construccion.perSocio) + ')</small></th><th class="col-right">Mobiliario<br><small>(' + fmtM(ACUERDOS.mobiliario.perSocio) + ')</small></th><th class="col-right">GGCC<br><small>(' + ggccMeses + ' meses)</small></th><th class="col-right">Deuda Total</th><th class="col-center">Estado</th>';
+    html += '<table class="hito-table" style="table-layout:fixed;">';
+    html += '<colgroup><col style="width:22%"><col style="width:12%"><col style="width:8%"><col style="width:12%"><col style="width:8%"><col style="width:11%"><col style="width:13%"><col style="width:14%"></colgroup>';
+    html += '<thead><tr>';
+    html += '<th>Socio</th><th class="col-right">Aportado</th><th class="col-right">Capital</th><th class="col-right">Constr.</th><th class="col-right">MOB</th><th class="col-right">GGCC<br><small>(' + ggccMeses + 'm)</small></th><th class="col-right">Deuda</th><th class="col-center">Estado</th>';
     html += '</tr></thead><tbody>';
 
     SOCIOS_ALL.forEach(s => {
@@ -2338,7 +2341,7 @@ function renderResumen() {
         html += '</tr>';
     });
 
-    html += '</tbody></table></div></div>';
+    html += '</tbody></table></div>';
 
     // Charts
     html += '<div class="charts">';
@@ -3298,7 +3301,7 @@ function renderCasa() {
     
     // Export/Import
     html += '<div style="margin-top:20px; display:flex; gap:10px;">';
-    html += '<button onclick="exportCasa()" style="padding:8px 16px; background:#2d2926; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px;">Exportar JSON</button>';
+    html += '<button onclick="exportCasa()" style="padding:8px 16px; background:#5c554e; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px;">Exportar JSON</button>';
     html += '<button onclick="document.getElementById(\'casaImport\').click()" style="padding:8px 16px; background:#e0e0e0; color:#333; border:none; border-radius:6px; cursor:pointer; font-size:12px;">Importar JSON</button>';
     html += '<input type="file" id="casaImport" accept=".json" style="display:none" onchange="importCasa(event)">';
     html += '</div>';
@@ -3495,7 +3498,7 @@ function renderVistaSocio(socioOverride) {
     html += '<div style="background:white; border-radius:10px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,0.08); margin-bottom:20px;">';
     html += '<h3 style="font-size:14px; color:#2d2926; margin-bottom:10px;">Resumen por Año</h3>';
     html += '<div style="overflow-x:auto;"><table style="width:100%; font-size:12px; border-collapse:collapse;">';
-    html += '<thead><tr style="background:#2d2926; color:white;">';
+    html += '<thead><tr style="background:#f0ebe5; color:#5c554e;">';
     html += '<th style="padding:8px; text-align:left;">Año</th><th style="padding:8px; text-align:center;">Depósitos</th>';
     html += '<th style="padding:8px; text-align:right; color:#00bcd4;">GGCC</th>';
     html += '<th style="padding:8px; text-align:right; color:#90caf9;">Capital</th>';
@@ -3522,7 +3525,7 @@ function renderVistaSocio(socioOverride) {
         html += '<td style="padding:7px 8px; text-align:right; font-weight:600;">' + fmt(yrTotal) + '</td>';
         html += '</tr>';
     });
-    html += '<tr style="background:#2d2926; color:white; font-weight:700;">';
+    html += '<tr style="background:#f0ebe5; color:#5c554e; font-weight:700; border-top:2px solid #d4cdc5;">';
     html += '<td style="padding:8px;">TOTAL</td><td style="padding:8px; text-align:center;">' + totalCount + '</td>';
     html += '<td style="padding:8px; text-align:right; color:#00bcd4;">' + fmt(totalGgcc) + '</td>';
     html += '<td style="padding:8px; text-align:right; color:#90caf9;">' + fmt(totalCap) + '</td>';
@@ -3542,7 +3545,7 @@ function renderVistaSocio(socioOverride) {
     html += '<div class="rule"><strong>Acumulados:</strong> Los totales al pie muestran cuánto ha ido a cada categoría sumando todos los depósitos.</div>';
     html += '</div></details>';
     html += '<div style="overflow-x:auto;"><table style="width:100%; font-size:11px; border-collapse:collapse;">';
-    html += '<thead><tr style="background:#2d2926; color:white;">';
+    html += '<thead><tr style="background:#f0ebe5; color:#5c554e;">';
     html += '<th style="padding:6px 8px; text-align:left;">#</th>';
     html += '<th style="padding:6px 8px; text-align:left;">Fecha</th>';
     html += '<th style="padding:6px 8px; text-align:right;">Monto</th>';
@@ -3569,7 +3572,7 @@ function renderVistaSocio(socioOverride) {
         if (_mk !== _prevMK) {
             const _mDeps = deps.filter(dd => dd.y === d.y && dd.m === d.m);
             const _mTot = _mDeps.reduce((acc, dd) => acc + dd.amt, 0);
-            html += '<tr class="month-label-row"><td colspan="10" style="background:#263238;">';
+            html += '<tr class="month-label-row"><td colspan="10" style="background:#e7e0d8;">';
             html += '<span style="font-size:12px;">' + MONTHS[d.m - 1] + ' ' + d.y + '</span>';
             html += '<span style="margin-left:12px; font-weight:400; font-size:10px; opacity:0.7;">' + _mDeps.length + ' dep\u00f3sito' + (_mDeps.length !== 1 ? 's' : '') + ' \u00b7 $' + _mTot.toLocaleString() + '</span>';
             html += '</td></tr>';
@@ -3597,7 +3600,7 @@ function renderVistaSocio(socioOverride) {
         html += '</tr>';
     });
 
-    html += '<tr style="background:#2d2926; color:white; font-weight:700;">';
+    html += '<tr style="background:#f0ebe5; color:#5c554e; font-weight:700; border-top:2px solid #d4cdc5;">';
     html += '<td colspan="2" style="padding:6px 8px;">TOTAL (' + deps.length + ')</td>';
     html += '<td style="padding:6px 8px; text-align:right;">$' + t.total.toLocaleString() + '</td>';
     html += '<td style="padding:6px 8px; text-align:right; color:#00bcd4;">' + wtt('$' + runGGCC.toLocaleString(), ttAgg(deps,'ggcc')) + '</td>';
@@ -3724,7 +3727,7 @@ function showSocioBitacora(socio) {
     // SECTION 3: Tabla de depósitos con hitos inline
     // ════════════════════════════════════════
     html += '<div style="overflow-x:auto;"><table style="width:100%; font-size:11px; border-collapse:collapse;">';
-    html += '<thead><tr style="background:#2d2926; color:white;">';
+    html += '<thead><tr style="background:#f0ebe5; color:#5c554e;">';
     html += '<th style="padding:6px 6px; text-align:left; width:28px;">#</th>';
     html += '<th style="padding:6px 6px; text-align:left;">Fecha</th>';
     html += '<th style="padding:6px 6px; text-align:right;">Monto</th>';
@@ -3753,7 +3756,7 @@ function showSocioBitacora(socio) {
         if (monthKey !== prevMonthKey) {
             const monthDeps = deps.filter(dd => dd.y === d.y && dd.m === d.m);
             const monthTotal = monthDeps.reduce((acc, dd) => acc + dd.amt, 0);
-            html += '<tr class="month-label-row"><td colspan="9" style="background:#263238;">';
+            html += '<tr class="month-label-row"><td colspan="9" style="background:#e7e0d8;">';
             html += '<span style="font-size:12px;">' + MONTHS[d.m - 1] + ' ' + d.y + '</span>';
             html += '<span style="margin-left:12px; font-weight:400; font-size:10px; opacity:0.7;">' + monthDeps.length + ' dep\u00f3sito' + (monthDeps.length !== 1 ? 's' : '') + ' \u00b7 $' + monthTotal.toLocaleString() + '</span>';
             html += '</td></tr>';
@@ -3819,7 +3822,7 @@ function showSocioBitacora(socio) {
     });
 
     // Total row
-    html += '<tr style="background:#2d2926; color:white; font-weight:700;">';
+    html += '<tr style="background:#f0ebe5; color:#5c554e; font-weight:700; border-top:2px solid #d4cdc5;">';
     html += '<td colspan="2" style="padding:6px 8px;">TOTAL (' + deps.length + ' dep\u00f3sitos)</td>';
     html += '<td style="padding:6px 8px; text-align:right;">$' + t.total.toLocaleString() + '</td>';
     html += '<td style="padding:6px 8px; text-align:right; color:#6b8f8b;">' + wtt('$' + runGGCC.toLocaleString(), ttAgg(deps,'ggcc')) + '</td>';
@@ -3982,11 +3985,11 @@ function renderCartolaControl() {
     html += '<div class="table-wrapper">';
     html += '<table style="width:100%; border-collapse:separate; border-spacing:3px; font-size:11px; table-layout:fixed;">';
     html += '<thead><tr>';
-    html += '<th style="background:#2d2926; color:white; padding:8px 6px; border-radius:6px; text-align:center; font-size:10px; font-weight:600; width:50px;">AÑO</th>';
+    html += '<th style="background:#f0ebe5; color:#5c554e; padding:8px 6px; border-radius:6px; text-align:center; font-size:10px; font-weight:600; width:50px;">AÑO</th>';
     mLabels.forEach(l => {
-        html += '<th style="background:#2d2926; color:white; padding:8px 2px; border-radius:6px; text-align:center; font-size:10px; font-weight:600;">' + l + '</th>';
+        html += '<th style="background:#f0ebe5; color:#5c554e; padding:8px 2px; border-radius:6px; text-align:center; font-size:10px; font-weight:600;">' + l + '</th>';
     });
-    html += '<th style="background:#2d2926; color:white; padding:8px 6px; border-radius:6px; text-align:center; font-size:10px; font-weight:600; width:50px;">✓</th>';
+    html += '<th style="background:#f0ebe5; color:#5c554e; padding:8px 6px; border-radius:6px; text-align:center; font-size:10px; font-weight:600; width:50px;">✓</th>';
     html += '</tr></thead><tbody>';
 
     for (let y = START_Y; y <= currentY; y++) {
