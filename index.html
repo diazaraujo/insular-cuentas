@@ -350,6 +350,7 @@
         <button class="tab-btn" onclick="switchTab('ggcc', this)">GGCC (Cartolas)</button>
         <button class="tab-btn" onclick="switchTab('sociedad', this)">Sociedad</button>
         <button class="tab-btn" onclick="switchTab('socio', this)" id="tabBtnSocio">Vista por Socio</button>
+        <button class="tab-btn" onclick="switchTab('deudas', this)">Deudas Insular</button>
         <button class="tab-btn" onclick="switchTab('metodologia', this)" style="margin-left:auto;">Metodología</button>
     </div>
     <!-- TAB: RESUMEN -->
@@ -795,6 +796,11 @@
             <select id="socioSelector" onchange="renderVistaSocio()" style="padding:10px 20px; border-radius:8px; border:2px solid #2d2926; font-size:14px; font-weight:600; background:white; cursor:pointer; min-width:280px;"></select>
         </div>
         <div id="socioViewContent"></div>
+    </div>
+
+    <!-- TAB: DEUDAS INSULAR CON SOCIOS -->
+    <div id="tab-deudas" class="tab-content">
+        <div id="deudas-content"></div>
     </div>
 
     <!-- TAB: METODOLOGÍA -->
@@ -1644,6 +1650,7 @@ function switchTab(tabName, btn) {
     if (tabName === 'aportescapital') renderAportesCapital();
     if (tabName === 'ggcc') renderGGCC();
     if (tabName === 'socio') renderVistaSocio();
+    if (tabName === 'deudas') renderDeudas();
     if (tabName === 'metodologia') renderMetodologia();
 }
 
@@ -1728,6 +1735,150 @@ function buildConstruccionSection(cls) {
     html += '</div></div>';
 
     return html;
+}
+
+// ==================== DEUDAS INSULAR CON SOCIOS ====================
+const DEUDAS_SOCIOS = {
+    antonio: {
+        nombre: 'Antonio Díaz (Inv. Acuña)',
+        total: 6448881,
+        viajes: [
+            { titulo: 'VIAJE FEB 19-20, 2025', gastos: [
+                { fecha: '19-20/02/2025', concepto: 'Vuelo SCL↔PMC (LA0454883WIIY)', tarjeta: 'LATAM', monto: 516158 },
+                { fecha: '19-20/02/2025', concepto: 'Hostal Mundo Nuevo, Ancud', tarjeta: 'Booking', monto: 165657 },
+                { fecha: '19-20/02/2025', concepto: 'Arriendo auto Hyundai Creta', tarjeta: 'Booking', monto: 160908 }
+            ]},
+            { titulo: 'VIAJE AGO 1, 2025', gastos: [
+                { fecha: '01/08/2025', concepto: 'Vuelo SCL↔PMC (LA0454354JBSD)', tarjeta: 'LATAM', monto: 634752 },
+                { fecha: '01/08/2025', concepto: 'Arriendo auto SUV, Alamo', tarjeta: 'Alamo', monto: 108635 }
+            ]},
+            { titulo: 'VIAJE NOV 22, 2025', gastos: [
+                { fecha: '22/11/2025', concepto: 'Vuelo SCL↔PMC (LA0451969XDQZ)', tarjeta: 'LATAM', monto: 738586 },
+                { fecha: '22/11/2025', concepto: 'Arriendo auto (=feb)', tarjeta: 'Booking', monto: 160908 },
+                { fecha: '22/11/2025', concepto: 'Aramco, Pto Montt (bencina)', tarjeta: 'Santander', monto: 33506 },
+                { fecha: '22/11/2025', concepto: 'Ferry Nave Andrade', tarjeta: 'Scotiabank', monto: 17000 },
+                { fecha: '22/11/2025', concepto: 'Minimarket y Servicios, Ancud', tarjeta: 'Scotiabank', monto: 14500 },
+                { fecha: '22/11/2025', concepto: 'Polo Sur, Ancud', tarjeta: 'Scotiabank', monto: 89540 },
+                { fecha: '22/11/2025', concepto: 'Naviera Cruz del Sur (ferry)', tarjeta: 'Scotiabank', monto: 15000 }
+            ]},
+            { titulo: 'VIAJE DIC 17-19, 2025 (en auto)', gastos: [
+                { fecha: '17/12/2025', concepto: 'Copec App (bencina)', tarjeta: 'Scotiabank', monto: 95688 },
+                { fecha: '17/12/2025', concepto: 'Aramco, Collipulli (bencina ruta)', tarjeta: 'Santander', monto: 100874 },
+                { fecha: '17/12/2025', concepto: 'Aramco, Pto Montt (bencina)', tarjeta: 'Santander', monto: 92837 },
+                { fecha: '17/12/2025', concepto: 'Restorán Soler, Curicó', tarjeta: 'Scotiabank', monto: 27203 },
+                { fecha: '17/12/2025', concepto: 'Gastronomía Marinaquis, Chiloé', tarjeta: 'Santander', monto: 65890 },
+                { fecha: '17/12/2025', concepto: 'Hotel Vista al Mar, Ancud', tarjeta: 'Santander', monto: 100220 },
+                { fecha: '17/12/2025', concepto: 'Don Jaime, Ancud', tarjeta: 'Santander', monto: 15000 },
+                { fecha: '18/12/2025', concepto: 'Ferry Nave Andrade', tarjeta: 'Santander', monto: 17500 },
+                { fecha: '18/12/2025', concepto: 'Gastronomía Marinaquis, Chiloé', tarjeta: 'Santander', monto: 44880 },
+                { fecha: '18/12/2025', concepto: 'Diarasa (Dimarsa), Ancud', tarjeta: 'Tenpo', monto: 74777 },
+                { fecha: '18-19/12/2025', concepto: 'Vuelo PMC→SCL (LA0454000EQQQ)', tarjeta: 'LATAM', monto: 263592 },
+                { fecha: '19/12/2025', concepto: 'Amazon — repuestos van Astro', tarjeta: 'Amazon', monto: 274598 }
+            ]},
+            { titulo: 'VIAJE ENE 15-19, 2026', gastos: [
+                { fecha: '15/01/2026', concepto: 'Vuelo SCL↔PMC (LA0456648NYLX)', tarjeta: 'LATAM', monto: 501184 },
+                { fecha: '15/01/2026', concepto: 'LATAM ATO Santiago', tarjeta: 'Santander', monto: 51000 },
+                { fecha: '15/01/2026', concepto: 'Aramco, Santiago (bencina)', tarjeta: 'Santander', monto: 70030 },
+                { fecha: '15/01/2026', concepto: 'Lider.cl (compra web)', tarjeta: 'Scotiabank', monto: 300338 },
+                { fecha: '15/01/2026', concepto: 'Lider.cl (devolución)', tarjeta: 'Scotiabank', monto: -13820 },
+                { fecha: '15/01/2026', concepto: 'We Transport', tarjeta: 'Scotiabank', monto: 40500 },
+                { fecha: '16/01/2026', concepto: 'El Trauco (ferry)', tarjeta: 'Santander', monto: 21500 },
+                { fecha: '17/01/2026', concepto: 'Restaurant Artesanos, Ancud', tarjeta: 'Santander', monto: 51700 },
+                { fecha: '17/01/2026', concepto: 'Erwin Meynet, Ancud (3 cargos)', tarjeta: 'Santander', monto: 36900 },
+                { fecha: '17/01/2026', concepto: 'El Chilote Mena, Ancud', tarjeta: 'Santander', monto: 2400 },
+                { fecha: '17/01/2026', concepto: 'Ferretería Loa Sur, Ancud', tarjeta: 'Santander', monto: 104010 },
+                { fecha: '17/01/2026', concepto: 'Comercial Sotavento, Ancud', tarjeta: 'Santander', monto: 11990 },
+                { fecha: '17/01/2026', concepto: 'Comercial Diancu — Dimarsa (débito)', tarjeta: 'Santander', monto: 267980 },
+                { fecha: '17/01/2026', concepto: 'Comercial Diancu — Dimarsa (3 cuotas)', tarjeta: 'Santander', monto: 91940 },
+                { fecha: '17/01/2026', concepto: 'Comercial Diancu — Dimarsa (3 cuotas)', tarjeta: 'Santander', monto: 633950 },
+                { fecha: '19/01/2026', concepto: 'Aramco, Pto Montt (bencina)', tarjeta: 'Santander', monto: 100311 },
+                { fecha: '19/01/2026', concepto: 'Aeropuerto del Sur, Pto Montt', tarjeta: 'Santander', monto: 111650 },
+                { fecha: '19/01/2026', concepto: 'Cruz del Sur (ferry), Ancud', tarjeta: 'Santander', monto: 15000 }
+            ]},
+            { titulo: 'VIAJE FEB 11-16, 2026 (personal, gastos Insular)', gastos: [
+                { fecha: '11/02/2026', concepto: 'Estac. Aeropuerto del Sur', tarjeta: 'Scotiabank', monto: 15120 },
+                { fecha: '11/02/2026', concepto: 'Kataik, Pto Montt', tarjeta: 'Scotiabank', monto: 21500 },
+                { fecha: '13/02/2026', concepto: 'Ferretería Loa Sur, Ancud', tarjeta: 'Scotiabank', monto: 6990 },
+                { fecha: '13/02/2026', concepto: 'Electro Hogar, Ancud', tarjeta: 'Scotiabank', monto: 4690 },
+                { fecha: '16/02/2026', concepto: 'Aeropuerto del Sur', tarjeta: 'Scotiabank', monto: 88000 },
+                { fecha: '16/02/2026', concepto: 'Nave El Trauco (ferry)', tarjeta: 'Scotiabank', monto: 21500 },
+                { fecha: '16/02/2026', concepto: 'Diarasa (Dimarsa), Ancud', tarjeta: 'Tenpo', monto: 64309 }
+            ]}
+        ]
+    },
+    cristian: {
+        nombre: 'Cristian Segovia',
+        total: 12206287,
+        viajes: [
+            { titulo: 'TOTAL INFORMADO (sin desglose aún)', gastos: [
+                { fecha: '—', concepto: 'Total gastos construcción informado por socio', tarjeta: '—', monto: 12206287 }
+            ]}
+        ]
+    }
+};
+
+let deudasRendered = false;
+function renderDeudas() {
+    if (deudasRendered) return;
+    deudasRendered = true;
+    const el = document.getElementById('deudas-content');
+    const fmt = n => '$' + Math.abs(n).toLocaleString('es-CL');
+    const totalDeuda = DEUDAS_SOCIOS.antonio.total + DEUDAS_SOCIOS.cristian.total;
+    let h = '';
+
+    h += '<h2 style="color:#5c554e; border-bottom:2px solid #d4cdc5; padding-bottom:8px; margin-bottom:16px;">Deudas de Insular SPA con Socios</h2>';
+    h += '<p style="color:#8b7e74; font-size:13px; margin-bottom:20px;">Gastos personales realizados por socios para la construcción del Club House. Insular debe reembolsar estos montos.</p>';
+
+    // Summary cards
+    h += '<div style="display:flex; gap:16px; margin-bottom:24px; flex-wrap:wrap;">';
+    [DEUDAS_SOCIOS.antonio, DEUDAS_SOCIOS.cristian].forEach(s => {
+        h += '<div style="flex:1; min-width:240px; background:#faf8f5; border:1px solid #e7e0d8; border-radius:10px; padding:16px;">';
+        h += '<div style="font-size:12px; color:#8b7e74; margin-bottom:4px;">' + s.nombre + '</div>';
+        h += '<div style="font-size:22px; font-weight:700; color:#5c554e;">' + fmt(s.total) + '</div>';
+        h += '<div style="font-size:11px; color:#a68b6b; margin-top:4px;">' + s.viajes.length + ' viaje' + (s.viajes.length > 1 ? 's' : '') + '</div>';
+        h += '</div>';
+    });
+    h += '<div style="flex:1; min-width:240px; background:#5c554e; border-radius:10px; padding:16px;">';
+    h += '<div style="font-size:12px; color:#d4cdc5; margin-bottom:4px;">Total Deuda Insular</div>';
+    h += '<div style="font-size:22px; font-weight:700; color:#fff;">' + fmt(totalDeuda) + '</div>';
+    h += '<div style="font-size:11px; color:#a68b6b; margin-top:4px;">2 socios</div>';
+    h += '</div>';
+    h += '</div>';
+
+    // Detail per socio
+    [DEUDAS_SOCIOS.antonio, DEUDAS_SOCIOS.cristian].forEach(socio => {
+        h += '<h3 style="color:#5c554e; margin:24px 0 12px; font-size:14px;">' + socio.nombre + ' — ' + fmt(socio.total) + '</h3>';
+
+        socio.viajes.forEach(viaje => {
+            const subtotal = viaje.gastos.reduce((s, g) => s + g.monto, 0);
+            h += '<div style="background:#e7e0d8; padding:8px 12px; border-radius:6px 6px 0 0; font-weight:600; font-size:12px; color:#5c554e; display:flex; justify-content:space-between;">';
+            h += '<span>' + viaje.titulo + '</span><span>' + fmt(subtotal) + '</span></div>';
+
+            h += '<table style="width:100%; table-layout:fixed; margin-bottom:16px;">';
+            h += '<colgroup><col style="width:14%"><col style="width:42%"><col style="width:14%"><col style="width:15%"><col style="width:15%"></colgroup>';
+            h += '<thead><tr><th style="background:#f0ebe5; color:#5c554e; padding:6px; text-align:left; font-size:11px; border-bottom:1px solid #d4cdc5;">Fecha</th>';
+            h += '<th style="background:#f0ebe5; color:#5c554e; padding:6px; text-align:left; font-size:11px; border-bottom:1px solid #d4cdc5;">Concepto</th>';
+            h += '<th style="background:#f0ebe5; color:#5c554e; padding:6px; text-align:center; font-size:11px; border-bottom:1px solid #d4cdc5;">Tarjeta</th>';
+            h += '<th style="background:#f0ebe5; color:#5c554e; padding:6px; text-align:right; font-size:11px; border-bottom:1px solid #d4cdc5;">Monto</th>';
+            h += '<th style="background:#f0ebe5; color:#5c554e; padding:6px; text-align:right; font-size:11px; border-bottom:1px solid #d4cdc5;">Acumulado</th></tr></thead><tbody>';
+
+            let acum = 0;
+            viaje.gastos.forEach((g, i) => {
+                acum += g.monto;
+                const neg = g.monto < 0;
+                h += '<tr style="background:' + (i % 2 === 0 ? '#fff' : '#faf8f5') + ';">';
+                h += '<td style="padding:5px 6px; font-size:11px; border-bottom:1px solid #f0ebe5;">' + g.fecha + '</td>';
+                h += '<td style="padding:5px 6px; font-size:11px; border-bottom:1px solid #f0ebe5;">' + g.concepto + '</td>';
+                h += '<td style="padding:5px 6px; font-size:10px; color:#8b7e74; text-align:center; border-bottom:1px solid #f0ebe5;">' + g.tarjeta + '</td>';
+                h += '<td style="padding:5px 6px; font-size:11px; text-align:right; border-bottom:1px solid #f0ebe5;' + (neg ? 'color:#b05a5a;' : '') + '">' + (neg ? '-' : '') + fmt(g.monto) + '</td>';
+                h += '<td style="padding:5px 6px; font-size:11px; text-align:right; border-bottom:1px solid #f0ebe5; color:#8b7e74;">' + fmt(acum) + '</td>';
+                h += '</tr>';
+            });
+            h += '</tbody></table>';
+        });
+    });
+
+    el.innerHTML = h;
 }
 
 // ==================== METODOLOGÍA ====================
