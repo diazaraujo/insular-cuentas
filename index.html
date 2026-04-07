@@ -1117,8 +1117,8 @@ const ALL_DEPOSITS = [
 
 // ==================== CONSTANTS ====================
 const SOCIOS_ALL = ['Antonio','Camilo','Cristian','Cristóbal','Eduardo','Felipe','Fernando','Jordi','Laura','Sebastián'];
-const SOCIOS_MOB = ['Antonio','Camilo','Cristian','Felipe','Fernando','Jordi','Sebastián']; // 7 socios
-const MOB_PAGADO_FULL = ['Laura','Eduardo','Cristóbal'];
+const SOCIOS_MOB = ['Antonio','Camilo','Cristian','Eduardo','Felipe','Fernando','Jordi','Sebastián']; // 8 socios
+const MOB_PAGADO_FULL = ['Laura','Cristóbal'];
 const CUOTA_GGCC = 70000;
 const CUOTA_MOB = 166666;
 const MOB_CUOTAS = 24;
@@ -1199,7 +1199,7 @@ const REGLAS_TIPO = [
     {
         id: 'RESTO',
         nombre: 'Cascada',
-        descripcion: 'Monto que no calza con GGCC — se asigna por cascada: Capital → MOB → Construcción',
+        descripcion: 'Monto que no calza con GGCC — se asigna por cascada: Capital → MOB → Construcción (hasta tope) → GGCC crédito',
         detectar: 'No calza con GGCC, COMBO ni LLAMADO',
         asignacion: 'Capital (si falta) → Mobiliario (si falta) → Construcción',
         ejemplos: ['$5M → Capital hasta completar $10M, resto a Construcción'],
@@ -1297,7 +1297,7 @@ const CASCADA = [
         categoria: 'construccion',
         nombre: 'Construcción',
         topePerSocio: null,
-        descripcion: 'Todo el resto va a construcción (sin tope)',
+        descripcion: 'Hasta lo comprometido en llamados de capital; excedente → GGCC',
         color: '#8b7e74'
     }
 ];
@@ -1467,7 +1467,7 @@ function validateDataIntegrity() {
     let allocMismatch = 0;
     SOCIOS_ALL.forEach(s => {
         cls[s].deposits.forEach(d => {
-            const allocTotal = d.alloc.inicial + d.alloc.construccion + d.alloc.mobiliario + d.alloc.ggcc + d.alloc.otros;
+            const allocTotal = d.alloc.inicial + d.alloc.construccion + d.alloc.mobiliario + d.alloc.ggcc + d.alloc.saldo_favor;
             if (Math.abs(allocTotal - d.amt) > 1) allocMismatch++;
         });
     });
@@ -1591,7 +1591,7 @@ function validateDataIntegrity() {
     // B1) Suma de categorías por socio = total depositado
     SOCIOS_ALL.forEach(s => {
         const t = cls[s].totals;
-        const catSum = t.inicial + t.construccion + t.mobiliario + t.ggcc + t.otros;
+        const catSum = t.inicial + t.construccion + t.mobiliario + t.ggcc + t.saldo_favor;
         if (Math.abs(catSum - t.total) > 1) {
             warnings.push('[Balance] ' + s + ': suma de categorías (' + fmt(catSum) + ') ≠ total depositado (' + fmt(t.total) + '). Diferencia: ' + fmt(Math.abs(catSum - t.total)) + '.');
         }
@@ -2081,7 +2081,7 @@ function renderResumen() {
     const cls = classifyAllDeposits();
 
     // Totales pagados desde cartolas por categoría
-    let capitalPagado = 0, constrPagado = 0, mobPagado = 0, ggccPagado = 0, otrosPagado = 0;
+    let capitalPagado = 0, constrPagado = 0, mobPagado = 0, ggccPagado = 0, saldoFavorTotal = 0;
     SOCIOS_ALL.forEach(s => {
         capitalPagado += cls[s].totals.inicial;
         constrPagado  += cls[s].totals.construccion;
@@ -2089,7 +2089,7 @@ function renderResumen() {
         // MOB_PAGADO_FULL ya pagaron $4M adelantado (fuera de cartola)
         if (MOB_PAGADO_FULL.includes(s)) mobPagado += 4000000;
         ggccPagado    += cls[s].totals.ggcc;
-        otrosPagado   += cls[s].totals.otros;
+        saldoFavorTotal += cls[s].totals.saldo_favor;
     });
 
     // Comprometidos (metas de acuerdo)
@@ -2377,9 +2377,9 @@ const CAT_COLORS = {
     construccion: { bg: '#8b7e74', light: '#ede0de', text: '#8b7e74', label: 'Construcción' },
     mobiliario:   { bg: '#a68b6b', light: '#f0e8d8', text: '#a68b6b', label: 'Mobiliario' },
     ggcc:         { bg: '#6b8f8b', light: '#e0eae8', text: '#6b8f8b', label: 'GGCC' },
-    otros:        { bg: '#616161', light: '#f5f5f5', text: '#616161', label: 'Otros' }
+    saldo_favor:  { bg: '#5a7d5a', light: '#eceee5', text: '#5a7d5a', label: 'Saldo a Favor' }
 };
-const CAT_ORDER = ['inicial', 'construccion', 'mobiliario', 'ggcc', 'otros'];
+const CAT_ORDER = ['inicial', 'construccion', 'mobiliario', 'ggcc', 'saldo_favor'];
 
 // ── Tooltip helpers para trazabilidad on-hover ──
 const _ttTipoColors = {A:'#6b8f8b', A2:'#0097a7', B:'#a68b6b', C:'#8b7e74', PRE:'#795548'};
@@ -2544,7 +2544,7 @@ function classifyAllDeposits() {
 
         const items = deps.map(dep => ({
             ...dep,
-            alloc: { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, otros: 0 },
+            alloc: { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, saldo_favor: 0 },
             remaining: dep.amt,
             regla: null,
             detalle: []
@@ -2598,13 +2598,22 @@ function classifyAllDeposits() {
             else if (llamado) {
                 item.regla = 'LLAMADO';
                 const cat = llamado.categoria;
-                const t = item.remaining;
-                item.alloc[cat] += t;
-                if (cat === 'inicial') capitalPaid += t;
-                else if (cat === 'construccion') constrPaid += t;
-                else if (cat === 'mobiliario') mobPaid += t;
-                item.remaining = 0;
-                item.detalle.push({ paso: 'R3-LLAMADO', regla: llamado.id, monto: t, nota: llamado.nombre + ': $' + t.toLocaleString() });
+                let t = item.remaining;
+                // Respetar topes por categoría
+                if (cat === 'construccion' && constrPaid + t > constrQuota) {
+                    t = Math.max(0, constrQuota - constrPaid);
+                } else if (cat === 'mobiliario' && mobPaid + t > mobTope) {
+                    t = Math.max(0, mobTope - mobPaid);
+                }
+                if (t > 0) {
+                    item.alloc[cat] += t;
+                    if (cat === 'inicial') capitalPaid += t;
+                    else if (cat === 'construccion') constrPaid += t;
+                    else if (cat === 'mobiliario') mobPaid += t;
+                    item.remaining -= t;
+                    item.detalle.push({ paso: 'R3-LLAMADO', regla: llamado.id, monto: t, nota: llamado.nombre + ': $' + t.toLocaleString() });
+                }
+                // Remanente del llamado (exceso sobre tope) se deja para la cascada → GGCC
             }
             // ── REGLA 4: Cascada → Capital → MOB → Construcción ──
             else {
@@ -2629,11 +2638,32 @@ function classifyAllDeposits() {
                         item.detalle.push({ paso: 'R4-MOB', regla: 'CASCADA', monto: t, nota: 'Mobiliario: $' + t.toLocaleString() });
                     }
                 }
-                // Paso 3: Construcción (todo el resto)
+                // Paso 3: Construcción (hasta el tope comprometido)
+                if (item.remaining > 0 && constrPaid < constrQuota) {
+                    const t = Math.min(item.remaining, constrQuota - constrPaid);
+                    if (t > 0) {
+                        item.alloc.construccion += t; constrPaid += t; item.remaining -= t;
+                        item.detalle.push({ paso: 'R4-CONSTR', regla: 'CASCADA', monto: t, nota: 'Construcción: $' + t.toLocaleString() });
+                    }
+                }
+                // Paso 4: Excedente → GGCC (crédito a favor)
                 if (item.remaining > 0) {
-                    const t = item.remaining;
-                    item.alloc.construccion += t; constrPaid += t; item.remaining = 0;
-                    item.detalle.push({ paso: 'R4-CONSTR', regla: 'CASCADA', monto: t, nota: 'Construcción: $' + t.toLocaleString() });
+                    for (const mk of ggccAllMonths) {
+                        if (item.remaining <= 0) break;
+                        const already = ggccByMonth[mk] || 0;
+                        if (already >= CUOTA_GGCC) continue;
+                        const take = Math.min(item.remaining, CUOTA_GGCC - already);
+                        if (take > 0) { item.alloc.ggcc += take; ggccByMonth[mk] = already + take; item.remaining -= take; }
+                    }
+                    if (item.alloc.ggcc > 0 && item.regla === 'RESTO') {
+                        item.detalle.push({ paso: 'R4-GGCC', regla: 'CASCADA', monto: item.alloc.ggcc, nota: 'Excedente → GGCC crédito' });
+                    }
+                    // Si aún queda remanente (todos los slots GGCC llenos), va a saldo a favor
+                    if (item.remaining > 0) {
+                        item.alloc.saldo_favor += item.remaining;
+                        item.detalle.push({ paso: 'R4-SALDO', regla: 'CASCADA', monto: item.remaining, nota: 'Saldo a favor: $' + item.remaining.toLocaleString() });
+                        item.remaining = 0;
+                    }
                 }
             }
         });
@@ -2641,7 +2671,7 @@ function classifyAllDeposits() {
         const classified = items.map(item => ({ ...item, alloc: item.alloc }));
 
         // Compute totals
-        const totals = { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, otros: 0, total: 0 };
+        const totals = { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, saldo_favor: 0, total: 0 };
         classified.forEach(d => {
             CAT_ORDER.forEach(c => totals[c] += d.alloc[c]);
             totals.total += d.amt;
@@ -2661,7 +2691,7 @@ function renderAportesCapital() {
     const grandTotal = ALL_DEPOSITS.reduce((a,d) => a + d.amt, 0);
 
     // Global category totals
-    const globalCats = { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, otros: 0 };
+    const globalCats = { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, saldo_favor: 0 };
     SOCIOS_ALL.forEach(s => CAT_ORDER.forEach(c => globalCats[c] += classified[s].totals[c]));
 
     let html = '';
@@ -2704,8 +2734,8 @@ function renderAportesCapital() {
     html += '<div class="kpi purple"><div class="label">Construcción</div><div class="value">' + wtt(fmt(globalCats.construccion), kpiTT('construccion')) + '</div><div class="sub">de $76M comprometido</div></div>';
     html += '<div class="kpi orange"><div class="label">Mobiliario</div><div class="value">' + wtt(fmt(globalCats.mobiliario), kpiTT('mobiliario')) + '</div><div class="sub">de $40M comprometido</div></div>';
     html += '<div class="kpi teal"><div class="label">GGCC</div><div class="value">' + wtt(fmt(globalCats.ggcc), kpiTT('ggcc')) + '</div><div class="sub">Gastos comunes mensuales</div></div>';
-    if (globalCats.otros > 0) {
-        html += '<div class="kpi"><div class="label">Otros</div><div class="value">' + wtt(fmt(globalCats.otros), kpiTT('otros')) + '</div><div class="sub">Excedentes</div></div>';
+    if (globalCats.saldo_favor > 0) {
+        html += '<div class="kpi" style="border-left:4px solid #5a7d5a;"><div class="label">Saldo a Favor</div><div class="value" style="color:#5a7d5a;">' + wtt(fmt(globalCats.saldo_favor), kpiTT('saldo_favor')) + '</div><div class="sub">Fondos que exceden todos los compromisos</div></div>';
     }
     html += '</section>';
 
@@ -2733,7 +2763,7 @@ function renderAportesCapital() {
         // Aggregate year categories per socio
         const yearData = {};
         SOCIOS_ALL.forEach(s => {
-            yearData[s] = { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, otros: 0, total: 0 };
+            yearData[s] = { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, saldo_favor: 0, total: 0 };
             classified[s].deposits.filter(d => d.y === year).forEach(d => {
                 CAT_ORDER.forEach(c => yearData[s][c] += d.alloc[c]);
                 yearData[s].total += d.amt;
@@ -2741,7 +2771,7 @@ function renderAportesCapital() {
         });
 
         // Year category totals
-        const yearCats = { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, otros: 0 };
+        const yearCats = { inicial: 0, construccion: 0, mobiliario: 0, ggcc: 0, saldo_favor: 0 };
         SOCIOS_ALL.forEach(s => CAT_ORDER.forEach(c => yearCats[c] += yearData[s][c]));
 
         html += '<div class="table-section">';
@@ -3368,7 +3398,7 @@ function renderVistaSocio(socioOverride) {
         {key:'construccion', label:'Construcción', color:'#8b7e74', val:t.construccion},
         {key:'mobiliario', label:'MOB', color:'#a68b6b', val:t.mobiliario}
     ];
-    if (t.otros > 0) cats.push({key:'otros', label:'Otros', color:'#616161', val:t.otros});
+    if (t.saldo_favor > 0) cats.push({key:'saldo_favor', label:'Saldo a Favor', color:'#5a7d5a', val:t.saldo_favor});
     html += '<div style="display:flex; height:28px; border-radius:6px; overflow:hidden; box-shadow:0 1px 2px rgba(0,0,0,0.1); margin-bottom:8px;">';
     cats.forEach(c => {
         const pct = t.total > 0 ? (c.val / t.total * 100) : 0;
