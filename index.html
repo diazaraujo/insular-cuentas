@@ -1117,8 +1117,8 @@ const ALL_DEPOSITS = [
 
 // ==================== CONSTANTS ====================
 const SOCIOS_ALL = ['Antonio','Camilo','Cristian','Cristóbal','Eduardo','Felipe','Fernando','Jordi','Laura','Sebastián'];
-const SOCIOS_MOB = ['Antonio','Camilo','Cristian','Eduardo','Felipe','Fernando','Jordi','Sebastián']; // 8 socios
-const MOB_PAGADO_FULL = ['Laura','Cristóbal'];
+const SOCIOS_MOB = SOCIOS_ALL.slice(); // Los 10 socios pagan MOB por cartola
+const MOB_PAGADO_FULL = []; // Nadie pagó fuera de cartola — todo se clasifica desde cartola
 const CUOTA_GGCC = 70000;
 const CUOTA_MOB = 166666;
 const MOB_CUOTAS = 24;
@@ -1181,10 +1181,10 @@ const REGLAS_TIPO = [
     {
         id: 'COMBO',
         nombre: 'GGCC + MOB',
-        descripcion: 'Depósito de ~$236.666 — $70k a GGCC + $166.666 a Mobiliario',
+        descripcion: 'Depósito de ~$236.666 — $70k a GGCC + $166.666 a MOB. Si MOB está lleno, el excedente va a GGCC antes de cascada',
         detectar: 'amt >= 236665 && amt <= 236667',
-        asignacion: '$70k → GGCC + $166.666 → MOB',
-        ejemplos: ['$236.666 → $70k GGCC + $166.666 MOB'],
+        asignacion: '$70k → GGCC + $166.666 → MOB (si MOB lleno: excedente → GGCC → cascada)',
+        ejemplos: ['$236.666 → $70k GGCC + $166.666 MOB', '$236.666 (MOB lleno) → $70k GGCC + $166.666 extra GGCC'],
         color: '#a68b6b', bg: '#f0e8d8'
     },
     {
@@ -1199,10 +1199,10 @@ const REGLAS_TIPO = [
     {
         id: 'RESTO',
         nombre: 'Cascada',
-        descripcion: 'Monto que no calza con GGCC — se asigna por cascada: Capital → MOB → Construcción (hasta tope) → GGCC crédito',
+        descripcion: 'Monto que no calza con reglas anteriores — se asigna por cascada: Capital → MOB → Construcción → GGCC crédito → Saldo a Favor',
         detectar: 'No calza con GGCC, COMBO ni LLAMADO',
-        asignacion: 'Capital (si falta) → Mobiliario (si falta) → Construcción',
-        ejemplos: ['$5M → Capital hasta completar $10M, resto a Construcción'],
+        asignacion: 'Capital (si falta) → Mobiliario (si falta) → Construcción → GGCC → Saldo a Favor',
+        ejemplos: ['$5M → Capital hasta completar $10M, resto a Construcción', 'Excedente sobre tope → Saldo a Favor'],
         color: '#616161', bg: '#f5f5f5'
     }
 ];
@@ -1288,8 +1288,8 @@ const CASCADA = [
         categoria: 'mobiliario',
         nombre: 'Mobiliario',
         topePerSocio: 4000000,
-        descripcion: 'Solo socios MOB — hasta $4M por socio',
-        condicion: 'Solo aplica a SOCIOS_MOB que no sean MOB_PAGADO_FULL',
+        descripcion: 'Todos los socios — hasta $4M por socio ($166.666/mes × 24 cuotas)',
+        condicion: 'Aplica a todos los socios (SOCIOS_MOB = SOCIOS_ALL)',
         color: '#a68b6b'
     },
     {
@@ -1325,7 +1325,7 @@ const MOB_CONFIG = {
     finMonth: 1,
     sociosMOB: SOCIOS_MOB,
     sociosPagadoFull: MOB_PAGADO_FULL,
-    pagadoFullExplicacion: 'Estos socios pagaron $4M de mobiliario por adelantado, fuera de la cuenta Scotiabank. No se les asigna MOB desde cartola.',
+    pagadoFullExplicacion: 'Los 10 socios pagan MOB por cartola ($166.666/mes, 24 cuotas). La cascada asigna a MOB después de capital.',
     fuente: 'Acuerdo asamblea ene-2025'
 };
 
@@ -1516,40 +1516,20 @@ function validateDataIntegrity() {
 
     // ═══ MOBILIARIO ═══
 
-    // M1) MOB_PAGADO_FULL con depósitos MOB en cartola = posible doble conteo
-    MOB_PAGADO_FULL.forEach(s => {
-        if (cls[s].mobPaid > 0) {
-            warnings.push('[Mobiliario] ' + s + ' está en MOB_PAGADO_FULL (pagó $4M adelantado fuera de cartola) pero tiene ' + fmt(cls[s].mobPaid) + ' clasificado como MOB en cartolas. Posible doble conteo.');
-        }
-    });
-
-    // M2) Socios MOB con más de $4M pagado
+    // M1) Socios MOB con más de $4M pagado
     SOCIOS_MOB.forEach(s => {
         if (cls[s].mobPaid > ACUERDOS.mobiliario.perSocio * 1.05) {
             warnings.push('[Mobiliario] ' + s + ': MOB pagado ' + fmt(cls[s].mobPaid) + ' excede meta ' + fmtM(ACUERDOS.mobiliario.perSocio) + '.');
         }
     });
 
-    // M3) MOB_PAGADO_FULL no debe estar en SOCIOS_MOB
-    MOB_PAGADO_FULL.forEach(s => {
-        if (SOCIOS_MOB.includes(s)) {
-            warnings.push('[Mobiliario] ' + s + ' está en MOB_PAGADO_FULL y también en SOCIOS_MOB. Debe estar solo en MOB_PAGADO_FULL.');
-        }
-    });
-
-    // M4) Verificar que MOB_PAGADO_FULL + SOCIOS_MOB = todos los socios
-    const allMobSocios = new Set([...SOCIOS_MOB, ...MOB_PAGADO_FULL]);
-    if (allMobSocios.size !== SOCIOS_ALL.length) {
-        const missing = SOCIOS_ALL.filter(s => !allMobSocios.has(s));
+    // M2) Verificar que SOCIOS_MOB = todos los socios
+    if (SOCIOS_MOB.length !== SOCIOS_ALL.length) {
+        const missing = SOCIOS_ALL.filter(s => !SOCIOS_MOB.includes(s));
         if (missing.length > 0) {
-            warnings.push('[Mobiliario] Socios sin clasificación MOB: ' + missing.join(', ') + '. Deben estar en SOCIOS_MOB o MOB_PAGADO_FULL.');
+            warnings.push('[Mobiliario] Socios sin clasificación MOB: ' + missing.join(', ') + '.');
         }
     }
-
-    // M5) Socios no-MOB no deberían tener pagos MOB
-    MOB_PAGADO_FULL.forEach(s => {
-        // Ya cubierto en M1
-    });
 
     // ═══ GGCC ═══
 
@@ -1611,6 +1591,29 @@ function validateDataIntegrity() {
         if (!socioSet.has(d.s)) {
             warnings.push('[Balance] Depósito de "' + d.s + '" no es un socio reconocido (' + MONTHS[d.m-1] + ' ' + d.y + ', ' + fmt(d.amt) + ').');
         }
+    });
+
+    // B4) Cada depósito debe quedar con remaining=0 (todo asignado)
+    let depositsConRemaining = 0;
+    SOCIOS_ALL.forEach(s => {
+        (cls[s].deposits || []).forEach(dep => {
+            if (dep.remaining > 0) {
+                depositsConRemaining++;
+                warnings.push('[Balance] ' + s + ': depósito ' + MONTHS[(dep.m||dep.month)-1] + ' ' + (dep.y||dep.year) + ' (' + fmt(dep.amt||dep.monto) + ') tiene remaining=' + fmt(dep.remaining) + ' sin asignar.');
+            }
+        });
+    });
+
+    // B5) Por cada depósito: suma de allocaciones = monto original
+    SOCIOS_ALL.forEach(s => {
+        (cls[s].deposits || []).forEach(dep => {
+            const a = dep.alloc || {};
+            const allocSum = (a.inicial||0) + (a.construccion||0) + (a.mobiliario||0) + (a.ggcc||0) + (a.saldo_favor||0);
+            const orig = dep.amt || dep.monto || 0;
+            if (Math.abs(allocSum - orig) > 1) {
+                warnings.push('[Balance] ' + s + ': depósito ' + MONTHS[(dep.m||dep.month)-1] + ' ' + (dep.y||dep.year) + ' (' + fmt(orig) + '): alloc=' + fmt(allocSum) + ' ≠ monto. Diferencia: ' + fmt(Math.abs(allocSum - orig)) + '.');
+            }
+        });
     });
 
     return warnings;
@@ -1798,7 +1801,7 @@ function renderMetodologia() {
     h += '<text x="520" y="202" text-anchor="middle" fill="#a68b6b" font-size="12" font-weight="700">TIPO B</text>';
     h += '<text x="520" y="218" text-anchor="middle" fill="#455a64" font-size="10">Exactamente $236.666</text>';
     h += '<text x="520" y="232" text-anchor="middle" fill="#455a64" font-size="10">(cuota combinada)</text>';
-    h += '<text x="520" y="246" text-anchor="middle" fill="#a68b6b" font-size="10" font-weight="600">→ $70k GGCC + $166k MOB</text>';
+    h += '<text x="520" y="246" text-anchor="middle" fill="#a68b6b" font-size="10" font-weight="600">→ $70k GGCC + $166k MOB*</text>';
 
     // ── TIPO C ──
     h += '<rect x="650" y="180" width="180" height="70" rx="8" fill="#e8e3e8" stroke="#8b7e74" stroke-width="2" filter="url(#shadow)"/>';
@@ -1858,12 +1861,12 @@ function renderMetodologia() {
 
     // RESULTADO
     h += '<rect x="150" y="475" width="600" height="50" rx="10" fill="#2d2926" filter="url(#shadow)"/>';
-    h += '<text x="450" y="498" text-anchor="middle" fill="white" font-size="13" font-weight="700">Depósito 100% clasificado → GGCC + Capital + Construcción + MOB</text>';
-    h += '<text x="450" y="515" text-anchor="middle" fill="#90a4ae" font-size="10">Cada peso queda asignado. No hay categoría "Otros".</text>';
+    h += '<text x="450" y="498" text-anchor="middle" fill="white" font-size="13" font-weight="700">Depósito 100% clasificado → GGCC + Capital + MOB + Construcción + Saldo a Favor</text>';
+    h += '<text x="450" y="515" text-anchor="middle" fill="#90a4ae" font-size="10">Cada peso queda asignado. Excedentes quedan como Saldo a Favor del socio.</text>';
 
     // Legend at bottom
     h += '<text x="450" y="555" text-anchor="middle" fill="#999" font-size="11" font-style="italic">Las líneas punteadas indican que el remanente del depósito pasa al siguiente paso.</text>';
-    h += '<text x="450" y="572" text-anchor="middle" fill="#999" font-size="11" font-style="italic">Pasada 1 da prioridad a depósitos GGCC explícitos. Pasada 2 procesa todo lo demás.</text>';
+    h += '<text x="450" y="572" text-anchor="middle" fill="#999" font-size="11" font-style="italic">*TIPO B: si MOB está lleno, el excedente va a GGCC antes de entrar a cascada.</text>';
 
     h += '</svg></div></div>';
 
@@ -1944,8 +1947,7 @@ function renderMetodologia() {
     h += '<div style="font-weight:700; color:#a68b6b; margin-bottom:8px;">Grupos de Socios & Mobiliario</div>';
     h += '<div style="font-size:12px; color:#455a64; line-height:1.8;">';
     h += 'Total socios: <strong>' + SOCIOS_ALL.length + '</strong><br>';
-    h += 'Socios MOB (cuota mensual): <strong>' + MOB_CONFIG.sociosMOB.length + '</strong> — ' + MOB_CONFIG.sociosMOB.join(', ') + '<br>';
-    h += 'MOB pagado full: <strong>' + MOB_CONFIG.sociosPagadoFull.length + '</strong> — ' + MOB_CONFIG.sociosPagadoFull.join(', ') + '<br>';
+    h += 'Socios MOB: <strong>' + MOB_CONFIG.sociosMOB.length + ' de ' + SOCIOS_ALL.length + '</strong> (todos pagan por cartola)<br>';
     h += 'Cuota MOB: <strong>$' + fmt(MOB_CONFIG.cuotaMensual) + '/mes</strong> × ' + MOB_CONFIG.totalCuotas + ' cuotas (' + MONTHS_SHORT[MOB_CONFIG.inicioMonth-1] + '-' + MOB_CONFIG.inicioYear + ' → ' + MONTHS_SHORT[MOB_CONFIG.finMonth-1] + '-' + MOB_CONFIG.finYear + ')<br>';
     h += '<span style="font-size:11px; color:#888;">' + MOB_CONFIG.pagadoFullExplicacion + '</span>';
     h += '</div></div>';
@@ -2069,7 +2071,7 @@ function renderMetodologia() {
 
     // Footer
     h += '<div style="text-align:center; padding:16px; color:#aaa; font-size:11px;">';
-    h += 'Documentación generada desde REGLAS_TIPO, CASCADA, GGCC_CONFIG, MOB_CONFIG — Insular S.p.A. Dashboard v3';
+    h += 'Documentación generada desde REGLAS_TIPO, CASCADA, GGCC_CONFIG, MOB_CONFIG — Insular S.p.A. Dashboard v3.1';
     h += '</div>';
 
     el.innerHTML = h;
@@ -2086,8 +2088,6 @@ function renderResumen() {
         capitalPagado += cls[s].totals.inicial;
         constrPagado  += cls[s].totals.construccion;
         mobPagado     += cls[s].totals.mobiliario;
-        // MOB_PAGADO_FULL ya pagaron $4M adelantado (fuera de cartola)
-        if (MOB_PAGADO_FULL.includes(s)) mobPagado += 4000000;
         ggccPagado    += cls[s].totals.ggcc;
         saldoFavorTotal += cls[s].totals.saldo_favor;
     });
@@ -2118,7 +2118,7 @@ function renderResumen() {
         const constrComp = d.constrQuota;
         const capOk   = d.capitalPaid >= 10000000;
         const cOk     = d.constrPaid >= constrComp;
-        const mOk     = MOB_PAGADO_FULL.includes(s) || d.mobPaid >= 4000000;
+        const mOk     = d.mobPaid >= 4000000;
         const gOk     = d.totals.ggcc >= ggccExpectedPerSocio;
         if (capOk && cOk && mOk && gOk) { sociosAlDia++; sociosAlDiaNames.push(s); }
     });
@@ -2129,7 +2129,7 @@ function renderResumen() {
     const constrPct = Math.min(100, Math.round(constrPagado / constrMeta * 100));
     const constrAlDia = SOCIOS_ALL.filter(s => cls[s].constrPaid >= cls[s].constrQuota).length;
     const mobPct = Math.min(100, Math.round(mobPagado / mobMeta * 100));
-    const mobAlDia = SOCIOS_ALL.filter(s => MOB_PAGADO_FULL.includes(s) || cls[s].mobPaid >= 4000000).length;
+    const mobAlDia = SOCIOS_ALL.filter(s => cls[s].mobPaid >= 4000000).length;
     const ggccPct = Math.min(100, Math.round(ggccPagado / ggccMeta * 100));
 
     const ggccAlDia = SOCIOS_ALL.filter(s => cls[s].totals.ggcc >= ggccExpectedPerSocio).length;
@@ -2144,6 +2144,10 @@ function renderResumen() {
         html += '<div style="font-weight:700; color:#a68b6b; font-size:13px; margin-bottom:6px;">⚠ Alerta de Integridad de Datos (' + _warnings.length + ')</div>';
         _warnings.forEach(w => { html += '<div style="font-size:11px; color:#795548; margin:3px 0; padding-left:12px; border-left:2px solid #ffcc02;">• ' + w + '</div>'; });
         html += '</div>';
+    } else {
+        html += '<div style="background:#e8f5e9; border:2px solid #4caf50; border-radius:10px; padding:14px 18px; margin-bottom:20px;">';
+        html += '<div style="font-weight:700; color:#2e7d32; font-size:13px;">✓ Integridad de Datos OK — ' + ALL_DEPOSITS.length + ' depósitos verificados, $0 diferencia, todos los pesos asignados</div>';
+        html += '</div>';
     }
 
     // ─── FUENTE ───
@@ -2157,13 +2161,14 @@ function renderResumen() {
     html += '<p style="margin:0 0 8px;">Cada depósito de cartola se clasifica automáticamente en <strong>2 pasadas</strong>:</p>';
     html += '<div class="rule"><strong>Pasada 1 — Depósitos explícitos (prioridad):</strong><br>';
     html += '<span class="tag tag-a">GGCC</span> Depósito de $70.000 → va íntegro a Gastos Comunes (1 mes).<br>';
-    html += '<span class="tag tag-b">COMBO</span> Depósito de $236.666 → $70k a GGCC + $166.666 a Mobiliario.</div>';
+    html += '<span class="tag tag-b">COMBO</span> Depósito de $236.666 → $70k a GGCC + $166.666 a MOB. Si MOB está lleno, excedente va a GGCC.</div>';
     html += '<div class="rule"><strong>Llamados de capital:</strong><br>';
     html += '<span class="tag tag-c">LLAMADO</span> Depósitos que calzan en monto y fecha con un llamado de capital van directo a esa categoría (construcción, mob, etc.).</div>';
     html += '<div class="rule"><strong>Cascada (todo lo demás):</strong><br>';
     html += '<span class="tag tag-cascade">1.</span> Capital Inicial — hasta $10M/socio<br>';
-    html += '<span class="tag tag-cascade">2.</span> Mobiliario — hasta $4M/socio (solo socios MOB: ' + SOCIOS_MOB.length + ' de ' + SOCIOS_ALL.length + ')<br>';
-    html += '<span class="tag tag-cascade">3.</span> Construcción — todo lo que sobra (sin tope).</div>';
+    html += '<span class="tag tag-cascade">2.</span> Mobiliario — hasta $4M/socio (los ' + SOCIOS_MOB.length + ' socios pagan por cartola)<br>';
+    html += '<span class="tag tag-cascade">3.</span> Construcción — hasta tope por socio<br>';
+    html += '<span class="tag tag-cascade">4.</span> GGCC crédito → Saldo a Favor (excedentes).</div>';
     html += '<div class="rule"><strong>Mes vencido (GGCC):</strong> El GGCC de un mes se paga en el mes siguiente. Ej: GGCC de enero se paga en febrero. Los depósitos de la cartola del 31/03 cubren hasta el GGCC de marzo. Se esperan ' + ggccMeses + ' meses de obligación.</div>';
     html += '</div></details>';
 
@@ -2292,7 +2297,7 @@ function renderResumen() {
     html += '<div style="margin-top:8px;">';
     html += '<div class="rule"><strong>Capital:</strong> Meta $' + (ACUERDOS.capital.perSocio/1e6) + 'M/socio. Deuda = max(0, meta − pagado). Una vez cubierto aparece ✓.</div>';
     html += '<div class="rule"><strong>Construcción:</strong> Meta $' + (ACUERDOS.construccion.perSocio/1e6) + 'M/socio. Puede exceder la meta (la cascada usa construcción como bucket final). Excedentes son normales.</div>';
-    html += '<div class="rule"><strong>Mobiliario:</strong> Meta $' + (ACUERDOS.mobiliario.perSocio/1e6) + 'M/socio. ' + MOB_PAGADO_FULL.length + ' socios (' + MOB_PAGADO_FULL.join(', ') + ') ya pagaron $4M por adelantado fuera de cartola → siempre ✓. Los otros ' + SOCIOS_MOB.length + ' pagan $' + (CUOTA_MOB/1000) + 'k/mes (' + MOB_CUOTAS + ' cuotas).</div>';
+    html += '<div class="rule"><strong>Mobiliario:</strong> Meta $' + (ACUERDOS.mobiliario.perSocio/1e6) + 'M/socio. Los ' + SOCIOS_MOB.length + ' socios pagan $' + (CUOTA_MOB/1000) + 'k/mes (' + MOB_CUOTAS + ' cuotas). Todo se clasifica desde cartola.</div>';
     html += '<div class="rule"><strong>GGCC:</strong> $' + (CUOTA_GGCC/1000) + 'k/mes × ' + ggccMeses + ' meses = $' + fmt(ggccExpectedPerSocio) + '/socio. Si pagó todos los meses → ✓. Si debe meses, muestra el monto pendiente.</div>';
     html += '<div class="rule"><strong>"Al día":</strong> significa que el socio no debe nada en ninguna categoría. Click en el nombre abre la bitácora del socio.</div>';
     html += '</div></details>';
@@ -2307,7 +2312,7 @@ function renderResumen() {
         const capDebt   = Math.max(0, 10000000 - d.capitalPaid);
         const cComp     = d.constrQuota;
         const constrDbt = Math.max(0, cComp - d.constrPaid);
-        const mobDbt    = MOB_PAGADO_FULL.includes(s) ? 0 : Math.max(0, 4000000 - d.mobPaid);
+        const mobDbt    = Math.max(0, 4000000 - d.mobPaid);
         const ggccDbt   = Math.max(0, ggccExpectedPerSocio - d.totals.ggcc);
         const totalDebt = capDebt + constrDbt + mobDbt + ggccDbt;
         const isAlDia   = totalDebt === 0;
@@ -2319,7 +2324,7 @@ function renderResumen() {
         html += '<td class="col-right" style="font-weight:700;">' + wtt(fmt(totalAportado), ttText(s + ' — Total Aportado', ['Capital: $' + d.totals.inicial.toLocaleString(), 'Construcción: $' + d.totals.construccion.toLocaleString(), 'Mobiliario: $' + d.totals.mobiliario.toLocaleString(), 'GGCC: $' + d.totals.ggcc.toLocaleString(), d.deposits.length + ' depósitos en cartola'])) + '</td>';
         html += '<td class="col-right" style="color:' + (capDebt > 0 ? '#b05a5a' : '#5a7d5a') + ';">' + (capDebt > 0 ? wtt(fmt(capDebt), ttText('Capital — Deuda', ['Meta: $10.000.000', 'Pagado: $' + d.capitalPaid.toLocaleString(), 'Falta: $' + capDebt.toLocaleString()])) : wtt('✓', ttText('Capital', ['Pagado: $' + d.capitalPaid.toLocaleString(), 'Meta: $10.000.000', 'Completo']))) + '</td>';
         html += '<td class="col-right" style="color:' + (constrDbt > 0 ? '#b05a5a' : '#5a7d5a') + ';">' + (constrDbt > 0 ? wtt(fmt(constrDbt), ttText('Construcción — Deuda', ['Meta: $' + cComp.toLocaleString(), 'Pagado: $' + d.constrPaid.toLocaleString(), 'Falta: $' + constrDbt.toLocaleString()])) : wtt('✓', ttText('Construcción', ['Pagado: $' + d.constrPaid.toLocaleString(), 'Meta: $' + cComp.toLocaleString(), 'Completo' + (d.constrPaid > cComp ? ' (excede meta en $' + (d.constrPaid-cComp).toLocaleString() + ')' : '')]))) + '</td>';
-        html += '<td class="col-right" style="color:' + (mobDbt > 0 ? '#a68b6b' : '#5a7d5a') + ';">' + (MOB_PAGADO_FULL.includes(s) ? wtt('✓', ttText('Mobiliario', ['Pagó $4M adelantado fuera de cartola', 'MOB_PAGADO_FULL'])) : (mobDbt > 0 ? wtt(fmt(mobDbt), ttText('Mobiliario — Deuda', ['Meta: $4.000.000', 'Pagado: $' + d.mobPaid.toLocaleString(), 'Falta: $' + mobDbt.toLocaleString()])) : wtt('✓', ttText('Mobiliario', ['Pagado: $' + d.mobPaid.toLocaleString(), 'Meta: $4.000.000', 'Completo'])))) + '</td>';
+        html += '<td class="col-right" style="color:' + (mobDbt > 0 ? '#a68b6b' : '#5a7d5a') + ';">' + (mobDbt > 0 ? wtt(fmt(mobDbt), ttText('Mobiliario — Deuda', ['Meta: $4.000.000', 'Pagado: $' + d.mobPaid.toLocaleString(), 'Falta: $' + mobDbt.toLocaleString()])) : wtt('✓', ttText('Mobiliario', ['Pagado: $' + d.mobPaid.toLocaleString(), 'Meta: $4.000.000', 'Completo']))) + '</td>';
         html += '<td class="col-right" style="color:' + (ggccDbt > 0 ? '#6b8f8b' : '#5a7d5a') + ';">' + (ggccDbt > 0 ? wtt(fmt(ggccDbt), ttText('GGCC — Deuda', ['Esperado: ' + ggccMeses + ' meses × $70k = $' + ggccExpectedPerSocio.toLocaleString(), 'Pagado: $' + d.totals.ggcc.toLocaleString() + ' (' + d.ggccMonthsPaid + ' meses)', 'Debe: ' + Math.round(ggccDbt/CUOTA_GGCC) + ' meses'])) : wtt('✓', ttText('GGCC', ['Pagado: $' + d.totals.ggcc.toLocaleString(), d.ggccMonthsPaid + '/' + ggccMeses + ' meses', 'Al día']))) + '</td>';
         html += '<td class="col-right" style="color:' + (totalDebt > 0 ? '#b05a5a' : '#5a7d5a') + '; font-weight:700;">' + (totalDebt > 0 ? wtt(fmt(totalDebt), ttDeuda(s, capDebt, constrDbt, mobDbt, ggccDbt)) : wtt('$0', ttText(s, ['Sin deuda en ninguna categoría']))) + '</td>';
         if (isAlDia) {
@@ -2535,7 +2540,7 @@ function classifyAllDeposits() {
         const constrQuota = ACUERDOS.construccion.perSocio;
         let capitalPaid = 0, constrPaid = 0, mobPaid = 0;
         const ggccByMonth = {};
-        const isMobSocio = MOB_CONFIG.sociosMOB.includes(s) && !MOB_CONFIG.sociosPagadoFull.includes(s);
+        const isMobSocio = SOCIOS_MOB.includes(s); // Todos los socios pagan MOB por cartola
         const mobTope = MOB_CONFIG.cuotaMensual * MOB_CONFIG.totalCuotas; // $4M
 
         const deps = ALL_DEPOSITS.filter(d => d.s === s)
@@ -2727,7 +2732,7 @@ function renderAportesCapital() {
     html += '③ <strong style="color:#a68b6b;">Mobiliario</strong> hasta $' + (ACUERDOS.mobiliario.perSocio/1e6) + 'M (solo ' + SOCIOS_MOB.length + ' socios) → ';
     html += '④ <strong style="color:#8b7e74;">Construcción</strong> (sin tope, absorbe todo excedente).</div>';
     html += '<div class="rule"><strong>Construcción como bucket final:</strong> Todo excedente que sobra de la cascada va a Construcción. Es normal que algunos socios excedan la meta de $' + (ACUERDOS.construccion.perSocio/1e6) + 'M.</div>';
-    html += '<div class="rule"><strong>MOB_PAGADO_FULL (' + MOB_PAGADO_FULL.join(', ') + '):</strong> Estos socios pagaron $4M de mobiliario por adelantado, fuera de cartola. Sus depósitos no asignan a MOB.</div>';
+    html += '<div class="rule"><strong>Mobiliario:</strong> Los 10 socios pagan MOB por cartola ($' + (CUOTA_MOB/1000) + 'k/mes, ' + MOB_CUOTAS + ' cuotas). La cascada asigna a MOB después de capital.</div>';
     html += '</div></details>';
 
     // Flat list of all classified deposits (for global tooltips)
@@ -2920,10 +2925,9 @@ function renderAportesCapital() {
         const capMeta = ACUERDOS.capital.perSocio;
         const conMeta = c.constrQuota;
         const mobMeta = ACUERDOS.mobiliario.perSocio;
-        const isMobAdelantado = MOB_PAGADO_FULL.includes(s);
         const capDeuda = Math.max(0, capMeta - c.capitalPaid);
         const conDeuda = Math.max(0, conMeta - c.constrPaid);
-        const mobDeuda = isMobAdelantado ? 0 : Math.max(0, mobMeta - c.mobPaid);
+        const mobDeuda = Math.max(0, mobMeta - c.mobPaid);
         const deuda = capDeuda + conDeuda + mobDeuda;
         totalDeuda += deuda;
         const isAlDia = deuda === 0;
@@ -3124,8 +3128,8 @@ function renderGGCC() {
     html += '<div style="margin-top:8px;">';
     html += '<div class="rule"><strong>Misma lógica del Resumen:</strong> Cada depósito pasa por las 2 pasadas (GGCC primero, luego cascada). Los números aquí son 100% consistentes con los del tab Resumen y Aportes de Capital.</div>';
     html += '<div class="rule"><strong>GGCC (' + fmt(CUOTA_GGCC) + '/mes):</strong> La columna verde muestra lo que cada depósito aportó a gastos comunes.</div>';
-    html += '<div class="rule"><strong>MOB (' + fmt(CUOTA_MOB) + '/mes):</strong> Solo para los ' + SOCIOS_MOB.length + ' socios con cuota de mobiliario activa. Los $236.666 se dividen en $70k GGCC + $166.666 MOB.</div>';
-    html += '<div class="rule"><strong>Capital / Construcción:</strong> El remanente se asigna por cascada: Capital ($' + (ACUERDOS.capital.perSocio/1e6) + 'M) → Construcción ($' + (ACUERDOS.construccion.perSocio/1e6) + 'M) → excedente a Construcción.</div>';
+    html += '<div class="rule"><strong>MOB (' + fmt(CUOTA_MOB) + '/mes):</strong> Los ' + SOCIOS_MOB.length + ' socios pagan MOB por cartola. Los $236.666 se dividen en $70k GGCC + $166.666 MOB. Si MOB está lleno, excedente va a GGCC.</div>';
+    html += '<div class="rule"><strong>Capital / Construcción:</strong> El remanente se asigna por cascada: Capital ($' + (ACUERDOS.capital.perSocio/1e6) + 'M) → MOB ($4M) → Construcción → GGCC crédito → Saldo a Favor.</div>';
     html += '</div></details>';
     
     // Year totals from classifyAllDeposits
@@ -3346,13 +3350,12 @@ function renderVistaSocio(socioOverride) {
     const deps = data.deposits;
     const totalGGCCMonths = getGGCCMesesEsperados();
     const ggccExpected = CUOTA_GGCC * totalGGCCMonths;
-    const isMobFull = MOB_PAGADO_FULL.includes(socio);
     const isMobSocio = SOCIOS_MOB.includes(socio);
 
     // Deudas
     const capDebt = Math.max(0, 10000000 - data.capitalPaid);
     const constrDebt = Math.max(0, data.constrQuota - data.constrPaid);
-    const mobDebt = isMobFull ? 0 : Math.max(0, 4000000 - data.mobPaid);
+    const mobDebt = Math.max(0, 4000000 - data.mobPaid);
     const ggccDebt = Math.max(0, ggccExpected - t.ggcc);
     const totalDebt = capDebt + constrDebt + mobDebt + ggccDebt;
     const isAlDia = totalDebt === 0;
