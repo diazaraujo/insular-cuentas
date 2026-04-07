@@ -3274,6 +3274,7 @@ function renderAportesCapital() {
         const capMeta = ACUERDOS.capital.perSocio;
         const conMeta = c.constrQuota;
         const mobMeta = ACUERDOS.mobiliario.perSocio;
+        const isMobAdelantado = MOB_PAGADO_FULL.includes(s);
         const capDeuda = Math.max(0, capMeta - c.capitalPaid);
         const conDeuda = Math.max(0, conMeta - c.constrPaid);
         const mobDeuda = Math.max(0, mobMeta - c.mobPaid);
