@@ -1938,49 +1938,53 @@ function renderDeudas() {
     const totalDeuda = DEUDAS_SOCIOS.antonio.total + DEUDAS_SOCIOS.cristian.total;
     let h = '';
 
-    h += '<h2 style="color:#5c554e; border-bottom:2px solid #d4cdc5; padding-bottom:8px; margin-bottom:16px;">Deudas de Insular SPA con Socios</h2>';
-    h += '<p style="color:#8b7e74; font-size:13px; margin-bottom:20px;">Gastos personales realizados por socios para la construcción del Club House. Insular debe reembolsar estos montos.</p>';
+    h += '<div style="margin-bottom:32px;">';
+    h += '<h2 style="font-size:18px; color:#5c554e; border-bottom:2px solid #d4cdc5; padding-bottom:8px; margin-bottom:4px;">Deudas de Insular SPA con Socios</h2>';
+    h += '<p style="color:#8b7e74; font-size:12px; margin:4px 0 16px;">Gastos personales realizados por socios para la construcción del Club House. Insular debe reembolsar estos montos.</p>';
 
-    // Summary cards
+    // Summary KPIs (usando clases .kpis/.kpi como Resumen)
     const totalNeta = getDeudaNeta(DEUDAS_SOCIOS.antonio) + getDeudaNeta(DEUDAS_SOCIOS.cristian);
     const totalAbonado = totalDeuda - totalNeta;
-    h += '<div style="display:flex; gap:16px; margin-bottom:24px; flex-wrap:wrap;">';
+    h += '<section class="kpis" style="margin-bottom:16px;">';
     [DEUDAS_SOCIOS.antonio, DEUDAS_SOCIOS.cristian].forEach(s => {
         const neta = getDeudaNeta(s);
         const abonado = (s.abonos || []).reduce((sum, a) => sum + a.monto, 0);
-        h += '<div style="flex:1; min-width:240px; background:#faf8f5; border:1px solid #e7e0d8; border-radius:10px; padding:16px;">';
-        h += '<div style="font-size:12px; color:#8b7e74; margin-bottom:4px;">' + s.nombre + '</div>';
-        h += '<div style="font-size:22px; font-weight:700; color:#5c554e;">' + fmt(s.total) + '</div>';
+        h += '<div class="kpi" style="border-left:4px solid #8b7e74;">';
+        h += '<div class="label">' + s.nombre + '</div>';
+        h += '<div class="value" style="color:#5c554e;">' + fmt(s.total) + '</div>';
         if (abonado > 0) {
-            h += '<div style="font-size:11px; color:#5a7d5a; margin-top:4px;">Abonado: ' + fmt(abonado) + '</div>';
+            h += '<div class="sub" style="color:#5a7d5a;">Abonado: ' + fmt(abonado) + '</div>';
             h += '<div style="font-size:13px; font-weight:700; color:#b05a5a; margin-top:2px;">Saldo pendiente: ' + fmt(neta) + '</div>';
         }
-        h += '<div style="font-size:11px; color:#a68b6b; margin-top:4px;">' + s.viajes.length + ' viaje' + (s.viajes.length > 1 ? 's' : '') + '</div>';
+        h += '<div class="sub">' + s.viajes.length + ' viaje' + (s.viajes.length > 1 ? 's' : '') + '</div>';
         h += '</div>';
     });
-    h += '<div style="flex:1; min-width:240px; background:#5c554e; border-radius:10px; padding:16px;">';
-    h += '<div style="font-size:12px; color:#d4cdc5; margin-bottom:4px;">Total Deuda Insular</div>';
-    h += '<div style="font-size:22px; font-weight:700; color:#fff;">' + fmt(totalDeuda) + '</div>';
+    h += '<div class="kpi red" style="border-left:4px solid #b05a5a;">';
+    h += '<div class="label">Total Deuda Insular</div>';
+    h += '<div class="value">' + fmt(totalDeuda) + '</div>';
     if (totalAbonado > 0) {
-        h += '<div style="font-size:11px; color:#a0c4a0; margin-top:4px;">Abonado: ' + fmt(totalAbonado) + '</div>';
-        h += '<div style="font-size:13px; font-weight:700; color:#e7c08a; margin-top:2px;">Saldo pendiente: ' + fmt(totalNeta) + '</div>';
+        h += '<div class="sub" style="color:#5a7d5a;">Abonado: ' + fmt(totalAbonado) + '</div>';
+        h += '<div style="font-size:13px; font-weight:700; color:#b05a5a; margin-top:2px;">Saldo pendiente: ' + fmt(totalNeta) + '</div>';
     }
-    h += '<div style="font-size:11px; color:#a68b6b; margin-top:4px;">2 socios</div>';
+    h += '<div class="sub">2 socios</div>';
     h += '</div>';
+    h += '</section>';
     h += '</div>';
 
     // Detail per socio
     [DEUDAS_SOCIOS.antonio, DEUDAS_SOCIOS.cristian].forEach(socio => {
         const netaSocio = getDeudaNeta(socio);
         const abonadoSocio = (socio.abonos || []).reduce((sum, a) => sum + a.monto, 0);
-        h += '<h3 style="color:#5c554e; margin:24px 0 12px; font-size:14px;">' + socio.nombre + ' — Deuda bruta: ' + fmt(socio.total) + (abonadoSocio > 0 ? ' · Saldo pendiente: <span style="color:#b05a5a;">' + fmt(netaSocio) + '</span>' : '') + '</h3>';
+
+        h += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
+        h += '<h3 style="font-size:14px; color:#5c554e; margin:0 0 16px; padding-bottom:8px; border-bottom:2px solid #e7e0d8;">' + socio.nombre + ' — Deuda bruta: ' + fmt(socio.total) + (abonadoSocio > 0 ? ' · Saldo pendiente: <span style="color:#b05a5a;">' + fmt(netaSocio) + '</span>' : '') + '</h3>';
 
         socio.viajes.forEach(viaje => {
             const subtotal = viaje.gastos.reduce((s, g) => s + g.monto, 0);
-            h += '<div style="background:#e7e0d8; padding:8px 12px; border-radius:6px 6px 0 0; font-weight:600; font-size:12px; color:#5c554e; display:flex; justify-content:space-between;">';
+            h += '<div style="background:#f0ebe5; padding:8px 12px; border-radius:6px 6px 0 0; font-weight:600; font-size:12px; color:#5c554e; display:flex; justify-content:space-between;">';
             h += '<span>' + viaje.titulo + '</span><span>' + fmt(subtotal) + '</span></div>';
 
-            h += '<table style="width:100%; table-layout:fixed; margin-bottom:16px;">';
+            h += '<table style="width:100%; table-layout:fixed; margin-bottom:16px; border-collapse:collapse;">';
             h += '<colgroup><col style="width:14%"><col style="width:42%"><col style="width:14%"><col style="width:15%"><col style="width:15%"></colgroup>';
             h += '<thead><tr><th style="background:#f0ebe5; color:#5c554e; padding:6px; text-align:left; font-size:11px; border-bottom:1px solid #d4cdc5;">Fecha</th>';
             h += '<th style="background:#f0ebe5; color:#5c554e; padding:6px; text-align:left; font-size:11px; border-bottom:1px solid #d4cdc5;">Concepto</th>';
@@ -2005,9 +2009,9 @@ function renderDeudas() {
 
         // ── ABONOS (pagos realizados por Insular al socio) ──
         if (socio.abonos && socio.abonos.length > 0) {
-            h += '<div style="background:#eceee5; border-radius:8px; padding:12px 14px; margin:12px 0 24px; border:1px solid #b5c8b5;">';
+            h += '<div style="background:#eceee5; border-radius:8px; padding:12px 14px; margin:4px 0 0; border:1px solid #b5c8b5;">';
             h += '<div style="font-size:12px; font-weight:700; color:#5a7d5a; margin-bottom:8px;">Abonos realizados por Insular</div>';
-            h += '<table style="width:100%; table-layout:fixed;">';
+            h += '<table style="width:100%; table-layout:fixed; border-collapse:collapse;">';
             h += '<colgroup><col style="width:15%"><col style="width:55%"><col style="width:15%"><col style="width:15%"></colgroup>';
             h += '<thead><tr>';
             h += '<th style="background:#d4e0d4; color:#3d6b3d; padding:6px; text-align:left; font-size:11px;">Fecha</th>';
@@ -2031,6 +2035,8 @@ function renderDeudas() {
             h += '<div style="font-size:13px; font-weight:700; color:#b05a5a; margin-top:8px;">Saldo pendiente: ' + fmt(netaSocio) + '</div>';
             h += '</div>';
         }
+
+        h += '</div>'; // close white card
     });
 
     el.innerHTML = h;
@@ -2050,14 +2056,14 @@ function renderMetodologia() {
     let h = '';
 
     // ═══ HEADER ═══
-    h += '<div style="margin-bottom:32px;">';
-    h += '<h2 style="font-size:20px; color:#5c554e; margin-bottom:8px;">Metodología de Clasificación de Fondos</h2>';
+    h += '<div style="margin-bottom:20px;">';
+    h += '<h2 style="font-size:18px; color:#5c554e; margin-bottom:4px; border-bottom:2px solid #d4cdc5; padding-bottom:8px;">Metodología de Clasificación de Fondos</h2>';
     h += '<p style="font-size:13px; color:#666; line-height:1.6;">Este documento describe cómo cada depósito que ingresa a la cuenta Scotiabank de Insular S.p.A. se clasifica y asigna a las distintas categorías de compromiso. Toda la información proviene exclusivamente de las cartolas bancarias verificadas.</p>';
     h += '</div>';
 
     // ═══ DIAGRAMA 1: FLUJO PRINCIPAL ═══
-    h += '<div style="background:white; border-radius:12px; padding:24px; border:1px solid #e7e0d8; margin-bottom:24px;">';
-    h += '<h3 style="font-size:16px; color:#5c554e; margin-bottom:16px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">1. Flujo de Clasificación de Depósitos</h3>';
+    h += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
+    h += '<h3 style="font-size:14px; color:#5c554e; margin-bottom:12px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">1. Flujo de Clasificación de Depósitos</h3>';
 
     // SVG Flowchart
     h += '<div style="overflow-x:auto; padding:8px 0;">';
@@ -2179,8 +2185,8 @@ function renderMetodologia() {
     h += '</svg></div></div>';
 
     // ═══ DIAGRAMA 2: MES VENCIDO ═══
-    h += '<div style="background:white; border-radius:12px; padding:24px; border:1px solid #e7e0d8; margin-bottom:24px;">';
-    h += '<h3 style="font-size:16px; color:#6b8f8b; margin-bottom:16px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">2. Mes Vencido — ¿Cómo funciona el GGCC?</h3>';
+    h += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
+    h += '<h3 style="font-size:14px; color:#6b8f8b; margin-bottom:12px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">2. Mes Vencido — ¿Cómo funciona el GGCC?</h3>';
 
     h += '<div style="overflow-x:auto; padding:8px 0;">';
     h += '<svg viewBox="0 0 800 200" style="width:100%; max-width:800px; min-width:500px; display:block; margin:0 auto;" xmlns="http://www.w3.org/2000/svg">';
@@ -2222,8 +2228,8 @@ function renderMetodologia() {
     h += '</svg></div></div>';
 
     // ═══ SECCIÓN 3: TABLA DE CONSTANTES ═══
-    h += '<div style="background:white; border-radius:12px; padding:24px; border:1px solid #e7e0d8; margin-bottom:24px;">';
-    h += '<h3 style="font-size:16px; color:#5c554e; margin-bottom:16px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">3. Constantes y Parámetros del Sistema</h3>';
+    h += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
+    h += '<h3 style="font-size:14px; color:#5c554e; margin-bottom:12px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">3. Constantes y Parámetros del Sistema</h3>';
 
     h += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:16px;">';
 
@@ -2273,8 +2279,8 @@ function renderMetodologia() {
     h += '</div></div>'; // grid + section
 
     // ═══ SECCIÓN 4: TIPOS DE DEPÓSITO CON EJEMPLOS ═══
-    h += '<div style="background:white; border-radius:12px; padding:24px; border:1px solid #e7e0d8; margin-bottom:24px;">';
-    h += '<h3 style="font-size:16px; color:#5c554e; margin-bottom:16px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">4. Tipos de Depósito — Ejemplos Reales</h3>';
+    h += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
+    h += '<h3 style="font-size:14px; color:#5c554e; margin-bottom:12px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">4. Tipos de Depósito — Ejemplos Reales</h3>';
 
     h += '<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:12px;">';
     h += '<thead><tr style="background:#f0ebe5; color:#5c554e;">';
@@ -2302,8 +2308,8 @@ function renderMetodologia() {
     h += '</tbody></table></div></div>';
 
     // ═══ SECCIÓN 5: REGLAS DE INTEGRIDAD ═══
-    h += '<div style="background:white; border-radius:12px; padding:24px; border:1px solid #e7e0d8; margin-bottom:24px;">';
-    h += '<h3 style="font-size:16px; color:#b05a5a; margin-bottom:16px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">5. Validación de Integridad de Datos</h3>';
+    h += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
+    h += '<h3 style="font-size:14px; color:#b05a5a; margin-bottom:12px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">5. Validación de Integridad de Datos</h3>';
     h += '<p style="font-size:12px; color:#666; margin-bottom:16px;">El sistema ejecuta 20 reglas automáticas cada vez que se carga el dashboard. Si alguna falla, aparece una alerta naranja en el Resumen.</p>';
 
     h += '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:12px;">';
@@ -2324,8 +2330,8 @@ function renderMetodologia() {
     h += '</div></div>';
 
     // ═══ SECCIÓN 6: MODELO DE DATOS (raw) ═══
-    h += '<div style="background:white; border-radius:12px; padding:24px; border:1px solid #e7e0d8; margin-bottom:24px;">';
-    h += '<h3 style="font-size:16px; color:#5c554e; margin-bottom:4px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">6. Modelo de Datos — Fuente de Verdad</h3>';
+    h += '<div style="background:white; border-radius:10px; padding:20px; border:1px solid #e7e0d8; margin-bottom:20px;">';
+    h += '<h3 style="font-size:14px; color:#5c554e; margin-bottom:12px; border-bottom:2px solid #e7e0d8; padding-bottom:8px;">6. Modelo de Datos — Fuente de Verdad</h3>';
     h += '<p style="font-size:12px; color:#666; margin-bottom:16px;">Las siguientes estructuras definen todas las reglas de clasificación. El motor de asignación las lee en tiempo real; este documento se genera desde ellas.</p>';
 
     // REGLAS_TIPO table
