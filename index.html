@@ -84,18 +84,37 @@
         .legend-item { display: flex; align-items: center; gap: 6px; }
         .legend-color { width: 16px; height: 16px; border-radius: 3px; border: 1px solid #ddd; }
 
-        /* Hover tooltip for traceability */
+        /* Hover tooltip for traceability — aparece a la derecha */
         .tt-wrap { position: relative; display: inline-block; cursor: help; border-bottom: 1px dashed currentColor; }
-        .tt-wrap .tt-box { visibility: hidden; opacity: 0; position: absolute; z-index: 999; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: #1a1a2e; color: #e0e0e0; border-radius: 8px; padding: 10px 14px; font-size: 10px; line-height: 1.5; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.25); pointer-events: none; transition: opacity 0.15s, visibility 0.15s; max-width: 380px; white-space: normal; }
-        .tt-wrap .tt-box::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: #1a1a2e; }
+        .tt-wrap .tt-box { visibility: hidden; opacity: 0; position: absolute; z-index: 999; top: 50%; left: calc(100% + 10px); transform: translateY(-50%); background: #1a1a2e; color: #e0e0e0; border-radius: 8px; padding: 10px 14px; font-size: 10px; line-height: 1.5; box-shadow: 0 4px 16px rgba(0,0,0,0.3); pointer-events: none; transition: opacity 0.15s, visibility 0.15s; min-width: 220px; max-width: 380px; white-space: normal; }
+        .tt-wrap .tt-box::after { content: ''; position: absolute; top: 50%; right: 100%; transform: translateY(-50%); border: 6px solid transparent; border-right-color: #1a1a2e; }
         .tt-wrap:hover .tt-box { visibility: visible; opacity: 1; pointer-events: auto; }
+        /* Si no cabe a la derecha, forzar izquierda con clase .tt-left */
+        .tt-wrap.tt-left .tt-box { left: auto; right: calc(100% + 10px); }
+        .tt-wrap.tt-left .tt-box::after { right: auto; left: 100%; border-right-color: transparent; border-left-color: #1a1a2e; }
         .tt-box .tt-step { display: flex; gap: 6px; align-items: baseline; padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
         .tt-box .tt-step:last-child { border-bottom: none; }
-        .tt-box .tt-label { color: #90caf9; font-weight: 700; min-width: 65px; }
+        .tt-box .tt-label { color: #90caf9; font-weight: 700; min-width: 65px; font-size: 10px; }
         .tt-box .tt-amt { color: #4caf50; font-weight: 600; min-width: 70px; text-align: right; }
         .tt-box .tt-note { color: #aaa; font-size: 9px; }
         .tt-box .tt-header { color: #fff; font-weight: 700; font-size: 11px; margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.15); }
         .tt-box .tt-tipo { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 9px; font-weight: 700; margin-left: 6px; }
+
+        /* Month band colors — 12 subtle tones for visual tracking */
+        .month-band-0 { background: #f3e5f5 !important; } /* Jan - lavender */
+        .month-band-1 { background: #e8eaf6 !important; } /* Feb - indigo light */
+        .month-band-2 { background: #e0f7fa !important; } /* Mar - cyan light */
+        .month-band-3 { background: #e8f5e9 !important; } /* Apr - green light */
+        .month-band-4 { background: #fff8e1 !important; } /* May - amber light */
+        .month-band-5 { background: #fbe9e7 !important; } /* Jun - deep orange light */
+        .month-band-6 { background: #fce4ec !important; } /* Jul - pink light */
+        .month-band-7 { background: #ede7f6 !important; } /* Aug - deep purple light */
+        .month-band-8 { background: #e0f2f1 !important; } /* Sep - teal light */
+        .month-band-9 { background: #f1f8e9 !important; } /* Oct - light green */
+        .month-band-10 { background: #fff3e0 !important; } /* Nov - orange light */
+        .month-band-11 { background: #e3f2fd !important; } /* Dec - blue light */
+        .month-sep td { border-top: 2px solid #90a4ae !important; }
+        .month-label-row td { background: #263238 !important; color: #fff !important; font-weight: 700; font-size: 11px; padding: 4px 8px !important; letter-spacing: 0.5px; }
 
         .info-snippet { background: #f8f9fa; border-left: 4px solid #90a4ae; border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 12px 0 16px 0; font-size: 12px; color: #455a64; line-height: 1.6; }
         .info-snippet summary { cursor: pointer; font-weight: 700; color: #37474f; font-size: 13px; user-select: none; }
@@ -2109,9 +2128,9 @@ function renderResumen() {
 
     // 3 KPIs en fila
     html += '<section class="kpis" style="margin-bottom:16px;">';
-    html += '<div class="kpi green"><div class="label">Comprometido Total</div><div class="value">' + fmtM(totalComprometido) + '</div><div class="sub">' + fmtM(totalComprometido / SOCIOS_ALL.length) + ' × ' + SOCIOS_ALL.length + ' socios</div></div>';
-    html += '<div class="kpi blue"><div class="label">Recaudado</div><div class="value">' + fmtM(totalRecaudado) + '</div><div class="sub">' + recaudadoPct + '% del comprometido</div></div>';
-    html += '<div class="kpi red"><div class="label">Falta por Recaudar</div><div class="value">' + fmtM(totalFalta) + '</div><div class="sub">' + (capitalFalta > 0 ? fmtM(capitalFalta) + ' cap. ' : '') + (constrFalta > 0 ? fmtM(constrFalta) + ' constr. ' : '') + (mobFalta > 0 ? fmtM(mobFalta) + ' mob. ' : '') + (ggccFalta > 0 ? fmtM(ggccFalta) + ' GGCC' : '') + '</div></div>';
+    html += '<div class="kpi green"><div class="label">Comprometido Total</div><div class="value">' + wtt(fmtM(totalComprometido), ttText('Comprometido Total', ['Capital: $' + fmtM(capitalMeta) + ' ($10M × 10)', 'Construcción: $' + fmtM(constrMeta) + ' ($19.1M × 10)', 'Mobiliario: $' + fmtM(mobMeta) + ' ($4M × 10)', 'GGCC: $' + fmtM(ggccMeta) + ' ($70k × ' + ggccMeses + ' × 10)'])) + '</div><div class="sub">' + fmtM(totalComprometido / SOCIOS_ALL.length) + ' × ' + SOCIOS_ALL.length + ' socios</div></div>';
+    html += '<div class="kpi blue"><div class="label">Recaudado</div><div class="value">' + wtt(fmtM(totalRecaudado), ttText('Recaudado Total', ['Capital: $' + fmtM(capitalPagado) + ' (' + Math.round(capitalPagado/capitalMeta*100) + '%)', 'Construcción: $' + fmtM(constrPagado) + ' (' + Math.round(constrPagado/constrMeta*100) + '%)', 'Mobiliario: $' + fmtM(mobPagado) + ' (' + Math.round(mobPagado/mobMeta*100) + '%)', 'GGCC: $' + fmtM(ggccPagado) + ' (' + Math.round(ggccPagado/ggccMeta*100) + '%)'])) + '</div><div class="sub">' + recaudadoPct + '% del comprometido</div></div>';
+    html += '<div class="kpi red"><div class="label">Falta por Recaudar</div><div class="value">' + wtt(fmtM(totalFalta), ttText('Pendiente por Categoría', [(capitalFalta > 0 ? 'Capital: $' + fmtM(capitalFalta) : 'Capital: ✓'), (constrFalta > 0 ? 'Construcción: $' + fmtM(constrFalta) : 'Construcción: ✓'), (mobFalta > 0 ? 'Mobiliario: $' + fmtM(mobFalta) : 'Mobiliario: ✓'), (ggccFalta > 0 ? 'GGCC: $' + fmtM(ggccFalta) + ' (' + Math.round(ggccFalta/CUOTA_GGCC/10) + ' meses/socio)' : 'GGCC: ✓')])) + '</div><div class="sub">' + (capitalFalta > 0 ? fmtM(capitalFalta) + ' cap. ' : '') + (constrFalta > 0 ? fmtM(constrFalta) + ' constr. ' : '') + (mobFalta > 0 ? fmtM(mobFalta) + ' mob. ' : '') + (ggccFalta > 0 ? fmtM(ggccFalta) + ' GGCC' : '') + '</div></div>';
     html += '</section>';
 
     // 3 Hito cards (Capital, Construcción, Mobiliario)
@@ -2165,13 +2184,17 @@ function renderResumen() {
 
     // KPI GGCC
     html += '<section class="kpis" style="margin-bottom:16px;">';
-    html += '<div class="kpi" style="border-left:4px solid #00838f; background:#e0f2f1;"><div class="label">Total Esperado</div><div class="value" style="color:#00838f;">' + fmtM(ggccMeta) + '</div><div class="sub">' + ggccMeses + ' meses × ' + fmt(CUOTA_GGCC) + ' × ' + SOCIOS_ALL.length + ' socios</div></div>';
+    html += '<div class="kpi" style="border-left:4px solid #00838f; background:#e0f2f1;"><div class="label">Total Esperado</div><div class="value" style="color:#00838f;">' + wtt(fmtM(ggccMeta), ttText('GGCC Esperado', ['Cuota: $' + fmt(CUOTA_GGCC) + '/mes/socio', 'Desde: Oct 2022', 'Hasta: ' + MONTHS[_currentMonth-2 < 0 ? 11 : _currentMonth-2] + ' ' + (_currentMonth-2 < 0 ? _currentYear-1 : _currentYear) + ' (mes vencido)', 'Meses: ' + ggccMeses, 'Socios: ' + SOCIOS_ALL.length, 'Fórmula: ' + ggccMeses + ' × $70k × 10 = $' + fmtM(ggccMeta)])) + '</div><div class="sub">' + ggccMeses + ' meses × ' + fmt(CUOTA_GGCC) + ' × ' + SOCIOS_ALL.length + ' socios</div></div>';
     // GGCC tooltip per-socio
     var ggccTTh = '<span class="tt-box" style="min-width:240px;"><div class="tt-header">GGCC Recaudado: ' + fmtM(ggccPagado) + '</div>';
     SOCIOS_ALL.forEach(s => { ggccTTh += '<div class="tt-step"><span class="tt-label">' + s + '</span><span class="tt-amt">$' + cls[s].totals.ggcc.toLocaleString() + '</span><span class="tt-note">' + cls[s].ggccMonthsPaid + '/' + ggccMeses + ' meses</span></div>'; });
     ggccTTh += '</span>';
     html += '<div class="kpi" style="border-left:4px solid #00838f;"><div class="label">Recaudado GGCC</div><div class="value" style="color:#00838f;">' + wtt(fmtM(ggccPagado), ggccTTh) + '</div><div class="sub">' + Math.round(ggccPagado/ggccMeta*100) + '% del esperado</div></div>';
-    html += '<div class="kpi" style="border-left:4px solid ' + (ggccFalta > 0 ? '#c62828' : '#2e7d32') + ';"><div class="label">Pendiente GGCC</div><div class="value" style="color:' + (ggccFalta > 0 ? '#c62828' : '#2e7d32') + ';">' + fmtM(ggccFalta) + '</div><div class="sub">Al día: ' + ggccAlDia + '/' + SOCIOS_ALL.length + ' socios</div></div>';
+    var ggccPendTT = ttText('GGCC Pendiente', SOCIOS_ALL.map(function(s) {
+        var diff = cls[s].totals.ggcc - ggccExpectedPerSocio;
+        return s + ': ' + (diff >= 0 ? 'Al día (+$' + diff.toLocaleString() + ')' : 'Debe $' + Math.abs(diff).toLocaleString() + ' (' + Math.round(Math.abs(diff)/CUOTA_GGCC) + ' meses)');
+    }));
+    html += '<div class="kpi" style="border-left:4px solid ' + (ggccFalta > 0 ? '#c62828' : '#2e7d32') + ';"><div class="label">Pendiente GGCC</div><div class="value" style="color:' + (ggccFalta > 0 ? '#c62828' : '#2e7d32') + ';">' + wtt(fmtM(ggccFalta), ggccPendTT) + '</div><div class="sub">Al día: ' + ggccAlDia + '/' + SOCIOS_ALL.length + ' socios</div></div>';
     html += '</section>';
 
     // Snippet GGCC resumen
@@ -2245,12 +2268,12 @@ function renderResumen() {
         const totalAportado = d.totals.total;
         html += '<tr' + bgStyle + ' style="cursor:pointer;' + (isAlDia ? ' background:#e8f5e9;' : '') + '" onclick="showSocioBitacora(\'' + s + '\')" title="Ver depósitos de ' + s + '">';
         html += '<td style="color:#1565c0; text-decoration:underline;">' + (FULL_NAMES[s] || s) + '</td>';
-        html += '<td class="col-right" style="font-weight:700;">' + fmt(totalAportado) + '</td>';
-        html += '<td class="col-right" style="color:' + (capDebt > 0 ? '#c62828' : '#2e7d32') + ';">' + (capDebt > 0 ? fmt(capDebt) : '✓') + '</td>';
-        html += '<td class="col-right" style="color:' + (constrDbt > 0 ? '#c62828' : '#2e7d32') + ';">' + (constrDbt > 0 ? fmt(constrDbt) : '✓') + '</td>';
-        html += '<td class="col-right" style="color:' + (mobDbt > 0 ? '#e65100' : '#2e7d32') + ';">' + (MOB_PAGADO_FULL.includes(s) ? '✓' : (mobDbt > 0 ? fmt(mobDbt) : '✓')) + '</td>';
-        html += '<td class="col-right" style="color:' + (ggccDbt > 0 ? '#00838f' : '#2e7d32') + ';">' + (ggccDbt > 0 ? fmt(ggccDbt) : '✓') + '</td>';
-        html += '<td class="col-right" style="color:' + (totalDebt > 0 ? '#c62828' : '#2e7d32') + '; font-weight:700;">' + (totalDebt > 0 ? fmt(totalDebt) : '$0') + '</td>';
+        html += '<td class="col-right" style="font-weight:700;">' + wtt(fmt(totalAportado), ttText(s + ' — Total Aportado', ['Capital: $' + d.totals.inicial.toLocaleString(), 'Construcción: $' + d.totals.construccion.toLocaleString(), 'Mobiliario: $' + d.totals.mobiliario.toLocaleString(), 'GGCC: $' + d.totals.ggcc.toLocaleString(), d.deposits.length + ' depósitos en cartola'])) + '</td>';
+        html += '<td class="col-right" style="color:' + (capDebt > 0 ? '#c62828' : '#2e7d32') + ';">' + (capDebt > 0 ? wtt(fmt(capDebt), ttText('Capital — Deuda', ['Meta: $10.000.000', 'Pagado: $' + d.capitalPaid.toLocaleString(), 'Falta: $' + capDebt.toLocaleString()])) : wtt('✓', ttText('Capital', ['Pagado: $' + d.capitalPaid.toLocaleString(), 'Meta: $10.000.000', 'Completo']))) + '</td>';
+        html += '<td class="col-right" style="color:' + (constrDbt > 0 ? '#c62828' : '#2e7d32') + ';">' + (constrDbt > 0 ? wtt(fmt(constrDbt), ttText('Construcción — Deuda', ['Meta: $' + cComp.toLocaleString(), 'Pagado: $' + d.constrPaid.toLocaleString(), 'Falta: $' + constrDbt.toLocaleString()])) : wtt('✓', ttText('Construcción', ['Pagado: $' + d.constrPaid.toLocaleString(), 'Meta: $' + cComp.toLocaleString(), 'Completo' + (d.constrPaid > cComp ? ' (excede meta en $' + (d.constrPaid-cComp).toLocaleString() + ')' : '')]))) + '</td>';
+        html += '<td class="col-right" style="color:' + (mobDbt > 0 ? '#e65100' : '#2e7d32') + ';">' + (MOB_PAGADO_FULL.includes(s) ? wtt('✓', ttText('Mobiliario', ['Pagó $4M adelantado fuera de cartola', 'MOB_PAGADO_FULL'])) : (mobDbt > 0 ? wtt(fmt(mobDbt), ttText('Mobiliario — Deuda', ['Meta: $4.000.000', 'Pagado: $' + d.mobPaid.toLocaleString(), 'Falta: $' + mobDbt.toLocaleString()])) : wtt('✓', ttText('Mobiliario', ['Pagado: $' + d.mobPaid.toLocaleString(), 'Meta: $4.000.000', 'Completo'])))) + '</td>';
+        html += '<td class="col-right" style="color:' + (ggccDbt > 0 ? '#00838f' : '#2e7d32') + ';">' + (ggccDbt > 0 ? wtt(fmt(ggccDbt), ttText('GGCC — Deuda', ['Esperado: ' + ggccMeses + ' meses × $70k = $' + ggccExpectedPerSocio.toLocaleString(), 'Pagado: $' + d.totals.ggcc.toLocaleString() + ' (' + d.ggccMonthsPaid + ' meses)', 'Debe: ' + Math.round(ggccDbt/CUOTA_GGCC) + ' meses'])) : wtt('✓', ttText('GGCC', ['Pagado: $' + d.totals.ggcc.toLocaleString(), d.ggccMonthsPaid + '/' + ggccMeses + ' meses', 'Al día']))) + '</td>';
+        html += '<td class="col-right" style="color:' + (totalDebt > 0 ? '#c62828' : '#2e7d32') + '; font-weight:700;">' + (totalDebt > 0 ? wtt(fmt(totalDebt), ttDeuda(s, capDebt, constrDbt, mobDbt, ggccDbt)) : wtt('$0', ttText(s, ['Sin deuda en ninguna categoría']))) + '</td>';
         if (isAlDia) {
             html += '<td class="col-center"><span class="badge badge-green">Al día</span></td>';
         } else {
@@ -2380,6 +2403,39 @@ function wtt(value, tooltipHtml) {
     if (!tooltipHtml) return value;
     return '<span class="tt-wrap">' + value + tooltipHtml + '</span>';
 }
+
+// Tooltip simple (texto plano, sin pasos — para fórmulas y explicaciones)
+function ttText(title, lines) {
+    let h = '<span class="tt-box" style="min-width:180px;">';
+    h += '<div class="tt-header">' + title + '</div>';
+    lines.forEach(function(l) { h += '<div style="padding:1px 0; color:#ccc; font-size:10px;">' + l + '</div>'; });
+    h += '</span>';
+    return h;
+}
+
+// Tooltip para deuda de un socio (muestra cada categoría con lo que falta)
+function ttDeuda(s, capDebt, constrDbt, mobDbt, ggccDbt) {
+    let h = '<span class="tt-box" style="min-width:200px;">';
+    h += '<div class="tt-header">Deuda de ' + s + '</div>';
+    if (capDebt > 0) h += '<div class="tt-step"><span class="tt-label" style="color:#90caf9;">Capital</span><span class="tt-amt" style="color:#ff5252;">$' + capDebt.toLocaleString() + '</span></div>';
+    if (constrDbt > 0) h += '<div class="tt-step"><span class="tt-label" style="color:#ce93d8;">Construcción</span><span class="tt-amt" style="color:#ff5252;">$' + constrDbt.toLocaleString() + '</span></div>';
+    if (mobDbt > 0) h += '<div class="tt-step"><span class="tt-label" style="color:#ffb74d;">Mobiliario</span><span class="tt-amt" style="color:#ff5252;">$' + mobDbt.toLocaleString() + '</span></div>';
+    if (ggccDbt > 0) h += '<div class="tt-step"><span class="tt-label" style="color:#4dd0e1;">GGCC</span><span class="tt-amt" style="color:#ff5252;">$' + ggccDbt.toLocaleString() + '</span><span class="tt-note">' + Math.round(ggccDbt/CUOTA_GGCC) + ' meses</span></div>';
+    if (capDebt + constrDbt + mobDbt + ggccDbt === 0) h += '<div style="color:#4caf50; font-weight:600; padding:4px 0;">Sin deuda</div>';
+    h += '</span>';
+    return h;
+}
+
+// Auto-reposicionar tooltips al hover (derecha→izquierda si no cabe)
+document.addEventListener('mouseover', function(e) {
+    var wrap = e.target.closest('.tt-wrap');
+    if (!wrap) return;
+    var box = wrap.querySelector('.tt-box');
+    if (!box) return;
+    wrap.classList.remove('tt-left');
+    var rect = wrap.getBoundingClientRect();
+    if (rect.right + 400 > window.innerWidth) wrap.classList.add('tt-left');
+});
 
 // Clasificación por PROPÓSITO del depósito según monto:
 // ─ GGCC (línea aparte): múltiplos de $70k (≤$840k) y porción $70k de $236,666
@@ -2646,7 +2702,10 @@ function renderAportesCapital() {
         if (activeCats.length > 0) {
             html += '<section class="kpis" style="margin-bottom:16px;">';
             activeCats.forEach(c => {
-                html += '<div class="kpi" style="border-left:4px solid ' + CAT_COLORS[c].bg + ';"><div class="label">' + CAT_COLORS[c].label + '</div><div class="value" style="color:' + CAT_COLORS[c].text + ';">' + fmt(yearCats[c]) + '</div><div class="sub">' + (yearCats[c]/yearTotal*100).toFixed(1) + '% del año</div></div>';
+                var ykTT = '<span class="tt-box"><div class="tt-header">' + CAT_COLORS[c].label + ' ' + year + '</div>';
+                SOCIOS_ALL.forEach(s => { var v = yearData[s][c]; if (v > 0) ykTT += '<div class="tt-step"><span class="tt-label">' + s + '</span><span class="tt-amt">$' + v.toLocaleString() + '</span></div>'; });
+                ykTT += '</span>';
+                html += '<div class="kpi" style="border-left:4px solid ' + CAT_COLORS[c].bg + ';"><div class="label">' + CAT_COLORS[c].label + '</div><div class="value" style="color:' + CAT_COLORS[c].text + ';">' + wtt(fmt(yearCats[c]), ykTT) + '</div><div class="sub">' + (yearCats[c]/yearTotal*100).toFixed(1) + '% del año</div></div>';
             });
             html += '</section>';
         }
@@ -2680,11 +2739,15 @@ function renderAportesCapital() {
             html += '</tr>';
         });
 
-        // Year total row
+        // Year total row (con tooltips per-socio)
+        const yearAllDeps = []; SOCIOS_ALL.forEach(s => yearAllDeps.push(...classified[s].deposits.filter(d => d.y === year)));
         html += '<tr class="total-row"><td>TOTAL</td>';
         CAT_ORDER.forEach(c => {
             if (yearCats[c] > 0 || c === 'inicial' || c === 'construccion' || c === 'mobiliario') {
-                html += '<td style="text-align:right;">' + fmt(yearCats[c]) + '</td>';
+                var yrCatTT = '<span class="tt-box" style="min-width:200px;"><div class="tt-header">' + (CAT_COLORS[c]?CAT_COLORS[c].label:c) + ' ' + year + ': ' + fmt(yearCats[c]) + '</div>';
+                SOCIOS_ALL.forEach(s => { var v = yearData[s][c]; if (v > 0) yrCatTT += '<div class="tt-step"><span class="tt-label">' + s + '</span><span class="tt-amt">$' + v.toLocaleString() + '</span></div>'; });
+                yrCatTT += '</span>';
+                html += '<td style="text-align:right;">' + wtt(fmt(yearCats[c]), yrCatTT) + '</td>';
             }
         });
         html += '<td style="text-align:right;">' + fmt(yearTotal) + '</td>';
@@ -2876,9 +2939,12 @@ function renderGGCC() {
     
     // KPIs
     html += '<section class="kpis">';
-    html += '<div class="kpi green"><div class="label">GGCC Pagado ' + year + '</div><div class="value">' + fmt(ggccTotal) + '</div><div class="sub">de ' + fmt(esperado) + ' esperado</div></div>';
+    var ggYrTT = '<span class="tt-box"><div class="tt-header">GGCC Pagado ' + year + '</div>';
+    SOCIOS_ALL.forEach(s => { ggYrTT += '<div class="tt-step"><span class="tt-label">' + s + '</span><span class="tt-amt">$' + data[s].paid.toLocaleString() + '</span></div>'; });
+    ggYrTT += '</span>';
+    html += '<div class="kpi green"><div class="label">GGCC Pagado ' + year + '</div><div class="value">' + wtt(fmt(ggccTotal), ggYrTT) + '</div><div class="sub">de ' + fmt(esperado) + ' esperado</div></div>';
     html += '<div class="kpi ' + (sociosAlDia >= Math.ceil(SOCIOS_ALL.length/2) ? 'green' : 'orange') + '"><div class="label">Socios al día</div><div class="value">' + sociosAlDia + '/' + SOCIOS_ALL.length + '</div></div>';
-    html += '<div class="kpi ' + (saldo >= 0 ? 'green' : 'red') + '"><div class="label">Saldo GGCC</div><div class="value">' + fmt(saldo) + '</div></div>';
+    html += '<div class="kpi ' + (saldo >= 0 ? 'green' : 'red') + '"><div class="label">Saldo GGCC</div><div class="value">' + wtt(fmt(saldo), ttText('Saldo GGCC ' + year, ['Pagado: $' + ggccTotal.toLocaleString(), 'Esperado: $' + esperado.toLocaleString(), ggccMonthsThisYear + ' meses × $70k × 10'])) + '</div></div>';
     html += '</section>';
 
     // Snippet GGCC detalle
@@ -2896,9 +2962,9 @@ function renderGGCC() {
     html += '<div class="rule"><strong>Saldo:</strong> Pagado − Esperado. Positivo = adelantado, negativo = debe meses, cero = al día.</div>';
     html += '</div></details>';
 
-    // Monthly grid
+    // Monthly grid — with month-colored headers
     html += '<div class="table-wrapper"><table><thead><tr><th>Socio</th>';
-    for (let m = 0; m < 12; m++) html += '<th>' + MONTHS[m] + '</th>';
+    for (let m = 0; m < 12; m++) html += '<th class="month-band-' + m + '" style="color:#333; font-weight:700;">' + MONTHS[m] + '</th>';
     html += '<th style="background:#e65100;">Pagado</th><th>Esperado</th><th>Saldo</th></tr></thead><tbody>';
     
     const monthTotals = new Array(12).fill(0);
@@ -2907,33 +2973,45 @@ function renderGGCC() {
         const esperadoS = CUOTA_GGCC * ggccMonthsThisYear;
         const saldoS = d.paid - esperadoS;
         const isHL = (ggccHighlightSocio === s);
+        // Depósitos de este socio/año para tooltips
+        const sDeps = cls[s].deposits.filter(dep => dep.y === year);
         html += '<tr id="ggcc-row-' + s + '" style="' + (isHL ? 'background:#b2ebf2; outline:2px solid #00838f; font-weight:700;' : '') + '"><td>' + (FULL_NAMES[s] || s) + '</td>';
         for (let m = 0; m < 12; m++) {
             const val = d.months[m];
             monthTotals[m] += val;
             const mesEsGGCC = (year > 2022 || (year === 2022 && m + 1 >= 10));
             const mesEsperado = mesEsGGCC && (year < _currentYear || (year === _currentYear && m + 1 <= _currentMonth - 1));
+            // Tooltip: qué depósitos contribuyeron GGCC en este mes
+            const mDeps = sDeps.filter(dep => dep.m === m + 1 && dep.alloc.ggcc > 0);
+            var cellTT = '';
+            if (val > 0 && mDeps.length > 0) {
+                cellTT = '<span class="tt-box"><div class="tt-header">GGCC ' + MONTHS[m] + ' ' + year + ': $' + val.toLocaleString() + '</div>';
+                mDeps.forEach(function(dep) { cellTT += '<div class="tt-step"><span class="tt-label">' + String(dep.d).padStart(2,'0') + '/' + String(dep.m).padStart(2,'0') + '</span><span class="tt-amt">$' + dep.alloc.ggcc.toLocaleString() + '</span><span class="tt-note">de $' + dep.amt.toLocaleString() + ' (Tipo ' + (dep.regla||'C') + ')</span></div>'; });
+                cellTT += '</span>';
+            }
             if (!coveredMonths.has(m + 1) && !mesEsperado) {
-                html += '<td style="background:#f5f5f5; color:#bbb; text-align:center;">—</td>'; // Futuro o pre-GGCC
+                html += '<td class="month-band-' + m + '" style="color:#bbb; text-align:center;">\u2014</td>';
             } else if (!coveredMonths.has(m + 1) && mesEsperado) {
-                html += '<td style="background:#fff3e0; color:#e65100; text-align:center; font-size:10px;" title="Sin cartola para ' + MONTHS[m] + ' ' + year + '">⏳</td>'; // Esperado pero sin cartola
+                html += '<td style="background:#fff3e0; color:#e65100; text-align:center; font-size:10px;" title="Sin cartola para ' + MONTHS[m] + ' ' + year + '">\u23f3</td>';
             } else if (val >= CUOTA_GGCC) {
-                html += '<td class="ggcc-paid">' + fmt(val) + '</td>';
+                html += '<td class="ggcc-paid">' + (cellTT ? wtt(fmt(val), cellTT) : fmt(val)) + '</td>';
             } else if (val > 0) {
-                html += '<td class="ggcc-partial">' + fmt(val) + '</td>';
+                html += '<td class="ggcc-partial">' + (cellTT ? wtt(fmt(val), cellTT) : fmt(val)) + '</td>';
             } else {
-                html += '<td class="ggcc-none">—</td>';
+                html += '<td class="month-band-' + m + '" style="text-align:center; color:#bbb;">\u2014</td>';
             }
         }
-        html += '<td style="font-weight:700;">' + fmt(d.paid) + '</td>';
-        html += '<td>' + fmt(esperadoS) + '</td>';
-        html += '<td class="' + (saldoS >= 0 ? 'saldo-pos' : 'saldo-neg') + '">' + fmt(saldoS) + '</td>';
+        // Totals con tooltip
+        var paidTT = ttAgg(sDeps, 'ggcc');
+        html += '<td style="font-weight:700;">' + wtt(fmt(d.paid), paidTT) + '</td>';
+        html += '<td>' + wtt(fmt(esperadoS), ttText('Esperado ' + year, [ggccMonthsThisYear + ' meses × $' + fmt(CUOTA_GGCC)])) + '</td>';
+        html += '<td class="' + (saldoS >= 0 ? 'saldo-pos' : 'saldo-neg') + '">' + wtt(fmt(saldoS), ttText('Saldo GGCC ' + s, ['Pagado: $' + d.paid.toLocaleString(), 'Esperado: $' + esperadoS.toLocaleString(), 'Diferencia: ' + (saldoS >= 0 ? '+' : '') + '$' + saldoS.toLocaleString()])) + '</td>';
         html += '</tr>';
     });
     
     // Total row
     html += '<tr class="total-row"><td>TOTAL</td>';
-    for (let m = 0; m < 12; m++) html += '<td>' + fmt(monthTotals[m]) + '</td>';
+    for (let m = 0; m < 12; m++) html += '<td style="border-top:2px solid #90a4ae;">' + fmt(monthTotals[m]) + '</td>';
     html += '<td>' + fmt(ggccTotal) + '</td><td>' + fmt(esperado) + '</td><td class="' + (saldo >= 0 ? 'saldo-pos' : 'saldo-neg') + '">' + fmt(saldo) + '</td></tr>';
     html += '</tbody></table></div>';
     
@@ -3380,26 +3458,39 @@ function renderVistaSocio(socioOverride) {
     const _tipoColors = {A:'#00838f', A2:'#0097a7', B:'#e65100', C:'#7b1fa2', PRE:'#795548'};
     const _tipoLabels = {A:'GGCC', A2:'GGCC+', B:'Combo', C:'Cascada', PRE:'Pre-GGCC'};
     let runGGCC=0, runCap=0, runConstr=0, runMob=0;
+    let _prevMK = '';
     deps.forEach((d, i) => {
         const a = d.alloc;
         runGGCC += a.ggcc; runCap += a.inicial; runConstr += a.construccion; runMob += a.mobiliario;
+
+        // Month band separator
+        const _mk = d.y + '-' + d.m;
+        const _bandCls = 'month-band-' + (d.m - 1);
+        if (_mk !== _prevMK) {
+            const _mDeps = deps.filter(dd => dd.y === d.y && dd.m === d.m);
+            const _mTot = _mDeps.reduce((acc, dd) => acc + dd.amt, 0);
+            html += '<tr class="month-label-row"><td colspan="10" style="background:#263238;">';
+            html += '<span style="font-size:12px;">' + MONTHS[d.m - 1] + ' ' + d.y + '</span>';
+            html += '<span style="margin-left:12px; font-weight:400; font-size:10px; opacity:0.7;">' + _mDeps.length + ' dep\u00f3sito' + (_mDeps.length !== 1 ? 's' : '') + ' \u00b7 $' + _mTot.toLocaleString() + '</span>';
+            html += '</td></tr>';
+            _prevMK = _mk;
+        }
 
         // Tipo desde trazabilidad (d.regla)
         const tipo = d.regla || 'C';
         const tColor = _tipoColors[tipo] || '#666';
         const tLabel = _tipoLabels[tipo] || tipo;
-        const rowBg = i % 2 === 0 ? '#fff' : '#f8f9fa';
         const hasDetalle = d.detalle && d.detalle.length > 0;
         const dRowId = 'svrow_' + i;
 
-        html += '<tr style="background:' + rowBg + '; border-bottom:1px solid #eee;' + (hasDetalle ? ' cursor:pointer;' : '') + '"' + (hasDetalle ? ' onclick="var el=document.getElementById(\'' + dRowId + '\'); el.style.display=el.style.display===\'none\'?\'table-row\':\'none\';"' : '') + '>';
-        html += '<td style="padding:5px 8px; color:#aaa;">' + (i+1) + (hasDetalle ? ' ▸' : '') + '</td>';
+        html += '<tr class="' + _bandCls + '" style="border-bottom:1px solid #eee;' + (hasDetalle ? ' cursor:pointer;' : '') + '"' + (hasDetalle ? ' onclick="var el=document.getElementById(\'' + dRowId + '\'); el.style.display=el.style.display===\'none\'?\'table-row\':\'none\';"' : '') + '>';
+        html += '<td style="padding:5px 8px; color:#aaa;">' + (i+1) + (hasDetalle ? ' \u25b8' : '') + '</td>';
         html += '<td style="padding:5px 8px; white-space:nowrap;">' + String(d.d).padStart(2,'0') + '/' + String(d.m).padStart(2,'0') + '/' + d.y + '</td>';
         html += '<td style="padding:5px 8px; text-align:right; font-weight:600;">' + wtt('$' + d.amt.toLocaleString(), ttDep(d)) + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#00838f; font-weight:' + (a.ggcc > 0 ? '600' : '400') + ';">' + (a.ggcc > 0 ? wtt('$'+a.ggcc.toLocaleString(), ttDepCat(d,'ggcc')) : '—') + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#1565c0; font-weight:' + (a.inicial > 0 ? '600' : '400') + ';">' + (a.inicial > 0 ? wtt('$'+a.inicial.toLocaleString(), ttDepCat(d,'inicial')) : '—') + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#7b1fa2; font-weight:' + (a.construccion > 0 ? '600' : '400') + ';">' + (a.construccion > 0 ? wtt('$'+a.construccion.toLocaleString(), ttDepCat(d,'construccion')) : '—') + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#e65100; font-weight:' + (a.mobiliario > 0 ? '600' : '400') + ';">' + (a.mobiliario > 0 ? wtt('$'+a.mobiliario.toLocaleString(), ttDepCat(d,'mobiliario')) : '—') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#00838f; font-weight:' + (a.ggcc > 0 ? '600' : '400') + ';">' + (a.ggcc > 0 ? wtt('$'+a.ggcc.toLocaleString(), ttDepCat(d,'ggcc')) : '\u2014') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#1565c0; font-weight:' + (a.inicial > 0 ? '600' : '400') + ';">' + (a.inicial > 0 ? wtt('$'+a.inicial.toLocaleString(), ttDepCat(d,'inicial')) : '\u2014') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#7b1fa2; font-weight:' + (a.construccion > 0 ? '600' : '400') + ';">' + (a.construccion > 0 ? wtt('$'+a.construccion.toLocaleString(), ttDepCat(d,'construccion')) : '\u2014') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#e65100; font-weight:' + (a.mobiliario > 0 ? '600' : '400') + ';">' + (a.mobiliario > 0 ? wtt('$'+a.mobiliario.toLocaleString(), ttDepCat(d,'mobiliario')) : '\u2014') + '</td>';
         html += '<td style="padding:5px 8px;"><span style="background:' + tColor + '20; color:' + tColor + '; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:600;">' + tLabel + '</span></td>';
         html += '<td style="padding:5px 8px; font-size:10px; color:#666; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + (d.desc||'').replace(/"/g,'&quot;') + '">' + (d.desc||'') + '</td>';
         html += '<td style="padding:5px 8px; font-size:9px; color:#aaa; white-space:nowrap;">' + (d.file||'') + '</td>';
@@ -3480,26 +3571,40 @@ function showSocioBitacora(socio) {
     const tipoLabels = {A:'GGCC', A2:'GGCC+', B:'Combo', C:'Cascada', PRE:'Pre-GGCC'};
 
     let runGGCC=0, runCap=0, runConstr=0, runMob=0;
+    let prevMonthKey = '';
     deps.forEach((d, i) => {
         const a = d.alloc;
         runGGCC += a.ggcc; runCap += a.inicial; runConstr += a.construccion; runMob += a.mobiliario;
+
+        // Month band: insert separator row when month changes
+        const monthKey = d.y + '-' + d.m;
+        const bandClass = 'month-band-' + (d.m - 1);
+        if (monthKey !== prevMonthKey) {
+            // Count deposits and total for this month
+            const monthDeps = deps.filter(dd => dd.y === d.y && dd.m === d.m);
+            const monthTotal = monthDeps.reduce((acc, dd) => acc + dd.amt, 0);
+            html += '<tr class="month-label-row"><td colspan="9" style="background:#263238;">';
+            html += '<span style="font-size:12px;">' + MONTHS[d.m - 1] + ' ' + d.y + '</span>';
+            html += '<span style="margin-left:12px; font-weight:400; font-size:10px; opacity:0.7;">' + monthDeps.length + ' dep\u00f3sito' + (monthDeps.length !== 1 ? 's' : '') + ' · $' + monthTotal.toLocaleString() + '</span>';
+            html += '</td></tr>';
+            prevMonthKey = monthKey;
+        }
 
         // Tipo desde trazabilidad (regla asignada en classifyAllDeposits)
         const tipo = d.regla || 'C';
         const tColor = tipoColors[tipo] || '#666';
         const tLabel = tipoLabels[tipo] || tipo;
-        const rowBg = i % 2 === 0 ? '#fff' : '#f8f9fa';
         const hasDetalle = d.detalle && d.detalle.length > 0;
         const rowId = 'brow_' + i;
 
-        html += '<tr style="background:' + rowBg + '; border-bottom:1px solid #eee;' + (hasDetalle ? ' cursor:pointer;' : '') + '"' + (hasDetalle ? ' onclick="var el=document.getElementById(\'' + rowId + '\'); el.style.display=el.style.display===\'none\'?\'table-row\':\'none\';"' : '') + '>';
-        html += '<td style="padding:5px 8px; color:#aaa;">' + (i+1) + (hasDetalle ? ' ▸' : '') + '</td>';
+        html += '<tr class="' + bandClass + '" style="border-bottom:1px solid #eee;' + (hasDetalle ? ' cursor:pointer;' : '') + '"' + (hasDetalle ? ' onclick="var el=document.getElementById(\'' + rowId + '\'); el.style.display=el.style.display===\'none\'?\'table-row\':\'none\';"' : '') + '>';
+        html += '<td style="padding:5px 8px; color:#aaa;">' + (i+1) + (hasDetalle ? ' \u25b8' : '') + '</td>';
         html += '<td style="padding:5px 8px; white-space:nowrap;">' + String(d.d).padStart(2,'0') + '/' + String(d.m).padStart(2,'0') + '/' + d.y + '</td>';
         html += '<td style="padding:5px 8px; text-align:right; font-weight:600;">' + wtt('$' + d.amt.toLocaleString(), ttDep(d)) + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#00838f; font-weight:' + (a.ggcc > 0 ? '600' : '400') + ';">' + (a.ggcc > 0 ? wtt('$'+a.ggcc.toLocaleString(), ttDepCat(d,'ggcc')) : '—') + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#1565c0; font-weight:' + (a.inicial > 0 ? '600' : '400') + ';">' + (a.inicial > 0 ? wtt('$'+a.inicial.toLocaleString(), ttDepCat(d,'inicial')) : '—') + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#7b1fa2; font-weight:' + (a.construccion > 0 ? '600' : '400') + ';">' + (a.construccion > 0 ? wtt('$'+a.construccion.toLocaleString(), ttDepCat(d,'construccion')) : '—') + '</td>';
-        html += '<td style="padding:5px 8px; text-align:right; color:#e65100; font-weight:' + (a.mobiliario > 0 ? '600' : '400') + ';">' + (a.mobiliario > 0 ? wtt('$'+a.mobiliario.toLocaleString(), ttDepCat(d,'mobiliario')) : '—') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#00838f; font-weight:' + (a.ggcc > 0 ? '600' : '400') + ';">' + (a.ggcc > 0 ? wtt('$'+a.ggcc.toLocaleString(), ttDepCat(d,'ggcc')) : '\u2014') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#1565c0; font-weight:' + (a.inicial > 0 ? '600' : '400') + ';">' + (a.inicial > 0 ? wtt('$'+a.inicial.toLocaleString(), ttDepCat(d,'inicial')) : '\u2014') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#7b1fa2; font-weight:' + (a.construccion > 0 ? '600' : '400') + ';">' + (a.construccion > 0 ? wtt('$'+a.construccion.toLocaleString(), ttDepCat(d,'construccion')) : '\u2014') + '</td>';
+        html += '<td style="padding:5px 8px; text-align:right; color:#e65100; font-weight:' + (a.mobiliario > 0 ? '600' : '400') + ';">' + (a.mobiliario > 0 ? wtt('$'+a.mobiliario.toLocaleString(), ttDepCat(d,'mobiliario')) : '\u2014') + '</td>';
         html += '<td style="padding:5px 8px;"><span style="background:' + tColor + '20; color:' + tColor + '; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:600;">' + tLabel + '</span></td>';
         html += '<td style="padding:5px 8px; font-size:10px; color:#666; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + (d.desc||'').replace(/"/g,'&quot;') + '">' + (d.desc||'') + '</td>';
         html += '</tr>';
